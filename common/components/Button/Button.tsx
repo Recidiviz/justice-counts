@@ -40,6 +40,7 @@ export type ButtonProps = {
   noHover?: boolean;
   tooltipMsg?: string;
   agencySettingsConfigs?: boolean;
+  style?: React.CSSProperties;
 };
 
 export function Button({
@@ -56,6 +57,7 @@ export function Button({
   noHover,
   tooltipMsg,
   agencySettingsConfigs,
+  style,
 }: ButtonProps) {
   return (
     <Styled.ButtonWrapper id={id}>
@@ -70,11 +72,12 @@ export function Button({
         noTopBottomPadding={noTopBottomPadding}
         noHover={noHover}
         agencySettingsConfigs={agencySettingsConfigs}
+        style={style}
       >
         {label}
       </Styled.Button>
       {tooltipMsg && id && (
-        <Tooltip anchorId={id} position="bottom" content={tooltipMsg} />
+        <Tooltip anchorId={id} position="bottom" content={tooltipMsg} noArrow />
       )}
     </Styled.ButtonWrapper>
   );

@@ -19,26 +19,29 @@ import {
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
+import { spacing } from "@recidiviz/design-system";
+import { rem } from "polished";
 import styled from "styled-components/macro";
 
 export const HomeContainer = styled.div`
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 80px 0;
+  width: ${rem(1200)};
+  padding: ${rem(72)} ${rem(spacing.lg)};
+  margin: 0 auto;
+`;
+
+export const WelcomeContainer = styled.div<{ centered?: boolean }>`
+  text-align: ${({ centered }) => (centered ? "center" : "left")};
 `;
 
 export const WelcomeUser = styled.div`
   ${typography.sizeCSS.title};
-  text-align: center;
-  margin-bottom: 8px;
+  margin-bottom: ${rem(spacing.sm)};
 `;
 
 export const WelcomeDescription = styled.div`
-  ${typography.sizeCSS.medium};
-  color: ${palette.highlight.grey8};
-  margin-bottom: 48px;
+  ${typography.sizeCSS.normal};
+  font-weight: 400;
+  margin-bottom: ${rem(spacing.lg)};
 `;
 
 export const ContentContainer = styled.div`

@@ -21,14 +21,17 @@ import React, { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
+import { gateToAllowedEnvironment } from "../../utils/featureFlags";
+import { Environment } from "../AdminPanel";
 import { ReactComponent as GearIcon } from "../assets/gear-icon.svg";
 import { ReactComponent as OpenLinkIcon } from "../assets/open-link-icon.svg";
 import { Loading } from "../Loading";
 import { TaskCard, taskCardLabelsActionLinks, TaskCardMetadata } from ".";
+import ChildAgenciesTable from "./ChildAgenciesTable";
 import * as Styled from "./Home.styled";
 
 export const Home = observer(() => {
-  const { userStore, homeStore } = useStore();
+  const { userStore, homeStore, api } = useStore();
   const { agencyId } = useParams() as { agencyId: string };
   const navigate = useNavigate();
 
@@ -42,6 +45,7 @@ export const Home = observer(() => {
     addDataConfigureMetricsTaskCardMetadatas,
     publishMetricsTaskCardMetadatas,
     updateCurrentSystemSelection,
+    childAgencies,
   } = homeStore;
 
   const welcomeUser = `Welcome${name ? `, ${name.split(" ")[0]}` : "!"}`;
@@ -68,6 +72,14 @@ export const Home = observer(() => {
     publishMetricsTaskCardMetadatas &&
     publishMetricsTaskCardMetadatas.ANNUAL.length > 0;
 
+  // TODO(#1399) Ungate Superagency Homepage
+  const isNewHomepageGated =
+    isSuperagency &&
+    gateToAllowedEnvironment(api.environment, [
+      Environment.LOCAL,
+      Environment.STAGING,
+    ]);
+
   useEffect(() => {
     homeStore.fetchLatestReportsAndMetricsAndHydrateStore(agencyId);
   }, [agencyId, homeStore]);
@@ -78,96 +90,107 @@ export const Home = observer(() => {
 
   return (
     <Styled.HomeContainer>
-      <Styled.WelcomeUser>{welcomeUser}</Styled.WelcomeUser>
-      <Styled.WelcomeDescription>
-        {welcomeDescription}
-      </Styled.WelcomeDescription>
+      <Styled.WelcomeContainer centered={!isNewHomepageGated}>
+        <Styled.WelcomeUser>{welcomeUser}</Styled.WelcomeUser>
+        <Styled.WelcomeDescription>
+          {isNewHomepageGated
+            ? "Browse your child agencies below"
+            : welcomeDescription}
+        </Styled.WelcomeDescription>
+      </Styled.WelcomeContainer>
 
-      {/* System Selector */}
-      {systemSelectionOptions.length > 1 && (
-        <Styled.SystemSelectorContainer>
-          <div />
-          <Styled.SystemSelectorTabWrapper>
-            {systemSelectionOptions.map((system) => (
-              <Styled.SystemSelectorTab
-                key={system}
-                selected={system === currentSystemSelection}
-                onClick={() => updateCurrentSystemSelection(system)}
-              >
-                {removeSnakeCase(system.toLocaleLowerCase())}
-              </Styled.SystemSelectorTab>
-            ))}
-          </Styled.SystemSelectorTabWrapper>
-          <div />
-        </Styled.SystemSelectorContainer>
-      )}
+      {/* Child Agencies Table */}
+      {isNewHomepageGated && <ChildAgenciesTable data={childAgencies} />}
 
-      {/* Tasks & Submenu */}
-      <Styled.ContentContainer>
-        <Styled.LeftPanelWrapper />
-
-        {/* All Open Tasks */}
-        <Styled.OpenTasksContainer>
-          {/* Pinned Task Card for Superagencies to bulk upload for child agencies */}
-          {isSuperagency && (
-            <TaskCard metadata={superagencyPinnedAddDataTaskCardMetadata} />
+      {!isNewHomepageGated && (
+        <>
+          {/* System Selector */}
+          {systemSelectionOptions.length > 1 && (
+            <Styled.SystemSelectorContainer>
+              <div />
+              <Styled.SystemSelectorTabWrapper>
+                {systemSelectionOptions.map((system) => (
+                  <Styled.SystemSelectorTab
+                    key={system}
+                    selected={system === currentSystemSelection}
+                    onClick={() => updateCurrentSystemSelection(system)}
+                  >
+                    {removeSnakeCase(system.toLocaleLowerCase())}
+                  </Styled.SystemSelectorTab>
+                ))}
+              </Styled.SystemSelectorTabWrapper>
+              <div />
+            </Styled.SystemSelectorContainer>
           )}
 
-          {/* All Tasks Completed Card or Configure Metrics/Add Data/Publish Record Cards */}
-          {hasCompletedAllTasks ? (
-            <TaskCard metadata={allTasksCompleteTaskCardMetadata} />
-          ) : (
-            <>
-              {/* Configure Metrics/Add Data Cards */}
-              {addDataConfigureMetricsTaskCardMetadatas?.map(
-                (taskCardMetadata) => (
-                  <TaskCard
-                    key={taskCardMetadata.key}
-                    metadata={taskCardMetadata}
-                    isSuperagency={isSuperagency}
-                  />
-                )
+          {/* Tasks & Submenu */}
+          <Styled.ContentContainer>
+            <Styled.LeftPanelWrapper />
+
+            {/* All Open Tasks */}
+            <Styled.OpenTasksContainer>
+              {/* Pinned Task Card for Superagencies to bulk upload for child agencies */}
+              {isSuperagency && (
+                <TaskCard metadata={superagencyPinnedAddDataTaskCardMetadata} />
               )}
 
-              {/* Publish Latest Monthly Record Card */}
-              {hasMonthlyRecordsToPublish && (
-                <TaskCard
-                  metadata={publishMetricsTaskCardMetadatas.MONTHLY[0]}
-                />
-              )}
-
-              {/* Publish Latest Annual Record(s) Cards */}
-              {hasAnnualRecordsToPublish &&
-                publishMetricsTaskCardMetadatas.ANNUAL.map(
-                  (taskCardMetadata) => {
-                    return (
+              {/* All Tasks Completed Card or Configure Metrics/Add Data/Publish Record Cards */}
+              {hasCompletedAllTasks ? (
+                <TaskCard metadata={allTasksCompleteTaskCardMetadata} />
+              ) : (
+                <>
+                  {/* Configure Metrics/Add Data Cards */}
+                  {addDataConfigureMetricsTaskCardMetadatas?.map(
+                    (taskCardMetadata) => (
                       <TaskCard
                         key={taskCardMetadata.key}
                         metadata={taskCardMetadata}
+                        isSuperagency={isSuperagency}
                       />
-                    );
-                  }
-                )}
-            </>
-          )}
-        </Styled.OpenTasksContainer>
+                    )
+                  )}
 
-        {/* Submenu */}
-        <Styled.Submenu>
-          <Styled.SubmenuItem onClick={() => navigate("./settings")}>
-            <GearIcon />
-            Settings
-          </Styled.SubmenuItem>
-          <Styled.SubmenuItem
-            href="https://justicecounts.csgjusticecenter.org/"
-            rel="noreferrer noopener"
-            target="_blank"
-          >
-            <OpenLinkIcon />
-            Justice Counts Website
-          </Styled.SubmenuItem>
-        </Styled.Submenu>
-      </Styled.ContentContainer>
+                  {/* Publish Latest Monthly Record Card */}
+                  {hasMonthlyRecordsToPublish && (
+                    <TaskCard
+                      metadata={publishMetricsTaskCardMetadatas.MONTHLY[0]}
+                    />
+                  )}
+
+                  {/* Publish Latest Annual Record(s) Cards */}
+                  {hasAnnualRecordsToPublish &&
+                    publishMetricsTaskCardMetadatas.ANNUAL.map(
+                      (taskCardMetadata) => {
+                        return (
+                          <TaskCard
+                            key={taskCardMetadata.key}
+                            metadata={taskCardMetadata}
+                          />
+                        );
+                      }
+                    )}
+                </>
+              )}
+            </Styled.OpenTasksContainer>
+
+            {/* Submenu */}
+            <Styled.Submenu>
+              <Styled.SubmenuItem onClick={() => navigate("./settings")}>
+                <GearIcon />
+                Settings
+              </Styled.SubmenuItem>
+              <Styled.SubmenuItem
+                href="https://justicecounts.csgjusticecenter.org/"
+                rel="noreferrer noopener"
+                target="_blank"
+              >
+                <OpenLinkIcon />
+                Justice Counts Website
+              </Styled.SubmenuItem>
+            </Styled.Submenu>
+          </Styled.ContentContainer>
+        </>
+      )}
     </Styled.HomeContainer>
   );
 });

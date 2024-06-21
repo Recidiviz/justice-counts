@@ -16,46 +16,49 @@
 // =============================================================================
 
 import {
-  CustomDropdown,
-  CustomDropdownMenu,
-  CustomDropdownMenuItem,
-  CustomInput,
-  CustomInputWrapper,
-} from "@justice-counts/common/components/Dropdown";
-import {
-  MIN_DESKTOP_WIDTH,
   palette,
+  typography,
 } from "@justice-counts/common/components/GlobalStyles";
+import { spacing } from "@recidiviz/design-system";
+import { rem } from "polished";
 import styled from "styled-components/macro";
 
-export const DropdownWrapper = styled.div`
-  padding-bottom: 10px;
-  & ${CustomDropdown} {
-    width: 100%;
-    max-width: 420px;
-    min-width: 350px;
-    border: 1px solid ${palette.highlight.grey2};
-    padding: 0 12px;
+export const ModalContainer = styled.div`
+  width: ${rem(480)};
+  background: white;
+  padding: 32px 40px;
+`;
 
-    @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
-      max-width: unset;
-    }
+export const ModalHeader = styled.div`
+  display: flex;
+  margin-bottom: ${rem(spacing.md)};
+`;
+
+export const CloseButton = styled.div`
+  font-size: 18px;
+  color: ${palette.highlight.grey8};
+  margin-left: auto;
+
+  &:hover {
+    cursor: pointer;
+    color: ${palette.highlight.grey10};
   }
-  & ${CustomDropdownMenu} {
-    box-shadow: none;
-    border: 1px solid ${palette.highlight.grey2};
-  }
-  & ${CustomInputWrapper} {
-    padding: 12px 16px;
-    border-bottom: 1px solid ${palette.highlight.grey2};
-  }
-  & ${CustomInput} {
-    border: 0;
-    outline: 0;
-    background: transparent;
-  }
-  & ${CustomDropdownMenuItem} {
-    padding: 10px 16px;
-    border-bottom: 0;
-  }
+`;
+
+export const Input = styled.input`
+  ${typography.paragraph}
+  width: 100%;
+  height: ${rem(36)};
+  color: inherit;
+  padding: 0 ${rem(spacing.md)};
+  border: 1px solid ${palette.highlight.grey2};
+  border-radius: 2px;
+  outline: 0;
+`;
+
+export const ButtonsContainer = styled.div`
+  display: flex;
+  justify-content: end;
+  gap: ${rem(spacing.md)};
+  margin-top: ${rem(spacing.xl)};
 `;

@@ -16,9 +16,9 @@
 // =============================================================================
 
 import { AgencyTeamMemberRole } from "@justice-counts/common/types";
-import { act, render, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { runInAction } from "mobx";
-import React from "react";
+import React, { act } from "react";
 import { BrowserRouter, MemoryRouter, Route, Routes } from "react-router-dom";
 
 import Reports from "../../pages/Reports";

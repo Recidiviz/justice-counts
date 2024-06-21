@@ -107,6 +107,7 @@ export type ChildAgency = {
   id: number;
   name: string;
   systems: AgencySystem[];
+  custom_child_agency_name?: string;
 };
 
 export type ReportFrequency = "MONTHLY" | "ANNUAL";

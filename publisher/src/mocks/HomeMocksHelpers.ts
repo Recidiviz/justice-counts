@@ -15,8 +15,8 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 import { Metric } from "@justice-counts/common/types";
-import { act } from "@testing-library/react";
 import { runInAction } from "mobx";
+import { act } from "react";
 
 import { LatestRecordsAgencyMetrics } from "../components/Home";
 import HomeStore from "../stores/HomeStore";
@@ -37,6 +37,7 @@ export const updateMetricProps = (
     if (metric.key !== metricKey) return metric;
     return { ...metric, [property]: newValue };
   };
+  const updatedChildAgencies = latestRecordsAndMetrics.child_agencies;
   const updatedMonthlyRecord = latestRecordsAndMetrics.monthly_report;
   const updatedAnnualRecords = latestRecordsAndMetrics.annual_reports;
   const updatedAgencyMetrics = [
@@ -54,6 +55,7 @@ export const updateMetricProps = (
     agency_metrics: updatedAgencyMetrics,
     monthly_report: updatedMonthlyRecord,
     annual_reports: updatedAnnualRecords,
+    child_agencies: updatedChildAgencies,
   };
 };
 
@@ -84,6 +86,7 @@ export const updateRecordProps = (
     agency_metrics: latestRecordsAndMetrics.agency_metrics,
     monthly_report: updatedMonthlyRecord,
     annual_reports: updatedAnnualRecords,
+    child_agencies: latestRecordsAndMetrics.child_agencies,
   };
 };
 
@@ -650,4 +653,12 @@ export const LAW_ENFORCEMENT_LATEST_RECORDS_METRICS: LatestRecordsAgencyMetrics 
       status: "DRAFT",
       year: 2023,
     },
+    child_agencies: [
+      {
+        custom_child_agency_name: "Test 1",
+        id: 371,
+        name: "AAB DELETE",
+        systems: ["LAW_ENFORCEMENT", "PROSECUTION", "PROBATION"],
+      },
+    ],
   };

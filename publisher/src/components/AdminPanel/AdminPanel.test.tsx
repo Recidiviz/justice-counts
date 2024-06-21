@@ -17,9 +17,9 @@
 /* eslint-disable testing-library/prefer-presence-queries, prefer-destructuring */
 import { palette } from "@justice-counts/common/components/GlobalStyles";
 import { groupBy } from "@justice-counts/common/utils";
-import { act, fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { runInAction } from "mobx";
-import React from "react";
+import React, { act } from "react";
 import { BrowserRouter } from "react-router-dom";
 
 import { rootStore, StoreProvider } from "../../stores";
@@ -654,7 +654,7 @@ test("Clicking the `Create Agency` button opens the create agency modal", () => 
   expect(cancelButton).toBeInTheDocument();
   expect(saveButton).toBeInTheDocument();
   expect(getComputedStyle(saveButton).backgroundColor).toBe(
-    palette.highlight.grey3
+    palette.highlight.grey1
   ); // Indicating the button is disabled
 
   fireEvent.click(teamMemberRolesTab);
@@ -725,7 +725,7 @@ test("Clicking on an existing agency card opens the edit agency modal", () => {
   expect(cancelButton).toBeInTheDocument();
   expect(saveButton).toBeInTheDocument();
   expect(getComputedStyle(saveButton).backgroundColor).toBe(
-    palette.highlight.grey3
+    palette.highlight.grey1
   ); // Indicating the button is disabled
 
   fireEvent.click(teamMemberRolesTab);
