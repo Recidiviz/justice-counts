@@ -28,9 +28,11 @@ import {
   updateRecordProps,
 } from "../../mocks/HomeMocksHelpers";
 import { rootStore, StoreProvider } from "../../stores";
+import { gateToAllowedEnvironment } from "../../utils/featureFlags";
+import { Environment } from "../AdminPanel";
 import { Home } from "./Home";
 
-const { homeStore, userStore, authStore } = rootStore;
+const { homeStore, userStore, authStore, api } = rootStore;
 const mockAgencyID = "10";
 
 jest.mock("react-router-dom", () => ({
@@ -367,7 +369,17 @@ test("superagencies have table with child agencies", () => {
     })
   );
 
+  // TODO(#1399) Ungate Superagency Homepage
+  const isNewHomepageGated = gateToAllowedEnvironment(api.environment, [
+    Environment.LOCAL,
+    Environment.STAGING,
+  ]);
+
   expect(
-    screen.getByText("Browse your child agencies below")
+    screen.getByText(
+      isNewHomepageGated
+        ? "Browse your child agencies below"
+        : "See open tasks below"
+    )
   ).toBeInTheDocument();
 });
