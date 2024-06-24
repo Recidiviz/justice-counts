@@ -18,10 +18,13 @@
 import { showToast } from "@justice-counts/common/components/Toast";
 import { ChildAgency } from "@justice-counts/common/types";
 import { TooltipTrigger } from "@recidiviz/design-system";
+import { rankItem } from "@tanstack/match-sorter-utils";
 import {
   createColumnHelper,
+  FilterFn,
   flexRender,
   getCoreRowModel,
+  getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
   PaginationState,
@@ -36,9 +39,25 @@ import { ReactComponent as SortIcon } from "../assets/sort-icon.svg";
 import { ChildAgenciesDropdown } from "../MetricsConfiguration/ChildAgenciesDropdown";
 import * as Styled from "./ChildAgenciesTable.styled";
 import EditModal from "./EditModal";
+import TableSearchInput from "./TableSearchInput";
 
 type ChildAgenciesTableProps = {
   data: ChildAgency[];
+};
+
+const fuzzyFilterFn: FilterFn<ChildAgency> = (
+  row,
+  columnId,
+  value,
+  addMeta
+) => {
+  const itemRank = rankItem(row.getValue(columnId), value, { threshold: 3 });
+
+  addMeta({
+    itemRank,
+  });
+
+  return itemRank.passed;
 };
 
 const columnHelper = createColumnHelper<ChildAgency>();
@@ -159,6 +178,7 @@ const columns = [
 ];
 
 const ChildAgenciesTable = ({ data }: ChildAgenciesTableProps) => {
+  const [globalFilter, setGlobalFilter] = React.useState("");
   const [pagination, setPagination] = React.useState<PaginationState>({
     pageIndex: 0,
     pageSize: 15,
@@ -170,12 +190,16 @@ const ChildAgenciesTable = ({ data }: ChildAgenciesTableProps) => {
     getSortedRowModel: getSortedRowModel(),
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
     onPaginationChange: setPagination,
+    onGlobalFilterChange: setGlobalFilter,
+    globalFilterFn: fuzzyFilterFn,
     initialState: {
       sorting: [{ id: "name", desc: false }],
     },
     state: {
       pagination,
+      globalFilter,
     },
   });
 
@@ -193,7 +217,11 @@ const ChildAgenciesTable = ({ data }: ChildAgenciesTableProps) => {
   return (
     <Styled.Wrapper>
       <Styled.TableMenu>
-        <ChildAgenciesDropdown view="data" />
+        <TableSearchInput
+          value={globalFilter ?? ""}
+          onChange={(value) => setGlobalFilter(String(value))}
+        />
+        {/* <ChildAgenciesDropdown view="data" /> */}
         {hasPagination && (
           <Styled.Pagination>
             <Styled.Pages>
@@ -245,6 +273,9 @@ const ChildAgenciesTable = ({ data }: ChildAgenciesTableProps) => {
           ))}
         </Styled.TableBody>
       </Styled.Table>
+      {totalRowCount === 0 && (
+        <Styled.EmptyWrapper>No Results Found</Styled.EmptyWrapper>
+      )}
     </Styled.Wrapper>
   );
 };
