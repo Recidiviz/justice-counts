@@ -15,13 +15,17 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { palette } from "@justice-counts/common/components/GlobalStyles";
+import {
+  palette,
+  typography,
+} from "@justice-counts/common/components/GlobalStyles";
 import { spacing } from "@recidiviz/design-system";
 import { rem } from "polished";
 import styled from "styled-components/macro";
 
 export const InputWrapper = styled.div`
   display: flex;
+  position: relative;
   justify-content: center;
   align-items: center;
   gap: ${rem(spacing.sm)};
@@ -32,12 +36,16 @@ export const InputWrapper = styled.div`
 `;
 
 export const Input = styled.input`
+  ${typography.paragraph}
   width: 100%;
   border: 0;
   outline: 0;
 `;
 
 export const ClearButton = styled.button`
+  height: 60%;
+  position: absolute;
+  right: ${rem(spacing.md)};
   border: 0;
   padding: 0;
   background: transparent;
