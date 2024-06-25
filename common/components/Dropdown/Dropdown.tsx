@@ -20,6 +20,7 @@ import _ from "lodash";
 import React, { useEffect, useRef, useState } from "react";
 
 import dropdownCaret from "../../assets/dropdown-caret.svg";
+import { Button } from "../Button";
 import { palette } from "../GlobalStyles";
 import * as Styled from "./Dropdown.styled";
 import {
@@ -44,6 +45,8 @@ type DropdownProps = {
   highlightIcon?: React.ReactNode;
   typeaheadSearch?: { placeholder: string };
   customClearSearchButton?: string;
+  actionButton?: { label: string; fn: () => void };
+  preventCloseOnClickEvent?: boolean;
 };
 
 /**
@@ -76,6 +79,8 @@ export function Dropdown({
   highlightIcon,
   typeaheadSearch,
   customClearSearchButton,
+  actionButton,
+  preventCloseOnClickEvent,
 }: DropdownProps) {
   const [filteredOptions, setFilteredOptions] = useState<DropdownOption[]>();
   const [inputValue, setInputValue] = useState("");
@@ -91,9 +96,10 @@ export function Dropdown({
           )
         : options;
     setFilteredOptions(() =>
-      normalizedOptions.filter(
-        (option) => typeof option.label === "string" && regex.test(option.label)
-      )
+      normalizedOptions.filter((option) => {
+        if (typeof option.label === "string") return regex.test(option.label);
+        return regex.test(String(option.key));
+      })
     );
   };
 
@@ -200,6 +206,7 @@ export function Dropdown({
                 noHover={noHover}
                 highlight={highlight && !highlightIcon}
                 groupTitle={groupTitle}
+                preventCloseOnClickEvent={preventCloseOnClickEvent}
               >
                 <Styled.OptionLabelWrapper
                   highlightIcon={Boolean(highlightIcon)}
@@ -214,6 +221,18 @@ export function Dropdown({
                 </Styled.OptionLabelWrapper>
               </Styled.CustomDropdownMenuItem>
             )
+          )}
+
+          {actionButton && filteredOptions && filteredOptions.length > 0 && (
+            <Styled.ActionButtonWrapper>
+              <Button
+                label={actionButton.label}
+                onClick={actionButton.fn}
+                labelColor="blue"
+                noHover
+                style={{ minWidth: 0 }}
+              />
+            </Styled.ActionButtonWrapper>
           )}
 
           {typeaheadSearch && filteredOptions?.length === 0 && (

@@ -15,43 +15,31 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { CheckboxOptionsWrapper } from "@justice-counts/common/components/CheckboxOptions";
 import {
-  palette,
-  typography,
-} from "@justice-counts/common/components/GlobalStyles";
+  CustomDropdown,
+  CustomDropdownMenu,
+} from "@justice-counts/common/components/Dropdown";
 import { spacing } from "@recidiviz/design-system";
 import { rem } from "polished";
 import styled from "styled-components/macro";
 
-export const InputWrapper = styled.div`
-  display: flex;
-  position: relative;
-  justify-content: center;
-  align-items: center;
-  gap: ${rem(spacing.sm)};
-  min-width: ${rem(350)};
-  padding: ${rem(spacing.sm)} ${rem(spacing.md)};
-  border-radius: 4px;
-  border: 1px solid ${palette.highlight.grey2};
-`;
+import { DropdownWrapper } from "../MetricsConfiguration/ChildAgenciesDropdown.styled";
 
-export const Input = styled.input`
-  ${typography.sizeCSS.normal}
-  width: 100%;
-  border: 0;
-  outline: 0;
-
-  ::placeholder {
-    color: ${palette.solid.darkgrey};
-  }
-`;
-
-export const ClearButton = styled.button`
-  position: absolute;
-  right: ${rem(spacing.md)};
-  border: 0;
+export const CheckboxDropdownWrapper = styled(DropdownWrapper)`
   padding: 0;
-  background: transparent;
-  color: ${palette.highlight.grey8};
-  cursor: pointer;
+  height: 100%;
+
+  & ${CustomDropdown} {
+    border-radius: ${rem(spacing.xs)};
+    padding: ${rem(3)} ${rem(spacing.md)};
+  }
+  & ${CustomDropdownMenu} {
+    max-height: ${rem(400)};
+    border-radius: ${rem(spacing.xs)};
+    margin-top: ${rem(spacing.sm)};
+  }
+  & ${CheckboxOptionsWrapper} {
+    margin-bottom: 0;
+  }
 `;

@@ -30,7 +30,7 @@ type TableSearchInputProps = {
 const TableSearchInput = ({
   value: initialValue,
   onChange,
-  debounce = 500,
+  debounce = 300,
 }: TableSearchInputProps) => {
   const [value, setValue] = useState(initialValue);
 
