@@ -159,4 +159,4 @@ const SystemsCheckboxDropdown: React.FC<{
   );
 });
 
-export default observer(SystemsCheckboxDropdown);
+export default SystemsCheckboxDropdown;
