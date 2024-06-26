@@ -46,7 +46,7 @@ export const useBarChart = ({
       return transformDataForBarChart(
         datapointsByMetric[metric.key].aggregate,
         getDataVizTimeRange(metric),
-        "Count",
+        "Breakdown by Count",
         metric.custom_frequency || metric.frequency,
         startingMonth
       );

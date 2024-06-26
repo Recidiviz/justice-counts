@@ -55,7 +55,6 @@ import { AppGuideKeys, GuideKeys } from "../HelpCenter/types";
 import { createURLToGuide } from "../HelpCenter/utils";
 import { Loading } from "../Loading";
 import { ChildAgenciesDropdown } from "../MetricsConfiguration/ChildAgenciesDropdown";
-import { DisclaimerBanner } from "../primitives";
 import { useSettingsSearchParams } from "../Settings";
 import ConnectedDatapointsView from "./ConnectedDatapointsView";
 import * as Styled from "./MetricsDataChart.styled";
@@ -241,13 +240,6 @@ export const MetricsDataChart: React.FC = observer(() => {
 
   return (
     <Styled.MetricsViewContainer>
-      {isSuperagency && (
-        <DisclaimerBanner>
-          If you would like to view data for the child agencies you manage,
-          please switch to the specific child agency you would like to view data
-          for.
-        </DisclaimerBanner>
-      )}
       <Styled.MetricsViewPanel>
         {/* List Of Metrics */}
         <Styled.PanelContainerLeft>
