@@ -37,9 +37,10 @@ const DATAPOINTS_VIEW_CONTAINER_TOP_OFFSET =
 export const MetricHeaderWrapper = styled.div`
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
   justify-content: space-between;
-  height: 58px;
-  margin-bottom: 9px;
+  gap: 16px;
+  margin: 9px 0;
   white-space: nowrap;
 
   @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
@@ -145,13 +146,6 @@ export const MetricInsightsContainer = styled.div<{
   visibility: visible;
   flex-direction: row;
 
-  ${({ selfWidth, enableHideByWidth }) =>
-    enableHideByWidth &&
-    `@media only screen and (max-width: calc(1148px + ${selfWidth}px)) {
-    visibility: hidden;
-    position: absolute;
-    z-index: -1;
-  }`};
   @media only screen and(max-width: ${MIN_TABLET_WIDTH}px) {
     flex-direction: column;
   }
