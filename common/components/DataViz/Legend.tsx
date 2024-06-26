@@ -26,10 +26,8 @@ const LegendContainer = styled.div`
   flex-direction: row;
   align-items: center;
   flex-wrap: wrap;
-  margin-bottom: 20px;
   border-top: 1px solid rgba(23, 28, 43, 0.6);
   padding: 16px 0;
-  border-bottom: 1px solid rgba(23, 28, 43, 0.6);
 `;
 
 const LegendItem = styled.div`

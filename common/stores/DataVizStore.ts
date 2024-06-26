@@ -33,9 +33,9 @@ class DataVizStore {
 
   constructor() {
     makeAutoObservable(this);
-    this.timeRange = "All";
+    this.timeRange = "All Time";
     this.disaggregationName = NoDisaggregationOption;
-    this.countOrPercentageView = "Count";
+    this.countOrPercentageView = "Breakdown by Count";
   }
 
   setTimeRange = (timeRange: DataVizTimeRangeDisplayName) => {
@@ -83,9 +83,9 @@ class DataVizStore {
   };
 
   resetState = () => {
-    this.timeRange = "All";
+    this.timeRange = "All Time";
     this.disaggregationName = NoDisaggregationOption;
-    this.countOrPercentageView = "Count";
+    this.countOrPercentageView = "Breakdown by Count";
   };
 }
 

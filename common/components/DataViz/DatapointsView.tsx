@@ -20,6 +20,7 @@ import BarChart from "@justice-counts/common/components/DataViz/BarChart";
 import { DatapointsTitle } from "@justice-counts/common/components/DataViz/DatapointsTitle";
 import {
   BottomMetricInsightsContainer,
+  ChartNote,
   DatapointsViewContainer,
   DatapointsViewControlsContainer,
   DatapointsViewControlsRow,
@@ -78,7 +79,7 @@ type DatapointsViewProps = {
   maxHeightViewport?: boolean;
 };
 
-const noDisaggregationOption = "None";
+const noDisaggregationOption = NoDisaggregationOption;
 
 const SelectMetricButton = () => (
   <SelectMetricsButtonContainer>
@@ -166,21 +167,21 @@ export const DatapointsView = forwardRef<never, DatapointsViewProps>(
 
     useEffect(() => {
       if (isAnnualOnly && selectedTimeRangeValue === 6) {
-        setTimeRange("All");
+        setTimeRange("All Time");
       }
       if (!disaggregationOptions.includes(disaggregationName)) {
         setDisaggregationName(noDisaggregationOption);
-        setCountOrPercentageView("Count");
+        setCountOrPercentageView("Breakdown by Count");
       }
       if (disaggregationName === noDisaggregationOption) {
-        setCountOrPercentageView("Count");
+        setCountOrPercentageView("Breakdown by Count");
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [datapointsGroupedByAggregateAndDisaggregations]);
 
     useEffect(() => {
       if (disaggregationName === noDisaggregationOption) {
-        setCountOrPercentageView("Count");
+        setCountOrPercentageView("Breakdown by Count");
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [disaggregationName]);
@@ -209,7 +210,8 @@ export const DatapointsView = forwardRef<never, DatapointsViewProps>(
           )}
           dimensionNames={dimensionNames}
           percentageView={
-            !!disaggregationName && countOrPercentageView === "Percentage"
+            !!disaggregationName &&
+            countOrPercentageView === "Breakdown by Percentage"
           }
           resizeHeight={resizeHeight}
           ref={ref}
@@ -330,6 +332,10 @@ export const DatapointsView = forwardRef<never, DatapointsViewProps>(
         </MobileFiltersRow>
         {renderChartForMetric()}
         {renderLegend()}
+        <ChartNote>
+          This graph is only showing data uploaded for the chosen reporting
+          frequency. If data is missing, try changing reporting frequency.
+        </ChartNote>
         {showBottomMetricInsights && selectedData.length > 0 && (
           <BottomMetricInsightsContainer>
             <MetricInsights datapoints={filteredAggregateData} />

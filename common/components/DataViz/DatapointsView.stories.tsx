@@ -33,9 +33,9 @@ type Story = StoryObj<typeof DatapointsView>;
 
 export const Default: Story = {
   args: {
-    timeRange: "All",
+    timeRange: "All Time",
     disaggregationName: "Disaggregation",
-    countOrPercentageView: "Count",
+    countOrPercentageView: "Breakdown by Count",
     setTimeRange: () => ({}),
     setDisaggregationName: () => ({}),
     setCountOrPercentageView: () => ({}),
