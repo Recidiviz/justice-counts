@@ -162,7 +162,7 @@ export const CustomDropdownMenuItem = styled(DropdownMenuItem)<{
           fill-opacity: 1;
         }
       `;
-      if (noHover) return `cursor: default;`;
+      return `cursor: default;`;
     }};
   }
 

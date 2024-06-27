@@ -22,15 +22,15 @@ import {
 } from "@justice-counts/common/components/Dropdown";
 import { noop, uniq } from "lodash";
 import { observer } from "mobx-react-lite";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import { useStore } from "../../stores";
 import { removeSnakeCase } from "../../utils";
 import * as Styled from "./SystemsCheckboxDropdown.styled";
 
 const SystemsCheckboxDropdown: React.FC<{
-  onClickShowButton: (enabledSystems: string[]) => void;
-}> = observer(({ onClickShowButton }) => {
+  onChange: (enabledSystems: string[]) => void;
+}> = observer(({ onChange }) => {
   const { agencyStore } = useStore();
   const { superagencyChildAgencies } = agencyStore;
 
@@ -38,8 +38,9 @@ const SystemsCheckboxDropdown: React.FC<{
     superagencyChildAgencies?.flatMap((agency) => agency.systems)
   );
 
-  const [allSystemsChecked, checkAllSystems] = useState(true);
-  const [systemsStatusObject, setSystemsStatusObject] = useState(
+  const wrapperRef = useRef<HTMLDivElement>(null);
+
+  const [systemsEnabledStatus, setSystemsEnabledStatus] = useState(
     childAgenciesSystems.reduce((acc, system) => {
       const systemEnabled = Boolean(system);
 
@@ -47,35 +48,45 @@ const SystemsCheckboxDropdown: React.FC<{
     }, {})
   );
 
-  const enabledSystems = Object.entries(systemsStatusObject)
+  const enabledSystems = Object.entries(systemsEnabledStatus)
     .filter(([key, enabled]) => key && enabled)
     .map(([key]) => key);
 
+  const isAllSystemsSelected =
+    childAgenciesSystems.length === enabledSystems.length;
+
   useEffect(() => {
-    checkAllSystems(childAgenciesSystems.length === enabledSystems.length);
-  }, [childAgenciesSystems, enabledSystems]);
+    const timeout = setTimeout(() => {
+      onChange(enabledSystems);
+    }, 300);
+
+    return () => clearTimeout(timeout);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [systemsEnabledStatus]);
 
   const systemsCheckboxOptions: DropdownOption[] = childAgenciesSystems.map(
     (system) => {
-      const currentSystemStatus = Object.entries(systemsStatusObject).filter(
+      const currentSystemStatus = Object.entries(systemsEnabledStatus).filter(
         ([key]) => key === system
       );
+
+      const currentSystemOption = currentSystemStatus.map(([key, status]) => {
+        return {
+          key,
+          label: removeSnakeCase(key.toLocaleLowerCase()),
+          checked: Boolean(status),
+        };
+      });
 
       return {
         id: system,
         key: system,
         label: (
           <CheckboxOptions
-            options={currentSystemStatus.map(([key, status]) => {
-              return {
-                key,
-                label: removeSnakeCase(key.toLocaleLowerCase()),
-                checked: Boolean(status),
-              };
-            })}
+            options={currentSystemOption}
             onChange={({ key, checked }) => {
-              setSystemsStatusObject({
-                ...systemsStatusObject,
+              setSystemsEnabledStatus({
+                ...systemsEnabledStatus,
                 [key]: !checked,
               });
             }}
@@ -97,11 +108,11 @@ const SystemsCheckboxDropdown: React.FC<{
             {
               key: "ALL",
               label: "Select All",
-              checked: allSystemsChecked,
+              checked: isAllSystemsSelected,
             },
           ]}
           onChange={({ checked }) => {
-            setSystemsStatusObject(
+            setSystemsEnabledStatus(
               childAgenciesSystems.reduce((acc, system) => {
                 return { ...acc, [system]: !checked };
               }, {})
@@ -138,10 +149,10 @@ const SystemsCheckboxDropdown: React.FC<{
     );
 
   return (
-    childAgenciesSystems.length > 0 && (
-      <Styled.CheckboxDropdownWrapper>
+    childAgenciesSystems.length > 1 && (
+      <Styled.CheckboxDropdownWrapper ref={wrapperRef}>
         <Dropdown
-          label={allSystemsChecked ? "All Sectors" : dropdownLabelViz}
+          label={isAllSystemsSelected ? "All Sectors" : dropdownLabelViz}
           options={[...allCheckboxOption, ...systemsCheckboxOptions]}
           size="small"
           caretPosition="right"
@@ -150,9 +161,9 @@ const SystemsCheckboxDropdown: React.FC<{
           customClearSearchButton="Clear"
           actionButton={{
             label: "Show",
-            fn: () => onClickShowButton(enabledSystems),
+            fn: () => wrapperRef.current?.click(),
           }}
-          preventCloseOnClickEvent
+          preventCloseOnClick
         />
       </Styled.CheckboxDropdownWrapper>
     )

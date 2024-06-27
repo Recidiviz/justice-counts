@@ -91,12 +91,12 @@ export const ChildAgenciesDropdown: React.FC<{
             },
           ];
 
+          const viewLink = metricSearchParam
+            ? `${view}?system=${key.toLocaleLowerCase()}&metric=${metricSearchParam?.toLocaleLowerCase()}`
+            : view;
+
           const agencyGroup = agencies
             .map((agency) => {
-              const viewLink = metricSearchParam
-                ? `${view}?system=${key.toLocaleLowerCase()}&metric=${metricSearchParam?.toLocaleLowerCase()}`
-                : view;
-
               return {
                 id: agency.id,
                 key: `${agency.id}_${key}`,

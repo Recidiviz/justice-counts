@@ -46,7 +46,7 @@ type DropdownProps = {
   typeaheadSearch?: { placeholder: string };
   customClearSearchButton?: string;
   actionButton?: { label: string; fn: () => void };
-  preventCloseOnClickEvent?: boolean;
+  preventCloseOnClick?: boolean;
 };
 
 /**
@@ -80,7 +80,7 @@ export function Dropdown({
   typeaheadSearch,
   customClearSearchButton,
   actionButton,
-  preventCloseOnClickEvent,
+  preventCloseOnClick,
 }: DropdownProps) {
   const [filteredOptions, setFilteredOptions] = useState<DropdownOption[]>();
   const [inputValue, setInputValue] = useState("");
@@ -206,7 +206,7 @@ export function Dropdown({
                 noHover={noHover}
                 highlight={highlight && !highlightIcon}
                 groupTitle={groupTitle}
-                preventCloseOnClickEvent={preventCloseOnClickEvent}
+                preventCloseOnClickEvent={preventCloseOnClick}
               >
                 <Styled.OptionLabelWrapper
                   highlightIcon={Boolean(highlightIcon)}

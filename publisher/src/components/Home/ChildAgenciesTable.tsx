@@ -229,9 +229,8 @@ const ChildAgenciesTable = ({ data }: ChildAgenciesTableProps) => {
           onChange={(value) => setGlobalFilter(String(value))}
         />
         <SystemsCheckboxDropdown
-          onClickShowButton={(systems) => {
+          onChange={(systems) => {
             setColumnFilters([{ id: "systems", value: systems }]);
-            tableRef.current?.click();
           }}
         />
         {hasPagination && (
