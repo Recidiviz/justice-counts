@@ -19,7 +19,6 @@ import { ReactComponent as GridIcon } from "@justice-counts/common/assets/grid-i
 import BarChart from "@justice-counts/common/components/DataViz/BarChart";
 import { DatapointsTitle } from "@justice-counts/common/components/DataViz/DatapointsTitle";
 import {
-  BottomMetricInsightsContainer,
   DatapointsViewContainer,
   DatapointsViewControlsContainer,
   DatapointsViewControlsRow,
@@ -53,7 +52,9 @@ import {
 import { DropdownMenu, DropdownToggle } from "@recidiviz/design-system";
 import React, { forwardRef, useEffect } from "react";
 
+import { useWindowWidth } from "../../hooks";
 import { Dropdown, DropdownOption } from "../Dropdown";
+import { MIN_DESKTOP_WIDTH } from "../GlobalStyles";
 import { MobileFiltersModal } from "./MobileFiltersModal";
 import { MobileSelectMetricsModal } from "./MobileSelectMetricsModal";
 
@@ -73,7 +74,6 @@ type DatapointsViewProps = {
   agencyName?: string;
   onMetricsSelect?: (metric: string) => void;
   showTitle?: boolean;
-  showBottomMetricInsights?: boolean;
   resizeHeight?: boolean;
   maxHeightViewport?: boolean;
 };
@@ -130,10 +130,11 @@ export const DatapointsView = forwardRef<never, DatapointsViewProps>(
       agencyName,
       onMetricsSelect,
       showTitle = false,
-      showBottomMetricInsights = false,
       resizeHeight = false,
       maxHeightViewport = false,
     } = props;
+
+    const windowWidth = useWindowWidth();
 
     const [mobileSelectMetricsVisible, setMobileSelectMetricsVisible] =
       React.useState<boolean>(false);
@@ -301,7 +302,7 @@ export const DatapointsView = forwardRef<never, DatapointsViewProps>(
       <DatapointsViewContainer maxHeightViewport={maxHeightViewport}>
         <DatapointsViewHeaderWrapper>
           {showTitle && (
-            <MetricHeaderWrapper>
+            <MetricHeaderWrapper isColumn={windowWidth <= MIN_DESKTOP_WIDTH}>
               <DatapointsTitle
                 metricName={metricName}
                 metricFrequency={metricFrequency}
@@ -330,11 +331,6 @@ export const DatapointsView = forwardRef<never, DatapointsViewProps>(
         </MobileFiltersRow>
         {renderChartForMetric()}
         {renderLegend()}
-        {showBottomMetricInsights && selectedData.length > 0 && (
-          <BottomMetricInsightsContainer>
-            <MetricInsights datapoints={filteredAggregateData} />
-          </BottomMetricInsightsContainer>
-        )}
         {shouldShowMobileSelectMetricsModal && (
           <MobileSelectMetricsModal
             agencyName={agencyName}

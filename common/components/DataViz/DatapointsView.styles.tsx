@@ -34,9 +34,9 @@ const FOOTER_CONTAINER_HEIGHT = 52;
 const DATAPOINTS_VIEW_CONTAINER_TOP_OFFSET =
   HEADER_BAR_HEIGHT + PANEL_RIGHT_TOP_BUTTONS_CONTAINER_HEIGHT;
 
-export const MetricHeaderWrapper = styled.div`
+export const MetricHeaderWrapper = styled.div<{ isColumn?: boolean }>`
   display: flex;
-  flex-direction: row;
+  flex-direction: ${({ isColumn }) => (isColumn ? "column" : "row")};
   flex-wrap: wrap;
   justify-content: space-between;
   gap: 16px;
@@ -193,10 +193,6 @@ export const MetricInsight: React.FC<MetricInsightProps> = ({
     <MetricInsightTitle>{title}</MetricInsightTitle>
   </MetricInsightContainer>
 );
-
-export const BottomMetricInsightsContainer = styled.div`
-  margin: 24px 0;
-`;
 
 export const DatapointsViewControlsRow = styled.div`
   display: flex;
