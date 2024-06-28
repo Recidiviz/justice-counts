@@ -17,8 +17,6 @@
 
 import { DatapointsTableView } from "@justice-counts/common/components/DataViz/DatapointsTableView";
 import { DatapointsView } from "@justice-counts/common/components/DataViz/DatapointsView";
-import { MIN_DESKTOP_WIDTH } from "@justice-counts/common/components/GlobalStyles";
-import { useWindowWidth } from "@justice-counts/common/hooks";
 import {
   ReportFrequency,
   UnitedRaceEthnicityKeys,
@@ -43,7 +41,6 @@ const ConnectedDatapointsView = forwardRef<never, ConnectedDatapointsViewProps>(
     ref
   ) => {
     const { datapointsStore, dataVizStore } = useStore();
-    const windowWidth = useWindowWidth();
 
     const datapointsForMetric = datapointsStore.datapointsByMetric[metric];
     const rawDatapointsForMetric =
@@ -101,7 +98,6 @@ const ConnectedDatapointsView = forwardRef<never, ConnectedDatapointsViewProps>(
             metricStartingMonth={metricStartingMonth}
             resizeHeight
             showTitle
-            showBottomMetricInsights={windowWidth <= MIN_DESKTOP_WIDTH}
             maxHeightViewport
             ref={ref}
           />
