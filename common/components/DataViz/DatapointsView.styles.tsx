@@ -34,12 +34,13 @@ const FOOTER_CONTAINER_HEIGHT = 52;
 const DATAPOINTS_VIEW_CONTAINER_TOP_OFFSET =
   HEADER_BAR_HEIGHT + PANEL_RIGHT_TOP_BUTTONS_CONTAINER_HEIGHT;
 
-export const MetricHeaderWrapper = styled.div`
+export const MetricHeaderWrapper = styled.div<{ isColumn?: boolean }>`
   display: flex;
-  flex-direction: row;
+  flex-direction: ${({ isColumn }) => (isColumn ? "column" : "row")};
+  flex-wrap: wrap;
   justify-content: space-between;
-  height: 58px;
-  margin-bottom: 9px;
+  gap: 16px;
+  margin: 9px 0;
   white-space: nowrap;
 
   @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
@@ -145,13 +146,6 @@ export const MetricInsightsContainer = styled.div<{
   visibility: visible;
   flex-direction: row;
 
-  ${({ selfWidth, enableHideByWidth }) =>
-    enableHideByWidth &&
-    `@media only screen and (max-width: calc(1148px + ${selfWidth}px)) {
-    visibility: hidden;
-    position: absolute;
-    z-index: -1;
-  }`};
   @media only screen and(max-width: ${MIN_TABLET_WIDTH}px) {
     flex-direction: column;
   }
@@ -199,10 +193,6 @@ export const MetricInsight: React.FC<MetricInsightProps> = ({
     <MetricInsightTitle>{title}</MetricInsightTitle>
   </MetricInsightContainer>
 );
-
-export const BottomMetricInsightsContainer = styled.div`
-  margin: 24px 0;
-`;
 
 export const DatapointsViewControlsRow = styled.div`
   display: flex;

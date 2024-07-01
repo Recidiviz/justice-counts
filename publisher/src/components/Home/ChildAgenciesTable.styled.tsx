@@ -33,6 +33,7 @@ export const Wrapper = styled.div``;
 export const TableMenu = styled.div`
   display: flex;
   align-items: center;
+  gap: ${rem(spacing.md)};
   margin-bottom: ${rem(spacing.md)};
 `;
 
@@ -131,4 +132,14 @@ export const CustomLink = styled(Link)`
   &:hover {
     border-bottom: 1px solid ${palette.solid.darkblue2};
   }
+`;
+
+export const EmptyWrapper = styled.div`
+  height: ${rem(100)};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: ${palette.highlight.grey8};
+  font-weight: 400;
+  border-bottom: 1px solid ${palette.highlight.grey2};
 `;

@@ -41,9 +41,9 @@ const EditModal = ({
 }: EditModalProps) => {
   const [inputValue, setInputValue] = useState(defaultValue ?? "");
 
-  const { adminPanelStore } = useStore();
+  const { homeStore } = useStore();
   const { saveChildAgencyUploadIdUpdate, undoChildAgencyUploadIdUpdate } =
-    adminPanelStore;
+    homeStore;
 
   const undoUploadIdValueUpdate = async () => {
     const undoResponse = await undoChildAgencyUploadIdUpdate(
