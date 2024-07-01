@@ -16,6 +16,7 @@
 // =============================================================================
 
 import { Metric } from "@justice-counts/common/types";
+import { snakeCase } from "lodash";
 
 export const downloadFeedData = async (
   system: string,
@@ -43,11 +44,21 @@ export const downloadFeedData = async (
 export const downloadMetricData = (
   metric: Metric,
   agencyId: number | string,
-  isPublic: boolean
+  isPublic: boolean,
+  agencyName?: string
 ) => {
   if (metric) {
     metric.filenames.forEach((fileName) => {
-      downloadFeedData(metric.system.key, agencyId, fileName, isPublic);
+      const filenameWithAgencyName = agencyName
+        ? `${fileName}_${snakeCase(agencyName)}`
+        : fileName;
+
+      downloadFeedData(
+        metric.system.key,
+        agencyId,
+        filenameWithAgencyName,
+        isPublic
+      );
     });
   }
 };
