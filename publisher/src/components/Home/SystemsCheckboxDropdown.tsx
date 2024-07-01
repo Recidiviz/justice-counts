@@ -22,7 +22,7 @@ import {
 } from "@justice-counts/common/components/Dropdown";
 import { noop, uniq } from "lodash";
 import { observer } from "mobx-react-lite";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { useStore } from "../../stores";
 import { removeSnakeCase } from "../../utils";
@@ -37,8 +37,6 @@ const SystemsCheckboxDropdown: React.FC<{
   const childAgenciesSystems = uniq(
     superagencyChildAgencies?.flatMap((agency) => agency.systems)
   );
-
-  const wrapperRef = useRef<HTMLDivElement>(null);
 
   const [systemsEnabledStatus, setSystemsEnabledStatus] = useState(
     childAgenciesSystems.reduce((acc, system) => {
@@ -150,7 +148,7 @@ const SystemsCheckboxDropdown: React.FC<{
 
   return (
     childAgenciesSystems.length > 1 && (
-      <Styled.CheckboxDropdownWrapper ref={wrapperRef}>
+      <Styled.CheckboxDropdownWrapper>
         <Dropdown
           label={isAllSystemsSelected ? "All Sectors" : dropdownLabelViz}
           options={[...allCheckboxOption, ...systemsCheckboxOptions]}
@@ -159,10 +157,6 @@ const SystemsCheckboxDropdown: React.FC<{
           fullWidth
           typeaheadSearch={{ placeholder: "Search for Sector" }}
           customClearSearchButton="Clear"
-          actionButton={{
-            label: "Show",
-            fn: () => wrapperRef.current?.click(),
-          }}
           preventCloseOnClick
         />
       </Styled.CheckboxDropdownWrapper>
