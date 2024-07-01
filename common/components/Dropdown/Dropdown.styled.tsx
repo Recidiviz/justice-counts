@@ -75,7 +75,6 @@ export const CustomDropdownToggleLabel = styled.div`
   width: 100%;
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
   align-items: center;
   text-transform: capitalize;
 `;
@@ -163,6 +162,7 @@ export const CustomDropdownMenuItem = styled(DropdownMenuItem)<{
           fill-opacity: 1;
         }
       `;
+      return `cursor: default;`;
     }};
   }
 
@@ -239,4 +239,9 @@ export const NoResultsFoundWrapper = styled.div`
   ${customDropdownMenuItemBaseCSS}
   color: ${palette.solid.darkgrey};
   padding-left: 24px;
+`;
+
+export const ActionButtonWrapper = styled.div`
+  display: flex;
+  border-top: 1px solid ${palette.highlight.grey2};
 `;

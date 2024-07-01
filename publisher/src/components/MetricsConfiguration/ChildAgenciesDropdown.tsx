@@ -91,19 +91,20 @@ export const ChildAgenciesDropdown: React.FC<{
             },
           ];
 
+          const viewLink = metricSearchParam
+            ? `${view}?system=${key.toLocaleLowerCase()}&metric=${metricSearchParam?.toLocaleLowerCase()}`
+            : view;
+
           const agencyGroup = agencies
-            .map((agency) => ({
-              id: agency.id,
-              key: `${agency.id}_${key}`,
-              label: agency.name,
-              onClick: () =>
-                navigate(
-                  `/agency/${
-                    agency.id
-                  }/${view}?system=${key.toLocaleLowerCase()}&metric=${metricSearchParam?.toLocaleLowerCase()}`
-                ),
-              highlight: agency.id === currentAgency?.id,
-            }))
+            .map((agency) => {
+              return {
+                id: agency.id,
+                key: `${agency.id}_${key}`,
+                label: agency.name,
+                onClick: () => navigate(`/agency/${agency.id}/${viewLink}`),
+                highlight: agency.id === currentAgency?.id,
+              };
+            })
             .sort((a, b) => a.label.localeCompare(b.label));
 
           return [...groupTitle, ...agencyGroup, ...acc];

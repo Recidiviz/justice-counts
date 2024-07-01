@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { showToast } from "@justice-counts/common/components/Toast";
 import {
   AgencySystem,
   ChildAgency,
@@ -69,6 +70,8 @@ class HomeStore {
   loading: boolean;
 
   childAgencies: ChildAgency[];
+
+  childAgencyUploadId?: string;
 
   constructor(userStore: UserStore, api: API, reportStore: ReportStore) {
     makeAutoObservable(this, {}, { autoBind: true });
@@ -135,6 +138,10 @@ class HomeStore {
       this.publishMetricsTaskCardMetadatas?.ANNUAL.length === 0 &&
       this.publishMetricsTaskCardMetadatas?.MONTHLY.length === 0
     );
+  }
+
+  get childAgencyCustomName(): string | undefined {
+    return this.childAgencyUploadId;
   }
 
   getLatestAnnualRecord(
@@ -345,6 +352,75 @@ class HomeStore {
       this.currentSystemSelection = system;
       this.hydrateTaskCardMetadatasToRender();
     });
+  }
+
+  async undoChildAgencyUploadIdUpdate(
+    childAgencyId: string,
+    previousValue?: string
+  ) {
+    try {
+      const response = (await this.api.request({
+        path: `/api/agency/${childAgencyId}/custom-name`,
+        method: "PUT",
+        body: {
+          custom_child_agency_name: previousValue ?? null,
+        },
+      })) as Response;
+
+      if (response.status !== 200) {
+        showToast({
+          message: `Failed to undo Upload ID change`,
+          color: "red",
+        });
+        return;
+      }
+
+      runInAction(() => {
+        this.childAgencyUploadId = previousValue;
+      });
+
+      showToast({
+        message: `Upload ID change undone`,
+        check: true,
+      });
+
+      return response;
+    } catch (error) {
+      if (error instanceof Error)
+        return new Error("There was an issue undoing agency Upload ID change");
+    }
+  }
+
+  async saveChildAgencyUploadIdUpdate(
+    childAgencyId: string,
+    uploadId?: string
+  ) {
+    try {
+      const response = (await this.api.request({
+        path: `/api/agency/${childAgencyId}/custom-name`,
+        method: "PUT",
+        body: {
+          custom_child_agency_name: uploadId ?? null,
+        },
+      })) as Response;
+
+      if (response.status !== 200) {
+        showToast({
+          message: `Failed to update Upload ID`,
+          color: "red",
+        });
+        return;
+      }
+
+      runInAction(() => {
+        this.childAgencyUploadId = uploadId;
+      });
+
+      return response;
+    } catch (error) {
+      if (error instanceof Error)
+        return new Error("There was an issue updating agency Upload ID");
+    }
   }
 
   /**

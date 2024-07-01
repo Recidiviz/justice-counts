@@ -21,8 +21,6 @@ import React, { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
-import { gateToAllowedEnvironment } from "../../utils/featureFlags";
-import { Environment } from "../AdminPanel";
 import { ReactComponent as GearIcon } from "../assets/gear-icon.svg";
 import { ReactComponent as OpenLinkIcon } from "../assets/open-link-icon.svg";
 import { Loading } from "../Loading";
@@ -31,7 +29,7 @@ import ChildAgenciesTable from "./ChildAgenciesTable";
 import * as Styled from "./Home.styled";
 
 export const Home = observer(() => {
-  const { userStore, homeStore, api } = useStore();
+  const { userStore, homeStore } = useStore();
   const { agencyId } = useParams() as { agencyId: string };
   const navigate = useNavigate();
 
@@ -72,14 +70,6 @@ export const Home = observer(() => {
     publishMetricsTaskCardMetadatas &&
     publishMetricsTaskCardMetadatas.ANNUAL.length > 0;
 
-  // TODO(#1399) Ungate Superagency Homepage
-  const isNewHomepageGated =
-    isSuperagency &&
-    gateToAllowedEnvironment(api.environment, [
-      Environment.LOCAL,
-      Environment.STAGING,
-    ]);
-
   useEffect(() => {
     homeStore.fetchLatestReportsAndMetricsAndHydrateStore(agencyId);
   }, [agencyId, homeStore]);
@@ -90,19 +80,19 @@ export const Home = observer(() => {
 
   return (
     <Styled.HomeContainer>
-      <Styled.WelcomeContainer centered={!isNewHomepageGated}>
+      <Styled.WelcomeContainer centered={!isSuperagency}>
         <Styled.WelcomeUser>{welcomeUser}</Styled.WelcomeUser>
         <Styled.WelcomeDescription>
-          {isNewHomepageGated
+          {isSuperagency
             ? "Browse your child agencies below"
             : welcomeDescription}
         </Styled.WelcomeDescription>
       </Styled.WelcomeContainer>
 
       {/* Child Agencies Table */}
-      {isNewHomepageGated && <ChildAgenciesTable data={childAgencies} />}
+      {isSuperagency && <ChildAgenciesTable data={childAgencies} />}
 
-      {!isNewHomepageGated && (
+      {!isSuperagency && (
         <>
           {/* System Selector */}
           {systemSelectionOptions.length > 1 && (

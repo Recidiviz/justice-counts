@@ -18,27 +18,47 @@
 import { showToast } from "@justice-counts/common/components/Toast";
 import { ChildAgency } from "@justice-counts/common/types";
 import { TooltipTrigger } from "@recidiviz/design-system";
+import { rankItem } from "@tanstack/match-sorter-utils";
 import {
+  ColumnFiltersState,
   createColumnHelper,
+  FilterFn,
   flexRender,
   getCoreRowModel,
+  getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
   PaginationState,
   useReactTable,
 } from "@tanstack/react-table";
 import { snakeCase, startCase } from "lodash";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 
 import { ReactComponent as CopyIcon } from "../assets/copy-icon.svg";
 import { ReactComponent as EditIcon } from "../assets/edit-icon.svg";
 import { ReactComponent as SortIcon } from "../assets/sort-icon.svg";
-import { ChildAgenciesDropdown } from "../MetricsConfiguration/ChildAgenciesDropdown";
 import * as Styled from "./ChildAgenciesTable.styled";
 import EditModal from "./EditModal";
+import SystemsCheckboxDropdown from "./SystemsCheckboxDropdown";
+import TableSearchInput from "./TableSearchInput";
 
 type ChildAgenciesTableProps = {
   data: ChildAgency[];
+};
+
+const fuzzyFilterFn: FilterFn<ChildAgency> = (
+  row,
+  columnId,
+  value,
+  addMeta
+) => {
+  const itemRank = rankItem(row.getValue(columnId), value, { threshold: 3 });
+
+  addMeta({
+    itemRank,
+  });
+
+  return itemRank.passed;
 };
 
 const columnHelper = createColumnHelper<ChildAgency>();
@@ -125,6 +145,7 @@ const columns = [
   columnHelper.accessor("systems", {
     header: () => "Sectors",
     enableSorting: false,
+    filterFn: "arrIncludesSome",
     cell: (info) => {
       const systems = info.getValue();
 
@@ -144,7 +165,7 @@ const columns = [
           {hasOverflowSystems && (
             <TooltipTrigger
               contents={systems.slice(visibleSystemsCount).map((system) => (
-                <div>{startCase(system.toLocaleLowerCase())}</div>
+                <div key={system}>{startCase(system.toLocaleLowerCase())}</div>
               ))}
             >
               <Styled.CustomPill>
@@ -159,7 +180,11 @@ const columns = [
 ];
 
 const ChildAgenciesTable = ({ data }: ChildAgenciesTableProps) => {
-  const [pagination, setPagination] = React.useState<PaginationState>({
+  const tableRef = useRef<HTMLDivElement>(null);
+
+  const [globalFilter, setGlobalFilter] = useState("");
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
     pageSize: 15,
   });
@@ -170,12 +195,18 @@ const ChildAgenciesTable = ({ data }: ChildAgenciesTableProps) => {
     getSortedRowModel: getSortedRowModel(),
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
     onPaginationChange: setPagination,
+    onGlobalFilterChange: setGlobalFilter,
+    onColumnFiltersChange: setColumnFilters,
+    globalFilterFn: fuzzyFilterFn,
     initialState: {
       sorting: [{ id: "name", desc: false }],
     },
     state: {
       pagination,
+      globalFilter,
+      columnFilters,
     },
   });
 
@@ -191,9 +222,17 @@ const ChildAgenciesTable = ({ data }: ChildAgenciesTableProps) => {
     pageStart === pageEnd ? pageEnd : `${pageStart} – ${pageEnd}`;
 
   return (
-    <Styled.Wrapper>
+    <Styled.Wrapper ref={tableRef}>
       <Styled.TableMenu>
-        <ChildAgenciesDropdown view="data" />
+        <TableSearchInput
+          value={globalFilter ?? ""}
+          onChange={(value) => setGlobalFilter(String(value))}
+        />
+        <SystemsCheckboxDropdown
+          onChange={(systems) => {
+            setColumnFilters([{ id: "systems", value: systems }]);
+          }}
+        />
         {hasPagination && (
           <Styled.Pagination>
             <Styled.Pages>
@@ -245,6 +284,9 @@ const ChildAgenciesTable = ({ data }: ChildAgenciesTableProps) => {
           ))}
         </Styled.TableBody>
       </Styled.Table>
+      {totalRowCount === 0 && (
+        <Styled.EmptyWrapper>No Results Found</Styled.EmptyWrapper>
+      )}
     </Styled.Wrapper>
   );
 };
