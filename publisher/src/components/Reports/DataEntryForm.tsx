@@ -189,20 +189,20 @@ const DataEntryForm: React.FC<{
   ).current;
 
   /** Saves metrics before tab/window close or page refreshes */
-  useEffect(
-    () => {
-      const saveBeforeExiting = (e: BeforeUnloadEvent) => {
-        e.preventDefault();
-        saveUpdatedMetrics();
-      };
+  // useEffect(
+  //   () => {
+  //     const saveBeforeExiting = (e: BeforeUnloadEvent) => {
+  //       e.preventDefault();
+  //       saveUpdatedMetrics();
+  //     };
 
-      window.addEventListener("beforeunload", saveBeforeExiting);
-      return () =>
-        window.removeEventListener("beforeunload", saveBeforeExiting);
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
-  );
+  //     window.addEventListener("beforeunload", saveBeforeExiting);
+  //     return () =>
+  //       window.removeEventListener("beforeunload", saveBeforeExiting);
+  //   },
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  //   []
+  // );
 
   const reportOverview = reportStore.reportOverviews[reportID] as Report;
   const reportMetrics = reportStore.reportMetrics[reportID];
