@@ -231,7 +231,11 @@ export const UserProvisioning: React.FC<ProvisioningProps> = observer(
           (id) => !deletedAgenciesIDs.has(id)
         ),
       ]);
-      const response = await adminPanelStore.saveUserProvisioningUpdates();
+
+      const shouldRefetch = hasAgencyUpdates;
+      const response = await adminPanelStore.saveUserProvisioningUpdates(
+        shouldRefetch
+      );
 
       setShowSaveConfirmation({
         show: true,

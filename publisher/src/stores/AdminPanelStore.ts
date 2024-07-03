@@ -331,7 +331,7 @@ class AdminPanelStore {
     this.usersByID[user.id] = [userWithGroupedAgencies];
   }
 
-  async saveUserProvisioningUpdates() {
+  async saveUserProvisioningUpdates(refetch?: boolean) {
     try {
       const response = (await this.api.request({
         path: `/admin/user`,
@@ -347,6 +347,11 @@ class AdminPanelStore {
           this.updateUsers(userResponse as UserResponse);
           this.setCreatedUserResponse(userResponse as UserResponse);
         });
+
+        if (refetch) {
+          await this.fetchUsersAndAgencies();
+        }
+
         return response;
       }
 
