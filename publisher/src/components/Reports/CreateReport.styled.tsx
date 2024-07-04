@@ -17,7 +17,10 @@
 
 import {
   CustomDropdown,
+  CustomDropdownMenu,
+  CustomDropdownMenuItem,
   CustomDropdownToggle,
+  CustomDropdownToggleLabel,
 } from "@justice-counts/common/components/Dropdown";
 import {
   palette,
@@ -69,15 +72,36 @@ export const DropdownsWrapper = styled.div`
 
 export const DropdownContainer = styled.div`
   width: 100%;
+  display: flex;
+  flex: 1 1 0;
+  border-radius: 3px;
 
   & ${CustomDropdown} {
-    border-bottom: 1px solid ${palette.highlight.lightblue2};
+    border: 1px solid ${palette.highlight.grey4};
     border-radius: 3px;
-    background-color: ${palette.highlight.lightblue1};
   }
 
   & ${CustomDropdownToggle} {
-    padding: 9px 14px;
+    padding: 8px 16px;
+  }
+
+  & ${CustomDropdownToggleLabel} {
+    ${typography.body}
+    text-transform: capitalize;
+    gap: 8px;
+  }
+
+  & ${CustomDropdownMenu} {
+    max-height: calc(55px * 4);
+    box-shadow: none;
+    border: 1px solid ${palette.highlight.grey4};
+    margin-top: 8px;
+  }
+
+  & ${CustomDropdownMenuItem} {
+    ${typography.body}
+    border: none;
+    padding: 12px 16px;
   }
 `;
 

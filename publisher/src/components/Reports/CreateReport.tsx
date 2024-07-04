@@ -166,6 +166,22 @@ const CreateReport = () => {
     })
   );
 
+  const customMonthOptions: DropdownOption[] = monthsByName
+    .filter((monthName) => !["January", "July"].includes(monthName))
+    .map((monthName) => {
+      const monthNumber = monthsByName.indexOf(monthName) + 1;
+      return {
+        key: monthName,
+        label: monthName,
+        onClick: () =>
+          setCreateReportFormValues((prev) => ({
+            ...prev,
+            annualStartMonth: monthNumber,
+          })),
+        highlight: monthNumber === annualStartMonth,
+      };
+    });
+
   const yearsOptions: DropdownOption[] = createIntegerRange(
     1970,
     new Date().getFullYear() + 1
@@ -199,6 +215,12 @@ const CreateReport = () => {
     }
     return year;
   };
+
+  const annualStartingMonthNotJanuaryJuly =
+    frequency === "ANNUAL" &&
+    annualStartMonth !== null &&
+    annualStartMonth !== 1 &&
+    annualStartMonth !== 7;
 
   if (userStore.isUserReadOnly(agencyId))
     return <Navigate to={`/agency/${agencyId}/${REPORTS_LOWERCASE}`} />;
@@ -303,6 +325,16 @@ const CreateReport = () => {
                   defaultChecked={annualStartMonth === 7}
                   buttonSize="large"
                 />
+                <RadioButton
+                  type="radio"
+                  id="custom-year"
+                  name="yearStandard"
+                  label="Other"
+                  value={2}
+                  defaultChecked={annualStartingMonthNotJanuaryJuly}
+                  onChange={updateYearStandard}
+                  buttonSize="large"
+                />
               </RadioButtonsWrapper>
             </>
           )}
@@ -340,6 +372,18 @@ const CreateReport = () => {
                     <Dropdown
                       label={monthsByName[month - 1]}
                       options={monthsOptions}
+                      hover="background"
+                      caretPosition="right"
+                      fullWidth
+                    />
+                  </Styled.DropdownContainer>
+                )}
+
+                {annualStartingMonthNotJanuaryJuly && (
+                  <Styled.DropdownContainer>
+                    <Dropdown
+                      label={monthsByName[annualStartMonth - 1]}
+                      options={customMonthOptions}
                       hover="background"
                       caretPosition="right"
                       fullWidth
