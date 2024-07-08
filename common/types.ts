@@ -22,6 +22,13 @@ export enum AgencyTeamMemberRole {
   READ_ONLY = "READ_ONLY",
 }
 
+export const AgencyTeamMemberRoleNames = {
+  JUSTICE_COUNTS_ADMIN: "JS Admin",
+  AGENCY_ADMIN: "Admin",
+  CONTRIBUTOR: "Contributor",
+  READ_ONLY: "Read Only",
+};
+
 export enum AgencySystems {
   LAW_ENFORCEMENT = "LAW_ENFORCEMENT",
   PROSECUTION = "PROSECUTION",
