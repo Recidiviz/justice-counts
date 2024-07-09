@@ -169,7 +169,7 @@ const CreateReport = () => {
   const customMonthOptions: DropdownOption[] = monthsByName
     .filter((monthName) => !["January", "July"].includes(monthName))
     .map((monthName) => {
-      const monthNumber = monthsByName.indexOf(monthName) + 1;
+      const monthNumber = monthsByName.indexOf(monthName) + 2;
       return {
         key: monthName,
         label: monthName,
@@ -332,7 +332,13 @@ const CreateReport = () => {
                   label="Other"
                   value={2}
                   defaultChecked={annualStartingMonthNotJanuaryJuly}
-                  onChange={updateYearStandard}
+                  onChange={(e) =>
+                    setCreateReportFormValues((prev) => ({
+                      ...prev,
+                      annualStartMonth: (+e.target.value +
+                        1) as CreateReportFormValuesType["annualStartMonth"],
+                    }))
+                  }
                   buttonSize="large"
                 />
               </RadioButtonsWrapper>
@@ -382,7 +388,7 @@ const CreateReport = () => {
                 {annualStartingMonthNotJanuaryJuly && (
                   <Styled.DropdownContainer>
                     <Dropdown
-                      label={monthsByName[annualStartMonth - 1]}
+                      label={monthsByName[annualStartMonth - 2]}
                       options={customMonthOptions}
                       hover="background"
                       caretPosition="right"
