@@ -189,7 +189,7 @@ export const AgencySettingsTeamManagement = observer(() => {
   }
 
   return (
-    <AgencySettingsWrapper>
+    <AgencySettingsWrapper paddingBottom={140}>
       <AgencySettingsContent>
         <TeamManagementBlock>
           <TeamManagementSectionTitle>

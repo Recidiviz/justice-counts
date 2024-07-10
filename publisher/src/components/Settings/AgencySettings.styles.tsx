@@ -52,13 +52,14 @@ export const AgencySettingsSectionColumn = styled.div<{ capitalize?: boolean }>`
 export const AgencySettingsSectionColumnLabel = styled.div`
   color: ${palette.solid.black};
 `;
-export const AgencySettingsWrapper = styled.div`
+
+export const AgencySettingsWrapper = styled.div<{ paddingBottom?: number }>`
   height: 100%;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding-bottom: 50px;
+  padding-bottom: ${({ paddingBottom }) => paddingBottom ?? 50}px;
   padding-top: 24px;
   z-index: 1;
 
@@ -418,7 +419,7 @@ export const EditTeamMemberMenuItem = styled.div<{ isRemoveAction?: boolean }>`
     isRemoveAction ? palette.solid.red : palette.solid.darkgrey};
 
   &:hover {
-    background-color: ${palette.solid.offwhite};
+    color: ${palette.solid.blue};
   }
 `;
 

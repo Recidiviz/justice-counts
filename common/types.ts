@@ -23,7 +23,7 @@ export enum AgencyTeamMemberRole {
 }
 
 export const AgencyTeamMemberRoleNames = {
-  JUSTICE_COUNTS_ADMIN: "JS Admin",
+  JUSTICE_COUNTS_ADMIN: "JC Admin",
   AGENCY_ADMIN: "Admin",
   CONTRIBUTOR: "Contributor",
   READ_ONLY: "Read Only",
