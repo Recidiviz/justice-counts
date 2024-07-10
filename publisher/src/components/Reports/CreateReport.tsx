@@ -167,7 +167,7 @@ const CreateReport = () => {
   );
 
   const customMonthOptions: DropdownOption[] = monthsByName
-    .filter((monthName) => !["January", "July"].includes(monthName))
+    .filter((monthName) => !["December", "June"].includes(monthName))
     .map((monthName) => {
       const monthNumber = monthsByName.indexOf(monthName) + 2;
       return {
@@ -330,7 +330,7 @@ const CreateReport = () => {
                   id="custom-year"
                   name="yearStandard"
                   label="Other"
-                  value={2}
+                  value={1}
                   defaultChecked={annualStartingMonthNotJanuaryJuly}
                   onChange={(e) =>
                     setCreateReportFormValues((prev) => ({
