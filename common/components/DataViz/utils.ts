@@ -21,6 +21,7 @@ import {
   Datapoint,
   DataVizAggregateName,
   DataVizCountOrPercentageView,
+  DataVizFrequencyViewDisplayName,
   DataVizTimeRange,
   DataVizTimeRangesMap,
   Metric,
@@ -519,7 +520,7 @@ export const transformDataForBarChart = (
   let transformedData = transformDataForMetricInsights(datapoints, monthsAgo);
 
   // format data into percentages for percentage view
-  if (dataVizViewSetting === "Percentage") {
+  if (dataVizViewSetting === "Breakdown by Percentage") {
     transformedData = transformToRelativePerchanges(transformedData);
   }
 
@@ -714,7 +715,7 @@ export const getDataVizTimeRangeByFilterByMetricFrequency =
     if (dataRangeFilter === "recent") {
       return getAnnualOrMonthlyDataVizTimeRange(metric);
     }
-    return DataVizTimeRangesMap.All;
+    return DataVizTimeRangesMap["All Time"];
   };
 
 /** Given a list of metrics, returns an object of metric keys and their corresponding frequency & starting month  */
@@ -746,14 +747,26 @@ export const datapointMatchingMetricFrequency = (
     return false;
   }
 
-  const hasMatchingFrequency =
-    dp.metric_definition_key &&
-    dp.frequency === metricKeyToFrequency[dp.metric_definition_key].frequency;
-  const hasMatchingStartingMonth =
-    (hasMatchingFrequency && dp.frequency === "MONTHLY") || // If the frequency is "MONTHLY", there is no starting month - so we can consider this a match
-    (dp.metric_definition_key &&
-      new Date(dp.start_date).getUTCMonth() + 1 ===
-        metricKeyToFrequency[dp.metric_definition_key].starting_month);
+  return true;
+};
 
-  return hasMatchingFrequency && hasMatchingStartingMonth;
+export const datapointFilterByFrequency = (
+  dp: Datapoint,
+  frequencyView: DataVizFrequencyViewDisplayName
+): boolean => {
+  const startDate = new Date(dp.start_date);
+  const month = startDate.getUTCMonth() + 1;
+
+  switch (frequencyView) {
+    case "Monthly":
+      return dp.frequency === "MONTHLY";
+    case "Calendar Year":
+      return dp.frequency === "ANNUAL" && month === 1;
+    case "Fiscal Year":
+      return dp.frequency === "ANNUAL" && month === 7;
+    case "Annual":
+      return dp.frequency === "ANNUAL" && month !== 1 && month !== 7;
+    default:
+      return false;
+  }
 };

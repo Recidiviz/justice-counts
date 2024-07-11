@@ -18,6 +18,7 @@
 import {
   DataVizCountOrPercentageView,
   dataVizCountOrPercentageView,
+  DataVizFrequencyViewDisplayName,
   DataVizTimeRangeDisplayName,
   dataVizTimeRangeDisplayName,
   NoDisaggregationOption,
@@ -31,11 +32,14 @@ class DataVizStore {
 
   countOrPercentageView: DataVizCountOrPercentageView;
 
+  frequencyView: DataVizFrequencyViewDisplayName;
+
   constructor() {
     makeAutoObservable(this);
     this.timeRange = "All Time";
     this.disaggregationName = NoDisaggregationOption;
     this.countOrPercentageView = "Breakdown by Count";
+    this.frequencyView = "Monthly";
   }
 
   setTimeRange = (timeRange: DataVizTimeRangeDisplayName) => {
@@ -43,6 +47,14 @@ class DataVizStore {
     url.searchParams.set("time_range", timeRange);
     window.history.pushState(null, "", url.toString());
     this.timeRange = timeRange;
+  };
+
+  setFrequencyView = (frequencyView: DataVizFrequencyViewDisplayName) => {
+    this.setTimeRange("All Time");
+    const url = new URL(window.location.href);
+    url.searchParams.set("frequency", frequencyView);
+    window.history.pushState(null, "", url.toString());
+    this.frequencyView = frequencyView;
   };
 
   setDisaggregationName = (disaggregation: string) => {
@@ -86,6 +98,7 @@ class DataVizStore {
     this.timeRange = "All Time";
     this.disaggregationName = NoDisaggregationOption;
     this.countOrPercentageView = "Breakdown by Count";
+    this.frequencyView = "Monthly";
   };
 }
 

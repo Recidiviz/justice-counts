@@ -460,6 +460,15 @@ export const dataVizCountOrPercentageView = [
 export type DataVizCountOrPercentageView =
   (typeof dataVizCountOrPercentageView)[number];
 
+export const dataVizFrequencyViewDisplayName = [
+  "Monthly",
+  "Calendar Year",
+  "Fiscal Year",
+  "Annual",
+] as const;
+export type DataVizFrequencyViewDisplayName =
+  (typeof dataVizFrequencyViewDisplayName)[number];
+
 export interface DimensionNamesByDisaggregation {
   [disaggregation: string]: string[];
 }

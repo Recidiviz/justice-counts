@@ -35,15 +35,19 @@ import {
 import Legend from "@justice-counts/common/components/DataViz/Legend";
 import { MetricInsights } from "@justice-counts/common/components/DataViz/MetricInsights";
 import {
+  datapointFilterByFrequency,
   sortDatapointDimensions,
   transformDataForBarChart,
   transformDataForMetricInsights,
 } from "@justice-counts/common/components/DataViz/utils";
 import {
+  Datapoint,
   DatapointsGroupedByAggregateAndDisaggregations,
   DataVizAggregateName,
   DataVizCountOrPercentageView,
   dataVizCountOrPercentageView,
+  DataVizFrequencyViewDisplayName,
+  dataVizFrequencyViewDisplayName,
   DataVizTimeRangeDisplayName,
   DataVizTimeRangesMap,
   DimensionNamesByDisaggregation,
@@ -65,9 +69,11 @@ type DatapointsViewProps = {
   timeRange: DataVizTimeRangeDisplayName;
   disaggregationName: string;
   countOrPercentageView: DataVizCountOrPercentageView;
+  frequencyView: DataVizFrequencyViewDisplayName;
   setTimeRange: (timeRange: DataVizTimeRangeDisplayName) => void;
   setDisaggregationName: (disaggregation: string) => void;
   setCountOrPercentageView: (viewSetting: DataVizCountOrPercentageView) => void;
+  setFrequencyView: (frequencyView: DataVizFrequencyViewDisplayName) => void;
   metricName: string;
   metricFrequency?: ReportFrequency;
   metricStartingMonth?: number;
@@ -121,9 +127,11 @@ export const DatapointsView = forwardRef<never, DatapointsViewProps>(
       timeRange,
       disaggregationName,
       countOrPercentageView,
+      frequencyView,
       setTimeRange,
       setDisaggregationName,
       setCountOrPercentageView,
+      setFrequencyView,
       metricName,
       metricFrequency,
       metricStartingMonth,
@@ -142,7 +150,7 @@ export const DatapointsView = forwardRef<never, DatapointsViewProps>(
     const [mobileFiltersVisible, setMobileFiltersVisible] =
       React.useState<boolean>(false);
 
-    const selectedData =
+    const aggregatedData =
       (disaggregationName !== NoDisaggregationOption &&
         Object.values(
           datapointsGroupedByAggregateAndDisaggregations?.disaggregations[
@@ -153,7 +161,18 @@ export const DatapointsView = forwardRef<never, DatapointsViewProps>(
       [];
 
     // all datapoints have annual frequency
-    const isAnnualOnly = !selectedData.find((dp) => dp.frequency === "MONTHLY");
+    const isAnnualOnly = !aggregatedData.find(
+      (dp) => dp.frequency === "MONTHLY"
+    );
+    // all datapoints have monthly frequency
+    const isMonthlyOnly = !aggregatedData.find(
+      (dp) => dp.frequency === "ANNUAL"
+    );
+
+    const selectedData = aggregatedData.filter((dp: Datapoint) =>
+      datapointFilterByFrequency(dp, frequencyView)
+    );
+
     const disaggregations = Object.keys(dimensionNamesByDisaggregation || {});
     const disaggregationOptions = [...disaggregations];
     disaggregationOptions.unshift(noDisaggregationOption);
@@ -258,6 +277,14 @@ export const DatapointsView = forwardRef<never, DatapointsViewProps>(
           onClick: () => setCountOrPercentageView(option),
           highlight: countOrPercentageView === option,
         }));
+
+      const frequencyDropdownOptions: DropdownOption[] =
+        dataVizFrequencyViewDisplayName.map((option) => ({
+          key: option,
+          label: `${option} Reporting Frequency`,
+          onClick: () => setFrequencyView(option),
+          highlight: frequencyView === option,
+        }));
       return (
         <DatapointsViewControlsContainer>
           <Dropdown
@@ -278,6 +305,14 @@ export const DatapointsView = forwardRef<never, DatapointsViewProps>(
             <Dropdown
               label={countOrPercentageView}
               options={countOrPercentageDropdownOptions}
+              size="small"
+              caretPosition="right"
+            />
+          )}
+          {!isMonthlyOnly && (
+            <Dropdown
+              label={`${frequencyView} Reporting Frequency`}
+              options={frequencyDropdownOptions}
               size="small"
               caretPosition="right"
             />
