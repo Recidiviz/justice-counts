@@ -210,6 +210,7 @@ export const TooltipLink = styled.span`
 `;
 
 export const NewInputWrapper = styled.div`
+  width: 100%;
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -226,10 +227,10 @@ export const NewInput = styled.input<{
   width: ${({ fullWidth }) => (fullWidth ? `100%` : `318px`)};
   padding: 8px 12px;
   border: 1px solid
-    ${({ error }) => (error ? palette.solid.red : palette.highlight.grey5)};
+    ${({ error }) => (error ? palette.solid.red : palette.highlight.grey3)};
   border-radius: 2px;
   text-align: left;
-  color: ${palette.highlight.grey8};
+  color: ${palette.solid.darkgrey};
   background-color: ${({ disabled }) =>
     disabled ? palette.solid.lightgrey2 : `transparent`};
 
@@ -237,7 +238,6 @@ export const NewInput = styled.input<{
     outline: transparent;
     border: 1px solid
       ${({ error }) => (error ? palette.solid.red : palette.solid.blue)};
-    color: ${palette.solid.darkgrey};
   }
 
   &::placeholder {
