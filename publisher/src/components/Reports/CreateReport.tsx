@@ -166,6 +166,9 @@ const CreateReport = () => {
     })
   );
 
+  /** These options are for choosing the ending month in a custom annual frequency
+   * December and June are being filtered out because they represent the ending month of Calendar and Fiscal Year
+   */
   const customMonthOptions: DropdownOption[] = monthsByName
     .filter((monthName) => !["December", "June"].includes(monthName))
     .map((monthName) => {
@@ -325,6 +328,7 @@ const CreateReport = () => {
                   defaultChecked={annualStartMonth === 7}
                   buttonSize="large"
                 />
+                {/* Non-calendar year selections reference the ending month and year */}
                 <RadioButton
                   type="radio"
                   id="custom-year"
