@@ -434,7 +434,14 @@ export const MetricsDataChart: React.FC = observer(() => {
               Download Graph
             </Styled.PanelRightTopButton>
             <Styled.PanelRightTopButton
-              onClick={() => downloadMetricData(currentMetric, agencyId, false)}
+              onClick={() =>
+                downloadMetricData(
+                  currentMetric,
+                  agencyId,
+                  false,
+                  currentAgency?.name
+                )
+              }
             >
               <DownloadChartIcon />
               Download Data

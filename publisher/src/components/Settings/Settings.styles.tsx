@@ -31,7 +31,7 @@ export const ContentDisplay = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  margin: auto;
+  margin: 0 auto;
   overflow-x: auto;
   padding-top: 24px;
 
@@ -68,7 +68,6 @@ export const SettingsSubTitle = styled.div`
   }
 `;
 export const SettingsTabBlock = styled.div`
-  border-bottom: 1px solid ${palette.solid.lightgrey4};
   width: 100%;
   height: fit-content;
   flex-direction: column;
