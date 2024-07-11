@@ -149,11 +149,14 @@ export const printDateRangeFromMonthYear = (
     return `${currentMonth} 1, ${year} - ${currentMonth} ${lastDayOfMonth}, ${year}`;
   }
 
+  const currentYear = month === 1 ? year : year + 1;
   const currentMonth = monthsByName[month - 1];
   const prevMonthNumber = month === 1 ? 12 : month - 1;
   const prevMonth = monthsByName[prevMonthNumber - 1];
-  const lastDayOfPrevMonth = new Date(year, prevMonthNumber, 0)?.getDate();
-  return `${currentMonth} 1, ${year} - ${prevMonth} ${lastDayOfPrevMonth}, ${
-    month === 1 ? year : year + 1
-  }`;
+  const lastDayOfPrevMonth = new Date(
+    currentYear,
+    prevMonthNumber,
+    0
+  )?.getDate();
+  return `${currentMonth} 1, ${year} - ${prevMonth} ${lastDayOfPrevMonth}, ${currentYear}`;
 };
