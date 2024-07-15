@@ -764,7 +764,7 @@ export const datapointFilterByFrequency = (
       return dp.frequency === "ANNUAL" && month === 1;
     case "Fiscal Year":
       return dp.frequency === "ANNUAL" && month === 7;
-    case "Annual":
+    case "Annual: Other":
       return dp.frequency === "ANNUAL" && month !== 1 && month !== 7;
     default:
       return false;

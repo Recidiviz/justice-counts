@@ -168,6 +168,15 @@ export const DatapointsView = forwardRef<never, DatapointsViewProps>(
     const isMonthlyOnly = !aggregatedData.find(
       (dp) => dp.frequency === "ANNUAL"
     );
+    const hasFiskalYearFrequency = aggregatedData.some((dp) =>
+      datapointFilterByFrequency(dp, "Fiscal Year")
+    );
+    const hasCalendarYearFrequency = aggregatedData.some((dp) =>
+      datapointFilterByFrequency(dp, "Calendar Year")
+    );
+    const hasCustomYearFrequency = aggregatedData.some((dp) =>
+      datapointFilterByFrequency(dp, "Annual: Other")
+    );
 
     const selectedData = aggregatedData.filter((dp: Datapoint) =>
       datapointFilterByFrequency(dp, frequencyView)
@@ -278,13 +287,36 @@ export const DatapointsView = forwardRef<never, DatapointsViewProps>(
           highlight: countOrPercentageView === option,
         }));
 
-      const frequencyDropdownOptions: DropdownOption[] =
-        dataVizFrequencyViewDisplayName.map((option) => ({
-          key: option,
-          label: `${option} Reporting Frequency`,
-          onClick: () => setFrequencyView(option),
-          highlight: frequencyView === option,
-        }));
+      const frequencyOptions = dataVizFrequencyViewDisplayName.filter(
+        (displayName) => {
+          if (displayName === "Monthly" && !isAnnualOnly) {
+            return true;
+          }
+          if (displayName === "Calendar Year" && hasCalendarYearFrequency) {
+            return true;
+          }
+          if (displayName === "Fiscal Year" && hasFiskalYearFrequency) {
+            return true;
+          }
+          if (displayName === "Annual: Other" && hasCustomYearFrequency) {
+            return true;
+          }
+
+          return false;
+        }
+      );
+      const frequencyDropdownOptions: DropdownOption[] = frequencyOptions.map(
+        (option) => {
+          if (isAnnualOnly) setFrequencyView(frequencyOptions[0]);
+
+          return {
+            key: option,
+            label: `${option} Reporting Frequency`,
+            onClick: () => setFrequencyView(option),
+            highlight: frequencyView === option,
+          };
+        }
+      );
       return (
         <DatapointsViewControlsContainer>
           <Dropdown

@@ -464,7 +464,7 @@ export const dataVizFrequencyViewDisplayName = [
   "Monthly",
   "Calendar Year",
   "Fiscal Year",
-  "Annual",
+  "Annual: Other",
 ] as const;
 export type DataVizFrequencyViewDisplayName =
   (typeof dataVizFrequencyViewDisplayName)[number];
