@@ -15,13 +15,12 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { mapValues, pickBy } from "lodash";
+import { mapValues, pickBy, startCase } from "lodash";
 
 import {
   Datapoint,
   DataVizAggregateName,
   DataVizCountOrPercentageView,
-  DataVizFrequencyViewDisplayName,
   DataVizTimeRange,
   DataVizTimeRangesMap,
   Metric,
@@ -750,23 +749,17 @@ export const datapointMatchingMetricFrequency = (
   return true;
 };
 
-export const datapointFilterByFrequency = (
-  dp: Datapoint,
-  frequencyView: DataVizFrequencyViewDisplayName
-): boolean => {
-  const startDate = new Date(dp.start_date);
-  const month = startDate.getUTCMonth() + 1;
-
-  switch (frequencyView) {
-    case "Monthly":
-      return dp.frequency === "MONTHLY";
-    case "Calendar Year":
-      return dp.frequency === "ANNUAL" && month === 1;
-    case "Fiscal Year":
-      return dp.frequency === "ANNUAL" && month === 7;
-    case "Annual: Other":
-      return dp.frequency === "ANNUAL" && month !== 1 && month !== 7;
-    default:
-      return false;
-  }
+export const frequencyViewToDisplayName = (frequencyView: string): string => {
+  if (frequencyView)
+    switch (frequencyView) {
+      case "MONTHLY":
+        return "Monthly";
+      case "JANUARY":
+        return "Calendar Year";
+      case "JULY":
+        return "Fiskal Year";
+      default:
+        return `Annual: ${startCase(frequencyView.toLocaleLowerCase())}`;
+    }
+  return "Unknown";
 };

@@ -18,7 +18,7 @@
 import {
   DataVizCountOrPercentageView,
   dataVizCountOrPercentageView,
-  DataVizFrequencyViewDisplayName,
+  DataVizFrequencyView,
   DataVizTimeRangeDisplayName,
   dataVizTimeRangeDisplayName,
   NoDisaggregationOption,
@@ -32,14 +32,14 @@ class DataVizStore {
 
   countOrPercentageView: DataVizCountOrPercentageView;
 
-  frequencyView: DataVizFrequencyViewDisplayName;
+  frequencyView: DataVizFrequencyView;
 
   constructor() {
     makeAutoObservable(this);
     this.timeRange = "All Time";
     this.disaggregationName = NoDisaggregationOption;
     this.countOrPercentageView = "Breakdown by Count";
-    this.frequencyView = "Monthly";
+    this.frequencyView = "MONTHLY";
   }
 
   setTimeRange = (timeRange: DataVizTimeRangeDisplayName) => {
@@ -49,7 +49,7 @@ class DataVizStore {
     this.timeRange = timeRange;
   };
 
-  setFrequencyView = (frequencyView: DataVizFrequencyViewDisplayName) => {
+  setFrequencyView = (frequencyView: DataVizFrequencyView) => {
     this.setTimeRange("All Time");
     const url = new URL(window.location.href);
     url.searchParams.set("frequency", frequencyView);
@@ -78,6 +78,10 @@ class DataVizStore {
     ) as DataVizTimeRangeDisplayName | null;
     const disaggregationParam = query.get("disaggregation");
     const viewParam = query.get("view") as DataVizCountOrPercentageView | null;
+    const frequencyParam = query.get(
+      "frequency"
+    ) as DataVizFrequencyView | null;
+    this.setFrequencyView(frequencyParam ?? this.frequencyView);
     if (
       timeRangeParam &&
       dataVizTimeRangeDisplayName.includes(timeRangeParam)
@@ -98,7 +102,7 @@ class DataVizStore {
     this.timeRange = "All Time";
     this.disaggregationName = NoDisaggregationOption;
     this.countOrPercentageView = "Breakdown by Count";
-    this.frequencyView = "Monthly";
+    this.frequencyView = "MONTHLY";
   };
 }
 

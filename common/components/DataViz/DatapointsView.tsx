@@ -35,22 +35,21 @@ import {
 import Legend from "@justice-counts/common/components/DataViz/Legend";
 import { MetricInsights } from "@justice-counts/common/components/DataViz/MetricInsights";
 import {
-  datapointFilterByFrequency,
+  frequencyViewToDisplayName,
   sortDatapointDimensions,
   transformDataForBarChart,
   transformDataForMetricInsights,
 } from "@justice-counts/common/components/DataViz/utils";
 import {
-  Datapoint,
   DatapointsGroupedByAggregateAndDisaggregations,
   DataVizAggregateName,
   DataVizCountOrPercentageView,
   dataVizCountOrPercentageView,
-  DataVizFrequencyViewDisplayName,
-  dataVizFrequencyViewDisplayName,
+  DataVizFrequencyView,
   DataVizTimeRangeDisplayName,
   DataVizTimeRangesMap,
   DimensionNamesByDisaggregation,
+  FrequencyDataMap,
   NoDisaggregationOption,
   ReportFrequency,
 } from "@justice-counts/common/types";
@@ -69,11 +68,11 @@ type DatapointsViewProps = {
   timeRange: DataVizTimeRangeDisplayName;
   disaggregationName: string;
   countOrPercentageView: DataVizCountOrPercentageView;
-  frequencyView: DataVizFrequencyViewDisplayName;
+  frequencyView: DataVizFrequencyView;
   setTimeRange: (timeRange: DataVizTimeRangeDisplayName) => void;
   setDisaggregationName: (disaggregation: string) => void;
   setCountOrPercentageView: (viewSetting: DataVizCountOrPercentageView) => void;
-  setFrequencyView: (frequencyView: DataVizFrequencyViewDisplayName) => void;
+  setFrequencyView: (frequencyView: DataVizFrequencyView) => void;
   metricName: string;
   metricFrequency?: ReportFrequency;
   metricStartingMonth?: number;
@@ -168,19 +167,29 @@ export const DatapointsView = forwardRef<never, DatapointsViewProps>(
     const isMonthlyOnly = !aggregatedData.find(
       (dp) => dp.frequency === "ANNUAL"
     );
-    const hasFiskalYearFrequency = aggregatedData.some((dp) =>
-      datapointFilterByFrequency(dp, "Fiscal Year")
-    );
-    const hasCalendarYearFrequency = aggregatedData.some((dp) =>
-      datapointFilterByFrequency(dp, "Calendar Year")
-    );
-    const hasCustomYearFrequency = aggregatedData.some((dp) =>
-      datapointFilterByFrequency(dp, "Annual: Other")
-    );
 
-    const selectedData = aggregatedData.filter((dp: Datapoint) =>
-      datapointFilterByFrequency(dp, frequencyView)
-    );
+    const datapointsByFrequencyView = aggregatedData.reduce((acc, dp) => {
+      const startDate = new Date(dp.start_date);
+      const view =
+        dp.frequency === "MONTHLY"
+          ? "MONTHLY"
+          : (startDate
+              .toLocaleString("en-US", { month: "long" })
+              .toUpperCase() as DataVizFrequencyView);
+
+      if (!acc[view]) {
+        acc[view] = [];
+      }
+      acc[view].push(dp);
+
+      return acc;
+    }, {} as FrequencyDataMap);
+
+    const datapointsFrequencyView = Object.keys(
+      datapointsByFrequencyView
+    ) as DataVizFrequencyView[];
+
+    const selectedData = datapointsByFrequencyView[frequencyView] || [];
 
     const disaggregations = Object.keys(dimensionNamesByDisaggregation || {});
     const disaggregationOptions = [...disaggregations];
@@ -194,6 +203,15 @@ export const DatapointsView = forwardRef<never, DatapointsViewProps>(
 
     const selectedTimeRangeValue = DataVizTimeRangesMap[timeRange];
 
+    useEffect(() => {
+      if (!isAnnualOnly) {
+        setFrequencyView("MONTHLY");
+      } else {
+        setFrequencyView(datapointsFrequencyView[0]);
+      }
+
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [metricName, isAnnualOnly]);
     useEffect(() => {
       if (isAnnualOnly && selectedTimeRangeValue === 6) {
         setTimeRange("All Time");
@@ -287,36 +305,17 @@ export const DatapointsView = forwardRef<never, DatapointsViewProps>(
           highlight: countOrPercentageView === option,
         }));
 
-      const frequencyOptions = dataVizFrequencyViewDisplayName.filter(
-        (displayName) => {
-          if (displayName === "Monthly" && !isAnnualOnly) {
-            return true;
-          }
-          if (displayName === "Calendar Year" && hasCalendarYearFrequency) {
-            return true;
-          }
-          if (displayName === "Fiscal Year" && hasFiskalYearFrequency) {
-            return true;
-          }
-          if (displayName === "Annual: Other" && hasCustomYearFrequency) {
-            return true;
-          }
-
-          return false;
-        }
-      );
-      const frequencyDropdownOptions: DropdownOption[] = frequencyOptions.map(
-        (option) => {
-          if (isAnnualOnly) setFrequencyView(frequencyOptions[0]);
+      const frequencyDropdownOptions: DropdownOption[] =
+        datapointsFrequencyView.map((option) => {
+          const optionName = frequencyViewToDisplayName(option);
 
           return {
-            key: option,
-            label: `${option} Reporting Frequency`,
-            onClick: () => setFrequencyView(option),
+            key: optionName,
+            label: `${optionName} Reporting Frequency`,
+            onClick: () => setFrequencyView(option as DataVizFrequencyView),
             highlight: frequencyView === option,
           };
-        }
-      );
+        });
       return (
         <DatapointsViewControlsContainer>
           <Dropdown
@@ -343,7 +342,9 @@ export const DatapointsView = forwardRef<never, DatapointsViewProps>(
           )}
           {!isMonthlyOnly && (
             <Dropdown
-              label={`${frequencyView} Reporting Frequency`}
+              label={`${frequencyViewToDisplayName(
+                frequencyView
+              )} Reporting Frequency`}
               options={frequencyDropdownOptions}
               size="small"
               caretPosition="right"
