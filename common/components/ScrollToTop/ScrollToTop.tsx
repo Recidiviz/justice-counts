@@ -19,6 +19,7 @@ import { Button } from "@justice-counts/common/components/Button";
 import { palette } from "@justice-counts/common/components/GlobalStyles";
 import { Icon, IconSVG } from "@recidiviz/design-system";
 import React from "react";
+// eslint-disable-next-line no-restricted-imports
 import styled from "styled-components";
 
 type ScrollToTopProps = {
