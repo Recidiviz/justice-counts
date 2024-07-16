@@ -18,6 +18,7 @@
 import { Button } from "@justice-counts/common/components/Button";
 import { DelayedRender } from "@justice-counts/common/components/DelayedRender";
 import { Modal } from "@justice-counts/common/components/Modal";
+import { ScrollToTop } from "@justice-counts/common/components/ScrollToTop";
 import { showToast } from "@justice-counts/common/components/Toast";
 import { observer } from "mobx-react-lite";
 import React, { useState } from "react";
@@ -172,6 +173,7 @@ export const AgencyProvisioningOverview = observer(() => {
 
   return (
     <>
+      <ScrollToTop />
       {isModalOpen && (
         <>
           <Modal>
