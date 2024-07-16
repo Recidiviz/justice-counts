@@ -16,10 +16,7 @@
 // =============================================================================
 
 import checkmarkIcon from "@justice-counts/common/assets/status-check-icon.png";
-import {
-  Badge,
-  BadgeColorMapping,
-} from "@justice-counts/common/components/Badge";
+import { BadgeColorMapping } from "@justice-counts/common/components/Badge";
 import { Button } from "@justice-counts/common/components/Button";
 import {
   Dropdown,
@@ -38,8 +35,9 @@ import { Tooltip } from "@justice-counts/common/components/Tooltip";
 import { useWindowWidth } from "@justice-counts/common/hooks";
 import { ReportOverview, ReportStatus } from "@justice-counts/common/types";
 import { groupBy } from "@justice-counts/common/utils";
+import { startCase } from "lodash";
 import { observer } from "mobx-react-lite";
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import {
@@ -69,6 +67,7 @@ import {
   EmptySelectionCircle,
   LabelCell,
   LabelRow,
+  LabelStatus,
   MobileRecordsPageTitle,
   NoReportsDisplay,
   RemoveRecordsNumber,
@@ -84,7 +83,7 @@ import { useStore } from "../stores";
 import {
   filterJCAdminEditors,
   normalizeString,
-  printElapsedDaysMonthsYearsSinceDate,
+  printDateAsDayMonthYear,
   printReportFrequency,
   printReportTitle,
   removeSnakeCase,
@@ -113,6 +112,8 @@ const Reports: React.FC = () => {
   const navigate = useNavigate();
   const windowWidth = useWindowWidth();
   const isSuperagency = userStore.isAgencySuperagency(agencyId);
+
+  const disclaimerBannerRef = useRef<HTMLDivElement>(null);
 
   const [loadingError, setLoadingError] = useState<string | undefined>(
     undefined
@@ -236,14 +237,12 @@ const Reports: React.FC = () => {
       label: "Publish",
       onClick: () => selectBulkAction("publish"),
       disabled: isPublishDisabled,
-      noHover: true,
     },
     {
       key: "unpublishAction",
       label: "Unpublish",
       onClick: () => selectBulkAction("unpublish"),
       disabled: isUnpublishDisabled,
-      noHover: true,
     },
     {
       key: "deleteAction",
@@ -253,7 +252,6 @@ const Reports: React.FC = () => {
           ? selectBulkAction("delete")
           : setIsUnauthorizedRemoveRecordsModalOpen(true),
       color: "red",
-      noHover: true,
     },
   ] as DropdownOption[];
   const tabbedBarOptions: TabOption[] = Object.entries(
@@ -390,12 +388,13 @@ const Reports: React.FC = () => {
 
                         {/* Status */}
                         <Cell>
-                          <Badge
+                          <LabelStatus
                             color={reportStatusBadgeColors[report.status]}
-                            noMargin
                           >
-                            {removeSnakeCase(report.status).toLowerCase()}
-                          </Badge>
+                            {startCase(
+                              removeSnakeCase(report.status).toLowerCase()
+                            )}
+                          </LabelStatus>
                         </Cell>
 
                         {/* Frequency */}
@@ -460,9 +459,7 @@ const Reports: React.FC = () => {
                         <Cell>
                           {!report.last_modified_at
                             ? "-"
-                            : printElapsedDaysMonthsYearsSinceDate(
-                                report.last_modified_at
-                              )}
+                            : printDateAsDayMonthYear(report.last_modified_at)}
                         </Cell>
                       </Row>
                     </Fragment>
@@ -506,7 +503,7 @@ const Reports: React.FC = () => {
 
       <ReportsHeader>
         {isSuperagency && (
-          <DisclaimerBanner>
+          <DisclaimerBanner ref={disclaimerBannerRef}>
             If you would like to view or add data to metrics for the child
             agencies you manage, please switch to the specific child
             agency&apos;s Records page.
@@ -519,7 +516,7 @@ const Reports: React.FC = () => {
           {!bulkAction && (
             <>
               <TabbedBarContainer>
-                <TabbedBar options={tabbedBarOptions} size="large" />
+                <TabbedBar options={tabbedBarOptions} size="medium" />
               </TabbedBarContainer>
               <MobileRecordsPageTitle>
                 {REPORTS_CAPITALIZED}
@@ -571,12 +568,12 @@ const Reports: React.FC = () => {
                       hover="background"
                       caretPosition="right"
                       alignment="right"
+                      fullWidth
                     />
                   </BulkActionsDropdownContainer>
                   <Button
-                    label="+ New Record"
-                    labelColor="blue"
-                    borderColor="lightgrey"
+                    label="New Record"
+                    buttonColor="blue"
                     onClick={() => navigate("create")}
                   />
                 </>
@@ -610,7 +607,7 @@ const Reports: React.FC = () => {
                           },
                         })
                       }
-                      buttonColor="green"
+                      buttonColor="blue"
                     />
                   )}
                   {bulkAction === "unpublish" && selectedRecords.length > 0 && (
@@ -624,7 +621,7 @@ const Reports: React.FC = () => {
                           },
                         })
                       }
-                      buttonColor="orange"
+                      buttonColor="blue"
                     />
                   )}
                 </>
@@ -645,7 +642,10 @@ const Reports: React.FC = () => {
       </ReportsHeader>
 
       {/* Reports List Table */}
-      <Table isSuperagency={isSuperagency}>
+      <Table
+        isSuperagency={isSuperagency}
+        disclaimerBannerHeight={disclaimerBannerRef.current?.clientHeight}
+      >
         <LabelRow>
           {reportListColumnTitles.map((title) => (
             <LabelCell key={title}>{title}</LabelCell>
