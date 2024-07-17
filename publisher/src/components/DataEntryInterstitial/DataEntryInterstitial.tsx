@@ -42,7 +42,7 @@ export const DataEntryInterstitial = () => {
           <UploadFolderIcon />
           <Styled.OptionName>Bulk Upload</Styled.OptionName>
           <Styled.OptionDescription>
-            Download templates and upload in bulk
+            Drag a spreadsheet and upload in bulk
           </Styled.OptionDescription>
         </Styled.OptionBox>
       </Styled.OptionsWrapper>
