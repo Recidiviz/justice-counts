@@ -43,9 +43,11 @@ import {
 import {
   DatapointsGroupedByAggregateAndDisaggregations,
   DataVizAggregateName,
+  DataVizAnnualFrequencyView,
   DataVizCountOrPercentageView,
   dataVizCountOrPercentageView,
   DataVizFrequencyView,
+  dataVizFrequencyView,
   DataVizTimeRangeDisplayName,
   DataVizTimeRangesMap,
   DimensionNamesByDisaggregation,
@@ -57,6 +59,7 @@ import { DropdownMenu, DropdownToggle } from "@recidiviz/design-system";
 import React, { forwardRef, useEffect } from "react";
 
 import { useWindowWidth } from "../../hooks";
+import { monthsByName } from "../../utils";
 import { Dropdown, DropdownOption } from "../Dropdown";
 import { MIN_DESKTOP_WIDTH } from "../GlobalStyles";
 import { MobileFiltersModal } from "./MobileFiltersModal";
@@ -168,14 +171,23 @@ export const DatapointsView = forwardRef<never, DatapointsViewProps>(
       (dp) => dp.frequency === "ANNUAL"
     );
 
+    const [metricFrequencyView, setMetricFrequencyView] =
+      React.useState<DataVizFrequencyView | null>(null);
+
     const datapointsByFrequencyView = aggregatedData.reduce((acc, dp) => {
       const startDate = new Date(dp.start_date);
-      const view =
-        dp.frequency === "MONTHLY"
-          ? "MONTHLY"
-          : (startDate
-              .toLocaleString("en-US", { month: "long" })
-              .toUpperCase() as DataVizFrequencyView);
+      const startMonthName = startDate
+        .toLocaleString("en-US", { month: "long" })
+        .toUpperCase() as DataVizAnnualFrequencyView;
+      const view: DataVizFrequencyView =
+        dp.frequency === "MONTHLY" ? "MONTHLY" : startMonthName;
+
+      if (metricFrequencyView) {
+        if (!acc[metricFrequencyView]) {
+          acc[metricFrequencyView] = [];
+        }
+        acc[metricFrequencyView].push(dp);
+      }
 
       if (!acc[view]) {
         acc[view] = [];
@@ -204,14 +216,19 @@ export const DatapointsView = forwardRef<never, DatapointsViewProps>(
     const selectedTimeRangeValue = DataVizTimeRangesMap[timeRange];
 
     useEffect(() => {
-      if (!isAnnualOnly) {
-        setFrequencyView("MONTHLY");
-      } else {
-        setFrequencyView(datapointsFrequencyView[0]);
-      }
+      if (metricFrequency === "ANNUAL" && metricStartingMonth) {
+        const metricAnnualFrequencyView = monthsByName[
+          metricStartingMonth - 1
+        ].toUpperCase() as DataVizAnnualFrequencyView;
 
+        setFrequencyView(metricAnnualFrequencyView);
+        setMetricFrequencyView(metricAnnualFrequencyView);
+      } else {
+        setFrequencyView("MONTHLY");
+        setMetricFrequencyView("MONTHLY");
+      }
       // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [metricName, isAnnualOnly]);
+    }, [metricName, metricFrequency]);
     useEffect(() => {
       if (isAnnualOnly && selectedTimeRangeValue === 6) {
         setTimeRange("All Time");
@@ -305,17 +322,22 @@ export const DatapointsView = forwardRef<never, DatapointsViewProps>(
           highlight: countOrPercentageView === option,
         }));
 
-      const frequencyDropdownOptions: DropdownOption[] =
-        datapointsFrequencyView.map((option) => {
+      const frequencyDropdownOptions: DropdownOption[] = datapointsFrequencyView
+        .map((option) => {
           const optionName = frequencyViewToDisplayName(option);
 
           return {
-            key: optionName,
+            key: option,
             label: `${optionName} Reporting Frequency`,
             onClick: () => setFrequencyView(option as DataVizFrequencyView),
             highlight: frequencyView === option,
           };
-        });
+        })
+        .sort(
+          (a, b) =>
+            dataVizFrequencyView.indexOf(a.key) -
+            dataVizFrequencyView.indexOf(b.key)
+        );
       return (
         <DatapointsViewControlsContainer>
           <Dropdown

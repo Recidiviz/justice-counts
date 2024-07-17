@@ -750,16 +750,14 @@ export const datapointMatchingMetricFrequency = (
 };
 
 export const frequencyViewToDisplayName = (frequencyView: string): string => {
-  if (frequencyView)
-    switch (frequencyView) {
-      case "MONTHLY":
-        return "Monthly";
-      case "JANUARY":
-        return "Calendar Year";
-      case "JULY":
-        return "Fiskal Year";
-      default:
-        return `Annual: ${startCase(frequencyView.toLocaleLowerCase())}`;
-    }
-  return "Unknown";
+  switch (frequencyView) {
+    case "MONTHLY":
+      return "Monthly";
+    case "JANUARY":
+      return "Calendar Year";
+    case "JULY":
+      return "Fiscal Year";
+    default:
+      return `Annual: ${startCase(frequencyView.toLocaleLowerCase())}`;
+  }
 };

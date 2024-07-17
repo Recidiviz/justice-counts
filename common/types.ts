@@ -463,12 +463,12 @@ export type DataVizCountOrPercentageView =
 export const dataVizFrequencyView = [
   "MONTHLY",
   "JANUARY",
+  "JULY",
   "FEBRUARY",
   "MARCH",
   "APRIL",
   "MAY",
   "JUNE",
-  "JULY",
   "AUGUST",
   "SEPTEMBER",
   "OCTOBER",
@@ -476,6 +476,10 @@ export const dataVizFrequencyView = [
   "DECEMBER",
 ] as const;
 export type DataVizFrequencyView = (typeof dataVizFrequencyView)[number];
+export type DataVizAnnualFrequencyView = Exclude<
+  DataVizFrequencyView,
+  "MONTHLY"
+>;
 
 export type FrequencyDataMap = {
   [K in DataVizFrequencyView]: Datapoint[];
