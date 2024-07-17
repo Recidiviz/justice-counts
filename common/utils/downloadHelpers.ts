@@ -22,8 +22,8 @@ export const downloadFeedData = async (
   system: string,
   agencyId: number | string,
   filename: string,
-  filenameWithAgencyName: string,
-  isPublic: boolean
+  isPublic: boolean,
+  filenameWithAgencyName?: string
 ) => {
   const a = document.createElement("a");
   let url = `/feed/${agencyId}?system=${system}&metric=${filename}`;
@@ -37,7 +37,7 @@ export const downloadFeedData = async (
     url = `/api${url}`;
   }
   a.href = url;
-  a.setAttribute("download", `${filenameWithAgencyName}.csv`);
+  a.setAttribute("download", `${filenameWithAgencyName ?? filename}.csv`);
   a.click();
   a.remove();
 };
@@ -58,8 +58,8 @@ export const downloadMetricData = (
         metric.system.key,
         agencyId,
         fileName,
-        filenameWithAgencyName,
-        isPublic
+        isPublic,
+        filenameWithAgencyName
       );
     });
   }
