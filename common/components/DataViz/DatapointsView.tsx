@@ -176,28 +176,35 @@ export const DatapointsView = forwardRef<never, DatapointsViewProps>(
 
     const datapointsByFrequencyView = aggregatedData.reduce((acc, dp) => {
       const startDate = new Date(dp.start_date);
-      const startMonthName = startDate
-        .toLocaleString("en-US", { month: "long" })
-        .toUpperCase() as DataVizAnnualFrequencyView;
-      const view: DataVizFrequencyView =
+      const startMonthName = monthsByName[
+        startDate.getUTCMonth()
+      ].toUpperCase() as DataVizAnnualFrequencyView;
+      const dpFrequencyView: DataVizFrequencyView =
         dp.frequency === "MONTHLY" ? "MONTHLY" : startMonthName;
+
+      const hasMatchingMetricFrequencyView =
+        metricFrequencyView === dpFrequencyView;
 
       if (metricFrequencyView) {
         if (!acc[metricFrequencyView]) {
           acc[metricFrequencyView] = [];
         }
-        acc[metricFrequencyView].push(dp);
+        if (hasMatchingMetricFrequencyView) {
+          acc[metricFrequencyView].push(dp);
+        }
       }
 
-      if (!acc[view]) {
-        acc[view] = [];
+      if (!hasMatchingMetricFrequencyView) {
+        if (!acc[dpFrequencyView]) {
+          acc[dpFrequencyView] = [];
+        }
+        acc[dpFrequencyView].push(dp);
       }
-      acc[view].push(dp);
 
       return acc;
     }, {} as FrequencyDataMap);
 
-    const datapointsFrequencyView = Object.keys(
+    const datapointsFrequencyViews = Object.keys(
       datapointsByFrequencyView
     ) as DataVizFrequencyView[];
 
@@ -322,22 +329,23 @@ export const DatapointsView = forwardRef<never, DatapointsViewProps>(
           highlight: countOrPercentageView === option,
         }));
 
-      const frequencyDropdownOptions: DropdownOption[] = datapointsFrequencyView
-        .map((option) => {
-          const optionName = frequencyViewToDisplayName(option);
+      const frequencyDropdownOptions: DropdownOption[] =
+        datapointsFrequencyViews
+          .map((option) => {
+            const optionName = frequencyViewToDisplayName(option);
 
-          return {
-            key: option,
-            label: `${optionName} Reporting Frequency`,
-            onClick: () => setFrequencyView(option as DataVizFrequencyView),
-            highlight: frequencyView === option,
-          };
-        })
-        .sort(
-          (a, b) =>
-            dataVizFrequencyView.indexOf(a.key) -
-            dataVizFrequencyView.indexOf(b.key)
-        );
+            return {
+              key: option,
+              label: `${optionName} Reporting Frequency`,
+              onClick: () => setFrequencyView(option as DataVizFrequencyView),
+              highlight: frequencyView === option,
+            };
+          })
+          .sort(
+            (a, b) =>
+              dataVizFrequencyView.indexOf(a.key) -
+              dataVizFrequencyView.indexOf(b.key)
+          );
       return (
         <DatapointsViewControlsContainer>
           <Dropdown
