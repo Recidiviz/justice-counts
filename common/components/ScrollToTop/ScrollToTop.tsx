@@ -28,8 +28,8 @@ type ScrollToTopProps = {
 
 const Wrapper = styled.div`
   position: fixed;
-  right: 32px;
-  bottom: 32px;
+  left: 48px;
+  bottom: 75px;
   z-index: 99999;
 `;
 
@@ -44,7 +44,6 @@ export const ScrollToTop: React.FC<ScrollToTopProps> = ({ label }) => {
 
   React.useEffect(() => {
     const onScroll = () => setOffset(window.scrollY);
-    window.removeEventListener("scroll", onScroll);
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
@@ -54,7 +53,12 @@ export const ScrollToTop: React.FC<ScrollToTopProps> = ({ label }) => {
   return (
     <Wrapper>
       <Button
-        style={{ padding: 16 }}
+        style={{
+          borderRadius: "50%",
+          minWidth: "unset",
+          height: 50,
+          width: 50,
+        }}
         label={
           label ?? (
             <Icon
