@@ -124,6 +124,7 @@ export const BulkActionsDropdownContainer = styled.div`
   }
 
   & ${CustomDropdownMenu} {
+    min-width: 100%;
     margin-top: 8px;
     box-shadow: 0px 0px 4px 0px ${palette.highlight.grey6};
   }
@@ -131,10 +132,6 @@ export const BulkActionsDropdownContainer = styled.div`
   & ${CustomDropdownMenuItem} {
     border: 0;
   }
-`;
-
-export const RemoveRecordsNumber = styled.span`
-  color: ${palette.solid.red};
 `;
 
 export const ReportsFilterDropdownContainer = styled.div`
@@ -158,7 +155,7 @@ export const Table = styled.div<{
   padding: ${({ isSuperagency, disclaimerBannerHeight }) =>
       isSuperagency
         ? `${156 + (disclaimerBannerHeight ?? DISCLAIMER_BANNER_HEIGHT)}px`
-        : `170px`}
+        : `156px`}
     0 50px 0;
   margin: 0 24px;
   overflow: auto;
@@ -166,8 +163,8 @@ export const Table = styled.div<{
   @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
     padding-top: ${({ isSuperagency, disclaimerBannerHeight }) =>
       isSuperagency
-        ? `${156 + (disclaimerBannerHeight ?? DISCLAIMER_BANNER_HEIGHT)}px`
-        : `132px`};
+        ? `${152 + (disclaimerBannerHeight ?? DISCLAIMER_BANNER_HEIGHT)}px`
+        : `152px`};
   }
 `;
 
@@ -264,7 +261,7 @@ export const LabelCell = styled(Cell)`
   ${typography.caption};
   font-size: 12px;
   text-transform: uppercase;
-  color: ${palette.highlight.grey7};
+  color: ${palette.highlight.grey8};
 `;
 
 export const LabelStatus = styled.div<{ color: BadgeColors }>`

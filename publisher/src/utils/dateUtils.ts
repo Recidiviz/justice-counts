@@ -53,9 +53,9 @@ export const printDateAsMonthYear = (month: number, year: number): string => {
 export const printDateAsDayMonthYear = (dateString: string): string => {
   const date = new Date(dateString);
 
-  const day = date.getDate();
-  const month = monthsByName[date.getMonth()];
-  const year = date.getFullYear();
+  const day = date.getUTCDate();
+  const month = monthsByName[date.getUTCMonth()];
+  const year = date.getUTCFullYear();
 
   return `${month} ${day}, ${year}`;
 };

@@ -70,7 +70,6 @@ import {
   LabelStatus,
   MobileRecordsPageTitle,
   NoReportsDisplay,
-  RemoveRecordsNumber,
   ReportActions,
   ReportsFilterDropdownContainer,
   ReportsHeader,
@@ -172,8 +171,7 @@ const Reports: React.FC = () => {
   };
   const removeRecordsModalTitle = (
     <>
-      Delete <RemoveRecordsNumber>{selectedRecords.length}</RemoveRecordsNumber>{" "}
-      {REPORT_LOWERCASE}
+      Delete {selectedRecords.length} {REPORT_LOWERCASE}
       {selectedRecords.length > 1 ? "s" : ""}?
     </>
   );
@@ -488,16 +486,16 @@ const Reports: React.FC = () => {
       {isRemoveRecordsModalOpen && (
         <Modal
           title={removeRecordsModalTitle}
-          description="You can’t undo this action."
+          description="You can’t undo this action"
           buttons={[
-            { label: "Yes, Delete", onClick: handleRemoveRecords },
+            { label: "Delete", onClick: handleRemoveRecords },
             {
-              label: "No, Cancel",
+              label: "Cancel",
               onClick: () => setIsRemoveRecordsModalOpen(false),
             },
           ]}
-          modalType="alert"
-          centerText
+          unsavedChangesConfigs
+          customPadding="32px"
         />
       )}
 
