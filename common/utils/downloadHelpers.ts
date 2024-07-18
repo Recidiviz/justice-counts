@@ -52,7 +52,7 @@ export const downloadMetricData = (
     metric.filenames.forEach((fileName) => {
       const filenameWithAgencyName = agencyName
         ? `${fileName}_${snakeCase(agencyName)}`
-        : fileName;
+        : undefined;
 
       downloadFeedData(
         metric.system.key,
