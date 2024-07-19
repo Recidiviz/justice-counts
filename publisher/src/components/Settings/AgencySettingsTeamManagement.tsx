@@ -16,16 +16,17 @@
 // =============================================================================
 
 /* eslint-disable camelcase */
-import editIcon from "@justice-counts/common/assets/edit-row-icon.png";
 import { Button } from "@justice-counts/common/components/Button";
-import { Input } from "@justice-counts/common/components/Input";
+import { NewInput } from "@justice-counts/common/components/Input";
 import { Modal } from "@justice-counts/common/components/Modal";
 import {
   AgencyTeamMember,
   AgencyTeamMemberRole,
+  AgencyTeamMemberRoleNames,
   FormError,
 } from "@justice-counts/common/types";
 import { validateEmail } from "@justice-counts/common/utils";
+import { Icon, IconSVG } from "@recidiviz/design-system";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -33,28 +34,23 @@ import { useParams } from "react-router-dom";
 import { useStore } from "../../stores";
 import { Loading } from "../Loading";
 import {
-  AdminStatus,
   AgencySettingsContent,
   AgencySettingsWrapper,
-  EditTeamMemberIconContainer,
+  EditTeamMemberContainer,
   EditTeamMemberMenu,
   EditTeamMemberMenuItem,
-  InvitedStatus,
   InviteMemberContainer,
   InviteMemberInnerContainer,
   InviteMemberInputsContainer,
-  JCAdminStatus,
-  ReadOnlyStatus,
   TeamManagementBlock,
-  TeamManagementDescription,
-  TeamManagementSectionSubTitle,
   TeamManagementSectionTitle,
-  TeamManagementSettingsTitle,
   TeamMemberEmailContainer,
-  TeamMemberEmailContainerTitle,
   TeamMemberNameContainer,
   TeamMemberNameContainerTitle,
   TeamMemberRow,
+  TeamMemberStatus,
+  TeamMemberStatusContainer,
+  TeamMemberStatusContainerTitle,
 } from "./AgencySettings.styles";
 
 export const AgencySettingsTeamManagement = observer(() => {
@@ -175,58 +171,45 @@ export const AgencySettingsTeamManagement = observer(() => {
 
     return (
       <Modal
-        title="This action cannot be undone"
-        description={
-          <>
-            Are you sure you want to remove <span>{userName}</span>
-          </>
-        }
+        title={`Remove ${userName}?`}
+        description="You can’t undo this action"
         buttons={[
+          { label: "Cancel", onClick: handleCloseModal },
           {
-            label: "Remove from agency",
+            label: "Remove",
             onClick: () =>
               handleRemoveTeamMember(teamMemberEditMenuActiveEmail),
           },
-          { label: "Cancel", onClick: handleCloseModal },
         ]}
-        modalType="alert"
         modalBackground="opaque"
-        centerText
+        unsavedChangesConfigs
+        customPadding="24px 40px 40px 24px"
       />
     );
   }
 
   return (
-    <AgencySettingsWrapper>
-      <TeamManagementSettingsTitle />
+    <AgencySettingsWrapper paddingBottom={140}>
       <AgencySettingsContent>
         <TeamManagementBlock>
-          <TeamManagementDescription>
-            Enter the requested information, then click &quot;Invite&quot;. New
-            users will be able to add and edit data for{" "}
-            {agencyStore.currentAgency?.name} on Publisher.
-          </TeamManagementDescription>
           <TeamManagementSectionTitle>
-            Send invite to colleagues
+            Invite members
           </TeamManagementSectionTitle>
           <InviteMemberContainer>
             <InviteMemberInnerContainer hasError={!!inputsError}>
               <InviteMemberInputsContainer>
-                <Input
-                  label=""
-                  noBottomMargin
-                  placeholder="Enter full name"
-                  isPlaceholderVisible
+                <NewInput
+                  placeholder="Name"
                   value={nameValue}
                   onChange={(e) => setNameValue(e.target.value)}
                   textSize="small"
                   disabled={isReadOnly}
+                  fullWidth
+                  settingsCustomMargin
+                  hideLabel
                 />
-                <Input
-                  label=""
-                  noBottomMargin
-                  placeholder="Enter email"
-                  isPlaceholderVisible
+                <NewInput
+                  placeholder="Email"
                   value={emailValue}
                   onChange={(e) => {
                     setEmailValue(e.target.value);
@@ -243,6 +226,9 @@ export const AgencySettingsTeamManagement = observer(() => {
                   error={inputsError}
                   textSize="small"
                   disabled={isReadOnly}
+                  fullWidth
+                  settingsCustomMargin
+                  hideLabel
                 />
               </InviteMemberInputsContainer>
               <Button
@@ -253,13 +239,11 @@ export const AgencySettingsTeamManagement = observer(() => {
               />
             </InviteMemberInnerContainer>
           </InviteMemberContainer>
-          <TeamManagementSectionTitle>Manage staff</TeamManagementSectionTitle>
-          <TeamManagementSectionSubTitle>
-            Use “•••” icon to manage or remove members of your team.
-          </TeamManagementSectionSubTitle>
-          <TeamMemberRow>
+          <TeamMemberRow hasTopPadding>
             <TeamMemberNameContainerTitle>Name</TeamMemberNameContainerTitle>
-            <TeamMemberEmailContainerTitle>Email</TeamMemberEmailContainerTitle>
+            <TeamMemberStatusContainerTitle>
+              Status
+            </TeamMemberStatusContainerTitle>
           </TeamMemberRow>
           {currentAgencyTeam &&
             filterAndSortAgencyTeam(currentAgencyTeam).map(
@@ -275,24 +259,14 @@ export const AgencySettingsTeamManagement = observer(() => {
                     <TeamMemberNameContainer
                       pending={invitation_status === "PENDING"}
                     >
-                      {name}{" "}
-                      {role === "JUSTICE_COUNTS_ADMIN" && (
-                        <JCAdminStatus>JC Admin</JCAdminStatus>
-                      )}
-                      {role === "AGENCY_ADMIN" && (
-                        <AdminStatus>Admin</AdminStatus>
-                      )}
-                      {role === "READ_ONLY" && (
-                        <ReadOnlyStatus>Read Only</ReadOnlyStatus>
-                      )}
-                      {invitation_status === "PENDING" && (
-                        <InvitedStatus>Invited</InvitedStatus>
-                      )}
+                      {name}&ensp;
+                      <TeamMemberEmailContainer>
+                        {email}
+                      </TeamMemberEmailContainer>
                     </TeamMemberNameContainer>
-                    <TeamMemberEmailContainer>
-                      {email}
+                    <TeamMemberStatusContainer>
                       {!isTeamMemberEditMenuDisabled && (
-                        <EditTeamMemberIconContainer
+                        <EditTeamMemberContainer
                           id={email}
                           tabIndex={-1}
                           onClick={() => handleTeamMemberMenuClick(email)}
@@ -300,7 +274,18 @@ export const AgencySettingsTeamManagement = observer(() => {
                             setTeamMemberEditMenuActiveEmail(undefined)
                           }
                         >
-                          <img src={editIcon} alt="" />
+                          <TeamMemberStatus>
+                            {invitation_status === "PENDING"
+                              ? "Invited"
+                              : AgencyTeamMemberRoleNames[role]}
+                          </TeamMemberStatus>
+                          <Icon
+                            kind={IconSVG.DownChevron}
+                            width={9}
+                            rotate={
+                              teamMemberEditMenuActiveEmail === email ? 180 : 0
+                            }
+                          />
                           {teamMemberEditMenuActiveEmail === email && (
                             <EditTeamMemberMenu
                               onClick={(e) => e.stopPropagation()}
@@ -310,28 +295,54 @@ export const AgencySettingsTeamManagement = observer(() => {
                                   onClick={() =>
                                     handleTeamMemberAdminStatus(
                                       email,
-                                      role === AgencyTeamMemberRole.AGENCY_ADMIN
-                                        ? AgencyTeamMemberRole.CONTRIBUTOR
-                                        : AgencyTeamMemberRole.AGENCY_ADMIN
+                                      AgencyTeamMemberRole.AGENCY_ADMIN
                                     )
                                   }
                                 >
-                                  {role === "AGENCY_ADMIN" ? "Remove" : "Grant"}{" "}
-                                  admin status
+                                  {
+                                    AgencyTeamMemberRoleNames[
+                                      AgencyTeamMemberRole.AGENCY_ADMIN
+                                    ]
+                                  }
+                                  {role ===
+                                    AgencyTeamMemberRole.AGENCY_ADMIN && (
+                                    <Icon kind={IconSVG.Check} width={10} />
+                                  )}
+                                </EditTeamMemberMenuItem>
+                              )}
+                              {invitation_status !== "PENDING" && (
+                                <EditTeamMemberMenuItem
+                                  onClick={() =>
+                                    handleTeamMemberAdminStatus(
+                                      email,
+                                      AgencyTeamMemberRole.CONTRIBUTOR
+                                    )
+                                  }
+                                >
+                                  {
+                                    AgencyTeamMemberRoleNames[
+                                      AgencyTeamMemberRole.CONTRIBUTOR
+                                    ]
+                                  }
+                                  {role ===
+                                    AgencyTeamMemberRole.CONTRIBUTOR && (
+                                    <Icon kind={IconSVG.Check} width={10} />
+                                  )}
                                 </EditTeamMemberMenuItem>
                               )}
                               <EditTeamMemberMenuItem
+                                isRemoveAction
                                 onClick={() => setIsModalOpen(true)}
                               >
                                 {invitation_status === "PENDING"
-                                  ? "Revoke invitation"
-                                  : "Remove from agency"}
+                                  ? "Revoke"
+                                  : "Remove"}
                               </EditTeamMemberMenuItem>
                             </EditTeamMemberMenu>
                           )}
-                        </EditTeamMemberIconContainer>
+                        </EditTeamMemberContainer>
                       )}
-                    </TeamMemberEmailContainer>
+                    </TeamMemberStatusContainer>
                   </TeamMemberRow>
                 );
               }

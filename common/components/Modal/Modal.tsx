@@ -132,9 +132,7 @@ export function Modal({
                 <Button
                   label={button.label}
                   onClick={button.onClick}
-                  borderColor={
-                    index === buttons.length - 1 ? undefined : "lightgrey"
-                  }
+                  labelColor={index === buttons.length - 1 ? "white" : "blue"}
                   buttonColor={
                     index === buttons.length - 1
                       ? primaryButtonColor()

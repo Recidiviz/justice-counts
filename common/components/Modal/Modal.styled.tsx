@@ -125,6 +125,7 @@ export const Description = styled.div<{
     }
   }};
   ${typography.sizeCSS.normal};
+  font-weight: 400;
 `;
 
 export const ButtonsContainer = styled.div<{
@@ -151,7 +152,7 @@ export const UnsavedChangesButtonsContainer = styled.div`
   display: flex;
   justify-content: end;
   gap: 16px;
-  margin-top: 24px;
+  margin-top: 64px;
   & > div:first-child {
     div {
       border: none;

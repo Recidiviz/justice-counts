@@ -15,8 +15,11 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { BadgeColors } from "@justice-counts/common/components/Badge";
 import {
   CustomDropdown,
+  CustomDropdownMenu,
+  CustomDropdownMenuItem,
   CustomDropdownToggle,
 } from "@justice-counts/common/components/Dropdown";
 import {
@@ -47,9 +50,11 @@ export const ReportsHeader = styled(PageHeader)`
 `;
 
 export const DesktopRecordsPageTitle = styled.div`
-  ${typography.sizeCSS.headline}
-  margin-top: 40px;
-  padding: 0 22px;
+  ${typography.sizeCSS.largeTitle}
+  font-size: 32px;
+  margin-top: 48px;
+  margin-bottom: 14px;
+  padding: 0 24px;
 
   @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
     display: none;
@@ -67,29 +72,32 @@ export const MobileRecordsPageTitle = styled.div`
 
 export const ActionsWrapper = styled.div<{ noPadding?: boolean }>`
   ${typography.sizeCSS.normal}
-  width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
   position: relative;
-  padding: ${({ noPadding }) => (noPadding ? `0` : `0 22px`)};
-  border-bottom: 1px solid ${palette.highlight.grey9};
+  margin: ${({ noPadding }) => (noPadding ? `0` : `0 24px`)};
+  border-bottom: 1px solid ${palette.highlight.grey2};
 
   @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
+    padding-top: 24px;
     padding-bottom: 12px;
     border-bottom: none;
   }
 `;
 
 export const TabbedBarContainer = styled.div`
+  & > div {
+    border: 0;
+  }
   @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
     display: none;
   }
 `;
 
 export const BulkActionModeTitle = styled.div`
-  padding: 16px 0 19px 0;
-  ${typography.sizeCSS.large};
+  padding: 10px 0;
+  ${typography.sizeCSS.normal};
 
   @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
     ${typography.sizeCSS.medium}
@@ -99,6 +107,7 @@ export const BulkActionModeTitle = styled.div`
 `;
 
 export const ReportActions = styled.div`
+  height: 36px;
   display: flex;
   flex-direction: row;
   gap: 16px;
@@ -111,20 +120,26 @@ export const BulkActionsDropdownContainer = styled.div`
   }
 
   & ${CustomDropdownToggle} {
-    padding: 9px 14px;
+    padding: 8px 16px;
   }
-`;
 
-export const RemoveRecordsNumber = styled.span`
-  color: ${palette.solid.red};
+  & ${CustomDropdownMenu} {
+    min-width: 100%;
+    margin-top: 8px;
+    box-shadow: 0px 0px 4px 0px ${palette.highlight.grey6};
+  }
+
+  & ${CustomDropdownMenuItem} {
+    border: 0;
+  }
 `;
 
 export const ReportsFilterDropdownContainer = styled.div`
   display: none;
   width: 100%;
   height: 56px;
-  border-bottom: 1px solid ${palette.highlight.grey9};
-  border-top: 1px solid ${palette.highlight.grey9};
+  border-bottom: 1px solid ${palette.highlight.grey2};
+  border-top: 1px solid ${palette.highlight.grey2};
   align-items: center;
 
   @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
@@ -132,16 +147,24 @@ export const ReportsFilterDropdownContainer = styled.div`
   }
 `;
 
-export const Table = styled.div<{ isSuperagency?: boolean }>`
+export const Table = styled.div<{
+  isSuperagency?: boolean;
+  disclaimerBannerHeight?: number;
+}>`
   width: 100%;
-  padding: ${({ isSuperagency }) =>
-      isSuperagency ? `${170 + DISCLAIMER_BANNER_HEIGHT}px` : `170px`}
+  padding: ${({ isSuperagency, disclaimerBannerHeight }) =>
+      isSuperagency
+        ? `${156 + (disclaimerBannerHeight ?? DISCLAIMER_BANNER_HEIGHT)}px`
+        : `156px`}
     0 50px 0;
+  margin: 0 24px;
   overflow: auto;
 
   @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
-    padding-top: ${({ isSuperagency }) =>
-      isSuperagency ? `${132 + DISCLAIMER_BANNER_HEIGHT}px` : `132px`};
+    padding-top: ${({ isSuperagency, disclaimerBannerHeight }) =>
+      isSuperagency
+        ? `${152 + (disclaimerBannerHeight ?? DISCLAIMER_BANNER_HEIGHT)}px`
+        : `152px`};
   }
 `;
 
@@ -154,27 +177,23 @@ export const Row = styled.div<{
   display: flex;
   justify-content: start;
   align-items: center;
-  padding: 10px 24px;
+  padding: 16px 8px;
   color: ${({ noHover }) =>
     noHover ? palette.highlight.grey9 : palette.solid.darkgrey};
   transition: 0.3s ease;
+  border-bottom: 1px solid ${palette.highlight.grey2};
 
   ${({ noHover }) =>
     noHover ? typography.sizeCSS.normal : typography.sizeCSS.large}
   ${({ selected }) =>
-    selected && `background-color: ${palette.solid.lightgreen};`}
+    selected && `background-color: ${palette.highlight.grey1};`}
   &:hover {
     ${({ noHover }) =>
       noHover
         ? ``
         : `cursor: pointer;
-           background-color: ${palette.solid.lightgreen};
+           background-color: ${palette.highlight.grey1};
     `}
-  }
-
-  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
-    padding: ${({ isRowReportYear }) =>
-      isRowReportYear ? "8px 24px 0 24px" : "8px 24px"};
   }
 `;
 
@@ -182,10 +201,6 @@ export const LabelRow = styled(Row)`
   &:hover {
     cursor: unset;
     background-color: unset;
-  }
-
-  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
-    padding: 16px 24px 0 24px;
   }
 `;
 
@@ -196,7 +211,8 @@ export const Cell = styled.div<{ capitalize?: boolean }>`
   justify-content: start;
   align-items: center;
   position: relative;
-  ${typography.sizeCSS.medium};
+  ${typography.sizeCSS.normal};
+  font-weight: 400;
   text-transform: ${({ capitalize }) => capitalize && "capitalize"};
   padding-right: 40px;
   white-space: nowrap;
@@ -242,8 +258,27 @@ export const Cell = styled.div<{ capitalize?: boolean }>`
 `;
 
 export const LabelCell = styled(Cell)`
-  ${typography.sizeCSS.normal}
-  color: ${palette.highlight.grey9};
+  ${typography.caption};
+  font-size: 12px;
+  text-transform: uppercase;
+  color: ${palette.highlight.grey8};
+`;
+
+export const LabelStatus = styled.div<{ color: BadgeColors }>`
+  ${typography.sizeCSS.normal};
+  font-weight: 400;
+  color: ${({ color }) => {
+    if (color === "RED") {
+      return palette.solid.red;
+    }
+    if (color === "GREEN") {
+      return palette.solid.green;
+    }
+    if (color === "ORANGE") {
+      return palette.solid.orange;
+    }
+    return palette.highlight.grey5;
+  }};
 `;
 
 export const EditorsTooltipContainer = styled.div`

@@ -47,6 +47,20 @@ export const printDateAsMonthYear = (month: number, year: number): string => {
 };
 
 /**
+ * @returns the month, day and year as a string
+ * @example "March 22, 2022"
+ */
+export const printDateAsDayMonthYear = (dateString: string): string => {
+  const date = new Date(dateString);
+
+  const day = date.getUTCDate();
+  const month = monthsByName[date.getUTCMonth()];
+  const year = date.getUTCFullYear();
+
+  return `${month} ${day}, ${year}`;
+};
+
+/**
  * @returns either "Annual Record CY[YEAR]", "Annual Record FY[YEAR]-[YEAR+1]" or "[MONTH] [YEAR]"
  * as a string depending on frequency.
  * @example "Annual Record CY2022" "Annual Record FY2022-2023" or "March 2022"
@@ -149,11 +163,14 @@ export const printDateRangeFromMonthYear = (
     return `${currentMonth} 1, ${year} - ${currentMonth} ${lastDayOfMonth}, ${year}`;
   }
 
+  const currentYear = month === 1 ? year : year + 1;
   const currentMonth = monthsByName[month - 1];
   const prevMonthNumber = month === 1 ? 12 : month - 1;
   const prevMonth = monthsByName[prevMonthNumber - 1];
-  const lastDayOfPrevMonth = new Date(year, prevMonthNumber, 0)?.getDate();
-  return `${currentMonth} 1, ${year} - ${prevMonth} ${lastDayOfPrevMonth}, ${
-    month === 1 ? year : year + 1
-  }`;
+  const lastDayOfPrevMonth = new Date(
+    currentYear,
+    prevMonthNumber,
+    0
+  )?.getDate();
+  return `${currentMonth} 1, ${year} - ${prevMonth} ${lastDayOfPrevMonth}, ${currentYear}`;
 };

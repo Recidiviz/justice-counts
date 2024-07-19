@@ -31,15 +31,15 @@ export const createPublishSuccessModalButtons = (
   navigate: NavigateFunction
 ) => [
   {
-    label: "Go Home",
+    label: "Home",
     onClick: () => navigate(`/agency/${agencyId}`),
-  },
-  {
-    label: `Go to ${REPORTS_CAPITALIZED}`,
-    onClick: () => navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}`),
   },
   {
     label: "View Data",
     onClick: () => navigate(`/agency/${agencyId}/data`),
+  },
+  {
+    label: `${REPORTS_CAPITALIZED}`,
+    onClick: () => navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}`),
   },
 ];

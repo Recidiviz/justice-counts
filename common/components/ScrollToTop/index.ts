@@ -15,5 +15,4 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-export const VIEW_PUBLISHED_DATA_DESCRIPTION =
-  "You can view the published data in the Explore Data tab";
+export * from "./ScrollToTop";

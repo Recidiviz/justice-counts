@@ -28,7 +28,7 @@ export const InterstitialContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: 108px;
+  margin: auto;
 `;
 
 export const OptionBox = styled.div`
@@ -65,6 +65,7 @@ export const OptionsWrapper = styled.div`
 
 export const OptionName = styled.div`
   ${typography.sizeCSS.large}
+  font-size: 18px;
   margin-top: 18px;
   margin-bottom: 16px;
 `;
@@ -73,6 +74,7 @@ export const OptionDescription = styled.div`
   ${typography.sizeCSS.normal}
   max-width: 220px;
   color: ${palette.highlight.grey8};
+  font-weight: 400;
 
   a,
   a:visited {

@@ -21,27 +21,12 @@ import { useNavigate } from "react-router-dom";
 import { ReactComponent as ManualEntryIcon } from "../assets/manual-entry-icon.svg";
 import { ReactComponent as UploadFolderIcon } from "../assets/upload-folder-icon.svg";
 import { REPORTS_LOWERCASE } from "../Global/constants";
-import { AppGuideKeys, GuideKeys } from "../HelpCenter/types";
-import { createURLToGuide } from "../HelpCenter/utils";
 import * as Styled from ".";
 
 export const DataEntryInterstitial = () => {
   const navigate = useNavigate();
-  const learnMoreURL = createURLToGuide(
-    AppGuideKeys.publisher,
-    GuideKeys.ManualEntry
-  );
-
   return (
     <Styled.InterstitialContainer>
-      <Styled.Title>Select data upload method</Styled.Title>
-      <Styled.Caption>
-        Enter data or upload a file.{" "}
-        <a href={learnMoreURL} target="_blank" rel="noopener noreferrer">
-          Learn More
-        </a>
-      </Styled.Caption>
-
       <Styled.OptionsWrapper>
         {/* Manual Entry */}
         <Styled.OptionBox onClick={() => navigate(`../${REPORTS_LOWERCASE}`)}>
@@ -57,7 +42,7 @@ export const DataEntryInterstitial = () => {
           <UploadFolderIcon />
           <Styled.OptionName>Bulk Upload</Styled.OptionName>
           <Styled.OptionDescription>
-            Download templates and upload in bulk
+            Drag a spreadsheet and upload in bulk
           </Styled.OptionDescription>
         </Styled.OptionBox>
       </Styled.OptionsWrapper>

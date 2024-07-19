@@ -166,6 +166,25 @@ const CreateReport = () => {
     })
   );
 
+  /** These options are for choosing the ending month in a custom annual frequency
+   * December and June are being filtered out because they represent the ending month of Calendar and Fiscal Year
+   */
+  const customMonthOptions: DropdownOption[] = monthsByName
+    .filter((monthName) => !["December", "June"].includes(monthName))
+    .map((monthName) => {
+      const monthNumber = monthsByName.indexOf(monthName) + 2;
+      return {
+        key: monthName,
+        label: monthName,
+        onClick: () =>
+          setCreateReportFormValues((prev) => ({
+            ...prev,
+            annualStartMonth: monthNumber,
+          })),
+        highlight: monthNumber === annualStartMonth,
+      };
+    });
+
   const yearsOptions: DropdownOption[] = createIntegerRange(
     1970,
     new Date().getFullYear() + 1
@@ -199,6 +218,12 @@ const CreateReport = () => {
     }
     return year;
   };
+
+  const annualStartingMonthNotJanuaryJuly =
+    frequency === "ANNUAL" &&
+    annualStartMonth !== null &&
+    annualStartMonth !== 1 &&
+    annualStartMonth !== 7;
 
   if (userStore.isUserReadOnly(agencyId))
     return <Navigate to={`/agency/${agencyId}/${REPORTS_LOWERCASE}`} />;
@@ -303,6 +328,23 @@ const CreateReport = () => {
                   defaultChecked={annualStartMonth === 7}
                   buttonSize="large"
                 />
+                {/* Non-calendar year selections reference the ending month and year */}
+                <RadioButton
+                  type="radio"
+                  id="custom-year"
+                  name="yearStandard"
+                  label="Other"
+                  value={1}
+                  defaultChecked={annualStartingMonthNotJanuaryJuly}
+                  onChange={(e) =>
+                    setCreateReportFormValues((prev) => ({
+                      ...prev,
+                      annualStartMonth: (+e.target.value +
+                        1) as CreateReportFormValuesType["annualStartMonth"],
+                    }))
+                  }
+                  buttonSize="large"
+                />
               </RadioButtonsWrapper>
             </>
           )}
@@ -340,6 +382,18 @@ const CreateReport = () => {
                     <Dropdown
                       label={monthsByName[month - 1]}
                       options={monthsOptions}
+                      hover="background"
+                      caretPosition="right"
+                      fullWidth
+                    />
+                  </Styled.DropdownContainer>
+                )}
+
+                {annualStartingMonthNotJanuaryJuly && (
+                  <Styled.DropdownContainer>
+                    <Dropdown
+                      label={monthsByName[annualStartMonth - 2]}
+                      options={customMonthOptions}
                       hover="background"
                       caretPosition="right"
                       fullWidth
