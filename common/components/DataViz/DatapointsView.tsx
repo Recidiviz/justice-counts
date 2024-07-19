@@ -222,6 +222,10 @@ export const DatapointsView = forwardRef<never, DatapointsViewProps>(
 
     const selectedTimeRangeValue = DataVizTimeRangesMap[timeRange];
 
+    /** We can have two types of frequency views: metric's one (which should be the default) and datapoint's ones (it could be multiple).
+     * In this effect we determine if metric has its own frequency and set it as default
+     * and then use this value to display the corresponding metric datapoints in `datapointsByFrequencyView`
+     */
     useEffect(() => {
       if (metricFrequency === "ANNUAL" && metricStartingMonth) {
         const metricAnnualFrequencyView = monthsByName[
@@ -276,7 +280,7 @@ export const DatapointsView = forwardRef<never, DatapointsViewProps>(
             selectedData,
             selectedTimeRangeValue,
             countOrPercentageView,
-            metricFrequency,
+            frequencyView === "MONTHLY" ? "MONTHLY" : "ANNUAL",
             startingMonth
           )}
           dimensionNames={dimensionNames}
