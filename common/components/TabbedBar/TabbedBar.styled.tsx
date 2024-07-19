@@ -43,13 +43,13 @@ export const Tab = styled.div<{
     ${({ selected }) => (selected ? palette.solid.blue : `transparent`)};
   text-transform: capitalize;
   margin-bottom: -1px;
+  padding: 10px 0;
 
   ${({ size }) => {
     if (size === "medium")
-      return `padding: 16px 0; ${typography.sizeCSS.medium}; font-weight: 400;`;
-    if (size === "large")
-      return `padding: 16px 0; ${typography.sizeCSS.large};`;
-    return `padding: 10px 0; ${typography.bodyEmphasized};`;
+      return `${typography.sizeCSS.medium}; font-weight: 400; font-size: 16px;`;
+    if (size === "large") return `padding: 16px 0;${typography.sizeCSS.large};`;
+    return `${typography.bodyEmphasized};`;
   }}
 
   &:hover {

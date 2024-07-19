@@ -47,6 +47,20 @@ export const printDateAsMonthYear = (month: number, year: number): string => {
 };
 
 /**
+ * @returns the month, day and year as a string
+ * @example "March 22, 2022"
+ */
+export const printDateAsDayMonthYear = (dateString: string): string => {
+  const date = new Date(dateString);
+
+  const day = date.getUTCDate();
+  const month = monthsByName[date.getUTCMonth()];
+  const year = date.getUTCFullYear();
+
+  return `${month} ${day}, ${year}`;
+};
+
+/**
  * @returns either "Annual Record CY[YEAR]", "Annual Record FY[YEAR]-[YEAR+1]" or "[MONTH] [YEAR]"
  * as a string depending on frequency.
  * @example "Annual Record CY2022" "Annual Record FY2022-2023" or "March 2022"

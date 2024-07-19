@@ -26,27 +26,25 @@ export const UnauthorizedDeleteActionModal: React.FC<{
 }> = ({ closeModal, resourceType }) => {
   return (
     <Modal
-      title={
-        <>
+      title="Unauthorized Remove"
+      description={
+        <div>
           Please reach out to{" "}
           <a href="mailto:justice-counts-support@csg.org">
             justice-counts-support@csg.org
           </a>{" "}
           if you would like to delete a{" "}
-          {resourceTypeToDisplayName[resourceType]}.
-        </>
+          {resourceTypeToDisplayName[resourceType]}
+        </div>
       }
-      description=""
       buttons={[
         {
           label: "OK",
           onClick: closeModal,
         },
       ]}
-      modalType="alert"
-      centerText
-      centerButtons
-      mediumTitle
+      unsavedChangesConfigs
+      customPadding="32px"
     />
   );
 };

@@ -15,7 +15,6 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { palette } from "@justice-counts/common/components/GlobalStyles";
 import { Modal } from "@justice-counts/common/components/Modal";
 import { showToast } from "@justice-counts/common/components/Toast";
 import { observer } from "mobx-react-lite";
@@ -190,9 +189,7 @@ const BulkActionReview = () => {
 
   const modalTitle = (
     <>
-      <span style={{ color: `${palette.solid.blue}` }}>
-        {recordsIds.length}
-      </span>{" "}
+      <span>{recordsIds.length}</span>{" "}
       {recordsIds.length > 1 ? REPORTS_LOWERCASE : REPORT_LOWERCASE}{" "}
       {action === "publish" ? "published!" : "unpublished!"}
     </>
@@ -200,7 +197,7 @@ const BulkActionReview = () => {
   const modalDescription =
     action === "publish"
       ? VIEW_PUBLISHED_DATA_DESCRIPTION
-      : "Data has been successfully unpublished.";
+      : "Data has been successfully unpublished";
 
   return (
     <ReviewWrapper>
@@ -209,7 +206,8 @@ const BulkActionReview = () => {
           title={modalTitle}
           description={modalDescription}
           buttons={createPublishSuccessModalButtons(agencyId, navigate)}
-          modalType="success"
+          unsavedChangesConfigs
+          customPadding="32px"
         />
       )}
       <ReviewMetrics

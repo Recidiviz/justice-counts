@@ -80,7 +80,7 @@ export const Button = styled.div<{
     if (size) {
       return "16px 32px";
     }
-    return "10px 15px";
+    return "8px 16px";
   }};
 
   ${({ noSidePadding }) =>
