@@ -18,6 +18,7 @@
 import {
   DataVizCountOrPercentageView,
   dataVizCountOrPercentageView,
+  DataVizFrequencyView,
   DataVizTimeRangeDisplayName,
   dataVizTimeRangeDisplayName,
   NoDisaggregationOption,
@@ -31,11 +32,14 @@ class DataVizStore {
 
   countOrPercentageView: DataVizCountOrPercentageView;
 
+  frequencyView: DataVizFrequencyView;
+
   constructor() {
     makeAutoObservable(this);
-    this.timeRange = "All";
+    this.timeRange = "All Time";
     this.disaggregationName = NoDisaggregationOption;
-    this.countOrPercentageView = "Count";
+    this.countOrPercentageView = "Breakdown by Count";
+    this.frequencyView = "MONTHLY";
   }
 
   setTimeRange = (timeRange: DataVizTimeRangeDisplayName) => {
@@ -43,6 +47,14 @@ class DataVizStore {
     url.searchParams.set("time_range", timeRange);
     window.history.pushState(null, "", url.toString());
     this.timeRange = timeRange;
+  };
+
+  setFrequencyView = (frequencyView: DataVizFrequencyView) => {
+    this.setTimeRange("All Time");
+    const url = new URL(window.location.href);
+    url.searchParams.set("frequency", frequencyView);
+    window.history.pushState(null, "", url.toString());
+    this.frequencyView = frequencyView;
   };
 
   setDisaggregationName = (disaggregation: string) => {
@@ -66,6 +78,10 @@ class DataVizStore {
     ) as DataVizTimeRangeDisplayName | null;
     const disaggregationParam = query.get("disaggregation");
     const viewParam = query.get("view") as DataVizCountOrPercentageView | null;
+    const frequencyParam = query.get(
+      "frequency"
+    ) as DataVizFrequencyView | null;
+    this.setFrequencyView(frequencyParam ?? this.frequencyView);
     if (
       timeRangeParam &&
       dataVizTimeRangeDisplayName.includes(timeRangeParam)
@@ -83,9 +99,10 @@ class DataVizStore {
   };
 
   resetState = () => {
-    this.timeRange = "All";
+    this.timeRange = "All Time";
     this.disaggregationName = NoDisaggregationOption;
-    this.countOrPercentageView = "Count";
+    this.countOrPercentageView = "Breakdown by Count";
+    this.frequencyView = "MONTHLY";
   };
 }
 

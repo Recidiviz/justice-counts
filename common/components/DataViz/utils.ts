@@ -15,7 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { mapValues, pickBy } from "lodash";
+import { mapValues, pickBy, startCase } from "lodash";
 
 import {
   Datapoint,
@@ -519,7 +519,7 @@ export const transformDataForBarChart = (
   let transformedData = transformDataForMetricInsights(datapoints, monthsAgo);
 
   // format data into percentages for percentage view
-  if (dataVizViewSetting === "Percentage") {
+  if (dataVizViewSetting === "Breakdown by Percentage") {
     transformedData = transformToRelativePerchanges(transformedData);
   }
 
@@ -714,7 +714,7 @@ export const getDataVizTimeRangeByFilterByMetricFrequency =
     if (dataRangeFilter === "recent") {
       return getAnnualOrMonthlyDataVizTimeRange(metric);
     }
-    return DataVizTimeRangesMap.All;
+    return DataVizTimeRangesMap["All Time"];
   };
 
 /** Given a list of metrics, returns an object of metric keys and their corresponding frequency & starting month  */
@@ -746,14 +746,18 @@ export const datapointMatchingMetricFrequency = (
     return false;
   }
 
-  const hasMatchingFrequency =
-    dp.metric_definition_key &&
-    dp.frequency === metricKeyToFrequency[dp.metric_definition_key].frequency;
-  const hasMatchingStartingMonth =
-    (hasMatchingFrequency && dp.frequency === "MONTHLY") || // If the frequency is "MONTHLY", there is no starting month - so we can consider this a match
-    (dp.metric_definition_key &&
-      new Date(dp.start_date).getUTCMonth() + 1 ===
-        metricKeyToFrequency[dp.metric_definition_key].starting_month);
+  return true;
+};
 
-  return hasMatchingFrequency && hasMatchingStartingMonth;
+export const frequencyViewToDisplayName = (frequencyView: string): string => {
+  switch (frequencyView) {
+    case "MONTHLY":
+      return "Monthly";
+    case "JANUARY":
+      return "Calendar Year";
+    case "JULY":
+      return "Fiscal Year";
+    default:
+      return `Annual: ${startCase(frequencyView.toLocaleLowerCase())}`;
+  }
 };

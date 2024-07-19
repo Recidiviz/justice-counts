@@ -272,3 +272,9 @@ export const ExtendedDropdown = styled(Dropdown)`
     background: none;
   }
 `;
+
+export const ChartNote = styled.div`
+  ${typography.sizeCSS.normal}
+  padding: 16px 0 32px;
+  border-top: 1px solid rgba(23, 28, 43, 0.6);
+`;

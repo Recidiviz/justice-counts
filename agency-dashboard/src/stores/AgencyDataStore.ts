@@ -332,7 +332,7 @@ class AgencyDataStore {
     const transformedDataForChart = transformDataForBarChart(
       aggregateDatapoints,
       timeRange,
-      "Count",
+      "Breakdown by Count",
       metric.custom_frequency || metric.frequency
     );
 

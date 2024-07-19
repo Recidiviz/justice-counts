@@ -441,7 +441,7 @@ export interface RawDatapointsByMetric {
 export type DataVizTimeRange = 0 | 6 | 12 | 60 | 120;
 
 export const dataVizTimeRangeDisplayName = [
-  "All",
+  "All Time",
   "6 Months Ago",
   "1 Year Ago",
   "5 Years Ago",
@@ -453,16 +453,44 @@ export type DataVizTimeRangeDisplayName =
 export const DataVizTimeRangesMap: {
   [key in DataVizTimeRangeDisplayName]: DataVizTimeRange;
 } = {
-  All: 0,
+  "All Time": 0,
   "6 Months Ago": 6,
   "1 Year Ago": 12,
   "5 Years Ago": 60,
   "10 Years Ago": 120,
 };
 
-export const dataVizCountOrPercentageView = ["Count", "Percentage"] as const;
+export const dataVizCountOrPercentageView = [
+  "Breakdown by Count",
+  "Breakdown by Percentage",
+] as const;
 export type DataVizCountOrPercentageView =
   (typeof dataVizCountOrPercentageView)[number];
+
+export const dataVizFrequencyView = [
+  "MONTHLY",
+  "JANUARY",
+  "JULY",
+  "FEBRUARY",
+  "MARCH",
+  "APRIL",
+  "MAY",
+  "JUNE",
+  "AUGUST",
+  "SEPTEMBER",
+  "OCTOBER",
+  "NOVEMBER",
+  "DECEMBER",
+] as const;
+export type DataVizFrequencyView = (typeof dataVizFrequencyView)[number];
+export type DataVizAnnualFrequencyView = Exclude<
+  DataVizFrequencyView,
+  "MONTHLY"
+>;
+
+export type FrequencyDataMap = {
+  [K in DataVizFrequencyView]: Datapoint[];
+};
 
 export interface DimensionNamesByDisaggregation {
   [disaggregation: string]: string[];
@@ -474,4 +502,4 @@ export interface DimensionNamesByMetricAndDisaggregation {
 
 export const DataVizAggregateName = "Total";
 
-export const NoDisaggregationOption = "None";
+export const NoDisaggregationOption = "No Breakdown";

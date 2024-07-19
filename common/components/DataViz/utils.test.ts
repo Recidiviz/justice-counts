@@ -1983,7 +1983,7 @@ describe("fillTimeGapsBetweenDatapoints", () => {
 describe("transformData", () => {
   test("putting it all together", () => {
     expect(
-      transformDataForBarChart(testDatapoints5, 60, "Percentage")
+      transformDataForBarChart(testDatapoints5, 60, "Breakdown by Percentage")
     ).toStrictEqual(testDatapoints5Transformed);
   });
 });

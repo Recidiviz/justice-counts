@@ -50,9 +50,11 @@ const ConnectedDatapointsView = forwardRef<never, ConnectedDatapointsViewProps>(
       timeRange,
       disaggregationName,
       countOrPercentageView,
+      frequencyView,
       setTimeRange,
       setDisaggregationName,
       setCountOrPercentageView,
+      setFrequencyView,
       resetState,
     } = dataVizStore;
 
@@ -90,9 +92,11 @@ const ConnectedDatapointsView = forwardRef<never, ConnectedDatapointsViewProps>(
             timeRange={timeRange}
             disaggregationName={disaggregationName}
             countOrPercentageView={countOrPercentageView}
+            frequencyView={frequencyView}
             setTimeRange={setTimeRange}
             setDisaggregationName={setDisaggregationName}
             setCountOrPercentageView={setCountOrPercentageView}
+            setFrequencyView={setFrequencyView}
             metricName={metricName}
             metricFrequency={metricFrequency}
             metricStartingMonth={metricStartingMonth}
