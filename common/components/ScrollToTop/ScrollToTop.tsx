@@ -28,7 +28,7 @@ type ScrollToTopProps = {
 
 const Wrapper = styled.div`
   position: fixed;
-  left: 48px;
+  right: 48px;
   bottom: 75px;
   z-index: 99999;
 `;
