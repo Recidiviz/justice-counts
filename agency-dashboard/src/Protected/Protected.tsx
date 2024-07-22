@@ -30,7 +30,7 @@ export const Protected: React.FC<PropsWithChildren> = observer(
   ({ children }) => {
     const navigate = useNavigate();
     const { agencyDataStore, api } = useStore();
-    const { agencyId, slug } = useParams();
+    const { agencyId } = useParams();
     const isProductionEnv = api.environment === environment.PRODUCTION;
     const isDenied =
       (agencyDataStore.agency &&
@@ -48,21 +48,18 @@ export const Protected: React.FC<PropsWithChildren> = observer(
             timeout: 4000,
           });
         } else {
-          await agencyDataStore.fetchAgencyData(
-            parseInt(agencyId),
-            slug as string
-          );
+          await agencyDataStore.fetchAgencyData(parseInt(agencyId));
           setLoading(false);
         }
       } catch (error) {
         navigate("/404");
         showToast({
-          message: `No agency found with path ${agencyId}/${slug}.`,
+          message: `No agency found with path ${agencyId}.`,
           color: "red",
           timeout: 4000,
         });
       }
-    }, [agencyId, slug]);
+    }, [agencyId]);
 
     if (loading) {
       return <Loading />;
