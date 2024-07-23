@@ -196,18 +196,13 @@ class AgencyDataStore {
     return result;
   }
 
-  async fetchAgencyData(
-    agencyId: number,
-    agencySlug: string
-  ): Promise<void | Error> {
+  async fetchAgencyData(agencyId: number): Promise<void | Error> {
     try {
       runInAction(() => {
         this.loading = true;
       });
       const response = (await API.request({
-        path: `/api/agencies/${agencyId}/${encodeURIComponent(
-          agencySlug
-        )}/published_data`,
+        path: `/api/agencies/${agencyId}/published_data`,
         method: "GET",
       })) as Response;
       if (response.status === 200) {
