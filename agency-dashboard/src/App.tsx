@@ -29,7 +29,7 @@ function App() {
     <Routes>
       <Route path="/" element={<Home />} />
       <Route
-        path="/agency/:agencyId/:slug"
+        path="/agency/:agencyId"
         element={
           <Protected>
             <AgencyOverview />
@@ -37,7 +37,7 @@ function App() {
         }
       />
       <Route
-        path="/agency/:agencyId/:slug/:category"
+        path="/agency/:agencyId/:category"
         element={
           <Protected>
             <CategoryOverview />

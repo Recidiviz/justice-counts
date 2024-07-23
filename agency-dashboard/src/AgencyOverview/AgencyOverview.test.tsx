@@ -98,7 +98,7 @@ test("renders list of metrics", async () => {
 
   render(
     <StoreProvider>
-      <MemoryRouter initialEntries={["/agency/agency-slug"]}>
+      <MemoryRouter initialEntries={["/agency/agency-id"]}>
         <AgencyOverview />
       </MemoryRouter>
     </StoreProvider>

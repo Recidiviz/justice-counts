@@ -23,7 +23,7 @@ import {
 import { removeSnakeCase, slugify } from "@justice-counts/common/utils";
 import { observer } from "mobx-react-lite";
 import React, { useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import { VisibleCategoriesMetadata } from "../CategoryOverview/types";
 import { HeaderBar } from "../Header";
@@ -62,7 +62,6 @@ export const agencyOverviewVisibleCategoriesMetadata: VisibleCategoriesMetadata 
 
 export const AgencyOverview = observer(() => {
   const navigate = useNavigate();
-  const { slug } = useParams();
   const { agencyDataStore } = useStore();
   const {
     agency,
@@ -93,7 +92,7 @@ export const AgencyOverview = observer(() => {
     currSystem: string | undefined
   ) => {
     if (isClickable && agency?.id) {
-      navigate(`/agency/${agency.id}/${slug}/${slugify(category)}`, {
+      navigate(`/agency/${agency.id}/${slugify(category)}`, {
         state: { currentSystem: currSystem },
       });
     }
