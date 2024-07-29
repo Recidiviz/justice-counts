@@ -1,5 +1,5 @@
 // Recidiviz - a data platform for criminal justice reform
-// Copyright (C) 2023 Recidiviz, Inc.
+// Copyright (C) 2024 Recidiviz, Inc.
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -23,6 +23,8 @@ import React from "react";
 import * as Styled from "./Footer.styles";
 
 export function Footer() {
+  const currentYear = new Date().getUTCFullYear();
+
   return (
     <Styled.FooterWrapper>
       <Styled.FooterContent>
@@ -50,7 +52,7 @@ export function Footer() {
           provided).
         </Styled.FooterBottomInfo>
         <Styled.FooterCopyrights>
-          © 2023 The Council of State Governments. All Rights Reserved.
+          © {currentYear} The Council of State Governments. All Rights Reserved.
         </Styled.FooterCopyrights>
       </Styled.FooterContent>
     </Styled.FooterWrapper>
