@@ -102,6 +102,18 @@ const MetricsCategoryBarChart = forwardRef<never, ResponsiveBarChartProps>(
       );
       return barDefinitions;
     };
+
+    const renderCustomYAxisTick = (props: TickProps) => (
+      <CustomYAxisTick
+        y={props.y}
+        payload={props.payload}
+        percentageView={false}
+        styles={tickStyle}
+        metric={metric}
+        rightAligned
+      />
+    );
+
     return (
       <>
         <ResponsiveContainer width={width} height="100%">
@@ -142,17 +154,7 @@ const MetricsCategoryBarChart = forwardRef<never, ResponsiveBarChartProps>(
             />
             {data.length !== 0 && (
               <YAxis
-                // eslint-disable-next-line react/no-unstable-nested-components
-                tick={(props: TickProps) => (
-                  <CustomYAxisTick
-                    y={props.y}
-                    payload={props.payload}
-                    percentageView={false}
-                    styles={tickStyle}
-                    metric={metric}
-                    rightAligned
-                  />
-                )}
+                tick={renderCustomYAxisTick}
                 tickLine={false}
                 tickCount={5}
                 axisLine={false}
