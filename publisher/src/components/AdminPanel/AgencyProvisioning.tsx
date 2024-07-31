@@ -542,9 +542,12 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       );
 
       if (!selectedAgency) {
-        setSelectedTeamMembersToAdd(
-          new Set(Object.keys(csgRecidivizTeamMembers).map((id) => +id))
-        );
+        setSelectedTeamMembersToAdd((prev) => {
+          const csgTeamMemberIds = Object.keys(csgRecidivizTeamMembers).map(
+            (id) => +id
+          );
+          return new Set([...Array.from(prev), ...csgTeamMemberIds]); // Include previously added users
+        });
         setTeamMemberRoleUpdates((prev) => {
           return {
             ...prev,
