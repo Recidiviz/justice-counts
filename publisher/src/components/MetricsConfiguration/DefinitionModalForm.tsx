@@ -29,8 +29,10 @@ import { useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
 import MetricConfigStore from "../../stores/MetricConfigStore";
+import { TestConfigButton } from "./MetricAvailability";
 import * as Styled from "./ModalForm.styled";
 import {
+  ConfigurationStatus,
   ContextsByContextKey,
   MetricSettings,
   SettingsByIncludesExcludesKey,
@@ -63,6 +65,8 @@ function DefinitionModalForm({
     saveMetricSettings,
     updateDimensionContexts,
     updateContextValue,
+    updateMetricIncludesExcludesConfigurationStatus,
+    updateDimensionIncludesExcludesConfigurationStatus,
   } = metricConfigStore;
 
   // read only check
@@ -324,6 +328,51 @@ function DefinitionModalForm({
     }
   };
 
+  const toggleMetricIncludesExcludesConfigurationStatus = () => {
+    const prevConfigurationStatus =
+      metrics[systemMetricKey].is_includes_excludes_configured;
+    const toggledStatus =
+      !prevConfigurationStatus ||
+      prevConfigurationStatus === ConfigurationStatus.NO
+        ? ConfigurationStatus.YES
+        : ConfigurationStatus.NO;
+
+    if (systemSearchParam && metricSearchParam) {
+      const updatedSetting = updateMetricIncludesExcludesConfigurationStatus(
+        systemSearchParam,
+        metricSearchParam,
+        toggledStatus
+      );
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      saveMetricSettings(updatedSetting, agencyId!);
+    }
+  };
+
+  const toggleDimensionIncludesExcludesConfigurationStatus = (
+    dimensionKey: string,
+    disaggregationKey: string
+  ) => {
+    const prevConfigurationStatus =
+      currentDimension?.is_dimension_includes_excludes_configured;
+    const toggledStatus =
+      !prevConfigurationStatus ||
+      prevConfigurationStatus === ConfigurationStatus.NO
+        ? ConfigurationStatus.YES
+        : ConfigurationStatus.NO;
+
+    if (systemSearchParam && metricSearchParam) {
+      const updatedSetting = updateDimensionIncludesExcludesConfigurationStatus(
+        systemSearchParam,
+        metricSearchParam,
+        disaggregationKey,
+        dimensionKey,
+        toggledStatus
+      );
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      saveMetricSettings(updatedSetting, agencyId!);
+    }
+  };
+
   const currentDimension =
     (hasActiveDisaggregationAndDimensionKey &&
       dimensions[systemMetricKey]?.[activeDisaggregationKey]?.[
@@ -430,6 +479,35 @@ function DefinitionModalForm({
           </Styled.ContextContainer>
         </Styled.ScrollableInnerWrapper>
         <Styled.BottomButtonsContainer>
+          <TestConfigButton
+            onClick={() => {
+              isMetricDefinitionSettings
+                ? toggleMetricIncludesExcludesConfigurationStatus()
+                : activeDisaggregationKey &&
+                  toggleDimensionIncludesExcludesConfigurationStatus(
+                    activeDimensionKey,
+                    activeDisaggregationKey
+                  );
+            }}
+          >
+            {(isMetricDefinitionSettings
+              ? metrics[systemMetricKey].is_includes_excludes_configured
+              : currentDimension?.is_dimension_includes_excludes_configured) ===
+            ConfigurationStatus.YES
+              ? `I am configured ${
+                  isMetricDefinitionSettings ? "(Metric)" : "(Dimension)"
+                }`
+              : `I am not configured ${
+                  isMetricDefinitionSettings ? "(Metric)" : "(Dimension)"
+                }`}
+            <div>
+              {JSON.stringify(
+                isMetricDefinitionSettings
+                  ? metrics[systemMetricKey].is_includes_excludes_configured
+                  : currentDimension?.is_dimension_includes_excludes_configured
+              )}
+            </div>
+          </TestConfigButton>
           {!isReadOnly && !hasNoSettingsAndNoContext && (
             <Button
               label="Save"

@@ -15,6 +15,8 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { ConfigurationStatus } from "../publisher/src/components/MetricsConfiguration";
+
 export enum AgencyTeamMemberRole {
   JUSTICE_COUNTS_ADMIN = "JUSTICE_COUNTS_ADMIN",
   AGENCY_ADMIN = "AGENCY_ADMIN",
@@ -204,6 +206,7 @@ export interface Metric {
   starting_month?: number;
   frequency?: ReportFrequency;
   disaggregated_by_supervision_subsystems?: boolean;
+  is_includes_excludes_configured: ConfigurationStatus | null;
 }
 
 export interface MetricIncludesExcludes {
@@ -234,6 +237,7 @@ export interface MetricDisaggregations {
   helper_text: string | null | undefined;
   enabled?: boolean;
   should_sum_to_total: boolean;
+  is_breakdown_configured: ConfigurationStatus | null;
 }
 
 export type MetricDimensionContext = {
@@ -255,6 +259,7 @@ export interface MetricDisaggregationDimensions {
   race?: string;
   ethnicity?: string;
   datapoints?: RawDatapoint[];
+  is_dimension_includes_excludes_configured: ConfigurationStatus | null;
 }
 
 export interface CreateReportFormValuesType extends Record<string, unknown> {

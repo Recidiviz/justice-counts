@@ -250,6 +250,8 @@ class MetricConfigStore {
             startingMonth: metric.starting_month,
             disaggregatedBySupervisionSubsystems:
               metric.disaggregated_by_supervision_subsystems,
+            is_includes_excludes_configured:
+              metric.is_includes_excludes_configured,
           });
 
           metric.includes_excludes?.forEach((includesExcludes) => {
@@ -271,6 +273,7 @@ class MetricConfigStore {
               {
                 display_name: disaggregation.display_name,
                 enabled: disaggregation.enabled,
+                is_breakdown_configured: disaggregation.is_breakdown_configured,
               }
             );
 
@@ -284,12 +287,16 @@ class MetricConfigStore {
                       description: dimension.description,
                       race: dimension.race,
                       ethnicity: dimension.ethnicity,
+                      is_dimension_includes_excludes_configured:
+                        dimension.is_dimension_includes_excludes_configured,
                     }
                   : {
                       label: dimension.label,
                       key: dimension.key,
                       enabled: dimension.enabled,
                       description: dimension.description,
+                      is_dimension_includes_excludes_configured:
+                        dimension.is_dimension_includes_excludes_configured,
                     };
 
               /** Initialize Dimension Status (Enabled/Disabled) */
@@ -393,7 +400,10 @@ class MetricConfigStore {
     system: AgencySystem,
     metricKey: string,
     disaggregationKey: string,
-    disaggregationData: Pick<MetricDisaggregations, "display_name" | "enabled">
+    disaggregationData: Pick<
+      MetricDisaggregations,
+      "display_name" | "enabled" | "is_breakdown_configured"
+    >
   ) => {
     const systemMetricKey = MetricConfigStore.getSystemMetricKey(
       system,
@@ -415,7 +425,13 @@ class MetricConfigStore {
     dimensionKey: string,
     dimensionData: Pick<
       MetricDisaggregationDimensions,
-      "label" | "key" | "enabled" | "race" | "ethnicity" | "description"
+      | "label"
+      | "key"
+      | "enabled"
+      | "race"
+      | "ethnicity"
+      | "description"
+      | "is_dimension_includes_excludes_configured"
     >
   ) => {
     const systemMetricKey = MetricConfigStore.getSystemMetricKey(
@@ -438,6 +454,10 @@ class MetricConfigStore {
       dimensionData.enabled;
     this.dimensions[systemMetricKey][disaggregationKey][dimensionKey].label =
       dimensionData.label;
+    this.dimensions[systemMetricKey][disaggregationKey][
+      dimensionKey
+    ].is_dimension_includes_excludes_configured =
+      dimensionData.is_dimension_includes_excludes_configured;
     this.dimensions[systemMetricKey][disaggregationKey][dimensionKey].key =
       dimensionData.key;
     this.dimensions[systemMetricKey][disaggregationKey][

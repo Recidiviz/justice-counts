@@ -38,6 +38,7 @@ import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
+import styled from "styled-components/macro";
 import { useStore } from "../../stores";
 import MetricConfigStore from "../../stores/MetricConfigStore";
 import { monthsByName, removeSnakeCase } from "../../utils";
@@ -55,6 +56,20 @@ type MetricAvailabilityProps = {
   goToDefineMetrics: () => void;
   setIsRaceEthnicityModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
+
+export const TestConfigButton = styled.div`
+  border: 1px solid blue;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    cursor: pointer;
+    background: lightgrey;
+  }
+`;
 
 function MetricAvailability({
   goToDefineMetrics,
@@ -74,9 +89,7 @@ function MetricAvailability({
     updateDimensionEnabledStatus,
     updateMetricReportFrequency,
     updateDisaggregatedBySupervisionSubsystems,
-    updateMetricIncludesExcludesConfigurationStatus,
     updateDisaggregationConfigurationStatus,
-    updateDimensionIncludesExcludesConfigurationStatus,
     saveMetricSettings,
     initializeMetricConfigStoreValues,
   } = metricConfigStore;
@@ -313,20 +326,6 @@ function MetricAvailability({
     }
   };
 
-  // const handleMetricIncludesExcludesConfigurationStatus = (
-  //   isConfigured: boolean
-  // ) => {
-  //   if (systemSearchParam && metricSearchParam) {
-  //     const updatedSetting = updateMetricIncludesExcludesConfigurationStatus(
-  //       activeAvailabilitySystemKey,
-  //       activeAvailabilityMetricKey,
-  //       isConfigured
-  //     );
-  //     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  //     saveMetricSettings(updatedSetting, agencyId!);
-  //   }
-  // };
-
   const toggleDisaggregationConfigurationStatus = (
     disaggregationKey: string
   ) => {
@@ -349,24 +348,6 @@ function MetricAvailability({
       saveMetricSettings(updatedSetting, agencyId!);
     }
   };
-
-  // const handleDimensionIncludesExcludesConfigurationStatus = (
-  //   isConfigured: boolean,
-  //   dimensionKey: string,
-  //   disaggregationKey: string
-  // ) => {
-  //   if (systemSearchParam && metricSearchParam) {
-  //     const updatedSetting = updateDimensionEnabledStatus(
-  //       activeBreakdownSystemKey,
-  //       activeBreakdownMetricKey,
-  //       disaggregationKey,
-  //       dimensionKey,
-  //       status
-  //     );
-  //     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  //     saveMetricSettings(updatedSetting, agencyId!);
-  //   }
-  // };
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -791,7 +772,8 @@ function MetricAvailability({
                           }
                         />
                       </Styled.DimensionsListFieldset>
-                      <div
+                      {/* eslint-disable jsx-a11y/click-events-have-key-events */}
+                      <TestConfigButton
                         onClick={() => {
                           toggleDisaggregationConfigurationStatus(
                             disaggregationKey
@@ -803,7 +785,15 @@ function MetricAvailability({
                         ].is_breakdown_configured === ConfigurationStatus.YES
                           ? "I am configured"
                           : "I am not configured"}
-                      </div>
+                        <div>
+                          is_breakdown_configured:{" "}
+                          {JSON.stringify(
+                            disaggregations[activeBreakdownSystemMetricKey][
+                              disaggregationKey
+                            ].is_breakdown_configured
+                          )}
+                        </div>
+                      </TestConfigButton>
                     </Styled.DimensionsList>
                   )}
                 </Styled.DimensionsContainer>
