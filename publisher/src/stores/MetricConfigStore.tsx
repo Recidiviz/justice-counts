@@ -85,6 +85,7 @@ class MetricConfigStore {
       [disaggregationKey: string]: {
         enabled?: boolean;
         display_name?: string;
+        is_breakdown_configured?: boolean;
       };
     };
   };
@@ -99,6 +100,7 @@ class MetricConfigStore {
           key?: string;
           race?: Races;
           ethnicity?: Ethnicities;
+          is_dimension_includes_excludes_configured?: boolean;
         };
       };
     };
@@ -747,6 +749,105 @@ class MetricConfigStore {
             {
               key: dimensionKey,
               enabled: enabledStatus,
+            },
+          ],
+        },
+      ],
+    };
+  };
+
+  /**
+   * Updates the configuration status of a metric's includes/excludes
+   *
+   * - Configuration status is whether/not the agency feels they have configured
+   *   a top-level metric's includes/excludes to their satisfaction.
+   */
+  updateMetricIncludesExcludesConfigurationStatus = (
+    system: AgencySystem,
+    metricKey: string,
+    isConfigured: boolean
+  ): MetricSettings => {
+    const systemMetricKey = MetricConfigStore.getSystemMetricKey(
+      system,
+      metricKey
+    );
+
+    /** Update value */
+    this.metrics[systemMetricKey].enabled = isConfigured;
+
+    /** Return an object in the desired backend data structure for saving purposes */
+    return {
+      key: metricKey,
+      is_includes_excludes_configured: isConfigured,
+    };
+  };
+
+  /**
+   * Updates the configuration status of a breakdown
+   *
+   * - Configuration status is whether/not the agency feels
+   *   they have configured a breakdown to their satisfaction.
+   */
+  updateDisaggregationConfigurationStatus = (
+    system: AgencySystem,
+    metricKey: string,
+    disaggregationKey: string,
+    isConfigured: boolean
+  ) => {
+    const systemMetricKey = MetricConfigStore.getSystemMetricKey(
+      system,
+      metricKey
+    );
+
+    /** Update value */
+    this.disaggregations[systemMetricKey][
+      disaggregationKey
+    ].is_breakdown_configured = isConfigured;
+
+    /** Return an object in the desired backend data structure for saving purposes */
+    return {
+      key: metricKey,
+      disaggregations: [
+        {
+          key: disaggregationKey,
+          is_breakdown_configured: isConfigured,
+        },
+      ],
+    };
+  };
+
+  /**
+   * Updates the configuration status of a dimension's includes/excludes
+   *
+   * - Configuration status is whether/not the agency feels they have configured
+   * a dimension's includes/excludes to their satisfaction.
+   */
+  updateDimensionIncludesExcludesConfigurationStatus = (
+    system: AgencySystem,
+    metricKey: string,
+    disaggregationKey: string,
+    dimensionKey: string,
+    isConfigured: boolean
+  ) => {
+    const systemMetricKey = MetricConfigStore.getSystemMetricKey(
+      system,
+      metricKey
+    );
+
+    /** Update value */
+    this.dimensions[systemMetricKey][disaggregationKey][
+      dimensionKey
+    ].is_dimension_includes_excludes_configured = isConfigured;
+
+    return {
+      key: metricKey,
+      disaggregations: [
+        {
+          key: disaggregationKey,
+          dimensions: [
+            {
+              key: dimensionKey,
+              is_dimension_includes_excludes_configured: isConfigured,
             },
           ],
         },

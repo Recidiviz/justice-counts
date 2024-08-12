@@ -28,6 +28,7 @@ import { Ethnicity, Race } from "./RaceEthnicitiesGridStates";
 export type MetricSettings = {
   key: string;
   enabled?: boolean;
+  is_includes_excludes_configured?: boolean;
   settings?: { key: string; included: MetricConfigurationSettingsOptions }[];
   contexts?: {
     key: string;
