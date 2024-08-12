@@ -102,9 +102,12 @@ function MetricDefinitions() {
     if (!metricDefinitionSettings[activeSystemMetricKey]) return true;
     const metricSettings = Object.values(
       metricDefinitionSettings[activeSystemMetricKey]
-    ).reduce((acc, metricSetting) => {
-      return { ...acc, ...metricSetting.settings };
-    }, {} as { [settingKey: string]: Partial<MetricConfigurationSettings> });
+    ).reduce(
+      (acc, metricSetting) => {
+        return { ...acc, ...metricSetting.settings };
+      },
+      {} as { [settingKey: string]: Partial<MetricConfigurationSettings> }
+    );
     /** Top-level metric context key will always be "INCLUDES_EXCLUDES_DESCRIPTION" */
     const hasContextValue = Boolean(
       contexts[activeSystemMetricKey].INCLUDES_EXCLUDES_DESCRIPTION.value
@@ -179,7 +182,11 @@ function MetricDefinitions() {
               <Styled.SectionItemLabel
                 actionRequired={!metricHasDefinitionSelected()}
               >
-                {metrics[activeSystemMetricKey]?.label} (Total)
+                {metrics[activeSystemMetricKey]?.label} (Total) {" - "}
+                {
+                  metrics[activeSystemMetricKey]
+                    ?.is_includes_excludes_configured
+                }
               </Styled.SectionItemLabel>
               <Styled.EditButton>Edit</Styled.EditButton>
               <Tooltip
@@ -275,6 +282,8 @@ function MetricDefinitions() {
                         actionRequired={!hasEnabledDefinition}
                       >
                         {dimension.label}
+                        {" - "}
+                        {dimension.is_dimension_includes_excludes_configured}
                       </Styled.SectionItemLabel>
                       <Styled.EditButton>Edit</Styled.EditButton>
                       <Tooltip

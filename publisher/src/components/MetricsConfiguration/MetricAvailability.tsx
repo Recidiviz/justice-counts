@@ -49,7 +49,7 @@ import {
 import { RACE_ETHNICITY_DISAGGREGATION_KEY } from "./constants";
 import * as Styled from "./MetricAvailability.styled";
 import { RaceEthnicitiesGrid } from "./RaceEthnicitiesGrid";
-import { ReportFrequencyUpdate } from "./types";
+import { ConfigurationStatus, ReportFrequencyUpdate } from "./types";
 
 type MetricAvailabilityProps = {
   goToDefineMetrics: () => void;
@@ -74,6 +74,9 @@ function MetricAvailability({
     updateDimensionEnabledStatus,
     updateMetricReportFrequency,
     updateDisaggregatedBySupervisionSubsystems,
+    updateMetricIncludesExcludesConfigurationStatus,
+    updateDisaggregationConfigurationStatus,
+    updateDimensionIncludesExcludesConfigurationStatus,
     saveMetricSettings,
     initializeMetricConfigStoreValues,
   } = metricConfigStore;
@@ -309,6 +312,61 @@ function MetricAvailability({
       saveMetricSettings(updatedSetting, agencyId!);
     }
   };
+
+  // const handleMetricIncludesExcludesConfigurationStatus = (
+  //   isConfigured: boolean
+  // ) => {
+  //   if (systemSearchParam && metricSearchParam) {
+  //     const updatedSetting = updateMetricIncludesExcludesConfigurationStatus(
+  //       activeAvailabilitySystemKey,
+  //       activeAvailabilityMetricKey,
+  //       isConfigured
+  //     );
+  //     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  //     saveMetricSettings(updatedSetting, agencyId!);
+  //   }
+  // };
+
+  const toggleDisaggregationConfigurationStatus = (
+    disaggregationKey: string
+  ) => {
+    if (systemSearchParam && metricSearchParam) {
+      const prevConfigurationStatus =
+        disaggregations[activeBreakdownSystemMetricKey][disaggregationKey]
+          .is_breakdown_configured;
+      const toggledStatus =
+        !prevConfigurationStatus ||
+        prevConfigurationStatus === ConfigurationStatus.NO
+          ? ConfigurationStatus.YES
+          : ConfigurationStatus.NO;
+      const updatedSetting = updateDisaggregationConfigurationStatus(
+        activeBreakdownSystemKey,
+        activeBreakdownMetricKey,
+        disaggregationKey,
+        toggledStatus
+      );
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      saveMetricSettings(updatedSetting, agencyId!);
+    }
+  };
+
+  // const handleDimensionIncludesExcludesConfigurationStatus = (
+  //   isConfigured: boolean,
+  //   dimensionKey: string,
+  //   disaggregationKey: string
+  // ) => {
+  //   if (systemSearchParam && metricSearchParam) {
+  //     const updatedSetting = updateDimensionEnabledStatus(
+  //       activeBreakdownSystemKey,
+  //       activeBreakdownMetricKey,
+  //       disaggregationKey,
+  //       dimensionKey,
+  //       status
+  //     );
+  //     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  //     saveMetricSettings(updatedSetting, agencyId!);
+  //   }
+  // };
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -733,6 +791,19 @@ function MetricAvailability({
                           }
                         />
                       </Styled.DimensionsListFieldset>
+                      <div
+                        onClick={() => {
+                          toggleDisaggregationConfigurationStatus(
+                            disaggregationKey
+                          );
+                        }}
+                      >
+                        {disaggregations[activeBreakdownSystemMetricKey][
+                          disaggregationKey
+                        ].is_breakdown_configured === ConfigurationStatus.YES
+                          ? "I am configured"
+                          : "I am not configured"}
+                      </div>
                     </Styled.DimensionsList>
                   )}
                 </Styled.DimensionsContainer>

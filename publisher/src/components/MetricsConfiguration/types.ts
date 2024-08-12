@@ -25,10 +25,14 @@ import {
 
 import { Ethnicity, Race } from "./RaceEthnicitiesGridStates";
 
+export enum ConfigurationStatus {
+  YES = "YES",
+  NO = "NO",
+}
+
 export type MetricSettings = {
   key: string;
   enabled?: boolean;
-  is_includes_excludes_configured?: boolean;
   settings?: { key: string; included: MetricConfigurationSettingsOptions }[];
   contexts?: {
     key: string;
@@ -51,6 +55,7 @@ export type MetricSettings = {
 export type MetricInfo = {
   key?: string;
   enabled?: boolean | null;
+  is_includes_excludes_configured?: ConfigurationStatus | null;
   label?: string;
   description?: Metric["description"];
   defaultFrequency?: ReportFrequency;

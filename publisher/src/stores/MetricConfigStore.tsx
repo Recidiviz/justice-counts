@@ -29,6 +29,7 @@ import {
 import { makeAutoObservable, runInAction } from "mobx";
 
 import {
+  ConfigurationStatus,
   Ethnicities,
   ethnicities,
   Ethnicity,
@@ -85,7 +86,7 @@ class MetricConfigStore {
       [disaggregationKey: string]: {
         enabled?: boolean;
         display_name?: string;
-        is_breakdown_configured?: boolean;
+        is_breakdown_configured?: ConfigurationStatus | null;
       };
     };
   };
@@ -100,7 +101,7 @@ class MetricConfigStore {
           key?: string;
           race?: Races;
           ethnicity?: Ethnicities;
-          is_dimension_includes_excludes_configured?: boolean;
+          is_dimension_includes_excludes_configured?: ConfigurationStatus | null;
         };
       };
     };
@@ -765,15 +766,16 @@ class MetricConfigStore {
   updateMetricIncludesExcludesConfigurationStatus = (
     system: AgencySystem,
     metricKey: string,
-    isConfigured: boolean
-  ): MetricSettings => {
+    isConfigured: ConfigurationStatus | null
+  ) => {
     const systemMetricKey = MetricConfigStore.getSystemMetricKey(
       system,
       metricKey
     );
 
     /** Update value */
-    this.metrics[systemMetricKey].enabled = isConfigured;
+    this.metrics[systemMetricKey].is_includes_excludes_configured =
+      isConfigured;
 
     /** Return an object in the desired backend data structure for saving purposes */
     return {
@@ -792,7 +794,7 @@ class MetricConfigStore {
     system: AgencySystem,
     metricKey: string,
     disaggregationKey: string,
-    isConfigured: boolean
+    isConfigured: ConfigurationStatus | null
   ) => {
     const systemMetricKey = MetricConfigStore.getSystemMetricKey(
       system,
@@ -827,7 +829,7 @@ class MetricConfigStore {
     metricKey: string,
     disaggregationKey: string,
     dimensionKey: string,
-    isConfigured: boolean
+    isConfigured: ConfigurationStatus | null
   ) => {
     const systemMetricKey = MetricConfigStore.getSystemMetricKey(
       system,
