@@ -37,8 +37,8 @@ import {
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-
 import styled from "styled-components/macro";
+
 import { useStore } from "../../stores";
 import MetricConfigStore from "../../stores/MetricConfigStore";
 import { monthsByName, removeSnakeCase } from "../../utils";
@@ -775,6 +775,7 @@ function MetricAvailability({
                       </Styled.DimensionsListFieldset>
                     </Styled.DimensionsList>
                   )}
+                  {/* Configuration Status Button */}
                   <ConfigurationStatusButton
                     isConfigured={
                       disaggregations[activeBreakdownSystemMetricKey][

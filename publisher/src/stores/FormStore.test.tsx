@@ -51,6 +51,7 @@ const mockProsecutionMetric: Metric = {
   unit: "people",
   category: "CAPACITY_AND_COST",
   label: "Total Staff",
+  is_includes_excludes_configured: null,
   filenames: ["total_staff"],
   definitions: [
     {
@@ -79,11 +80,13 @@ const mockProsecutionMetric: Metric = {
           label: "Support",
           value: null,
           reporting_note: "Staff: Support",
+          is_dimension_includes_excludes_configured: null,
         },
       ],
       required: false,
       helper_text: "Break down the metric by NIBRS offense types.",
       should_sum_to_total: false,
+      is_breakdown_configured: null,
     },
   ],
 };

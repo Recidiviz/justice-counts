@@ -107,6 +107,7 @@ describe("test data entry form", () => {
             category: "CAPACITY_AND_COST",
             label: "Total Staff",
             enabled: true,
+            is_includes_excludes_configured: null,
             filenames: ["total_staff"],
             definitions: [
               {
@@ -136,11 +137,13 @@ describe("test data entry form", () => {
                     label: "Support",
                     value: null,
                     reporting_note: "Staff: Support",
+                    is_dimension_includes_excludes_configured: null,
                   },
                 ],
                 required: false,
                 helper_text: "Break down the metric by NIBRS offense types.",
                 should_sum_to_total: false,
+                is_breakdown_configured: null,
               },
             ],
           },

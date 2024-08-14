@@ -498,15 +498,6 @@ function DefinitionModalForm({
               closeModal();
             }}
             saveAndClose
-            hideDescription
-            tooltipMsg={
-              (isMetricDefinitionSettings
-                ? metrics[systemMetricKey].is_includes_excludes_configured
-                : currentDimension?.is_dimension_includes_excludes_configured) ===
-              ConfigurationStatus.YES
-                ? "This configuration has been marked as completed."
-                : "This configuration has NOT been marked as completed."
-            }
           />
           {!isReadOnly && !hasNoSettingsAndNoContext && (
             <Button

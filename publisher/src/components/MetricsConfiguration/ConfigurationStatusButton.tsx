@@ -22,13 +22,12 @@ import {
 } from "@justice-counts/common/components/GlobalStyles";
 import React from "react";
 import styled from "styled-components/macro";
+
 import { ConfigurationStatus } from ".";
 
 type ConfigurationStatusButtonProps = {
   isConfigured?: ConfigurationStatus | null;
   saveAndClose?: boolean;
-  hideDescription?: boolean;
-  tooltipMsg?: string;
   onClick: () => void;
 };
 
@@ -51,7 +50,7 @@ export const ConfigurationStatusText = styled.div<{ isConfigured: boolean }>`
 
 export const ConfigurationStatusButton: React.FC<
   ConfigurationStatusButtonProps
-> = ({ isConfigured, onClick, saveAndClose, hideDescription, tooltipMsg }) => {
+> = ({ isConfigured, onClick, saveAndClose }) => {
   return (
     <ConfigurationStatusWrapper flexColumn={Boolean(saveAndClose)} noTopMargin>
       <Button
@@ -64,16 +63,13 @@ export const ConfigurationStatusButton: React.FC<
         buttonColor={
           isConfigured === ConfigurationStatus.YES ? "green" : "blue"
         }
-        tooltipMsg={tooltipMsg}
+        tooltipMsg={
+          isConfigured === ConfigurationStatus.YES
+            ? "This configuration has been marked as completed. Click to undo and mark it as incomplete to indicate this configuration still needs to be finalized."
+            : "This configuration has NOT been marked as completed. When you are satisfied with your configuration, click to mark it as completed."
+        }
         id="configuration-button"
       />
-      {!hideDescription && (
-        <>
-          {isConfigured === ConfigurationStatus.YES
-            ? "This configuration has been marked as completed."
-            : "This configuration has NOT been marked as completed."}
-        </>
-      )}
     </ConfigurationStatusWrapper>
   );
 };
