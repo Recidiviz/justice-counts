@@ -47,6 +47,7 @@ import {
   replaceSystemMetricKeyWithNewSystem,
   useSettingsSearchParams,
 } from "../Settings";
+import { ConfigurationStatusButton } from "./ConfigurationStatusButton";
 import { RACE_ETHNICITY_DISAGGREGATION_KEY } from "./constants";
 import * as Styled from "./MetricAvailability.styled";
 import { RaceEthnicitiesGrid } from "./RaceEthnicitiesGrid";
@@ -772,30 +773,20 @@ function MetricAvailability({
                           }
                         />
                       </Styled.DimensionsListFieldset>
-                      {/* eslint-disable jsx-a11y/click-events-have-key-events */}
-                      <TestConfigButton
-                        onClick={() => {
-                          toggleDisaggregationConfigurationStatus(
-                            disaggregationKey
-                          );
-                        }}
-                      >
-                        {disaggregations[activeBreakdownSystemMetricKey][
-                          disaggregationKey
-                        ].is_breakdown_configured === ConfigurationStatus.YES
-                          ? "I am configured"
-                          : "I am not configured"}
-                        <div>
-                          is_breakdown_configured:{" "}
-                          {JSON.stringify(
-                            disaggregations[activeBreakdownSystemMetricKey][
-                              disaggregationKey
-                            ].is_breakdown_configured
-                          )}
-                        </div>
-                      </TestConfigButton>
                     </Styled.DimensionsList>
                   )}
+                  <ConfigurationStatusButton
+                    isConfigured={
+                      disaggregations[activeBreakdownSystemMetricKey][
+                        disaggregationKey
+                      ].is_breakdown_configured
+                    }
+                    onClick={() => {
+                      toggleDisaggregationConfigurationStatus(
+                        disaggregationKey
+                      );
+                    }}
+                  />
                 </Styled.DimensionsContainer>
               );
             })}

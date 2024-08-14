@@ -29,7 +29,7 @@ import { useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
 import MetricConfigStore from "../../stores/MetricConfigStore";
-import { TestConfigButton } from "./MetricAvailability";
+import { ConfigurationStatusButton } from "./ConfigurationStatusButton";
 import * as Styled from "./ModalForm.styled";
 import {
   ConfigurationStatus,
@@ -479,35 +479,35 @@ function DefinitionModalForm({
           </Styled.ContextContainer>
         </Styled.ScrollableInnerWrapper>
         <Styled.BottomButtonsContainer>
-          <TestConfigButton
-            onClick={() => {
+          <ConfigurationStatusButton
+            isConfigured={
               isMetricDefinitionSettings
-                ? toggleMetricIncludesExcludesConfigurationStatus()
-                : activeDisaggregationKey &&
-                  toggleDimensionIncludesExcludesConfigurationStatus(
-                    activeDimensionKey,
-                    activeDisaggregationKey
-                  );
+                ? metrics[systemMetricKey].is_includes_excludes_configured
+                : currentDimension?.is_dimension_includes_excludes_configured
+            }
+            onClick={() => {
+              if (isMetricDefinitionSettings) {
+                toggleMetricIncludesExcludesConfigurationStatus();
+              } else if (activeDisaggregationKey) {
+                toggleDimensionIncludesExcludesConfigurationStatus(
+                  activeDimensionKey,
+                  activeDisaggregationKey
+                );
+              }
+              handleSaveSettings();
+              closeModal();
             }}
-          >
-            {(isMetricDefinitionSettings
-              ? metrics[systemMetricKey].is_includes_excludes_configured
-              : currentDimension?.is_dimension_includes_excludes_configured) ===
-            ConfigurationStatus.YES
-              ? `I am configured ${
-                  isMetricDefinitionSettings ? "(Metric)" : "(Dimension)"
-                }`
-              : `I am not configured ${
-                  isMetricDefinitionSettings ? "(Metric)" : "(Dimension)"
-                }`}
-            <div>
-              {JSON.stringify(
-                isMetricDefinitionSettings
-                  ? metrics[systemMetricKey].is_includes_excludes_configured
-                  : currentDimension?.is_dimension_includes_excludes_configured
-              )}
-            </div>
-          </TestConfigButton>
+            saveAndClose
+            hideDescription
+            tooltipMsg={
+              (isMetricDefinitionSettings
+                ? metrics[systemMetricKey].is_includes_excludes_configured
+                : currentDimension?.is_dimension_includes_excludes_configured) ===
+              ConfigurationStatus.YES
+                ? "This configuration has been marked as completed."
+                : "This configuration has NOT been marked as completed."
+            }
+          />
           {!isReadOnly && !hasNoSettingsAndNoContext && (
             <Button
               label="Save"

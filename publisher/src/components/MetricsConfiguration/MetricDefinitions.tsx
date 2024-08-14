@@ -37,10 +37,12 @@ import {
   replaceSystemMetricKeyWithNewSystem,
   useSettingsSearchParams,
 } from "../Settings";
+import { ConfigurationStatusText } from "./ConfigurationStatusButton";
 import { RACE_ETHNICITY_DISAGGREGATION_KEY } from "./constants";
 import DefinitionModalForm from "./DefinitionModalForm";
 import * as MetricAvailability from "./MetricAvailability.styled";
 import * as Styled from "./MetricDefinitions.styled";
+import { ConfigurationStatus } from "./types";
 
 function MetricDefinitions() {
   const [settingsSearchParams] = useSettingsSearchParams();
@@ -102,9 +104,12 @@ function MetricDefinitions() {
     if (!metricDefinitionSettings[activeSystemMetricKey]) return true;
     const metricSettings = Object.values(
       metricDefinitionSettings[activeSystemMetricKey]
-    ).reduce((acc, metricSetting) => {
-      return { ...acc, ...metricSetting.settings };
-    }, {} as { [settingKey: string]: Partial<MetricConfigurationSettings> });
+    ).reduce(
+      (acc, metricSetting) => {
+        return { ...acc, ...metricSetting.settings };
+      },
+      {} as { [settingKey: string]: Partial<MetricConfigurationSettings> }
+    );
     /** Top-level metric context key will always be "INCLUDES_EXCLUDES_DESCRIPTION" */
     const hasContextValue = Boolean(
       contexts[activeSystemMetricKey].INCLUDES_EXCLUDES_DESCRIPTION.value
@@ -178,12 +183,22 @@ function MetricDefinitions() {
             >
               <Styled.SectionItemLabel
                 actionRequired={!metricHasDefinitionSelected()}
+                flexRow
               >
-                {metrics[activeSystemMetricKey]?.label} (Total) {" - "}
-                {
-                  metrics[activeSystemMetricKey]
-                    ?.is_includes_excludes_configured
-                }
+                {metrics[activeSystemMetricKey]?.label} (Total)&nbsp;
+                <ConfigurationStatusText
+                  isConfigured={
+                    metrics[activeSystemMetricKey]
+                      ?.is_includes_excludes_configured ===
+                    ConfigurationStatus.YES
+                  }
+                >
+                  {metrics[activeSystemMetricKey]
+                    ?.is_includes_excludes_configured ===
+                  ConfigurationStatus.YES
+                    ? " (Configuration Complete)"
+                    : " (Configuration Incomplete)"}
+                </ConfigurationStatusText>
               </Styled.SectionItemLabel>
               <Styled.EditButton>Edit</Styled.EditButton>
               <Tooltip
@@ -277,10 +292,20 @@ function MetricDefinitions() {
                     >
                       <Styled.SectionItemLabel
                         actionRequired={!hasEnabledDefinition}
+                        flexRow
                       >
-                        {dimension.label}
-                        {" - "}
-                        {dimension.is_dimension_includes_excludes_configured}
+                        {dimension.label}&nbsp;
+                        <ConfigurationStatusText
+                          isConfigured={
+                            dimension.is_dimension_includes_excludes_configured ===
+                            ConfigurationStatus.YES
+                          }
+                        >
+                          {dimension.is_dimension_includes_excludes_configured ===
+                          ConfigurationStatus.YES
+                            ? " (Configuration Complete)"
+                            : " (Configuration Incomplete)"}
+                        </ConfigurationStatusText>
                       </Styled.SectionItemLabel>
                       <Styled.EditButton>Edit</Styled.EditButton>
                       <Tooltip
