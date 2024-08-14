@@ -20,7 +20,7 @@
 // to allow the interface definition to be extended.
 export {};
 
-declare global {
+export declare global {
   interface Window {
     // values added from `app_public_config.js`
     APP_CONFIG: Record<string, string>;

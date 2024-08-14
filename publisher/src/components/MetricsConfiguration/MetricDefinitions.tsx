@@ -20,6 +20,7 @@ import { Tooltip } from "@justice-counts/common/components/Tooltip";
 import {
   AgencySystem,
   AgencySystems,
+  ConfigurationStatus,
   MetricConfigurationSettings,
   SupervisionSubsystems,
 } from "@justice-counts/common/types";
@@ -42,7 +43,6 @@ import { RACE_ETHNICITY_DISAGGREGATION_KEY } from "./constants";
 import DefinitionModalForm from "./DefinitionModalForm";
 import * as MetricAvailability from "./MetricAvailability.styled";
 import * as Styled from "./MetricDefinitions.styled";
-import { ConfigurationStatus } from "./types";
 
 function MetricDefinitions() {
   const [settingsSearchParams] = useSettingsSearchParams();

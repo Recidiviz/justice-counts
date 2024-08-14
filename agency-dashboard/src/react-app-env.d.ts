@@ -16,3 +16,23 @@
 // =============================================================================
 
 /// <reference types="react-scripts" />
+// Required for TS to recognize .mp4 files (Reference: https://github.com/facebook/create-react-app/issues/6822)
+declare module "*.mp4" {
+  const src: string;
+  export default src;
+}
+
+// According to https://github.com/microsoft/TypeScript/issues/33128#issuecomment-748937504,
+// this line is needed in order to turn this from a script into a module in order
+// to allow the interface definition to be extended.
+export {};
+export declare global {
+  interface Window {
+    // values added from `app_public_config.js`
+    APP_CONFIG: Record<string, string>;
+    SEGMENT_KEY: string;
+
+    // Segment's analytics.js
+    analytics: SegmentAnalytics.AnalyticsJS;
+  }
+}

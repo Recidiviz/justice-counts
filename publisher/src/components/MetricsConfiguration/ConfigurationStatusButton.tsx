@@ -20,10 +20,9 @@ import {
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
+import { ConfigurationStatus } from "@justice-counts/common/types";
 import React from "react";
 import styled from "styled-components/macro";
-
-import { ConfigurationStatus } from ".";
 
 type ConfigurationStatusButtonProps = {
   isConfigured?: ConfigurationStatus | null;

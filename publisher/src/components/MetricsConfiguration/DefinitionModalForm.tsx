@@ -20,6 +20,7 @@ import { CheckboxOptions } from "@justice-counts/common/components/CheckboxOptio
 import { NewInput } from "@justice-counts/common/components/Input";
 import {
   AgencySystem,
+  ConfigurationStatus,
   MetricConfigurationSettings,
   MetricConfigurationSettingsOptions,
 } from "@justice-counts/common/types";
@@ -32,7 +33,6 @@ import MetricConfigStore from "../../stores/MetricConfigStore";
 import { ConfigurationStatusButton } from "./ConfigurationStatusButton";
 import * as Styled from "./ModalForm.styled";
 import {
-  ConfigurationStatus,
   ContextsByContextKey,
   MetricSettings,
   SettingsByIncludesExcludesKey,

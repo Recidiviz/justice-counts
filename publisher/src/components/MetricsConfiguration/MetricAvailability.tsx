@@ -31,6 +31,7 @@ import { Tooltip } from "@justice-counts/common/components/Tooltip";
 import {
   AgencySystem,
   AgencySystems,
+  ConfigurationStatus,
   SupervisionSubsystems,
   SupervisionSystem,
 } from "@justice-counts/common/types";
@@ -51,7 +52,7 @@ import { ConfigurationStatusButton } from "./ConfigurationStatusButton";
 import { RACE_ETHNICITY_DISAGGREGATION_KEY } from "./constants";
 import * as Styled from "./MetricAvailability.styled";
 import { RaceEthnicitiesGrid } from "./RaceEthnicitiesGrid";
-import { ConfigurationStatus, ReportFrequencyUpdate } from "./types";
+import { ReportFrequencyUpdate } from "./types";
 
 type MetricAvailabilityProps = {
   goToDefineMetrics: () => void;

@@ -18,6 +18,7 @@
 import { showToast } from "@justice-counts/common/components/Toast";
 import {
   AgencySystem,
+  ConfigurationStatus,
   FormError,
   Metric,
   MetricConfigurationSettings,
@@ -29,7 +30,6 @@ import {
 import { makeAutoObservable, runInAction } from "mobx";
 
 import {
-  ConfigurationStatus,
   Ethnicities,
   ethnicities,
   Ethnicity,

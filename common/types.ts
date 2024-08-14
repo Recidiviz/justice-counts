@@ -15,8 +15,6 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { ConfigurationStatus } from "../publisher/src/components/MetricsConfiguration";
-
 export enum AgencyTeamMemberRole {
   JUSTICE_COUNTS_ADMIN = "JUSTICE_COUNTS_ADMIN",
   AGENCY_ADMIN = "AGENCY_ADMIN",
@@ -508,3 +506,8 @@ export interface DimensionNamesByMetricAndDisaggregation {
 export const DataVizAggregateName = "Total";
 
 export const NoDisaggregationOption = "No Breakdown";
+
+export enum ConfigurationStatus {
+  YES = "YES",
+  NO = "NO",
+}

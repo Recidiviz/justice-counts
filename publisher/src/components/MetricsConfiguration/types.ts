@@ -16,6 +16,7 @@
 // =============================================================================
 
 import {
+  ConfigurationStatus,
   Metric,
   MetricConfigurationSettings,
   MetricConfigurationSettingsOptions,
@@ -24,11 +25,6 @@ import {
 } from "@justice-counts/common/types";
 
 import { Ethnicity, Race } from "./RaceEthnicitiesGridStates";
-
-export enum ConfigurationStatus {
-  YES = "YES",
-  NO = "NO",
-}
 
 export type MetricSettings = {
   key: string;
