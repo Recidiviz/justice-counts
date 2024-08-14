@@ -38,7 +38,6 @@ import {
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import styled from "styled-components/macro";
 
 import { useStore } from "../../stores";
 import MetricConfigStore from "../../stores/MetricConfigStore";
@@ -58,20 +57,6 @@ type MetricAvailabilityProps = {
   goToDefineMetrics: () => void;
   setIsRaceEthnicityModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
-
-export const TestConfigButton = styled.div`
-  border: 1px solid blue;
-  padding: 8px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-
-  &:hover {
-    cursor: pointer;
-    background: lightgrey;
-  }
-`;
 
 function MetricAvailability({
   goToDefineMetrics,
@@ -778,7 +763,7 @@ function MetricAvailability({
                   )}
                   {/* Configuration Status Button */}
                   <ConfigurationStatusButton
-                    isConfigured={
+                    configurationStatus={
                       disaggregations[activeBreakdownSystemMetricKey][
                         disaggregationKey
                       ].is_breakdown_configured

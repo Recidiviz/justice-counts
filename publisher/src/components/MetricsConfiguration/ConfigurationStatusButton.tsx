@@ -25,7 +25,7 @@ import React from "react";
 import styled from "styled-components/macro";
 
 type ConfigurationStatusButtonProps = {
-  isConfigured?: ConfigurationStatus | null;
+  configurationStatus?: ConfigurationStatus | null;
   saveAndClose?: boolean;
   onClick: () => void;
 };
@@ -49,24 +49,25 @@ export const ConfigurationStatusText = styled.div<{ isConfigured: boolean }>`
 
 export const ConfigurationStatusButton: React.FC<
   ConfigurationStatusButtonProps
-> = ({ isConfigured, onClick, saveAndClose }) => {
+> = ({ configurationStatus, onClick, saveAndClose }) => {
+  const tooltipMsg =
+    configurationStatus === ConfigurationStatus.YES
+      ? "This configuration has been marked as completed. Click to undo and mark it as incomplete to indicate this configuration still needs to be finalized."
+      : "This configuration has NOT been marked as completed. When you are satisfied with your configuration, click to mark it as completed.";
+  const buttonLabel =
+    configurationStatus === ConfigurationStatus.YES
+      ? `Undo Complete Configuration${saveAndClose ? " & Save" : ""}`
+      : `Complete Configuration${saveAndClose ? " & Save" : ""}`;
+  const buttonColor =
+    configurationStatus === ConfigurationStatus.YES ? "green" : "blue";
+
   return (
     <ConfigurationStatusWrapper flexColumn={Boolean(saveAndClose)} noTopMargin>
       <Button
-        label={
-          isConfigured === ConfigurationStatus.YES
-            ? `Undo Complete Configuration${saveAndClose ? " & Save" : ""}`
-            : `Complete Configuration${saveAndClose ? " & Save" : ""}`
-        }
+        label={buttonLabel}
         onClick={onClick}
-        buttonColor={
-          isConfigured === ConfigurationStatus.YES ? "green" : "blue"
-        }
-        tooltipMsg={
-          isConfigured === ConfigurationStatus.YES
-            ? "This configuration has been marked as completed. Click to undo and mark it as incomplete to indicate this configuration still needs to be finalized."
-            : "This configuration has NOT been marked as completed. When you are satisfied with your configuration, click to mark it as completed."
-        }
+        buttonColor={buttonColor}
+        tooltipMsg={tooltipMsg}
         id="configuration-button"
       />
     </ConfigurationStatusWrapper>

@@ -480,7 +480,7 @@ function DefinitionModalForm({
         </Styled.ScrollableInnerWrapper>
         <Styled.BottomButtonsContainer>
           <ConfigurationStatusButton
-            isConfigured={
+            configurationStatus={
               isMetricDefinitionSettings
                 ? metrics[systemMetricKey].is_includes_excludes_configured
                 : currentDimension?.is_dimension_includes_excludes_configured
