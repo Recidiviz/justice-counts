@@ -862,18 +862,8 @@ class MetricConfigStore {
     ].is_dimension_includes_excludes_configured = isConfigured;
 
     return {
-      key: metricKey,
-      disaggregations: [
-        {
-          key: disaggregationKey,
-          dimensions: [
-            {
-              key: dimensionKey,
-              is_dimension_includes_excludes_configured: isConfigured,
-            },
-          ],
-        },
-      ],
+      key: dimensionKey,
+      is_dimension_includes_excludes_configured: isConfigured,
     };
   };
 

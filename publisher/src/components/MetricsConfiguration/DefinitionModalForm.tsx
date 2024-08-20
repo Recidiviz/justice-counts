@@ -225,7 +225,11 @@ function DefinitionModalForm({
     });
   };
 
-  const handleSaveSettings = () => {
+  const handleSaveSettings = (configurationStatusSettings?: {
+    key: string;
+    is_includes_excludes_configured?: ConfigurationStatus | null;
+    is_dimension_includes_excludes_configured?: ConfigurationStatus | null;
+  }) => {
     if (systemSearchParam && metricSearchParam) {
       const settingsToSave: MetricSettings["settings"] = [];
       const contextsToSave: MetricSettings["contexts"] = [];
@@ -279,6 +283,9 @@ function DefinitionModalForm({
                   key: activeDimensionKey,
                   settings: settingsToSave,
                   contexts: contextsToSave,
+                  is_dimension_includes_excludes_configured:
+                    configurationStatusSettings?.is_dimension_includes_excludes_configured ??
+                    null,
                 },
               ],
             },
@@ -288,6 +295,7 @@ function DefinitionModalForm({
         return;
       }
 
+      // Top-level metric includes/excludes settings and context
       if (currentSettings) {
         Object.entries(currentSettings).forEach(
           ([includesExcludesKey, { settings }]) => {
@@ -323,6 +331,8 @@ function DefinitionModalForm({
         key: metricSearchParam,
         settings: settingsToSave,
         contexts: contextsToSave,
+        is_includes_excludes_configured:
+          configurationStatusSettings?.is_includes_excludes_configured ?? null,
       };
       saveMetricSettings(updatedSettingsAndContexts, agencyId);
     }
@@ -338,13 +348,11 @@ function DefinitionModalForm({
         : ConfigurationStatus.NO;
 
     if (systemSearchParam && metricSearchParam) {
-      const updatedSetting = updateMetricIncludesExcludesConfigurationStatus(
+      return updateMetricIncludesExcludesConfigurationStatus(
         systemSearchParam,
         metricSearchParam,
         toggledStatus
       );
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      saveMetricSettings(updatedSetting, agencyId!);
     }
   };
 
@@ -361,15 +369,13 @@ function DefinitionModalForm({
         : ConfigurationStatus.NO;
 
     if (systemSearchParam && metricSearchParam) {
-      const updatedSetting = updateDimensionIncludesExcludesConfigurationStatus(
+      return updateDimensionIncludesExcludesConfigurationStatus(
         systemSearchParam,
         metricSearchParam,
         disaggregationKey,
         dimensionKey,
         toggledStatus
       );
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      saveMetricSettings(updatedSetting, agencyId!);
     }
   };
 
@@ -486,15 +492,18 @@ function DefinitionModalForm({
                 : currentDimension?.is_dimension_includes_excludes_configured
             }
             onClick={() => {
+              let updatedSettings;
               if (isMetricDefinitionSettings) {
-                toggleMetricIncludesExcludesConfigurationStatus();
+                updatedSettings =
+                  toggleMetricIncludesExcludesConfigurationStatus();
               } else if (activeDisaggregationKey) {
-                toggleDimensionIncludesExcludesConfigurationStatus(
-                  activeDimensionKey,
-                  activeDisaggregationKey
-                );
+                updatedSettings =
+                  toggleDimensionIncludesExcludesConfigurationStatus(
+                    activeDimensionKey,
+                    activeDisaggregationKey
+                  );
               }
-              handleSaveSettings();
+              handleSaveSettings(updatedSettings);
               closeModal();
             }}
             saveAndClose
