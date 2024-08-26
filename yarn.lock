@@ -14780,10 +14780,10 @@ recharts-scale@^0.4.4:
   dependencies:
     decimal.js-light "^2.4.1"
 
-recharts-to-png@^2.3.1:
-  version "2.3.1"
-  resolved "https://registry.yarnpkg.com/recharts-to-png/-/recharts-to-png-2.3.1.tgz#94d4edb8461ba4b16318edea77a34c421c16d7c1"
-  integrity sha512-a+OaAi03oFJMa+Burf3vyH060iFTrb35W8bBYUatNjZVrrMKUcFM3VOI1ym078WIH7XfgYQb17K9p2spVA2FzQ==
+recharts-to-png@^2.3.2:
+  version "2.3.2"
+  resolved "https://registry.yarnpkg.com/recharts-to-png/-/recharts-to-png-2.3.2.tgz#68d23d50ae0a432917a83f3209de5a1e94eaf45f"
+  integrity sha512-3A9V5zt+kus/LDuoum5c27Cr7xXGlWZkoh+QaYRmAiyZk3YAsIrf5lKRQjJ6CNk09HT9I6nHjcYFIPKqEt9VDA==
   dependencies:
     html2canvas "^1.2.0"
 
