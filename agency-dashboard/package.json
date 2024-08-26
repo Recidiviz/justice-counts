@@ -14,7 +14,7 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6",
-    "recharts-to-png": "^2.3.1",
+    "recharts-to-png": "^2.3.2",
     "styled-components": "^5.3.11",
     "typescript": "^5.5.4",
     "use-async-effect": "^2.2.7"
@@ -59,7 +59,7 @@
     "jest-fetch-mock": "^3.0.3",
     "react-app-rewired": "^2.2.1",
     "react-scripts": "^5.0.1",
-    "recharts-to-png": "^2.3.1",
+    "recharts-to-png": "^2.3.2",
     "resize-observer-polyfill": "^1.5.1"
   },
   "config-overrides-path": "../config-overrides.js",
