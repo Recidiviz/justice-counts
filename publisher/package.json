@@ -10,7 +10,7 @@
     "@justice-counts/common": "*",
     "@recidiviz/design-system": "^5.5.0",
     "@sentry/react": "^8.26.0",
-    "@tanstack/match-sorter-utils": "^8.15.1",
+    "@tanstack/match-sorter-utils": "^8.19.4",
     "@tanstack/react-table": "^8.17.3",
     "@types/file-saver": "^2.0.7",
     "file-saver": "^2.0.5",
