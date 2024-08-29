@@ -20,6 +20,7 @@ import { CheckboxOptions } from "@justice-counts/common/components/CheckboxOptio
 import { NewInput } from "@justice-counts/common/components/Input";
 import {
   AgencySystem,
+  ConfigurationStatus,
   MetricConfigurationSettings,
   MetricConfigurationSettingsOptions,
 } from "@justice-counts/common/types";
@@ -29,6 +30,7 @@ import { useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
 import MetricConfigStore from "../../stores/MetricConfigStore";
+import { ConfigurationStatusButton } from "./ConfigurationStatusButton";
 import * as Styled from "./ModalForm.styled";
 import {
   ContextsByContextKey,
@@ -63,6 +65,8 @@ function DefinitionModalForm({
     saveMetricSettings,
     updateDimensionContexts,
     updateContextValue,
+    updateMetricIncludesExcludesConfigurationStatus,
+    updateDimensionIncludesExcludesConfigurationStatus,
   } = metricConfigStore;
 
   // read only check
@@ -221,7 +225,11 @@ function DefinitionModalForm({
     });
   };
 
-  const handleSaveSettings = () => {
+  const handleSaveSettings = (configurationStatusSettings?: {
+    key: string;
+    is_includes_excludes_configured?: ConfigurationStatus | null;
+    is_dimension_includes_excludes_configured?: ConfigurationStatus | null;
+  }) => {
     if (systemSearchParam && metricSearchParam) {
       const settingsToSave: MetricSettings["settings"] = [];
       const contextsToSave: MetricSettings["contexts"] = [];
@@ -275,6 +283,9 @@ function DefinitionModalForm({
                   key: activeDimensionKey,
                   settings: settingsToSave,
                   contexts: contextsToSave,
+                  is_dimension_includes_excludes_configured:
+                    configurationStatusSettings?.is_dimension_includes_excludes_configured ??
+                    null,
                 },
               ],
             },
@@ -284,6 +295,7 @@ function DefinitionModalForm({
         return;
       }
 
+      // Top-level metric includes/excludes settings and context
       if (currentSettings) {
         Object.entries(currentSettings).forEach(
           ([includesExcludesKey, { settings }]) => {
@@ -319,8 +331,51 @@ function DefinitionModalForm({
         key: metricSearchParam,
         settings: settingsToSave,
         contexts: contextsToSave,
+        is_includes_excludes_configured:
+          configurationStatusSettings?.is_includes_excludes_configured ?? null,
       };
       saveMetricSettings(updatedSettingsAndContexts, agencyId);
+    }
+  };
+
+  const toggleMetricIncludesExcludesConfigurationStatus = () => {
+    const prevConfigurationStatus =
+      metrics[systemMetricKey].is_includes_excludes_configured;
+    const toggledStatus =
+      !prevConfigurationStatus ||
+      prevConfigurationStatus === ConfigurationStatus.NO
+        ? ConfigurationStatus.YES
+        : ConfigurationStatus.NO;
+
+    if (systemSearchParam && metricSearchParam) {
+      return updateMetricIncludesExcludesConfigurationStatus(
+        systemSearchParam,
+        metricSearchParam,
+        toggledStatus
+      );
+    }
+  };
+
+  const toggleDimensionIncludesExcludesConfigurationStatus = (
+    dimensionKey: string,
+    disaggregationKey: string
+  ) => {
+    const prevConfigurationStatus =
+      currentDimension?.is_dimension_includes_excludes_configured;
+    const toggledStatus =
+      !prevConfigurationStatus ||
+      prevConfigurationStatus === ConfigurationStatus.NO
+        ? ConfigurationStatus.YES
+        : ConfigurationStatus.NO;
+
+    if (systemSearchParam && metricSearchParam) {
+      return updateDimensionIncludesExcludesConfigurationStatus(
+        systemSearchParam,
+        metricSearchParam,
+        disaggregationKey,
+        dimensionKey,
+        toggledStatus
+      );
     }
   };
 
@@ -430,6 +485,29 @@ function DefinitionModalForm({
           </Styled.ContextContainer>
         </Styled.ScrollableInnerWrapper>
         <Styled.BottomButtonsContainer>
+          <ConfigurationStatusButton
+            configurationStatus={
+              isMetricDefinitionSettings
+                ? metrics[systemMetricKey].is_includes_excludes_configured
+                : currentDimension?.is_dimension_includes_excludes_configured
+            }
+            onClick={() => {
+              let updatedSettings;
+              if (isMetricDefinitionSettings) {
+                updatedSettings =
+                  toggleMetricIncludesExcludesConfigurationStatus();
+              } else if (activeDisaggregationKey) {
+                updatedSettings =
+                  toggleDimensionIncludesExcludesConfigurationStatus(
+                    activeDimensionKey,
+                    activeDisaggregationKey
+                  );
+              }
+              handleSaveSettings(updatedSettings);
+              closeModal();
+            }}
+            saveAndClose
+          />
           {!isReadOnly && !hasNoSettingsAndNoContext && (
             <Button
               label="Save"

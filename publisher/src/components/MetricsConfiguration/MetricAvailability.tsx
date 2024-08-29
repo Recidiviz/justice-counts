@@ -31,6 +31,7 @@ import { Tooltip } from "@justice-counts/common/components/Tooltip";
 import {
   AgencySystem,
   AgencySystems,
+  ConfigurationStatus,
   SupervisionSubsystems,
   SupervisionSystem,
 } from "@justice-counts/common/types";
@@ -46,6 +47,7 @@ import {
   replaceSystemMetricKeyWithNewSystem,
   useSettingsSearchParams,
 } from "../Settings";
+import { ConfigurationStatusButton } from "./ConfigurationStatusButton";
 import { RACE_ETHNICITY_DISAGGREGATION_KEY } from "./constants";
 import * as Styled from "./MetricAvailability.styled";
 import { RaceEthnicitiesGrid } from "./RaceEthnicitiesGrid";
@@ -74,6 +76,7 @@ function MetricAvailability({
     updateDimensionEnabledStatus,
     updateMetricReportFrequency,
     updateDisaggregatedBySupervisionSubsystems,
+    updateDisaggregationConfigurationStatus,
     saveMetricSettings,
     initializeMetricConfigStoreValues,
   } = metricConfigStore;
@@ -304,6 +307,29 @@ function MetricAvailability({
         disaggregationKey,
         dimensionKey,
         status
+      );
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      saveMetricSettings(updatedSetting, agencyId!);
+    }
+  };
+
+  const toggleDisaggregationConfigurationStatus = (
+    disaggregationKey: string
+  ) => {
+    if (systemSearchParam && metricSearchParam) {
+      const prevConfigurationStatus =
+        disaggregations[activeBreakdownSystemMetricKey][disaggregationKey]
+          .is_breakdown_configured;
+      const toggledStatus =
+        !prevConfigurationStatus ||
+        prevConfigurationStatus === ConfigurationStatus.NO
+          ? ConfigurationStatus.YES
+          : ConfigurationStatus.NO;
+      const updatedSetting = updateDisaggregationConfigurationStatus(
+        activeBreakdownSystemKey,
+        activeBreakdownMetricKey,
+        disaggregationKey,
+        toggledStatus
       );
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       saveMetricSettings(updatedSetting, agencyId!);
@@ -735,6 +761,19 @@ function MetricAvailability({
                       </Styled.DimensionsListFieldset>
                     </Styled.DimensionsList>
                   )}
+                  {/* Configuration Status Button */}
+                  <ConfigurationStatusButton
+                    configurationStatus={
+                      disaggregations[activeBreakdownSystemMetricKey][
+                        disaggregationKey
+                      ].is_breakdown_configured
+                    }
+                    onClick={() => {
+                      toggleDisaggregationConfigurationStatus(
+                        disaggregationKey
+                      );
+                    }}
+                  />
                 </Styled.DimensionsContainer>
               );
             })}

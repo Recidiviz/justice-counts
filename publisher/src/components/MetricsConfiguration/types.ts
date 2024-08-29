@@ -16,6 +16,7 @@
 // =============================================================================
 
 import {
+  ConfigurationStatus,
   Metric,
   MetricConfigurationSettings,
   MetricConfigurationSettingsOptions,
@@ -50,6 +51,7 @@ export type MetricSettings = {
 export type MetricInfo = {
   key?: string;
   enabled?: boolean | null;
+  is_includes_excludes_configured?: ConfigurationStatus | null;
   label?: string;
   description?: Metric["description"];
   defaultFrequency?: ReportFrequency;
