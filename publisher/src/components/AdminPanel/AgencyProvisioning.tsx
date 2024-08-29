@@ -1338,9 +1338,10 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                           )}
 
                           {/* Create New User Button */}
-                          <Styled.ActionButton onClick={openSecondaryModal}>
+                          {/* TODO(#1442) Flow disabled until bugs resolved */}
+                          {/* <Styled.ActionButton onClick={openSecondaryModal}>
                             Create New User
-                          </Styled.ActionButton>
+                          </Styled.ActionButton> */}
                         </Styled.FormActions>
                       </Styled.InputLabelWrapper>
                     )}
