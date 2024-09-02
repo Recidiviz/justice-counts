@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "@justice-counts/common": "*",
-    "@recidiviz/design-system": "^5.5.0",
+    "@recidiviz/design-system": "^5.7.0",
     "@types/bluebird": "^3.5.42",
     "bluebird": "^3.7.2",
     "file-saver": "^2.0.5",
