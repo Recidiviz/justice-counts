@@ -112,8 +112,6 @@ const Tooltip: React.FC<TooltipProps> = ({
           return null;
         }
 
-        // console.log(datapoint[dimension]);
-
         return (
           <TooltipItemContainer key={dimension}>
             <LegendColor index={idx} />
@@ -129,11 +127,12 @@ const Tooltip: React.FC<TooltipProps> = ({
     };
 
     const renderTotalValue = () => {
-      if (datapoint.dataVizMissingData !== 0) return null;
-
+      const hasTotalValue = dimensionNames.includes("Total");
       const totalValue = sum(
         dimensionNames.map((dimension) => datapoint[dimension])
       );
+
+      if (datapoint.dataVizMissingData !== 0 || hasTotalValue) return null;
 
       return (
         <TooltipNameWithBottomMargin>
