@@ -307,7 +307,13 @@ class ReportStore {
 
       const datapointsByMetric =
         DatapointsStore.keyRawDatapointsByMetric(filteredDatapoints);
-      const datapointsEntries = Object.entries(datapointsByMetric);
+      const datapointsEntries = Object.entries(datapointsByMetric).filter(
+        ([metricKey]) =>
+          Object.values(this.reportMetrics)
+            .flat()
+            .filter((d) => d.enabled)
+            .find((d) => d.key === metricKey)
+      );
 
       const metricsToDisplay = datapointsEntries.map(
         ([metricKey, metricDatapoints]) => {

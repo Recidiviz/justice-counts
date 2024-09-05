@@ -119,6 +119,8 @@ const DataEntryReview = () => {
   const metrics = hasPublishReviewProps
     ? metricsToDisplay
         .reduce((acc, metric) => {
+          console.log(formStore.disaggregations?.[reportID]?.[metric.key]);
+          console.log(datapointsByMetric[metric.key]);
           const reviewMetric = {
             datapoints: datapointsByMetric[metric.key],
             display_name: metric.displayName,
