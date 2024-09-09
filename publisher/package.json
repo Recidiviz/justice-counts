@@ -14,7 +14,7 @@
     "@tanstack/react-table": "^8.17.3",
     "@types/file-saver": "^2.0.7",
     "file-saver": "^2.0.5",
-    "http-proxy-middleware": "^2.0.6",
+    "http-proxy-middleware": "^3.0.2",
     "lodash.debounce": "^4.0.8",
     "lodash.mapvalues": "^4.6.0",
     "lodash.pickby": "^4.6.0",
