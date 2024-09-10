@@ -128,6 +128,14 @@ abstract class DatapointsStore {
           dimensionValue = sanitizedValue;
         }
 
+        if (dp.start_date === "Fri, 01 Jan 2021 00:00:00 GMT")
+          console.log(
+            hasDimensionName,
+            dimensionName,
+            sanitizedValue,
+            dp.frequency
+          );
+
         res[dp.metric_definition_key].disaggregations[
           dp.disaggregation_display_name
         ][dp.start_date] = {
