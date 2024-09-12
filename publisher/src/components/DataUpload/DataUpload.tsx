@@ -171,7 +171,10 @@ export const DataUpload: React.FC = observer(() => {
       });
 
       /** Errors and/or Warnings Encountered During Upload -- Show Interstitial instead of Confirmation Page */
-      const errorsWarningsAndMetrics = processUploadResponseBody(data);
+      const errorsWarningsAndMetrics = processUploadResponseBody(
+        data,
+        currentAgency
+      );
       const hasErrorsOrWarnings =
         (errorsWarningsAndMetrics.nonMetricErrors &&
           errorsWarningsAndMetrics.nonMetricErrors.length > 0) ||
