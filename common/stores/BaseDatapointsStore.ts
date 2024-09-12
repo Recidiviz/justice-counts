@@ -88,7 +88,7 @@ abstract class DatapointsStore {
           frequency: dp.frequency,
           dataVizMissingData: 0,
         });
-      } else {
+      } else if (dp.value && dp.frequency) {
         if (
           !res[dp.metric_definition_key].disaggregations[
             dp.disaggregation_display_name
@@ -127,14 +127,6 @@ abstract class DatapointsStore {
         } else {
           dimensionValue = sanitizedValue;
         }
-
-        if (dp.start_date === "Fri, 01 Jan 2021 00:00:00 GMT")
-          console.log(
-            hasDimensionName,
-            dimensionName,
-            sanitizedValue,
-            dp.frequency
-          );
 
         res[dp.metric_definition_key].disaggregations[
           dp.disaggregation_display_name
