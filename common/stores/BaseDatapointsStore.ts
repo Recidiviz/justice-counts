@@ -88,7 +88,7 @@ abstract class DatapointsStore {
           frequency: dp.frequency,
           dataVizMissingData: 0,
         });
-      } else if (dp.value && dp.frequency) {
+      } else if (dp.value) {
         if (
           !res[dp.metric_definition_key].disaggregations[
             dp.disaggregation_display_name
