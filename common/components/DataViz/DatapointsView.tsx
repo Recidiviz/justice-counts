@@ -240,26 +240,37 @@ export const DatapointsView = forwardRef<never, DatapointsViewProps>(
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [metricName, metricFrequency]);
+
     useEffect(() => {
       if (isAnnualOnly && selectedTimeRangeValue === 6) {
         setTimeRange("All Time");
-      }
-      if (!disaggregationOptions.includes(disaggregationName)) {
-        setDisaggregationName(noDisaggregationOption);
-        setCountOrPercentageView("Breakdown by Count");
-      }
-      if (disaggregationName === noDisaggregationOption) {
-        setCountOrPercentageView("Breakdown by Count");
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [datapointsGroupedByAggregateAndDisaggregations]);
 
     useEffect(() => {
+      if (!disaggregationOptions.includes(disaggregationName)) {
+        /* If a user is in a breakdown view for metric A and switches to metric B, 
+        we could show them the same breakdown if it exists in metric B, 
+        otherwise we show them the breakdown metric that is NOT the Biological Sex or Race Ethnicity breakdown. */
+        const filteredDisaggregationOptions = disaggregationOptions.filter(
+          (option) =>
+            option !== noDisaggregationOption &&
+            option !== "Biological Sex" &&
+            option !== "Race / Ethnicity"
+        );
+        if (filteredDisaggregationOptions.length > 0) {
+          setDisaggregationName(filteredDisaggregationOptions[0]);
+        } else {
+          setDisaggregationName(noDisaggregationOption);
+          setCountOrPercentageView("Breakdown by Count");
+        }
+      }
       if (disaggregationName === noDisaggregationOption) {
         setCountOrPercentageView("Breakdown by Count");
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [disaggregationName]);
+    }, [disaggregationName, disaggregationOptions]);
 
     /** Prevent body from scrolling when modal is open */
     useEffect(() => {
