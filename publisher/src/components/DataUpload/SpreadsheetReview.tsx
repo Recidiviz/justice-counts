@@ -127,7 +127,7 @@ export function SpreadsheetReview({
   ) => {
     const allDatapoints = metrics
       .flatMap((metric) => metric.datapoints)
-      .filter((dp) => dp.value);
+      .filter((dp) => dp.value || dp.value === 0); // Filter out null values
     const datapointsByMetricNameByAgencyName = allDatapoints.reduce(
       (acc, dp) => {
         if (!dp.agency_name || !dp.metric_display_name) return acc;
