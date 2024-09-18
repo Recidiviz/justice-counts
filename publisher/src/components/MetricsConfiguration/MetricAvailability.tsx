@@ -49,6 +49,7 @@ import {
 } from "../Settings";
 import { ConfigurationStatusButton } from "./ConfigurationStatusButton";
 import { RACE_ETHNICITY_DISAGGREGATION_KEY } from "./constants";
+import DefinitionModalForm from "./DefinitionModalForm";
 import * as Styled from "./MetricAvailability.styled";
 import { RaceEthnicitiesGrid } from "./RaceEthnicitiesGrid";
 import { ReportFrequencyUpdate } from "./types";
@@ -82,9 +83,12 @@ function MetricAvailability({
   } = metricConfigStore;
   const [activeDisaggregationKey, setActiveDisaggregationKey] =
     useState<string>();
+  const [activeDimensionKey, setActiveDimensionKey] = useState<string>();
   // For when a user selects "Other" for Starting Month and has made no dropdown selection
   const [showCustomYearDropdownOverride, setShowCustomYearDropdownOverride] =
     useState<boolean>();
+
+  const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
 
   const isReadOnly = userStore.isUserReadOnly(agencyId);
   const systemMetricKey = getActiveSystemMetricKey(settingsSearchParams);
@@ -639,6 +643,15 @@ function MetricAvailability({
         </Styled.SettingsContainer>
 
         {/* Metric Breakdowns */}
+        {isSettingsModalOpen && (
+          // This modal only opens if we check/uncheck "other" breakdown
+          <DefinitionModalForm
+            activeDisaggregationKey={activeDisaggregationKey}
+            activeDimensionKey={activeDimensionKey}
+            closeModal={() => setIsSettingsModalOpen(false)}
+            systemMetricKey={systemMetricKey}
+          />
+        )}
         {hasDisaggregations && (
           <Styled.BreakdownsSection disabled={false}>
             <Styled.BreakdownsSectionTitle>
@@ -732,11 +745,24 @@ function MetricAvailability({
                         <CheckboxOptions
                           options={[
                             ...Object.values(currentDimensions).map(
-                              (dimension) => ({
-                                key: dimension.key as string,
-                                label: dimension.label as string,
-                                checked: Boolean(dimension.enabled),
-                              })
+                              (dimension) => {
+                                const isOtherDimension =
+                                  dimension.key?.includes("Other");
+
+                                return {
+                                  key: dimension.key as string,
+                                  label: dimension.label as string,
+                                  checked: Boolean(dimension.enabled),
+                                  isOtherOption: isOtherDimension,
+                                  onChangeOtherOption: () => {
+                                    setActiveDisaggregationKey(
+                                      disaggregationKey
+                                    );
+                                    setActiveDimensionKey(dimension.key);
+                                    setIsSettingsModalOpen(true);
+                                  },
+                                };
+                              }
                             ),
                             {
                               key: "select-all",

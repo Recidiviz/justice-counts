@@ -67,6 +67,7 @@ function DefinitionModalForm({
     updateContextValue,
     updateMetricIncludesExcludesConfigurationStatus,
     updateDimensionIncludesExcludesConfigurationStatus,
+    updateDimensionEnabledStatus,
   } = metricConfigStore;
 
   // read only check
@@ -392,6 +393,19 @@ function DefinitionModalForm({
     ? metrics[systemMetricKey]?.description
     : currentDimension?.description;
 
+  const handleOtherDimensionUpdate = () => {
+    if (activeDisaggregationKey && activeDimensionKey?.includes("Other")) {
+      const updatedSetting = updateDimensionEnabledStatus(
+        systemSearchParam,
+        metricSearchParam,
+        activeDisaggregationKey,
+        activeDimensionKey,
+        !!currentContexts.ADDITIONAL_CONTEXT.value
+      );
+      saveMetricSettings(updatedSetting, agencyId);
+    }
+  };
+
   return (
     <Styled.Wrapper>
       <Styled.Content>
@@ -513,6 +527,7 @@ function DefinitionModalForm({
               label="Save"
               onClick={() => {
                 handleSaveSettings();
+                handleOtherDimensionUpdate();
                 closeModal();
               }}
               buttonColor="blue"
