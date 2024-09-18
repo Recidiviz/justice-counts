@@ -302,7 +302,7 @@ class ReportStore {
 
       const filteredDatapoints =
         combinedFilteredDatapointsFromAllReports.filter(
-          (dp) => dp.value !== null
+          (dp) => dp.value || dp.value === 0 // Filter out null values
         );
 
       const datapointsByMetric =
