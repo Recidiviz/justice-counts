@@ -21,6 +21,7 @@ import {
 } from "@justice-counts/common/components/Dropdown";
 import { MIN_TABLET_WIDTH } from "@justice-counts/common/components/GlobalStyles";
 import { useWindowWidth } from "@justice-counts/common/hooks";
+import { UserAgency } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
@@ -40,9 +41,11 @@ const Menu: React.FC = () => {
   const windowWidth = useWindowWidth();
   const headerBadge = useHeaderBadge();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [currentAgency, setCurrentAgency] = useState<UserAgency | undefined>(
+    undefined
+  );
 
   const pathWithoutAgency = removeAgencyFromPath(location.pathname);
-  const currentAgency = userStore.getAgency(agencyId);
   const hasDashboardEnabled = currentAgency?.is_dashboard_enabled;
   const agencyName = currentAgency?.name;
 
@@ -51,6 +54,16 @@ const Menu: React.FC = () => {
       setIsMobileMenuOpen(false);
     }
   };
+
+  // Fetch agency data asynchronously
+  useEffect(() => {
+    const fetchAgency = async () => {
+      const agency = await userStore.getAgencyNew(agencyId);
+      setCurrentAgency(agency); // Set the current agency in state after fetching
+    };
+
+    fetchAgency();
+  }, [agencyId, userStore]);
 
   const usernameToInitials = () => {
     if (userStore.name) {
@@ -85,33 +98,18 @@ const Menu: React.FC = () => {
     }
   };
 
-  const includeStateCodeInAgencyName = userStore.userAgenciesFromMultipleStates;
-  const agencyDropdownOptions: DropdownOption[] = userStore.userAgencies
-    ? userStore.userAgencies
-        .slice()
-        .sort((a, b) => a.name.localeCompare(b.name))
-        .map((agency) => {
-          const stateCodeDisplayName = agency.state_code
-            ?.split("_")[1]
-            .toUpperCase();
-          const isStateCodeInAgencyName =
-            agency.name.includes(stateCodeDisplayName);
-          return {
-            key: agency.id,
-            label: `${agency.name} ${
-              agency.state_code &&
-              includeStateCodeInAgencyName &&
-              !isStateCodeInAgencyName
-                ? `(${stateCodeDisplayName})`
-                : ""
-            }`,
-            onClick: () => {
-              navigate(`/agency/${agency.id}/${pathWithoutAgency}`);
-              handleCloseMobileMenu();
-            },
-            highlight: agency.id === currentAgency?.id,
-          };
-        })
+  const agencyDropdownOptions: DropdownOption[] = userStore.dropdownAgencies
+    ? userStore.dropdownAgencies.map((agency) => {
+        return {
+          key: agency.agency_id,
+          label: agency.dropdown_name,
+          onClick: () => {
+            navigate(`/agency/${agency.agency_id}/${pathWithoutAgency}`);
+            handleCloseMobileMenu();
+          },
+          highlight: agency.agency_id === currentAgency?.id,
+        };
+      })
     : [];
 
   const profileDropdownMetadata = [
@@ -199,13 +197,17 @@ const Menu: React.FC = () => {
       agencyStore.getChildAgencies(String(superagencyId));
   }, [agencyId, currentAgency, agencyStore, userStore]);
 
+  // Handle loading state when currentAgency is undefined
+  if (!currentAgency) {
+    return <div>Loading...</div>;
+  }
   return (
     <Styled.MenuContainer isMobileMenuOpen={isMobileMenuOpen}>
       <Styled.AgencyDropdownHeaderBadgeWrapper>
         {/* Agencies Dropdown */}
-        {userStore.userAgencies && (
+        {userStore.dropdownAgencies && (
           <>
-            {userStore.userAgencies.length < 2 ? (
+            {userStore.dropdownAgencies.length < 2 ? (
               <Styled.SingleAgencyHeader>
                 {currentAgency?.name}
               </Styled.SingleAgencyHeader>

@@ -33,6 +33,7 @@ import {
   AgencySystems,
   SupervisionSubsystems,
   SupervisionSystem,
+  UserAgency,
 } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
@@ -85,10 +86,22 @@ function MetricAvailability({
 
   const isReadOnly = userStore.isUserReadOnly(agencyId);
   const systemMetricKey = getActiveSystemMetricKey(settingsSearchParams);
-  const currentAgency = userStore.getAgency(agencyId);
+  const [currentAgency, setCurrentAgency] = useState<UserAgency | undefined>(
+    undefined
+  );
+
+  useEffect(() => {
+    // Fetch the agency using getAgencyNew
+    const fetchAgency = async () => {
+      const agency = await userStore.getAgencyNew(agencyId);
+      setCurrentAgency(agency);
+    };
+    fetchAgency();
+  }, [agencyId, userStore]);
+
   const agencySupervisionSubsystems = currentAgency?.systems.filter((system) =>
     SupervisionSubsystems.includes(system)
-  );
+  ); // Updated currentAgency usage
   const isSupervisionSystem = systemSearchParam === AgencySystems.SUPERVISION;
   const hasSupervisionSubsystems =
     agencySupervisionSubsystems && agencySupervisionSubsystems.length > 0;

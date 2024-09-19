@@ -15,7 +15,11 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 import { showToast } from "@justice-counts/common/components/Toast";
-import { AgencyTeamMemberRole, UserAgency } from "@justice-counts/common/types";
+import {
+  AgencyTeamMemberRole,
+  DropdownAgency,
+  UserAgency,
+} from "@justice-counts/common/types";
 import { makeAutoObservable, runInAction, when } from "mobx";
 
 import { AuthStore } from "../components/Auth";
@@ -31,6 +35,8 @@ class UserStore {
 
   api: API;
 
+  dropdownAgencies: DropdownAgency[] | undefined;
+
   userAgencies: UserAgency[] | undefined;
 
   userId: string | undefined;
@@ -44,6 +50,7 @@ class UserStore {
 
     this.authStore = authStore;
     this.api = api;
+    this.dropdownAgencies = undefined;
     this.userAgencies = undefined;
     this.userInfoLoaded = false;
     this.userId = undefined;
@@ -125,11 +132,20 @@ class UserStore {
     }
   }
 
-  getInitialAgencyId(): number | undefined {
+  getInitialAgencyIdOld(): number | undefined {
     if (this.userAgencies && this.userAgencies.length > 0) {
       // attempting to access 0 index in the empty array leads to the mobx warning "[mobx] Out of bounds read: 0"
       // so check the length of the array before accessing
       return this.userAgencies[0].id;
+    }
+    return undefined;
+  }
+
+  getInitialAgencyId(): number | undefined {
+    if (this.dropdownAgencies && this.dropdownAgencies.length > 0) {
+      // attempting to access 0 index in the empty array leads to the mobx warning "[mobx] Out of bounds read: 0"
+      // so check the length of the array before accessing
+      return this.dropdownAgencies[0].agency_id;
     }
     return undefined;
   }
@@ -161,6 +177,53 @@ class UserStore {
       return this.userAgenciesById[agencyId];
     }
     return undefined;
+  }
+
+  async getAgencyNew(agencyId: string): Promise<UserAgency | undefined> {
+    if (!agencyId) {
+      return undefined;
+    }
+    if (agencyId in this.userAgenciesById) {
+      return this.userAgenciesById[agencyId];
+    }
+    try {
+      const response = (await this.api.request({
+        path: `/api/agency_data/${agencyId}`,
+        method: "GET",
+      })) as Response;
+      if (response && response instanceof Response) {
+        if (response.status === 200) {
+          const { agency: userAgency, id: userId } = await response.json();
+
+          const fetchedAgency: UserAgency = userAgency;
+
+          // Update the userAgenciesById map
+          runInAction(() => {
+            this.userAgenciesById[agencyId] = fetchedAgency;
+          });
+
+          return fetchedAgency;
+        }
+        showToast({
+          message: "Failed to fetch agency data.",
+          color: "red",
+        });
+        return undefined;
+      }
+    } catch (error) {
+      let errorMessage;
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      } else {
+        errorMessage = String(error);
+      }
+
+      showToast({
+        message: `Error fetching agency data. ${errorMessage}`,
+        color: "red",
+      });
+      return undefined;
+    }
   }
 
   get name(): string | undefined {
@@ -235,10 +298,24 @@ class UserStore {
         },
       })) as Response;
       const { agencies: userAgencies, id: userId } = await response.json();
+      const dropdownResponse = (await this.api.request({
+        path: "/api/user_dropdown",
+        method: "PUT",
+        body: {
+          name: this.name,
+          email: this.email,
+          email_verified: this.email_verified,
+        },
+      })) as Response;
+      const {
+        agency_id_to_dropdown_names: dropdownAgencies,
+        user_id: userId2,
+      } = await dropdownResponse.json();
       runInAction(() => {
-        this.userAgencies = userAgencies;
+        // this.userAgencies = userAgencies;
         this.userId = userId;
         this.userInfoLoaded = true;
+        this.dropdownAgencies = dropdownAgencies;
       });
     } catch (error) {
       runInAction(() => {

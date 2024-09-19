@@ -36,6 +36,7 @@ import {
   AgencySystems,
   ReportFrequency,
   SupervisionSubsystems,
+  UserAgency,
 } from "@justice-counts/common/types";
 import { downloadMetricData } from "@justice-counts/common/utils";
 import { frequencyString } from "@justice-counts/common/utils/helperUtils";
@@ -66,7 +67,20 @@ export const MetricsDataChart: React.FC = observer(() => {
   const { reportStore, userStore, datapointsStore, dataVizStore } = useStore();
   const { agencyId } = useParams() as { agencyId: string };
   const { metricsBySystem, agencyMetrics } = reportStore;
-  const currentAgency = userStore.getAgency(agencyId);
+
+  const [currentAgency, setCurrentAgency] = useState<UserAgency | undefined>(
+    undefined
+  );
+
+  useEffect(() => {
+    const fetchAgency = async () => {
+      const agency = await userStore.getAgencyNew(agencyId);
+      setCurrentAgency(agency);
+    };
+
+    fetchAgency();
+  }, [agencyId, userStore]);
+
   const windowWidth = useWindowWidth();
   const topShadow = useInView();
   const bottomShadow = useInView();

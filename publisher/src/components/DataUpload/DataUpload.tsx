@@ -25,6 +25,7 @@ import {
   AgencyTeamMemberRole,
   ReportOverview,
   SupervisionSubsystems,
+  UserAgency,
 } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useMemo, useState } from "react";
@@ -88,14 +89,27 @@ export const DataUpload: React.FC = observer(() => {
   const windowWidth = useWindowWidth();
   const { userStore, reportStore } = useStore();
 
-  const currentAgency = userStore.getAgency(agencyId);
+  const [currentAgency, setCurrentAgency] = useState<UserAgency | undefined>(
+    undefined
+  );
+  const [isLoadingAgency, setIsLoadingAgency] = useState<boolean>(true); // Loading state for agency
 
-  /**
-   * Sub-systems of the SUPERVISION system should not render a separate template & instructions.
-   *
-   * Example: if an agency has the following systems ["SUPERVISION", "PAROLE", "PROBATION"],
-   * the UI should render a template & instructions for the SUPERVISION system.
-   */
+  useEffect(() => {
+    const fetchAgency = async () => {
+      try {
+        const agency = await userStore.getAgencyNew(agencyId); // Fetch agency asynchronously
+        setCurrentAgency(agency); // Set agency state
+      } catch (error) {
+        showToast({ message: "Failed to load agency data.", color: "red" });
+      } finally {
+        setIsLoadingAgency(false); // Set loading to false after data is fetched
+      }
+    };
+
+    fetchAgency(); // Fetch the agency when the component mounts or agencyId changes
+  }, [agencyId, userStore]);
+
+  // Memoized list of user systems, excluding subsystems
   const userSystems = useMemo(() => {
     return currentAgency
       ? currentAgency.systems.filter(
@@ -267,6 +281,15 @@ export const DataUpload: React.FC = observer(() => {
   useEffect(() => {
     setSelectedSystem(userSystems.length === 1 ? userSystems[0] : undefined);
   }, [userSystems]);
+
+  if (isLoadingAgency) {
+    return (
+      <DataUploadContainer>
+        <Loader />
+        <LoadingHeader>Loading Agency...</LoadingHeader>
+      </DataUploadContainer>
+    );
+  }
 
   if (isLoading) {
     return (

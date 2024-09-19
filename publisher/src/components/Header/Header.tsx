@@ -17,7 +17,7 @@
 
 import { HeaderBar } from "@justice-counts/common/components/HeaderBar";
 import { observer } from "mobx-react-lite";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
@@ -28,7 +28,16 @@ const Header = observer(() => {
   const navigate = useNavigate();
   const { userStore } = useStore();
 
-  const isAgencyValid = !!userStore.getAgency(agencyId);
+  const [isAgencyValid, setIsAgencyValid] = useState(false);
+
+  useEffect(() => {
+    const checkAgency = async () => {
+      const agency = await userStore.getAgencyNew(agencyId);
+      setIsAgencyValid(!!agency);
+    };
+    checkAgency();
+  }, [agencyId, userStore]);
+
   const defaultAgency = userStore.getInitialAgencyId();
   const onLogoClick = () =>
     navigate(`/agency/${isAgencyValid ? agencyId : defaultAgency}/`);

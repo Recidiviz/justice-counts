@@ -15,7 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Navigate, Route, Routes, useParams } from "react-router-dom";
 
 import { DataEntryInterstitial } from "../components/DataEntryInterstitial";
@@ -41,16 +41,33 @@ export const Router = () => {
   const { agencyId } = useParams() as { agencyId: string };
   const { userStore } = useStore();
 
-  const isAgencyIdInUserAgencies = userStore.getAgency(agencyId);
+  const [isAgencyIdValid, setIsAgencyIdValid] = useState<boolean | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    const checkAgencyId = async () => {
+      setLoading(true);
+      const agency = await userStore.getAgencyNew(agencyId);
+      setIsAgencyIdValid(!!agency); // Check if agency exists
+      setLoading(false);
+    };
+
+    checkAgencyId();
+  }, [userStore, agencyId]);
 
   useEffect(() => {
     userStore.updateUserAgencyPageVisit(agencyId);
   }, [userStore, agencyId]);
 
+  if (loading) {
+    // Optional: You can show a loading spinner or some loading UI here
+    return <div>Loading...</div>;
+  }
+
   return (
     <>
       <Header />
-      {isAgencyIdInUserAgencies ? (
+      {isAgencyIdValid ? (
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path={`/${REPORTS_LOWERCASE}`} element={<Reports />} />

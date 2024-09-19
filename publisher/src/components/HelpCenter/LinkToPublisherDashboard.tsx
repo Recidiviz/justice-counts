@@ -15,8 +15,9 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { UserAgency } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
-import React, { PropsWithChildren } from "react";
+import React, { PropsWithChildren, useEffect, useState } from "react";
 
 import { useStore } from "../../stores";
 
@@ -45,7 +46,25 @@ export const LinkToDashboard: React.FC<
     agencyID ||
     agencyIdLocalStorage ||
     userStore.getInitialAgencyId()?.toLocaleString();
-  const agencyName = name || (agencyId && userStore.getAgency(agencyId)?.name);
+
+  const [currentAgency, setCurrentAgency] = useState<UserAgency | undefined>(
+    undefined
+  );
+
+  useEffect(() => {
+    const fetchAgency = async () => {
+      if (!agencyId) {
+        setCurrentAgency(undefined);
+      } else {
+        const agency = await userStore.getAgencyNew(String(agencyId));
+        setCurrentAgency(agency);
+      }
+    };
+
+    fetchAgency();
+  }, [agencyId, userStore]);
+
+  const agencyName = name || (agencyId && currentAgency?.name);
 
   if (!agencyName) return <>{children}</>;
 

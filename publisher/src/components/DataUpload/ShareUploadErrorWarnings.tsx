@@ -22,6 +22,7 @@ import { useWindowWidth } from "@justice-counts/common/hooks";
 import {
   ReportOverview,
   SupervisionSubsystems,
+  UserAgency,
 } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useMemo, useState } from "react";
@@ -55,16 +56,38 @@ function ShareUploadErrorWarnings() {
     unchangedReports: [],
   });
 
-  // with using spreadsheetId we will fetch spreadsheet data
+  // Use params to get agencyId and spreadsheetId
   const { agencyId, spreadsheetId } = useParams() as {
     agencyId: string;
     spreadsheetId: string;
   };
+
+  // Add loading states for agency data
+  const [currentAgency, setCurrentAgency] = useState<UserAgency | undefined>(
+    undefined
+  );
+  const [isLoadingAgency, setIsLoadingAgency] = useState<boolean>(true);
   const [loadingError, setLoadingError] = useState<string | undefined>(
     undefined
   );
 
-  const currentAgency = userStore.getAgency(agencyId);
+  // Fetch the agency data asynchronously using getAgencyNew
+  useEffect(() => {
+    const fetchAgency = async () => {
+      try {
+        const agency = await userStore.getAgencyNew(agencyId); // Fetch agency asynchronously
+        setCurrentAgency(agency); // Set agency state
+      } catch (error) {
+        setLoadingError("Failed to load agency data.");
+      } finally {
+        setIsLoadingAgency(false); // Stop loading after fetching data
+      }
+    };
+
+    fetchAgency(); // Fetch agency when the component mounts or agencyId changes
+  }, [agencyId, userStore]);
+
+  // Memoize user systems, excluding supervision subsystems
   const userSystems = useMemo(() => {
     return currentAgency
       ? currentAgency.systems.filter(
@@ -73,7 +96,7 @@ function ShareUploadErrorWarnings() {
       : [];
   }, [currentAgency]);
 
-  // here will be fetch spreadsheet call and loading and error handling
+  // Fetch spreadsheet review data
   useEffect(() => {
     const initialize = async () => {
       const result = await reportStore.getSpreadsheetReviewData(spreadsheetId);
@@ -101,16 +124,20 @@ function ShareUploadErrorWarnings() {
     initialize();
   }, [reportStore, spreadsheetId]);
 
-  if (reportStore.loadingSpreadsheetReviewData) {
+  // Handle loading state when fetching the agency data
+  if (isLoadingAgency) {
     return (
       <PageWrapper>
         <Loading />
       </PageWrapper>
     );
   }
+
+  // Handle errors if any
   if (loadingError || !reportStore.spreadsheetReviewData[spreadsheetId]) {
     return <PageWrapper>Error: {loadingError}</PageWrapper>;
   }
+
   const headerBackground = () => {
     if (!errorsWarningsMetrics && windowWidth > MIN_DESKTOP_WIDTH)
       return "transparent";
@@ -118,6 +145,7 @@ function ShareUploadErrorWarnings() {
       return "blue";
     return undefined;
   };
+
   if (errorsWarningsMetrics) {
     return (
       <DataUploadContainer>
@@ -145,6 +173,7 @@ function ShareUploadErrorWarnings() {
       </DataUploadContainer>
     );
   }
+
   return <ShareSpreadsheet />;
 }
 

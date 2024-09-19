@@ -18,7 +18,7 @@
 import checkIcon from "@justice-counts/common/assets/status-check-icon.png";
 import { Button } from "@justice-counts/common/components/Button";
 import { AgencySystem, ReportOverview } from "@justice-counts/common/types";
-import React, { Fragment } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
@@ -74,7 +74,16 @@ export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
   const navigate = useNavigate();
   const { agencyId } = useParams() as { agencyId: string };
   const { userStore } = useStore();
-  const currentAgency = userStore.getAgency(agencyId);
+
+  // Use the new getAgencyNew method to fetch the current agency
+  const [currentAgency, setCurrentAgency] = useState<any>(null);
+  useEffect(() => {
+    const fetchAgency = async () => {
+      const agency = await userStore.getAgencyNew(agencyId);
+      setCurrentAgency(agency);
+    };
+    fetchAgency();
+  }, [agencyId, userStore]);
 
   const { metrics, errorsWarningsAndSuccessfulMetrics, nonMetricErrors } =
     errorsWarningsMetrics;

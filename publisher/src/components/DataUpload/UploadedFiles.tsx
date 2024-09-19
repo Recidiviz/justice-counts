@@ -26,6 +26,7 @@ import { showToast } from "@justice-counts/common/components/Toast";
 import {
   AgencySystem,
   AgencyTeamMemberRole,
+  UserAgency,
 } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
 import React, { useCallback, useEffect, useState } from "react";
@@ -259,7 +260,13 @@ export const UploadedFileRow: React.FC<{
 export const UploadedFiles: React.FC = observer(() => {
   const { agencyId } = useParams() as { agencyId: string };
   const { reportStore, userStore } = useStore();
-  const currentAgency = userStore.getAgency(agencyId);
+
+  // State for current agency and loading status
+  const [currentAgency, setCurrentAgency] = useState<UserAgency | undefined>(
+    undefined
+  );
+  const [isLoadingAgency, setIsLoadingAgency] = useState<boolean>(true);
+
   const dataUploadColumnTitles = [
     "Filename",
     "Uploaded",
@@ -367,6 +374,16 @@ export const UploadedFiles: React.FC = observer(() => {
     setUploadedFiles(listOfFiles);
   };
 
+  // Fetch agency data using getAgencyNew
+  useEffect(() => {
+    const fetchAgencyData = async () => {
+      const agency = await userStore.getAgencyNew(agencyId);
+      setCurrentAgency(agency);
+      setIsLoadingAgency(false);
+    };
+    fetchAgencyData();
+  }, [agencyId, userStore]);
+
   useEffect(
     () => {
       fetchListOfUploadedFiles();
@@ -375,7 +392,7 @@ export const UploadedFiles: React.FC = observer(() => {
     [agencyId]
   );
 
-  if (isLoading) {
+  if (isLoading || isLoadingAgency) {
     return <ContainedLoader />;
   }
 

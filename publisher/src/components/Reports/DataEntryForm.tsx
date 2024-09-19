@@ -19,7 +19,7 @@ import { Button } from "@justice-counts/common/components/Button";
 import { HeaderBar } from "@justice-counts/common/components/HeaderBar";
 import { MiniLoader } from "@justice-counts/common/components/MiniLoader";
 import { showToast } from "@justice-counts/common/components/Toast";
-import { AgencySystem, Report } from "@justice-counts/common/types";
+import { AgencySystem, Report, UserAgency } from "@justice-counts/common/types";
 import { runInAction } from "mobx";
 import { observer } from "mobx-react-lite";
 import React, { Fragment, useEffect, useRef, useState } from "react";
@@ -86,7 +86,18 @@ const DataEntryForm: React.FC<{
   const [isSaveInProgress, setIsSaveInProgress] = useState(false);
   const metricsRef = useRef<HTMLDivElement[]>([]);
 
-  const currentAgency = userStore.getAgency(agencyId);
+  const [currentAgency, setCurrentAgency] = useState<UserAgency | undefined>(
+    undefined
+  );
+  useEffect(() => {
+    const fetchAgency = async () => {
+      const agency = await userStore.getAgencyNew(agencyId);
+      setCurrentAgency(agency);
+    };
+
+    fetchAgency();
+  }, [agencyId, userStore]);
+
   const isSuperagency = userStore.isAgencySuperagency(agencyId);
   const isPublished =
     reportStore.reportOverviews[reportID].status === "PUBLISHED";
@@ -160,7 +171,7 @@ const DataEntryForm: React.FC<{
       showToast({ message: "Saved", color: "blue" });
       if (oldStatus === "NOT_STARTED" && status === "DRAFT") {
         const agencyID = reportStore.reportOverviews[reportID]?.agency_id;
-        const agency = userStore.getAgency(agencyID.toString());
+        const agency = userStore.getAgency(agencyID.toString()); // Leave as-is.
         trackReportNotStartedToDraft(reportID, agency);
       }
       setIsSaveInProgress(false);
