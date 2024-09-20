@@ -111,6 +111,7 @@ const Menu: React.FC = () => {
         };
       })
     : [];
+  // We could do it here?
 
   const profileDropdownMetadata = [
     {

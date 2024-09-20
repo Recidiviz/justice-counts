@@ -56,6 +56,9 @@ class UserStore {
     this.userId = undefined;
     this.loadingError = false;
 
+    // We can await this first call to get the dropdown.
+    // Then we can query the first initial.
+    // Then we can
     when(
       () => api.isSessionInitialized,
       () => this.updateAndRetrieveUserPermissionsAndAgencies()
