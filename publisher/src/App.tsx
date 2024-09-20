@@ -64,7 +64,7 @@ const App: React.FC = (): ReactElement => {
     }
   }, [location.pathname, userStore]);
 
-  // using this variable to indicate whether user has any agencies
+  // using this variable to indicate whether user has any agencies.
   // if true then depending on url either we
   // go to report page with initial agency (example entering site by homepage)
   // or we go to route associated with specific agency (like external url with specific page and maybe search params)
