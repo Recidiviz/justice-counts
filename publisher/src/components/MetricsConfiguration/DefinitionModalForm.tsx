@@ -43,6 +43,7 @@ type DefinitionModalFormProps = {
   activeDimensionKey?: string;
   systemMetricKey: string;
   closeModal: () => void;
+  onCloseModal?: (otherBreakdownValue?: string) => void;
 };
 
 function DefinitionModalForm({
@@ -50,6 +51,7 @@ function DefinitionModalForm({
   activeDimensionKey,
   systemMetricKey,
   closeModal,
+  onCloseModal,
 }: DefinitionModalFormProps) {
   const { agencyId } = useParams() as { agencyId: string };
   const { metricConfigStore, userStore } = useStore();
@@ -403,6 +405,8 @@ function DefinitionModalForm({
         !!currentContexts.ADDITIONAL_CONTEXT.value
       );
       saveMetricSettings(updatedSetting, agencyId);
+
+      if (onCloseModal) onCloseModal(currentContexts.ADDITIONAL_CONTEXT.value);
     }
   };
 

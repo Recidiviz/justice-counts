@@ -83,12 +83,13 @@ function MetricAvailability({
   } = metricConfigStore;
   const [activeDisaggregationKey, setActiveDisaggregationKey] =
     useState<string>();
-  const [activeDimensionKey, setActiveDimensionKey] = useState<string>();
   // For when a user selects "Other" for Starting Month and has made no dropdown selection
   const [showCustomYearDropdownOverride, setShowCustomYearDropdownOverride] =
     useState<boolean>();
 
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
+  const [otherDimensionKey, setOtherDimensionKey] = useState<string>();
+  const [hasOtherBreakdownValue, setHasOtherBreakdownValue] = useState(false);
 
   const isReadOnly = userStore.isUserReadOnly(agencyId);
   const systemMetricKey = getActiveSystemMetricKey(settingsSearchParams);
@@ -644,12 +645,15 @@ function MetricAvailability({
 
         {/* Metric Breakdowns */}
         {isSettingsModalOpen && (
-          // This modal only opens if we check/uncheck "other" breakdown
+          // This modal only opens if we check/uncheck "other" breakdown or "select all"
           <DefinitionModalForm
-            activeDisaggregationKey={activeDisaggregationKey}
-            activeDimensionKey={activeDimensionKey}
-            closeModal={() => setIsSettingsModalOpen(false)}
             systemMetricKey={systemMetricKey}
+            activeDisaggregationKey={activeDisaggregationKey}
+            activeDimensionKey={otherDimensionKey}
+            closeModal={() => setIsSettingsModalOpen(false)}
+            onCloseModal={(otherBreakdownValue) =>
+              setHasOtherBreakdownValue(!!otherBreakdownValue)
+            }
           />
         )}
         {hasDisaggregations && (
@@ -704,6 +708,16 @@ function MetricAvailability({
                 Object.values(currentDimensions).length ===
                 currentEnabledDimensions.length;
 
+              const handleOtherDimensionCheck = () => {
+                setActiveDisaggregationKey(disaggregationKey);
+                setOtherDimensionKey(
+                  Object.values(currentDimensions).find((d) =>
+                    d.key?.includes("Other")
+                  )?.key
+                );
+                setIsSettingsModalOpen(true);
+              };
+
               if (
                 activeDisaggregationKey &&
                 activeDisaggregationKey !== disaggregationKey
@@ -754,13 +768,8 @@ function MetricAvailability({
                                   label: dimension.label as string,
                                   checked: Boolean(dimension.enabled),
                                   isOtherOption: isOtherDimension,
-                                  onChangeOtherOption: () => {
-                                    setActiveDisaggregationKey(
-                                      disaggregationKey
-                                    );
-                                    setActiveDimensionKey(dimension.key);
-                                    setIsSettingsModalOpen(true);
-                                  },
+                                  onChangeOtherOption:
+                                    handleOtherDimensionCheck,
                                 };
                               }
                             ),
@@ -769,11 +778,14 @@ function MetricAvailability({
                               label: "Select All",
                               checked: allDimensionsEnabled,
                               disabled: isReadOnly,
-                              onChangeOverride: () =>
+                              onChangeOverride: () => {
+                                handleOtherDimensionCheck();
                                 handleDisaggregationSelection(
                                   disaggregationKey,
-                                  !allDimensionsEnabled
-                                ),
+                                  !allDimensionsEnabled ||
+                                    !hasOtherBreakdownValue
+                                );
+                              },
                             },
                           ]}
                           onChange={({ key, checked }) =>
