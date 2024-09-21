@@ -182,6 +182,53 @@ class UserStore {
     return undefined;
   }
 
+  // async getAgencyNew(agencyId: string): Promise<UserAgency | undefined> {
+  //   if (!agencyId) {
+  //     return undefined;
+  //   }
+  //   if (agencyId in this.userAgenciesById) {
+  //     return this.userAgenciesById[agencyId];
+  //   }
+  //   try {
+  //     const response = (await this.api.request({
+  //       path: `/api/agency_data/${agencyId}`,
+  //       method: "GET",
+  //     })) as Response;
+  //     if (response && response instanceof Response) {
+  //       if (response.status === 200) {
+  //         const { agencies: userAgency, id: userId } = await response.json();
+
+  //         const fetchedAgency: UserAgency = userAgency;
+
+  //         // Update the userAgenciesById map
+  //         runInAction(() => {
+  //           this.userAgenciesById[agencyId] = fetchedAgency;
+  //         });
+
+  //         return fetchedAgency;
+  //       }
+  //       showToast({
+  //         message: "Failed to fetch agency data.",
+  //         color: "red",
+  //       });
+  //       return undefined;
+  //     }
+  //   } catch (error) {
+  //     let errorMessage;
+  //     if (error instanceof Error) {
+  //       errorMessage = error.message;
+  //     } else {
+  //       errorMessage = String(error);
+  //     }
+
+  //     showToast({
+  //       message: `Error fetching agency data. ${errorMessage}`,
+  //       color: "red",
+  //     });
+  //     return undefined;
+  //   }
+  // }
+
   async getAgencyNew(agencyId: string): Promise<UserAgency | undefined> {
     if (!agencyId) {
       return undefined;
@@ -191,21 +238,24 @@ class UserStore {
     }
     try {
       const response = (await this.api.request({
-        path: `/api/agency_data/${agencyId}`,
+        path: `/api/agency_data2/${agencyId}`,
         method: "GET",
       })) as Response;
       if (response && response instanceof Response) {
         if (response.status === 200) {
-          const { agency: userAgency, id: userId } = await response.json();
-
-          const fetchedAgency: UserAgency = userAgency;
+          const { agencies: userAgencies, id: userId } = await response.json();
 
           // Update the userAgenciesById map
           runInAction(() => {
-            this.userAgenciesById[agencyId] = fetchedAgency;
+            userAgencies.forEach((userAgency: UserAgency) => {
+              this.userAgenciesById[userAgency.id] = userAgency;
+            });
           });
 
-          return fetchedAgency;
+          if (agencyId in this.userAgenciesById) {
+            return this.userAgenciesById[agencyId];
+          }
+          return undefined;
         }
         showToast({
           message: "Failed to fetch agency data.",

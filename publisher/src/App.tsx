@@ -62,7 +62,7 @@ const App: React.FC = (): ReactElement => {
 
       fetchAgencyData();
     }
-  }, [location.pathname, userStore]);
+  });
 
   // using this variable to indicate whether user has any agencies
   // if true then depending on url either we
