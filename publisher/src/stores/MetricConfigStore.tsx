@@ -18,6 +18,7 @@
 import { showToast } from "@justice-counts/common/components/Toast";
 import {
   AgencySystem,
+  ConfigurationStatus,
   FormError,
   Metric,
   MetricConfigurationSettings,
@@ -85,6 +86,7 @@ class MetricConfigStore {
       [disaggregationKey: string]: {
         enabled?: boolean;
         display_name?: string;
+        is_breakdown_configured?: ConfigurationStatus | null;
       };
     };
   };
@@ -99,6 +101,7 @@ class MetricConfigStore {
           key?: string;
           race?: Races;
           ethnicity?: Ethnicities;
+          is_dimension_includes_excludes_configured?: ConfigurationStatus | null;
         };
       };
     };
@@ -247,6 +250,8 @@ class MetricConfigStore {
             startingMonth: metric.starting_month,
             disaggregatedBySupervisionSubsystems:
               metric.disaggregated_by_supervision_subsystems,
+            is_includes_excludes_configured:
+              metric.is_includes_excludes_configured,
           });
 
           metric.includes_excludes?.forEach((includesExcludes) => {
@@ -268,6 +273,7 @@ class MetricConfigStore {
               {
                 display_name: disaggregation.display_name,
                 enabled: disaggregation.enabled,
+                is_breakdown_configured: disaggregation.is_breakdown_configured,
               }
             );
 
@@ -281,12 +287,16 @@ class MetricConfigStore {
                       description: dimension.description,
                       race: dimension.race,
                       ethnicity: dimension.ethnicity,
+                      is_dimension_includes_excludes_configured:
+                        dimension.is_dimension_includes_excludes_configured,
                     }
                   : {
                       label: dimension.label,
                       key: dimension.key,
                       enabled: dimension.enabled,
                       description: dimension.description,
+                      is_dimension_includes_excludes_configured:
+                        dimension.is_dimension_includes_excludes_configured,
                     };
 
               /** Initialize Dimension Status (Enabled/Disabled) */
@@ -390,7 +400,10 @@ class MetricConfigStore {
     system: AgencySystem,
     metricKey: string,
     disaggregationKey: string,
-    disaggregationData: Pick<MetricDisaggregations, "display_name" | "enabled">
+    disaggregationData: Pick<
+      MetricDisaggregations,
+      "display_name" | "enabled" | "is_breakdown_configured"
+    >
   ) => {
     const systemMetricKey = MetricConfigStore.getSystemMetricKey(
       system,
@@ -412,7 +425,13 @@ class MetricConfigStore {
     dimensionKey: string,
     dimensionData: Pick<
       MetricDisaggregationDimensions,
-      "label" | "key" | "enabled" | "race" | "ethnicity" | "description"
+      | "label"
+      | "key"
+      | "enabled"
+      | "race"
+      | "ethnicity"
+      | "description"
+      | "is_dimension_includes_excludes_configured"
     >
   ) => {
     const systemMetricKey = MetricConfigStore.getSystemMetricKey(
@@ -435,6 +454,10 @@ class MetricConfigStore {
       dimensionData.enabled;
     this.dimensions[systemMetricKey][disaggregationKey][dimensionKey].label =
       dimensionData.label;
+    this.dimensions[systemMetricKey][disaggregationKey][
+      dimensionKey
+    ].is_dimension_includes_excludes_configured =
+      dimensionData.is_dimension_includes_excludes_configured;
     this.dimensions[systemMetricKey][disaggregationKey][dimensionKey].key =
       dimensionData.key;
     this.dimensions[systemMetricKey][disaggregationKey][
@@ -751,6 +774,96 @@ class MetricConfigStore {
           ],
         },
       ],
+    };
+  };
+
+  /**
+   * Updates the configuration status of a metric's includes/excludes
+   *
+   * - Configuration status is whether/not the agency feels they have configured
+   *   a top-level metric's includes/excludes to their satisfaction.
+   */
+  updateMetricIncludesExcludesConfigurationStatus = (
+    system: AgencySystem,
+    metricKey: string,
+    isConfigured: ConfigurationStatus | null
+  ) => {
+    const systemMetricKey = MetricConfigStore.getSystemMetricKey(
+      system,
+      metricKey
+    );
+
+    /** Update value */
+    this.metrics[systemMetricKey].is_includes_excludes_configured =
+      isConfigured;
+
+    /** Return an object in the desired backend data structure for saving purposes */
+    return {
+      key: metricKey,
+      is_includes_excludes_configured: isConfigured,
+    };
+  };
+
+  /**
+   * Updates the configuration status of a breakdown
+   *
+   * - Configuration status is whether/not the agency feels
+   *   they have configured a breakdown to their satisfaction.
+   */
+  updateDisaggregationConfigurationStatus = (
+    system: AgencySystem,
+    metricKey: string,
+    disaggregationKey: string,
+    isConfigured: ConfigurationStatus | null
+  ) => {
+    const systemMetricKey = MetricConfigStore.getSystemMetricKey(
+      system,
+      metricKey
+    );
+
+    /** Update value */
+    this.disaggregations[systemMetricKey][
+      disaggregationKey
+    ].is_breakdown_configured = isConfigured;
+
+    /** Return an object in the desired backend data structure for saving purposes */
+    return {
+      key: metricKey,
+      disaggregations: [
+        {
+          key: disaggregationKey,
+          is_breakdown_configured: isConfigured,
+        },
+      ],
+    };
+  };
+
+  /**
+   * Updates the configuration status of a dimension's includes/excludes
+   *
+   * - Configuration status is whether/not the agency feels they have configured
+   * a dimension's includes/excludes to their satisfaction.
+   */
+  updateDimensionIncludesExcludesConfigurationStatus = (
+    system: AgencySystem,
+    metricKey: string,
+    disaggregationKey: string,
+    dimensionKey: string,
+    isConfigured: ConfigurationStatus | null
+  ) => {
+    const systemMetricKey = MetricConfigStore.getSystemMetricKey(
+      system,
+      metricKey
+    );
+
+    /** Update value */
+    this.dimensions[systemMetricKey][disaggregationKey][
+      dimensionKey
+    ].is_dimension_includes_excludes_configured = isConfigured;
+
+    return {
+      key: dimensionKey,
+      is_dimension_includes_excludes_configured: isConfigured,
     };
   };
 

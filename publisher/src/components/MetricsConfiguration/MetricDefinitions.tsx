@@ -20,6 +20,7 @@ import { Tooltip } from "@justice-counts/common/components/Tooltip";
 import {
   AgencySystem,
   AgencySystems,
+  ConfigurationStatus,
   MetricConfigurationSettings,
   SupervisionSubsystems,
   UserAgency,
@@ -38,6 +39,7 @@ import {
   replaceSystemMetricKeyWithNewSystem,
   useSettingsSearchParams,
 } from "../Settings";
+import { ConfigurationStatusText } from "./ConfigurationStatusButton";
 import { RACE_ETHNICITY_DISAGGREGATION_KEY } from "./constants";
 import DefinitionModalForm from "./DefinitionModalForm";
 import * as MetricAvailability from "./MetricAvailability.styled";
@@ -192,8 +194,22 @@ function MetricDefinitions() {
             >
               <Styled.SectionItemLabel
                 actionRequired={!metricHasDefinitionSelected()}
+                flexRow
               >
-                {metrics[activeSystemMetricKey]?.label} (Total)
+                {metrics[activeSystemMetricKey]?.label} (Total)&nbsp;
+                <ConfigurationStatusText
+                  isConfigured={
+                    metrics[activeSystemMetricKey]
+                      ?.is_includes_excludes_configured ===
+                    ConfigurationStatus.YES
+                  }
+                >
+                  {metrics[activeSystemMetricKey]
+                    ?.is_includes_excludes_configured ===
+                  ConfigurationStatus.YES
+                    ? " (Configuration Complete)"
+                    : " (Configuration Incomplete)"}
+                </ConfigurationStatusText>
               </Styled.SectionItemLabel>
               <Styled.EditButton>Edit</Styled.EditButton>
               <Tooltip
@@ -287,8 +303,20 @@ function MetricDefinitions() {
                     >
                       <Styled.SectionItemLabel
                         actionRequired={!hasEnabledDefinition}
+                        flexRow
                       >
-                        {dimension.label}
+                        {dimension.label}&nbsp;
+                        <ConfigurationStatusText
+                          isConfigured={
+                            dimension.is_dimension_includes_excludes_configured ===
+                            ConfigurationStatus.YES
+                          }
+                        >
+                          {dimension.is_dimension_includes_excludes_configured ===
+                          ConfigurationStatus.YES
+                            ? " (Configuration Complete)"
+                            : " (Configuration Incomplete)"}
+                        </ConfigurationStatusText>
                       </Styled.SectionItemLabel>
                       <Styled.EditButton>Edit</Styled.EditButton>
                       <Tooltip

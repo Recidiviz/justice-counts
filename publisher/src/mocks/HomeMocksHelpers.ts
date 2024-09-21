@@ -143,6 +143,7 @@ export const LAW_ENFORCEMENT_LATEST_RECORDS_METRICS: LatestRecordsAgencyMetrics 
         },
         unit: "USD",
         value: null,
+        is_includes_excludes_configured: null,
       },
       {
         category: "Capacity and Costs",
@@ -180,6 +181,7 @@ export const LAW_ENFORCEMENT_LATEST_RECORDS_METRICS: LatestRecordsAgencyMetrics 
         },
         unit: "EXPENSES",
         value: null,
+        is_includes_excludes_configured: null,
       },
       {
         category: "Capacity and Costs",
@@ -222,6 +224,7 @@ export const LAW_ENFORCEMENT_LATEST_RECORDS_METRICS: LatestRecordsAgencyMetrics 
         },
         unit: "PEOPLE",
         value: null,
+        is_includes_excludes_configured: null,
       },
       {
         category: "Operations and Dynamics",
@@ -259,6 +262,7 @@ export const LAW_ENFORCEMENT_LATEST_RECORDS_METRICS: LatestRecordsAgencyMetrics 
         },
         unit: "CALLS",
         value: 50,
+        is_includes_excludes_configured: null,
       },
       {
         category: "Populations",
@@ -301,6 +305,7 @@ export const LAW_ENFORCEMENT_LATEST_RECORDS_METRICS: LatestRecordsAgencyMetrics 
         },
         unit: "ARRESTS",
         value: null,
+        is_includes_excludes_configured: null,
       },
       {
         category: "Populations",
@@ -343,6 +348,7 @@ export const LAW_ENFORCEMENT_LATEST_RECORDS_METRICS: LatestRecordsAgencyMetrics 
         },
         unit: "REPORTED CRIMES",
         value: null,
+        is_includes_excludes_configured: null,
       },
       {
         category: "Public Safety",
@@ -385,6 +391,7 @@ export const LAW_ENFORCEMENT_LATEST_RECORDS_METRICS: LatestRecordsAgencyMetrics 
         },
         unit: "USE OF FORCE INCIDENTS",
         value: null,
+        is_includes_excludes_configured: null,
       },
       {
         category: "Fairness",
@@ -427,6 +434,7 @@ export const LAW_ENFORCEMENT_LATEST_RECORDS_METRICS: LatestRecordsAgencyMetrics 
         },
         unit: "COMPLAINTS SUSTAINED",
         value: 500,
+        is_includes_excludes_configured: null,
       },
     ],
     annual_reports: {
@@ -465,6 +473,7 @@ export const LAW_ENFORCEMENT_LATEST_RECORDS_METRICS: LatestRecordsAgencyMetrics 
             },
             unit: "USD",
             value: null,
+            is_includes_excludes_configured: null,
           },
           {
             category: "Capacity and Costs",
@@ -496,6 +505,7 @@ export const LAW_ENFORCEMENT_LATEST_RECORDS_METRICS: LatestRecordsAgencyMetrics 
             },
             unit: "PEOPLE",
             value: null,
+            is_includes_excludes_configured: null,
           },
           {
             category: "Public Safety",
@@ -522,6 +532,7 @@ export const LAW_ENFORCEMENT_LATEST_RECORDS_METRICS: LatestRecordsAgencyMetrics 
             },
             unit: "USE OF FORCE INCIDENTS",
             value: null,
+            is_includes_excludes_configured: null,
           },
           {
             category: "Fairness",
@@ -548,6 +559,7 @@ export const LAW_ENFORCEMENT_LATEST_RECORDS_METRICS: LatestRecordsAgencyMetrics 
             },
             unit: "COMPLAINTS SUSTAINED",
             value: 500,
+            is_includes_excludes_configured: null,
           },
         ],
         month: 1,
@@ -590,6 +602,7 @@ export const LAW_ENFORCEMENT_LATEST_RECORDS_METRICS: LatestRecordsAgencyMetrics 
           },
           unit: "CALLS",
           value: 50,
+          is_includes_excludes_configured: null,
         },
         {
           category: "Populations",
@@ -621,6 +634,7 @@ export const LAW_ENFORCEMENT_LATEST_RECORDS_METRICS: LatestRecordsAgencyMetrics 
           },
           unit: "ARRESTS",
           value: null,
+          is_includes_excludes_configured: null,
         },
         {
           category: "Populations",
@@ -647,6 +661,7 @@ export const LAW_ENFORCEMENT_LATEST_RECORDS_METRICS: LatestRecordsAgencyMetrics 
           },
           unit: "REPORTED CRIMES",
           value: null,
+          is_includes_excludes_configured: null,
         },
       ],
       month: 7,

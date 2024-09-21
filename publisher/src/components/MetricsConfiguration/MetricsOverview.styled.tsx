@@ -159,10 +159,13 @@ export const MetricItem = styled.div`
   }
 `;
 
-export const MetricItemName = styled.div<{ actionRequired?: boolean }>`
+export const MetricItemName = styled.div<{
+  actionRequired?: boolean;
+  flexRow?: boolean;
+}>`
   ${typography.body}
   display: flex;
-  flex-direction: column;
+  ${({ flexRow }) => !flexRow && `flex-direction: column;`}
   position: relative;
 
   span {

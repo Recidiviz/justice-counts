@@ -85,7 +85,10 @@ function ShareUploadErrorWarnings() {
           updatedReports: result.updated_reports || [],
           unchangedReports: result.unchanged_reports || [],
         });
-        const errorsWarningsAndMetrics = processUploadResponseBody(result);
+        const errorsWarningsAndMetrics = processUploadResponseBody(
+          result,
+          currentAgency
+        );
         const hasErrorsOrWarnings =
           (errorsWarningsAndMetrics.nonMetricErrors &&
             errorsWarningsAndMetrics.nonMetricErrors.length > 0) ||
@@ -99,7 +102,7 @@ function ShareUploadErrorWarnings() {
       }
     };
     initialize();
-  }, [reportStore, spreadsheetId]);
+  }, [reportStore, spreadsheetId, currentAgency]);
 
   if (reportStore.loadingSpreadsheetReviewData) {
     return (

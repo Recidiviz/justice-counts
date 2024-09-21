@@ -209,6 +209,7 @@ export interface Metric {
   starting_month?: number;
   frequency?: ReportFrequency;
   disaggregated_by_supervision_subsystems?: boolean;
+  is_includes_excludes_configured: ConfigurationStatus | null;
 }
 
 export interface MetricIncludesExcludes {
@@ -239,6 +240,7 @@ export interface MetricDisaggregations {
   helper_text: string | null | undefined;
   enabled?: boolean;
   should_sum_to_total: boolean;
+  is_breakdown_configured: ConfigurationStatus | null;
 }
 
 export type MetricDimensionContext = {
@@ -260,6 +262,7 @@ export interface MetricDisaggregationDimensions {
   race?: string;
   ethnicity?: string;
   datapoints?: RawDatapoint[];
+  is_dimension_includes_excludes_configured: ConfigurationStatus | null;
 }
 
 export interface CreateReportFormValuesType extends Record<string, unknown> {
@@ -508,3 +511,8 @@ export interface DimensionNamesByMetricAndDisaggregation {
 export const DataVizAggregateName = "Total";
 
 export const NoDisaggregationOption = "No Breakdown";
+
+export enum ConfigurationStatus {
+  YES = "YES",
+  NO = "NO",
+}

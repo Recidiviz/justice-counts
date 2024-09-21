@@ -51,7 +51,9 @@ import {
   ErrorsWarningsMetrics,
   ErrorWarningMessage,
   MetricErrors,
+  UploadedMetric,
 } from "./types";
+import { isSupervisionMetricForSupervisionAgencyThatReportsSubsystems } from "./utils";
 
 type UploadErrorsWarningsProps = {
   errorsWarningsMetrics: ErrorsWarningsMetrics;
@@ -112,6 +114,24 @@ export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
     </MetricEnableDescription>
   );
 
+  const shouldShowDisabledMetricMessage = (m: UploadedMetric): boolean => {
+    if (
+      isSupervisionMetricForSupervisionAgencyThatReportsSubsystems(
+        m,
+        currentAgency
+      )
+    ) {
+      // Don't show the message to the user for supervision error messages because supervision
+      // sheet errors will be grouped under general Supervision errors because subsystem-specific data could
+      // not be ingested.
+      return false;
+    }
+
+    // If the agency does not report for supervision subsystems or the specific metric is not
+    // a supervision metric, always show the message when the metric is disabled.
+    return m.enabled === false;
+  };
+
   const renderMessages = () => {
     return (
       <>
@@ -124,7 +144,7 @@ export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
                 <Message key={metric.display_name} enabled={metric.enabled}>
                   <MetricTitle>{metric.display_name}</MetricTitle>
                   {metric.enabled === null && metricNotConfigured}
-                  {metric.enabled === false && metricDisabled}
+                  {shouldShowDisabledMetricMessage(metric) && metricDisabled}
                   {metric.metric_errors
                     .sort(sortMetricLevelErrorsBeforeSheetLevelErrors)
                     .map((sheet) => (

@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { sum } from "lodash";
 import React from "react";
 import { TooltipProps as RechartsTooltipProps } from "recharts";
 // eslint-disable-next-line no-restricted-imports
@@ -125,11 +126,33 @@ const Tooltip: React.FC<TooltipProps> = ({
       });
     };
 
+    const renderTotalValue = () => {
+      const hasTotalValue = dimensionNames.includes("Total");
+      const totalValue = sum(
+        dimensionNames.map((dimension) => datapoint[dimension])
+      );
+
+      if (datapoint.dataVizMissingData !== 0 || hasTotalValue) return null;
+
+      return (
+        <TooltipNameWithBottomMargin>
+          <TooltipItemContainer>
+            <TooltipName>Total</TooltipName>
+            <TooltipValue>
+              {textHasDollarSign ? "$" : ""}
+              {formatNumberInput(totalValue.toString())}
+            </TooltipValue>
+          </TooltipItemContainer>
+        </TooltipNameWithBottomMargin>
+      );
+    };
+
     return (
       <TooltipContainer>
         <TooltipNameWithBottomMargin>
           {getDatapointBarLabel(datapoint)}
         </TooltipNameWithBottomMargin>
+        {renderTotalValue()}
         {renderItems()}
       </TooltipContainer>
     );
