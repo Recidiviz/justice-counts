@@ -54,7 +54,7 @@ function Configuration() {
     useState(false);
 
   const systemMetricKey = getActiveSystemMetricKey(settingsSearchParams);
-  const currentAgency = userStore.getAgency(agencyId); // Leave as-is...
+  const currentAgency = userStore.getAgency(agencyId);
   const agencySupervisionSubsystems = currentAgency?.systems
     .filter((system) => SupervisionSubsystems.includes(system))
     .filter((system) => {

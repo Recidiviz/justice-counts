@@ -60,8 +60,6 @@ export const ChildAgenciesDropdown: React.FC<{
     (childAgency) => childAgency.id === currentAgency?.id
   );
 
-  // This is an example of why we should fetch all child+super agencies.
-  // Or we could just populate a list of child agencies instead?
   const currentSuperagency = userStore.userAgencies?.find(
     (agency) => agency.id === superagencyId
   );
