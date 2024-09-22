@@ -187,12 +187,23 @@ class UserStore {
     return undefined;
   }
 
-  async getAgencyNew(agencyId: string): Promise<UserAgency | undefined> {
+  /**
+   * Fetches agency group data for a given agencyId and adds those agency data to the
+   * userStore. An agency "group" is defined as the superagency and all the child
+   * agencies relevant to the agency.
+   * For example, if the agency is a child agency, this fetches its superagency and all
+   * of the child agencies of that superagency. If it is a superagency, we fetch that
+   * agency and all of its child agencies. If the agency is neither a child or
+   * superagency, we just fetch that one agency.
+   *
+   * @param {string} agencyId - The ID of the agency to fetch data for.
+   * @returns {Promise<UserAgency | undefined>} - The agency object or undefined if not found.
+   */
+  async fetchAgencyGroupData(
+    agencyId: string
+  ): Promise<UserAgency | undefined> {
     if (!agencyId) {
       return undefined;
-    }
-    if (agencyId in this.userAgenciesById) {
-      return this.userAgenciesById[agencyId];
     }
     try {
       const response = (await this.api.request({
@@ -201,21 +212,29 @@ class UserStore {
       })) as Response;
       if (response && response instanceof Response) {
         if (response.status === 200) {
-          const { agencies: userAgencies, id: userId } = await response.json();
+          const { agencies: userAgencies } = await response.json();
 
-          // Update the userAgenciesById map
           runInAction(() => {
             userAgencies.forEach((userAgency: UserAgency) => {
-              this.userAgenciesById[userAgency.id] = userAgency;
+              // If undefined, initialize the list.
+              if (!this.userAgencies) {
+                this.userAgencies = [];
+              }
+              const index = this.userAgencies?.findIndex(
+                (a) => a.id === userAgency.id
+              );
+              if (index !== -1) {
+                this.userAgencies[index] = userAgency;
+              } else {
+                // Add to the list if the new agency doesn't exist already.
+                this.userAgencies = [...this.userAgencies, userAgency];
+              }
             });
           });
 
           if (agencyId in this.userAgenciesById) {
             return this.userAgenciesById[agencyId];
           }
-          // runInAction(() => {
-          //   this.loadingError = true;
-          // });
           return undefined;
         }
         showToast({
@@ -308,16 +327,6 @@ class UserStore {
 
   async updateAndRetrieveUserPermissionsAndAgencies() {
     try {
-      const response = (await this.api.request({
-        path: "/api/users",
-        method: "PUT",
-        body: {
-          name: this.name,
-          email: this.email,
-          email_verified: this.email_verified,
-        },
-      })) as Response;
-      const { agencies: userAgencies, id: userId } = await response.json();
       const dropdownResponse = (await this.api.request({
         path: "/api/user_dropdown",
         method: "PUT",
@@ -327,12 +336,9 @@ class UserStore {
           email_verified: this.email_verified,
         },
       })) as Response;
-      const {
-        agency_id_to_dropdown_names: dropdownAgencies,
-        user_id: userId2,
-      } = await dropdownResponse.json();
+      const { agency_id_to_dropdown_names: dropdownAgencies, user_id: userId } =
+        await dropdownResponse.json();
       runInAction(() => {
-        // this.userAgencies = userAgencies;
         this.userId = userId;
         this.userInfoLoaded = true;
         this.dropdownAgencies = dropdownAgencies;

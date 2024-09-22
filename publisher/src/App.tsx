@@ -18,7 +18,7 @@
 import "./components/assets/fonts/index.css";
 
 import { observer } from "mobx-react-lite";
-import React, { ReactElement, useEffect, useState } from "react";
+import React, { ReactElement, useEffect } from "react";
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 
 import { trackNavigation } from "./analytics";
@@ -45,23 +45,28 @@ const App: React.FC = (): ReactElement => {
   useEffect(() => {
     trackNavigation(location.pathname + location.search);
   }, [location]);
-  const [agencyId, setAgencyId] = useState<string | undefined>(undefined);
-  const [loadingAgency, setLoadingAgency] = useState<boolean>(false);
 
   useEffect(() => {
-    const agencyMatch = location.pathname.match(/\/agency\/(\d+)/);
-    if (agencyMatch) {
-      const fetchAgencyData = async () => {
-        const matchedAgencyId = agencyMatch[1]; // Use a local variable to avoid undefined issues
-        setAgencyId(matchedAgencyId);
-        setLoadingAgency(true);
-
-        await userStore.getAgencyNew(matchedAgencyId); // Pass the local string value
-        setLoadingAgency(false);
-      };
-
-      fetchAgencyData();
+    // Only load agency data after the user store has been constructed.
+    if (!userStore.userInfoLoaded) {
+      return;
     }
+    // Only run this effect if there is an agency id in the pathname.
+    const agencyMatch = location.pathname.match(/\/agency\/(\d+)/);
+    if (!agencyMatch) {
+      return;
+    }
+    // Don't query the agency if a query has already been sent.
+    const agencyId = agencyMatch[1];
+    if (userStore.isAgencyQueried(agencyId)) {
+      return;
+    }
+    // Record that we have queried for this agency already.
+    userStore.queriedAgencies.push(agencyId);
+    const fetchAgencyData = async () => {
+      await userStore.fetchAgencyGroupData(agencyId);
+    };
+    fetchAgencyData();
   });
 
   // using this variable to indicate whether user has any agencies
@@ -84,20 +89,24 @@ const App: React.FC = (): ReactElement => {
     );
   }
 
-  if (!userStore.userInfoLoaded)
+  const agencyMatch = location.pathname.match(/\/agency\/(\d+)/);
+  if (
+    agencyMatch &&
+    userStore.isAgencyQueried(agencyMatch[1]) &&
+    !userStore.getAgency(agencyMatch[1])
+  )
     return (
       <PageWrapper>
         <Loading />
       </PageWrapper>
     );
 
-  if (agencyId && !userStore.getAgency(agencyId) && loadingAgency) {
+  if (!userStore.userInfoLoaded)
     return (
       <PageWrapper>
         <Loading />
       </PageWrapper>
     );
-  }
 
   if (!initialAgency) return <NoAgencies />;
 

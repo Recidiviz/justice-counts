@@ -179,6 +179,7 @@ const Menu: React.FC = () => {
       (agency) => agency.id === Number(superagencyId)
     );
 
+    // Here
     if (superagencyId && userHasAccessToSuperagency)
       agencyStore.getChildAgencies(String(superagencyId));
   }, [agencyId, currentAgency, agencyStore, userStore]);
