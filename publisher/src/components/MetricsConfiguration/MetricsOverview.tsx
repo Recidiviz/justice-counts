@@ -19,14 +19,13 @@ import { TabbedBar } from "@justice-counts/common/components/TabbedBar";
 import {
   AgencySystem,
   SupervisionSubsystems,
-  UserAgency,
 } from "@justice-counts/common/types";
 import {
   frequencyString,
   removeSnakeCase,
 } from "@justice-counts/common/utils/helperUtils";
 import { observer } from "mobx-react-lite";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useParams } from "react-router-dom";
 
 import { NotFound } from "../../pages/NotFound";
@@ -64,18 +63,7 @@ export const MetricsOverview = observer(() => {
     );
   };
 
-  const [currentAgency, setCurrentAgency] = useState<UserAgency | undefined>(
-    undefined
-  );
-
-  useEffect(() => {
-    const fetchAgency = async () => {
-      const agency = await userStore.getAgencyNew(agencyId);
-      setCurrentAgency(agency);
-    };
-    fetchAgency();
-  }, [agencyId, userStore]);
-
+  const currentAgency = userStore.getAgency(agencyId);
   const currentSystem = systemSearchParam || currentAgency?.systems[0];
 
   const agencySupervisionSubsystems = currentAgency?.systems.filter((system) =>

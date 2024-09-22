@@ -19,7 +19,7 @@ import {
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components/macro";
 
@@ -80,15 +80,8 @@ export const NotFound: React.FC = () => {
   const { agencyId } = useParams() as { agencyId: string };
   const navigate = useNavigate();
   const { userStore } = useStore();
-  const [isAgencyValid, setIsAgencyValid] = useState(false);
-  useEffect(() => {
-    const checkAgency = async () => {
-      const agency = await userStore.getAgencyNew(agencyId);
-      setIsAgencyValid(!!agency);
-    };
-    checkAgency();
-  }, [agencyId, userStore]);
 
+  const isAgencyValid = !!userStore.getAgency(agencyId);
   const defaultAgency = userStore.getInitialAgencyId();
 
   return (

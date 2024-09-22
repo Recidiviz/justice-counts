@@ -22,9 +22,9 @@ import {
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
-import { AgencySystem, Metric, UserAgency } from "@justice-counts/common/types";
+import { AgencySystem, Metric } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components/macro";
 
@@ -247,19 +247,7 @@ const ReportSummaryPanel: React.FC<{
 }> = ({ reportID, activeMetric, fieldDescription }) => {
   const { formStore, reportStore, userStore } = useStore();
   const { agencyId } = useParams() as { agencyId: string };
-  const [currentAgency, setCurrentAgency] = useState<UserAgency | undefined>(
-    undefined
-  );
-
-  useEffect(() => {
-    const fetchAgency = async () => {
-      const agency = await userStore.getAgencyNew(agencyId);
-      setCurrentAgency(agency);
-    };
-
-    fetchAgency();
-  }, [agencyId, userStore]);
-
+  const currentAgency = userStore.getAgency(agencyId);
   const checkMetricForErrors = useCheckMetricForErrors(reportID);
   const {
     editors,

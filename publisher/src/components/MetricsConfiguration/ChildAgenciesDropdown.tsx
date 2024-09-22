@@ -19,10 +19,10 @@ import {
   Dropdown,
   DropdownOption,
 } from "@justice-counts/common/components/Dropdown";
-import { ChildAgency, UserAgency } from "@justice-counts/common/types";
+import { ChildAgency } from "@justice-counts/common/types";
 import { noop } from "lodash";
 import { observer } from "mobx-react-lite";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
@@ -49,19 +49,8 @@ export const ChildAgenciesDropdown: React.FC<{
   const { agencyId } = useParams() as { agencyId: string };
   const { userStore, agencyStore } = useStore();
 
-  const [currentAgency, setCurrentAgency] = useState<UserAgency | undefined>(
-    undefined
-  );
-
-  useEffect(() => {
-    const fetchAgency = async () => {
-      const agency = await userStore.getAgencyNew(agencyId);
-      setCurrentAgency(agency);
-    };
-    fetchAgency();
-  }, [agencyId, userStore]);
-
   const { superagencyChildAgencies } = agencyStore;
+  const currentAgency = userStore.getAgency(agencyId);
   const isSuperagency = userStore.isAgencySuperagency(agencyId);
   const superagencyId = isSuperagency
     ? agencyId

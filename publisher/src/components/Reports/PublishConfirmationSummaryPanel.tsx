@@ -1,7 +1,24 @@
+// Recidiviz - a data platform for criminal justice reform
+// Copyright (C) 2024 Recidiviz, Inc.
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <https://www.gnu.org/licenses/>.
+// =============================================================================
+
 import errorIcon from "@justice-counts/common/assets/status-error-icon.png";
-import { AgencySystem, Metric, UserAgency } from "@justice-counts/common/types";
+import { AgencySystem, Metric } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
@@ -50,19 +67,7 @@ const PublishConfirmationSummaryPanel: React.FC<{
   const { formStore, reportStore, userStore } = useStore();
   const checkMetricForErrors = useCheckMetricForErrors(reportID);
   const { agencyId } = useParams() as { agencyId: string };
-
-  const [currentAgency, setCurrentAgency] = useState<UserAgency | undefined>(
-    undefined
-  );
-
-  useEffect(() => {
-    const fetchAgency = async () => {
-      const agency = await userStore.getAgencyNew(agencyId);
-      setCurrentAgency(agency);
-    };
-
-    fetchAgency();
-  }, [agencyId, userStore]);
+  const currentAgency = userStore.getAgency(agencyId);
 
   const metricsBySystem = reportStore.reportMetricsBySystem[reportID];
   const showMetricSectionTitles = Object.keys(metricsBySystem).length > 1;

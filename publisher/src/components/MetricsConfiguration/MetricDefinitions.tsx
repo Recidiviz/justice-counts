@@ -23,7 +23,6 @@ import {
   ConfigurationStatus,
   MetricConfigurationSettings,
   SupervisionSubsystems,
-  UserAgency,
 } from "@justice-counts/common/types";
 import {
   removeSnakeCase,
@@ -59,20 +58,7 @@ function MetricDefinitions() {
     dimensionContexts,
   } = metricConfigStore;
   const systemMetricKey = getActiveSystemMetricKey(settingsSearchParams);
-
-  const [currentAgency, setCurrentAgency] = useState<UserAgency | undefined>(
-    undefined
-  );
-
-  useEffect(() => {
-    // Fetch the agency using getAgencyNew
-    const fetchAgency = async () => {
-      const agency = await userStore.getAgencyNew(agencyId);
-      setCurrentAgency(agency);
-    };
-    fetchAgency();
-  }, [agencyId, userStore]);
-
+  const currentAgency = userStore.getAgency(agencyId);
   const agencySupervisionSubsystems = currentAgency?.systems
     .filter((system) => SupervisionSubsystems.includes(system))
     .filter((system) => {
