@@ -134,19 +134,8 @@ class UserStore {
     }
   }
 
-  getInitialAgencyIdOld(): number | undefined {
-    if (this.userAgencies && this.userAgencies.length > 0) {
-      // attempting to access 0 index in the empty array leads to the mobx warning "[mobx] Out of bounds read: 0"
-      // so check the length of the array before accessing
-      return this.userAgencies[0].id;
-    }
-    return undefined;
-  }
-
   getInitialAgencyId(): number | undefined {
     if (this.dropdownAgencies && this.dropdownAgencies.length > 0) {
-      // attempting to access 0 index in the empty array leads to the mobx warning "[mobx] Out of bounds read: 0"
-      // so check the length of the array before accessing
       return this.dropdownAgencies[0].agency_id;
     }
     return undefined;
