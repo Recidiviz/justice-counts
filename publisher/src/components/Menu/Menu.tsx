@@ -179,15 +179,10 @@ const Menu: React.FC = () => {
       (agency) => agency.id === Number(superagencyId)
     );
 
-    // Here
     if (superagencyId && userHasAccessToSuperagency)
       agencyStore.getChildAgencies(String(superagencyId));
   }, [agencyId, currentAgency, agencyStore, userStore]);
 
-  // Handle loading state when currentAgency is undefined
-  if (!currentAgency) {
-    return <div>Loading...</div>;
-  }
   return (
     <Styled.MenuContainer isMobileMenuOpen={isMobileMenuOpen}>
       <Styled.AgencyDropdownHeaderBadgeWrapper>

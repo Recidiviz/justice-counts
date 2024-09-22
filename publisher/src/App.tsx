@@ -89,6 +89,8 @@ const App: React.FC = (): ReactElement => {
     );
   }
 
+  // Show 'loading' in the interim of querying the agency group and waiting for that
+  // data to reach the user store.
   const agencyMatch = location.pathname.match(/\/agency\/(\d+)/);
   if (
     agencyMatch &&
