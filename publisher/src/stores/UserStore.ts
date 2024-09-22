@@ -151,10 +151,6 @@ class UserStore {
     );
   }
 
-  hasAgencyBeenQueried(agencyId: string): boolean {
-    return this.queriedAgencies.includes(agencyId);
-  }
-
   get userAgenciesFromMultipleStates(): boolean {
     if (!this.userAgencies) return false;
     const agenciesStateCodes =
