@@ -207,7 +207,7 @@ class UserStore {
     }
     try {
       const response = (await this.api.request({
-        path: `/api/agency_data2/${agencyId}`,
+        path: `/api/agency/${agencyId}/agency_group`,
         method: "GET",
       })) as Response;
       if (response && response instanceof Response) {
