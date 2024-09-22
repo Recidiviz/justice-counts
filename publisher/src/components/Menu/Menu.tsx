@@ -21,7 +21,6 @@ import {
 } from "@justice-counts/common/components/Dropdown";
 import { MIN_TABLET_WIDTH } from "@justice-counts/common/components/GlobalStyles";
 import { useWindowWidth } from "@justice-counts/common/hooks";
-import { UserAgency } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
@@ -41,11 +40,8 @@ const Menu: React.FC = () => {
   const windowWidth = useWindowWidth();
   const headerBadge = useHeaderBadge();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [currentAgency, setCurrentAgency] = useState<UserAgency | undefined>(
-    undefined
-  );
-
   const pathWithoutAgency = removeAgencyFromPath(location.pathname);
+  const currentAgency = userStore.getAgency(agencyId);
   const hasDashboardEnabled = currentAgency?.is_dashboard_enabled;
   const agencyName = currentAgency?.name;
 
@@ -54,16 +50,6 @@ const Menu: React.FC = () => {
       setIsMobileMenuOpen(false);
     }
   };
-
-  // Fetch agency data asynchronously
-  useEffect(() => {
-    const fetchAgency = async () => {
-      const agency = await userStore.getAgencyNew(agencyId);
-      setCurrentAgency(agency); // Set the current agency in state after fetching
-    };
-
-    fetchAgency();
-  }, [agencyId, userStore]);
 
   const usernameToInitials = () => {
     if (userStore.name) {
@@ -111,7 +97,6 @@ const Menu: React.FC = () => {
         };
       })
     : [];
-  // We could do it here?
 
   const profileDropdownMetadata = [
     {

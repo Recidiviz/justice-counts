@@ -39,6 +39,8 @@ class UserStore {
 
   userAgencies: UserAgency[] | undefined;
 
+  queriedAgencies: string[] = [];
+
   userId: string | undefined;
 
   userInfoLoaded: boolean;
@@ -56,9 +58,6 @@ class UserStore {
     this.userId = undefined;
     this.loadingError = false;
 
-    // We can await this first call to get the dropdown.
-    // Then we can query the first initial.
-    // Then we can
     when(
       () => api.isSessionInitialized,
       () => this.updateAndRetrieveUserPermissionsAndAgencies()
@@ -163,6 +162,12 @@ class UserStore {
     );
   }
 
+  // Function to check if an agency ID is in the queriedAgencies list
+  isAgencyQueried(agencyId: string): boolean {
+    // Return true if agencyId is in queriedAgencies, false otherwise
+    return this.queriedAgencies?.includes(agencyId) || false;
+  }
+
   get userAgenciesFromMultipleStates(): boolean {
     if (!this.userAgencies) return false;
     const agenciesStateCodes =
@@ -181,53 +186,6 @@ class UserStore {
     }
     return undefined;
   }
-
-  // async getAgencyNew(agencyId: string): Promise<UserAgency | undefined> {
-  //   if (!agencyId) {
-  //     return undefined;
-  //   }
-  //   if (agencyId in this.userAgenciesById) {
-  //     return this.userAgenciesById[agencyId];
-  //   }
-  //   try {
-  //     const response = (await this.api.request({
-  //       path: `/api/agency_data/${agencyId}`,
-  //       method: "GET",
-  //     })) as Response;
-  //     if (response && response instanceof Response) {
-  //       if (response.status === 200) {
-  //         const { agencies: userAgency, id: userId } = await response.json();
-
-  //         const fetchedAgency: UserAgency = userAgency;
-
-  //         // Update the userAgenciesById map
-  //         runInAction(() => {
-  //           this.userAgenciesById[agencyId] = fetchedAgency;
-  //         });
-
-  //         return fetchedAgency;
-  //       }
-  //       showToast({
-  //         message: "Failed to fetch agency data.",
-  //         color: "red",
-  //       });
-  //       return undefined;
-  //     }
-  //   } catch (error) {
-  //     let errorMessage;
-  //     if (error instanceof Error) {
-  //       errorMessage = error.message;
-  //     } else {
-  //       errorMessage = String(error);
-  //     }
-
-  //     showToast({
-  //       message: `Error fetching agency data. ${errorMessage}`,
-  //       color: "red",
-  //     });
-  //     return undefined;
-  //   }
-  // }
 
   async getAgencyNew(agencyId: string): Promise<UserAgency | undefined> {
     if (!agencyId) {
@@ -255,11 +213,17 @@ class UserStore {
           if (agencyId in this.userAgenciesById) {
             return this.userAgenciesById[agencyId];
           }
+          // runInAction(() => {
+          //   this.loadingError = true;
+          // });
           return undefined;
         }
         showToast({
           message: "Failed to fetch agency data.",
           color: "red",
+        });
+        runInAction(() => {
+          this.loadingError = true;
         });
         return undefined;
       }
@@ -274,6 +238,9 @@ class UserStore {
       showToast({
         message: `Error fetching agency data. ${errorMessage}`,
         color: "red",
+      });
+      runInAction(() => {
+        this.loadingError = true;
       });
       return undefined;
     }
