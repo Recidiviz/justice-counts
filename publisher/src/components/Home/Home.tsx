@@ -71,14 +71,8 @@ export const Home = observer(() => {
     publishMetricsTaskCardMetadatas.ANNUAL.length > 0;
 
   useEffect(() => {
-    // Call userStore.getAgencyNew to fetch agency data if needed
-    const fetchAgencyData = async () => {
-      await userStore.getAgencyNew(agencyId);
-    };
-    fetchAgencyData();
-
     homeStore.fetchLatestReportsAndMetricsAndHydrateStore(agencyId);
-  }, [agencyId, homeStore, userStore]);
+  }, [agencyId, homeStore]);
 
   if (!agencyMetrics || loading) {
     return <Loading />;

@@ -173,11 +173,9 @@ class HomeStore {
       const latestRecordsAndMetrics =
         (await response.json()) as LatestRecordsAgencyMetrics;
 
-      // Ensure async operation is awaited outside runInAction
-      await this.hydrateStore(latestRecordsAndMetrics, currentAgencyId);
-
       runInAction(() => {
         this.hydrateReportStoreWithLatestRecords(latestRecordsAndMetrics);
+        this.hydrateStore(latestRecordsAndMetrics, currentAgencyId);
         this.loading = false;
       });
     } catch (error) {
@@ -203,18 +201,18 @@ class HomeStore {
     }
   }
 
-  async hydrateStore(
+  hydrateStore(
     latestRecordsAndMetrics: LatestRecordsAgencyMetrics,
     currentAgencyId: string
-  ): Promise<void> {
+  ): void {
     /** Hydrate Store */
     this.hydrateLatestRecordsMetadatas(latestRecordsAndMetrics);
-    await this.hydrateAgencySystemSelectionOptions(currentAgencyId);
+    this.hydrateAgencySystemSelectionOptions(currentAgencyId);
     this.hydrateTaskCardMetadatasToRender();
   }
 
-  async hydrateAgencySystemSelectionOptions(agencyId: string): Promise<void> {
-    const currentAgency = await this.userStore.getAgencyNew(agencyId);
+  hydrateAgencySystemSelectionOptions(agencyId: string): void {
+    const currentAgency = this.userStore.getAgency(agencyId);
     const isSuperagency = this.userStore.isAgencySuperagency(agencyId);
     const currentAgencySystems = currentAgency?.systems || [];
     const filteredAgencySystems = currentAgencySystems.filter((system) =>
