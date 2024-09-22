@@ -58,7 +58,7 @@ const App: React.FC = (): ReactElement => {
     }
     // Don't query the agency if a query has already been sent.
     const agencyId = agencyMatch[1];
-    if (userStore.isAgencyQueried(agencyId)) {
+    if (userStore.hasAgencyBeenQueried(agencyId)) {
       return;
     }
     // Record that we have queried for this agency already.
@@ -94,7 +94,7 @@ const App: React.FC = (): ReactElement => {
   const agencyMatch = location.pathname.match(/\/agency\/(\d+)/);
   if (
     agencyMatch &&
-    userStore.isAgencyQueried(agencyMatch[1]) &&
+    userStore.hasAgencyBeenQueried(agencyMatch[1]) &&
     !userStore.getAgency(agencyMatch[1])
   )
     return (

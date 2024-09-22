@@ -151,10 +151,8 @@ class UserStore {
     );
   }
 
-  // Function to check if an agency ID is in the queriedAgencies list
-  isAgencyQueried(agencyId: string): boolean {
-    // Return true if agencyId is in queriedAgencies, false otherwise
-    return this.queriedAgencies?.includes(agencyId) || false;
+  hasAgencyBeenQueried(agencyId: string): boolean {
+    return this.queriedAgencies.includes(agencyId);
   }
 
   get userAgenciesFromMultipleStates(): boolean {
@@ -209,14 +207,14 @@ class UserStore {
               if (!this.userAgencies) {
                 this.userAgencies = [];
               }
-              const index = this.userAgencies?.findIndex(
+              const index = this.userAgencies.findIndex(
                 (a) => a.id === userAgency.id
               );
               if (index !== -1) {
                 this.userAgencies[index] = userAgency;
               } else {
                 // Add to the list if the new agency doesn't exist already.
-                this.userAgencies = [...this.userAgencies, userAgency];
+                this.userAgencies = this.userAgencies.concat(userAgency);
               }
             });
           });
@@ -224,17 +222,16 @@ class UserStore {
           if (agencyId in this.userAgenciesById) {
             return this.userAgenciesById[agencyId];
           }
-          return undefined;
         }
-        showToast({
-          message: "Failed to fetch agency data.",
-          color: "red",
-        });
-        runInAction(() => {
-          this.loadingError = true;
-        });
-        return undefined;
       }
+      showToast({
+        message: "Failed to fetch agency data.",
+        color: "red",
+      });
+      runInAction(() => {
+        this.loadingError = true;
+      });
+      return undefined;
     } catch (error) {
       let errorMessage;
       if (error instanceof Error) {

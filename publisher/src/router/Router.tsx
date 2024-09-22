@@ -47,10 +47,6 @@ export const Router = () => {
     userStore.updateUserAgencyPageVisit(agencyId);
   }, [userStore, agencyId]);
 
-  // TODO: If isAgencyIdInUserAgencies is undefined, it's possible that we're still
-  // fetching the agency data. We should show a loading view instead of a 404 error in
-  // this case, until we know for sure that the agency is unavailable.
-
   return (
     <>
       <Header />
