@@ -83,13 +83,12 @@ function MetricAvailability({
   } = metricConfigStore;
   const [activeDisaggregationKey, setActiveDisaggregationKey] =
     useState<string>();
+  const [activeDimensionKey, setActiveDimensionnKey] = useState<string>();
   // For when a user selects "Other" for Starting Month and has made no dropdown selection
   const [showCustomYearDropdownOverride, setShowCustomYearDropdownOverride] =
     useState<boolean>();
 
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
-  const [otherDimensionKey, setOtherDimensionKey] = useState<string>();
-  const [hasOtherBreakdownValue, setHasOtherBreakdownValue] = useState(false);
 
   const isReadOnly = userStore.isUserReadOnly(agencyId);
   const systemMetricKey = getActiveSystemMetricKey(settingsSearchParams);
@@ -344,6 +343,15 @@ function MetricAvailability({
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  const handleOtherDimensionCheck = (
+    disaggregationKey: string,
+    dimensionKey: string
+  ) => {
+    setActiveDisaggregationKey(disaggregationKey);
+    setActiveDimensionnKey(dimensionKey);
+    setIsSettingsModalOpen(true);
+  };
 
   return (
     <Styled.Wrapper>
@@ -649,11 +657,8 @@ function MetricAvailability({
           <DefinitionModalForm
             systemMetricKey={systemMetricKey}
             activeDisaggregationKey={activeDisaggregationKey}
-            activeDimensionKey={otherDimensionKey}
+            activeDimensionKey={activeDimensionKey}
             closeModal={() => setIsSettingsModalOpen(false)}
-            onCloseModal={(otherBreakdownValue) =>
-              setHasOtherBreakdownValue(!!otherBreakdownValue)
-            }
           />
         )}
         {hasDisaggregations && (
@@ -708,15 +713,12 @@ function MetricAvailability({
                 Object.values(currentDimensions).length ===
                 currentEnabledDimensions.length;
 
-              const handleOtherDimensionCheck = () => {
-                setActiveDisaggregationKey(disaggregationKey);
-                setOtherDimensionKey(
-                  Object.values(currentDimensions).find((d) =>
-                    d.key?.includes("Other")
-                  )?.key
-                );
-                setIsSettingsModalOpen(true);
-              };
+              const otherDimensionKey = Object.values(currentDimensions).find(
+                (d) => d.key?.includes("Other")
+              )?.key as string;
+              const isOtherDimensionEnabled =
+                currentEnabledDimensions.find((d) => d.key?.includes("Other"))
+                  ?.enabled ?? false;
 
               if (
                 activeDisaggregationKey &&
@@ -760,16 +762,27 @@ function MetricAvailability({
                           options={[
                             ...Object.values(currentDimensions).map(
                               (dimension) => {
-                                const isOtherDimension =
-                                  dimension.key?.includes("Other");
-
                                 return {
                                   key: dimension.key as string,
                                   label: dimension.label as string,
                                   checked: Boolean(dimension.enabled),
-                                  isOtherOption: isOtherDimension,
-                                  onChangeOtherOption:
-                                    handleOtherDimensionCheck,
+                                  onChangeOverride: () => {
+                                    if (
+                                      dimension.key === otherDimensionKey &&
+                                      !isOtherDimensionEnabled
+                                    ) {
+                                      handleOtherDimensionCheck(
+                                        disaggregationKey,
+                                        otherDimensionKey
+                                      );
+                                    } else {
+                                      handleDimensionEnabledStatus(
+                                        !dimension.enabled,
+                                        dimension.key as string,
+                                        disaggregationKey
+                                      );
+                                    }
+                                  },
                                 };
                               }
                             ),
@@ -779,11 +792,14 @@ function MetricAvailability({
                               checked: allDimensionsEnabled,
                               disabled: isReadOnly,
                               onChangeOverride: () => {
-                                handleOtherDimensionCheck();
+                                if (!isOtherDimensionEnabled)
+                                  handleOtherDimensionCheck(
+                                    disaggregationKey,
+                                    otherDimensionKey
+                                  );
                                 handleDisaggregationSelection(
                                   disaggregationKey,
-                                  !allDimensionsEnabled ||
-                                    !hasOtherBreakdownValue
+                                  !allDimensionsEnabled
                                 );
                               },
                             },

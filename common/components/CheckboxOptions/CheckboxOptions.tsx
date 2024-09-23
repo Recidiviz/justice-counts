@@ -25,8 +25,6 @@ export type CheckboxOption = {
   checked: boolean;
   disabled?: boolean;
   icon?: string | React.ReactNode;
-  isOtherOption?: boolean;
-  onChangeOtherOption?: () => void;
   onChangeOverride?: () => void;
 };
 
@@ -44,29 +42,17 @@ export const CheckboxOptions: React.FC<CheckboxOptionsProps> = ({
   return (
     <Styled.CheckboxContainer>
       {options.map(
-        ({
-          key,
-          label,
-          checked,
-          disabled,
-          icon,
-          isOtherOption,
-          onChangeOtherOption,
-          onChangeOverride,
-        }) => (
+        ({ key, label, checked, disabled, icon, onChangeOverride }) => (
           <Styled.CheckboxOptionsWrapper key={key}>
             <Styled.Checkbox
               id={key}
               type="checkbox"
               checked={checked}
-              onChange={() => {
-                if (isOtherOption && onChangeOtherOption) {
-                  return onChangeOtherOption();
-                }
-                return onChangeOverride
+              onChange={() =>
+                onChangeOverride
                   ? onChangeOverride()
-                  : onChange({ key, checked });
-              }}
+                  : onChange({ key, checked })
+              }
               disabled={disabled}
             />
             <Styled.CheckboxLabel>
