@@ -180,7 +180,7 @@ class AdminPanelStore {
     return this.agencyResponse;
   }
 
-  async fetchUsers() {
+  async fetchUsersOld() {
     try {
       const response = (await this.api.request({
         path: `/admin/user`,
@@ -207,7 +207,68 @@ class AdminPanelStore {
     }
   }
 
-  async fetchAgencies() {
+  async fetchUserById(userId: string) {
+    try {
+      // Make the API call to fetch data for the specific user by ID
+      const response = (await this.api.request({
+        path: `/admin/user/${userId}`,
+        method: "GET",
+      })) as Response;
+
+      const user = (await response.json()) as User;
+
+      if (response.status !== 200) {
+        throw new Error("There was an issue fetching the user.");
+      }
+
+      // Map the user's agencies to a structure grouped by agency ID
+      const userWithAgencies = {
+        ...user,
+        agencies: groupBy(user.agencies, (agency) => agency.id),
+      };
+
+      // Update the specific user's data in the store (without overwriting other users)
+      runInAction(() => {
+        this.usersByID = {
+          ...this.usersByID, // Keep existing users
+          [userId]: [userWithAgencies], // Overwrite or add the specific user
+        };
+      });
+    } catch (error) {
+      if (error instanceof Error) {
+        return new Error(error.message);
+      }
+    }
+  }
+
+  async fetchUsersLightweight() {
+    try {
+      const response = (await this.api.request({
+        path: `/admin/all_users_lightweight`,
+        method: "GET",
+      })) as Response;
+      const data = (await response.json()) as UserResponse;
+
+      if (response.status !== 200) {
+        throw new Error("There was an issue fetching users.");
+      }
+
+      /** Hydrate store with a list of users grouped by user ID (and a list of their agencies grouped by agency ID) from response  */
+      runInAction(() => {
+        this.usersByID = groupBy(
+          data.users.map((user) => ({
+            ...user,
+            agencies: groupBy(user.agencies, (agency) => agency.id),
+          })),
+          (user) => user.id
+        );
+      });
+    } catch (error) {
+      if (error instanceof Error) return new Error(error.message);
+    }
+  }
+
+  async fetchAgenciesOld() {
     try {
       const response = (await this.api.request({
         path: `/admin/agency`,
@@ -241,6 +302,74 @@ class AdminPanelStore {
     }
   }
 
+  async fetchAgenciesLightweight() {
+    try {
+      const response = (await this.api.request({
+        path: `/admin/all_agencies_lightweight`,
+        method: "GET",
+      })) as Response;
+      const data = (await response.json()) as AgencyResponse;
+
+      if (response.status !== 200) {
+        throw new Error("There was an issue fetching agencies.");
+      }
+
+      /**
+       * Hydrate store with a list of systems and a list of agencies grouped by agency ID (and a list of
+       * their team members grouped by user ID) from response
+       */
+      runInAction(() => {
+        this.agenciesByID = groupBy(
+          data.agencies.map((agency) => ({
+            ...agency,
+            team: {},
+          })),
+          (agency) => agency.id
+        );
+        this.systems = data.systems;
+      });
+    } catch (error) {
+      if (error instanceof Error) return new Error(error.message);
+    }
+  }
+
+  async fetchOnlyOneAgency(agencyID: string) {
+    try {
+      const response = (await this.api.request({
+        path: `/admin/agency/${agencyID}/only_one`,
+        method: "GET",
+      })) as Response;
+      // const agency = (await response.json()) as Agency;
+      const data = (await response.json()) as { agency: Agency };
+
+      if (response.status !== 200) {
+        throw new Error("There was an issue fetching agencies.");
+      }
+
+      // Extract the agency from the response
+      const { agency } = data;
+
+      // Map the user's agencies to a structure grouped by agency ID
+      const AgencyWithTeam = {
+        ...agency,
+        team: groupBy(
+          agency.team,
+          (member) => member.user_account_id || member.auth0_user_id
+        ),
+      };
+
+      // Update the specific user's data in the store (without overwriting other users)
+      runInAction(() => {
+        this.agenciesByID = {
+          ...this.agenciesByID, // Keep existing users
+          [agencyID]: [AgencyWithTeam], // Overwrite or add the specific user
+        };
+      });
+    } catch (error) {
+      if (error instanceof Error) return new Error(error.message);
+    }
+  }
+
   async fetchAgencyMetrics(agencyID: string) {
     try {
       const response = (await this.api.request({
@@ -262,7 +391,10 @@ class AdminPanelStore {
   }
 
   async fetchUsersAndAgencies() {
-    await Promise.all([this.fetchUsers(), this.fetchAgencies()]);
+    await Promise.all([
+      this.fetchUsersLightweight(),
+      this.fetchAgenciesLightweight(),
+    ]);
     runInAction(() => {
       this.loading = false;
     });

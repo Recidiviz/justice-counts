@@ -218,10 +218,24 @@ export const UserProvisioningOverview = observer(() => {
         {filteredUsers.length === 0
           ? "No users found"
           : filteredUsers.map((user) => {
-              const userAgencies =
-                AdminPanelStore.objectToSortedFlatMappedValues(user.agencies);
               return (
-                <Styled.Card key={user.id} onClick={() => editUser(user.id)}>
+                <Styled.Card
+                  key={user.id}
+                  onClick={async () => {
+                    try {
+                      // Call the fetchUsers function from the AdminPanelStore
+                      await adminPanelStore.fetchUserById(String(user.id));
+
+                      // Edit the agency after successfully fetching users
+                      editUser(user.id);
+                    } catch (error) {
+                      console.error(
+                        "There was an error fetching the users:",
+                        error
+                      );
+                    }
+                  }}
+                >
                   <Styled.TopCardRowWrapper>
                     <Styled.NameSubheaderWrapper>
                       <Styled.Name>{user.name}</Styled.Name>
@@ -229,14 +243,14 @@ export const UserProvisioningOverview = observer(() => {
                     </Styled.NameSubheaderWrapper>
                     <Styled.ID>ID {user.id}</Styled.ID>
                   </Styled.TopCardRowWrapper>
-                  <Styled.AgenciesWrapper>
+                  {/* <Styled.AgenciesWrapper>
                     {userAgencies.map((agency) => (
                       <Styled.Chip key={agency.id}>{agency.name}</Styled.Chip>
                     ))}
-                  </Styled.AgenciesWrapper>
-                  <Styled.NumberOfAgencies>
+                  </Styled.AgenciesWrapper> */}
+                  {/* <Styled.NumberOfAgencies>
                     {userAgencies.length} agencies
-                  </Styled.NumberOfAgencies>
+                  </Styled.NumberOfAgencies> */}
                   {/* Delete Users Button */}
                   <Styled.TrashIcon
                     onClick={(e) => {
