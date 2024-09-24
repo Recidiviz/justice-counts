@@ -222,18 +222,9 @@ export const UserProvisioningOverview = observer(() => {
                 <Styled.Card
                   key={user.id}
                   onClick={async () => {
-                    try {
-                      // Call the fetchUsers function from the AdminPanelStore
-                      await adminPanelStore.fetchUserById(String(user.id));
-
-                      // Edit the agency after successfully fetching users
-                      editUser(user.id);
-                    } catch (error) {
-                      console.error(
-                        "There was an error fetching the users:",
-                        error
-                      );
-                    }
+                    // Populate the user's agency associations.
+                    await adminPanelStore.fetchUserAgencies(String(user.id));
+                    editUser(user.id);
                   }}
                 >
                   <Styled.TopCardRowWrapper>

@@ -180,31 +180,35 @@ class AdminPanelStore {
     return this.agencyResponse;
   }
 
-  async fetchUserById(userId: string) {
+  async fetchUserAgencies(userId: string) {
     try {
-      // Make the API call to fetch data for the specific user by ID
       const response = (await this.api.request({
-        path: `/admin/user/${userId}`,
+        path: `/admin/user/${userId}/agencies`,
         method: "GET",
       })) as Response;
 
-      const user = (await response.json()) as User;
+      const data = (await response.json()) as { agencies: Agency[] };
 
       if (response.status !== 200) {
-        throw new Error("There was an issue fetching the user.");
+        throw new Error("There was an issue fetching the user's agencies.");
       }
 
-      // Map the user's agencies to a structure grouped by agency ID
-      const userWithAgencies = {
-        ...user,
-        agencies: groupBy(user.agencies, (agency) => agency.id),
-      };
+      const userAgenciesGroupedByID = groupBy(
+        data.agencies,
+        (agency) => agency.id
+      );
 
-      // Update the specific user's data in the store (without overwriting other users)
       runInAction(() => {
+        const existingUser = this.usersByID[userId]?.[0] || {};
+
         this.usersByID = {
-          ...this.usersByID, // Keep existing users
-          [userId]: [userWithAgencies], // Overwrite or add the specific user
+          ...this.usersByID,
+          [userId]: [
+            {
+              ...existingUser,
+              agencies: userAgenciesGroupedByID, // Update only the agencies field.
+            },
+          ],
         };
       });
     } catch (error) {
@@ -607,7 +611,7 @@ class AdminPanelStore {
       | User
       | UserWithAgenciesByID
       | AgencyWithTeamByID
-      | AgencyTeamMember,
+      | AgencyTeamMember
   >(list: T[], order: "ascending" | "descending" = "ascending"): T[] {
     return list.sort((a, b) => {
       if (order === "descending") {
@@ -652,7 +656,7 @@ class AdminPanelStore {
       | Agency
       | AgencyWithTeamByID
       | UserWithAgenciesByID
-      | AgencyTeamMember,
+      | AgencyTeamMember
   >(obj: Record<string, T[]>) {
     return AdminPanelStore.sortListByName(
       Object.values(obj).flatMap((item) => item)
