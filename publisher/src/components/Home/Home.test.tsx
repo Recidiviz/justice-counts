@@ -27,7 +27,7 @@ import {
   updateMetricProps,
   updateRecordProps,
 } from "../../mocks/HomeMocksHelpers";
-import { rootStore, StoreProvider } from "../../stores";
+import { StoreProvider, rootStore } from "../../stores";
 import { Home } from "./Home";
 
 const { homeStore, userStore, authStore } = rootStore;
@@ -44,10 +44,10 @@ beforeEach(() => {
   runInAction(() => {
     authStore.user = {};
     authStore.user.name = "UserFirstName UserLastName";
-    userStore.userAgencies = [
-      {
+    userStore.userAgenciesById = {
+      [mockAgencyID]: {
         is_dashboard_enabled: false,
-        child_agencies: [],
+        child_agency_ids: [],
         fips_county_code: "",
         id: Number(mockAgencyID),
         is_superagency: false,
@@ -59,7 +59,7 @@ beforeEach(() => {
         systems: ["LAW_ENFORCEMENT"],
         team: [],
       } as UserAgency,
-    ];
+    };
     homeStore.hydrateReportStoreWithLatestRecords(
       LAW_ENFORCEMENT_LATEST_RECORDS_METRICS
     );
@@ -335,10 +335,10 @@ test("non-superagencies should NOT have pinned task card to bulk upload data for
 
 test("superagencies have table with child agencies", () => {
   runInAction(() => {
-    userStore.userAgencies = [
-      {
+    userStore.userAgenciesById = {
+      [mockAgencyID]: {
         is_dashboard_enabled: false,
-        child_agencies: [],
+        child_agency_ids: [],
         fips_county_code: "",
         id: Number(mockAgencyID),
         is_superagency: true,
@@ -350,7 +350,7 @@ test("superagencies have table with child agencies", () => {
         systems: ["LAW_ENFORCEMENT", "SUPERAGENCY"],
         team: [],
       } as UserAgency,
-    ];
+    };
   });
 
   render(
