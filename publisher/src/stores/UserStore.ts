@@ -37,7 +37,7 @@ class UserStore {
 
   dropdownAgencies: DropdownAgency[] | undefined;
 
-  userAgencies: UserAgency[] | undefined;
+  userAgenciesById: { [agencyId: string]: UserAgency } = {};
 
   userId: string | undefined;
 
@@ -51,7 +51,7 @@ class UserStore {
     this.authStore = authStore;
     this.api = api;
     this.dropdownAgencies = undefined;
-    this.userAgencies = undefined;
+    this.userAgenciesById = {};
     this.userInfoLoaded = false;
     this.userId = undefined;
     this.loadingError = false;
@@ -139,14 +139,8 @@ class UserStore {
     return undefined;
   }
 
-  get userAgenciesById(): { [agencyId: string]: UserAgency } {
-    return (this.userAgencies || []).reduce(
-      (map: { [agencyId: string]: UserAgency }, agency: UserAgency) => ({
-        ...map,
-        [agency.id]: agency,
-      }),
-      {}
-    );
+  get userAgencies(): UserAgency[] {
+    return Object.values(this.userAgenciesById);
   }
 
   get userAgenciesFromMultipleStates(): boolean {
@@ -182,6 +176,7 @@ class UserStore {
     if (!agencyId) {
       return;
     }
+
     try {
       const response = (await this.api.request({
         path: `/api/agency/${agencyId}`,
@@ -189,52 +184,36 @@ class UserStore {
       })) as Response;
 
       if (response.status !== 200) {
-        this.handleFetchError(`Failed to fetch agency data for ID ${agencyId}`);
-        return;
+        return Promise.reject(
+          new Error(`Failed to fetch agency data for ID ${agencyId}`)
+        );
       }
 
       const { agencies: userAgencies }: { agencies: UserAgency[] } =
         await response.json();
 
       runInAction(() => {
-        this.userAgencies = this.userAgencies || []; // Initialize if undefined
-
-        const agencyMap = new Map(
-          this.userAgencies.map((agency) => [agency.id, agency])
-        );
-
         userAgencies.forEach((userAgency: UserAgency) => {
-          agencyMap.set(userAgency.id, userAgency);
+          this.userAgenciesById[userAgency.id] = userAgency;
         });
-
-        this.userAgencies = Array.from(agencyMap.values());
       });
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : String(error);
-      this.handleFetchError(
+
+      showToast({
+        message: `Error fetching agency data for ID ${agencyId}: ${errorMessage}`,
+        color: "red",
+      });
+
+      runInAction(() => {
+        this.loadingError = true;
+      });
+
+      console.error(
         `Error fetching agency data for ID ${agencyId}: ${errorMessage}`
       );
     }
-  }
-
-  /**
-   * Handles fetch error, logs it, shows a toast message, and updates the loading state.
-   *
-   * @param {string} message - The error message to show and log.
-   * @returns {void}
-   */
-  private handleFetchError(message: string): void {
-    showToast({
-      message,
-      color: "red",
-    });
-
-    runInAction(() => {
-      this.loadingError = true;
-    });
-
-    console.error(message); // For logging in the console
   }
 
   get name(): string | undefined {

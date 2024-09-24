@@ -79,8 +79,6 @@ const App: React.FC = (): ReactElement => {
     );
   }
 
-  // Show 'loading' in the interim of querying the agency group and waiting for that
-  // data to reach the user store.
   if (agencyMatch && !userStore.getAgency(agencyId))
     return (
       <PageWrapper>
