@@ -245,7 +245,7 @@ class AdminPanelStore {
     }
   }
 
-  async fetchAgencyOverview() {
+  async fetchAgenciesOverview() {
     try {
       const response = (await this.api.request({
         path: `/admin/agency/overview`,
@@ -331,7 +331,10 @@ class AdminPanelStore {
   }
 
   async fetchUsersAndAgencies() {
-    await Promise.all([this.fetchUsersOverview(), this.fetchAgencyOverview()]);
+    await Promise.all([
+      this.fetchUsersOverview(),
+      this.fetchAgenciesOverview(),
+    ]);
     runInAction(() => {
       this.loading = false;
     });
