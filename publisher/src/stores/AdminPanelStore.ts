@@ -180,6 +180,33 @@ class AdminPanelStore {
     return this.agencyResponse;
   }
 
+  async fetchUsersOverview() {
+    try {
+      const response = (await this.api.request({
+        path: `/admin/user/overview`,
+        method: "GET",
+      })) as Response;
+      const data = (await response.json()) as UserResponse;
+
+      if (response.status !== 200) {
+        throw new Error("There was an issue fetching users.");
+      }
+
+      /** Hydrate store with a list of users grouped by user ID from response  */
+      runInAction(() => {
+        this.usersByID = groupBy(
+          data.users.map((user) => ({
+            ...user,
+            agencies: {}, // Agency associations will be fetched when a User Panel is opened.
+          })),
+          (user) => user.id
+        );
+      });
+    } catch (error) {
+      if (error instanceof Error) return new Error(error.message);
+    }
+  }
+
   async fetchUserAgencies(userId: string) {
     try {
       const response = (await this.api.request({
@@ -215,33 +242,6 @@ class AdminPanelStore {
       if (error instanceof Error) {
         return new Error(error.message);
       }
-    }
-  }
-
-  async fetchUsersOverview() {
-    try {
-      const response = (await this.api.request({
-        path: `/admin/user/overview`,
-        method: "GET",
-      })) as Response;
-      const data = (await response.json()) as UserResponse;
-
-      if (response.status !== 200) {
-        throw new Error("There was an issue fetching users.");
-      }
-
-      /** Hydrate store with a list of users grouped by user ID from response  */
-      runInAction(() => {
-        this.usersByID = groupBy(
-          data.users.map((user) => ({
-            ...user,
-            agencies: {}, // Agency associations will be fetched when a User Panel is opened.
-          })),
-          (user) => user.id
-        );
-      });
-    } catch (error) {
-      if (error instanceof Error) return new Error(error.message);
     }
   }
 
