@@ -258,44 +258,10 @@ class AdminPanelStore {
         this.usersByID = groupBy(
           data.users.map((user) => ({
             ...user,
-            agencies: groupBy(user.agencies, (agency) => agency.id),
+            agencies: {}, // Leave agencies empty. We will populate this on-demand when a User Panel is opened.
           })),
           (user) => user.id
         );
-      });
-    } catch (error) {
-      if (error instanceof Error) return new Error(error.message);
-    }
-  }
-
-  async fetchAgenciesOld() {
-    try {
-      const response = (await this.api.request({
-        path: `/admin/agency`,
-        method: "GET",
-      })) as Response;
-      const data = (await response.json()) as AgencyResponse;
-
-      if (response.status !== 200) {
-        throw new Error("There was an issue fetching agencies.");
-      }
-
-      /**
-       * Hydrate store with a list of systems and a list of agencies grouped by agency ID (and a list of
-       * their team members grouped by user ID) from response
-       */
-      runInAction(() => {
-        this.agenciesByID = groupBy(
-          data.agencies.map((agency) => ({
-            ...agency,
-            team: groupBy(
-              agency.team,
-              (member) => member.user_account_id || member.auth0_user_id
-            ),
-          })),
-          (agency) => agency.id
-        );
-        this.systems = data.systems;
       });
     } catch (error) {
       if (error instanceof Error) return new Error(error.message);
@@ -322,7 +288,7 @@ class AdminPanelStore {
         this.agenciesByID = groupBy(
           data.agencies.map((agency) => ({
             ...agency,
-            team: {},
+            team: {}, // Leave team empty. This will be populated on-demand when an Agency Panel is opened.
           })),
           (agency) => agency.id
         );
@@ -333,32 +299,25 @@ class AdminPanelStore {
     }
   }
 
-  async fetchOnlyOneAgency(agencyID: string) {
+  async fetchAgencyTeam(agencyID: string) {
     try {
       const response = (await this.api.request({
-        path: `/admin/agency/${agencyID}/only_one`,
+        path: `/admin/agency/${agencyID}/team`,
         method: "GET",
       })) as Response;
       // const agency = (await response.json()) as Agency;
-      const data = (await response.json()) as { agency: Agency };
+      const data = (await response.json()) as { team: AgencyTeamMember[] };
 
       if (response.status !== 200) {
         throw new Error("There was an issue fetching agencies.");
       }
+      // Map the user's team to a structure grouped by user account ID
+      const updatedTeam = groupBy(
+        data.team,
+        (member) => member.user_account_id || member.auth0_user_id
+      );
 
-      // Extract the agency from the response
-      const { agency } = data;
-
-      // Map the user's agencies to a structure grouped by agency ID
-      const AgencyWithTeam = {
-        ...agency,
-        team: groupBy(
-          agency.team,
-          (member) => member.user_account_id || member.auth0_user_id
-        ),
-      };
-
-      // Update the specific user's data in the store (without overwriting other users)
+      // Only update the team field in the agency object without overwriting other fields
       runInAction(() => {
         const existingAgency = this.agenciesByID[agencyID]?.[0] || {};
 
@@ -366,8 +325,8 @@ class AdminPanelStore {
           ...this.agenciesByID, // Preserve all other agencies
           [agencyID]: [
             {
-              ...AgencyWithTeam, // Spread all fields from the new agency object
-              child_agency_ids: existingAgency.child_agency_ids || [], // Preserve the existing child_agency_ids
+              ...existingAgency, // Preserve existing agency data
+              team: updatedTeam, // Update only the team field
             },
           ],
         };
@@ -675,7 +634,7 @@ class AdminPanelStore {
       | User
       | UserWithAgenciesByID
       | AgencyWithTeamByID
-      | AgencyTeamMember
+      | AgencyTeamMember,
   >(list: T[], order: "ascending" | "descending" = "ascending"): T[] {
     return list.sort((a, b) => {
       if (order === "descending") {
@@ -720,7 +679,7 @@ class AdminPanelStore {
       | Agency
       | AgencyWithTeamByID
       | UserWithAgenciesByID
-      | AgencyTeamMember
+      | AgencyTeamMember,
   >(obj: Record<string, T[]>) {
     return AdminPanelStore.sortListByName(
       Object.values(obj).flatMap((item) => item)

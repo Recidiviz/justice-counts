@@ -306,7 +306,7 @@ export const AgencyProvisioningOverview = observer(() => {
                 onClick={async () => {
                   try {
                     // Call the fetchUsers function from the AdminPanelStore
-                    await adminPanelStore.fetchOnlyOneAgency(String(agency.id));
+                    await adminPanelStore.fetchAgencyTeam(String(agency.id));
 
                     // Edit the agency after successfully fetching users
                     editAgency(agency.id);
@@ -328,19 +328,8 @@ export const AgencyProvisioningOverview = observer(() => {
                   </Styled.NameSubheaderWrapper>
                   <Styled.ID>ID {agency.id}</Styled.ID>
                 </Styled.TopCardRowWrapper>
-                {/* Team Members */}
-                {/* <Styled.AgenciesWrapper>
-                  {Object.values(agency.team).map(([team]) => (
-                    <Styled.Chip key={team.auth0_user_id}>
-                      {team.name}
-                    </Styled.Chip>
-                  ))}
-                </Styled.AgenciesWrapper> */}
                 {/* Number of agencies, Superagency & Live Dashboard Indicators */}
                 <Styled.NumberOfAgenciesLiveDashboardIndicatorWrapper>
-                  {/* <Styled.NumberOfAgencies>
-                    {Object.values(agency.team).length} users
-                  </Styled.NumberOfAgencies> */}
                   <Styled.IndicatorWrapper>
                     {agency.is_superagency && (
                       <Styled.SuperagencyIndicator>

@@ -564,7 +564,7 @@ export const CardContainer = styled.div`
 `;
 
 export const Card = styled.div`
-  min-height: 250px;
+  min-height: 100px;
   width: 350px;
   display: flex;
   flex-direction: column;
