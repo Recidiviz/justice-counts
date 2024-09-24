@@ -295,27 +295,16 @@ export const AgencyProvisioningOverview = observer(() => {
       </Styled.SettingsBar>
 
       {/* List of Agencies */}
-      {/* Question: Is there a way to call admin/user/<agency_id> right when the user clicks on the style card? */}
       <Styled.CardContainer>
         {filteredAgencies.length === 0
           ? "No agencies found"
           : filteredAgencies.map((agency) => (
-              // Inside the map function of the Styled.Card
               <Styled.Card
                 key={agency.id}
                 onClick={async () => {
-                  try {
-                    // Call the fetchUsers function from the AdminPanelStore
-                    await adminPanelStore.fetchAgencyTeam(String(agency.id));
-
-                    // Edit the agency after successfully fetching users
-                    editAgency(agency.id);
-                  } catch (error) {
-                    console.error(
-                      "There was an error fetching the users:",
-                      error
-                    );
-                  }
+                  // Fetch the team associations for the agency.
+                  await adminPanelStore.fetchAgencyTeam(String(agency.id));
+                  editAgency(agency.id);
                 }}
               >
                 {/* Name, State, ID */}

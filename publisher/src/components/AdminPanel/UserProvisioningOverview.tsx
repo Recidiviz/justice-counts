@@ -234,14 +234,6 @@ export const UserProvisioningOverview = observer(() => {
                     </Styled.NameSubheaderWrapper>
                     <Styled.ID>ID {user.id}</Styled.ID>
                   </Styled.TopCardRowWrapper>
-                  {/* <Styled.AgenciesWrapper>
-                    {userAgencies.map((agency) => (
-                      <Styled.Chip key={agency.id}>{agency.name}</Styled.Chip>
-                    ))}
-                  </Styled.AgenciesWrapper> */}
-                  {/* <Styled.NumberOfAgencies>
-                    {userAgencies.length} agencies
-                  </Styled.NumberOfAgencies> */}
                   {/* Delete Users Button */}
                   <Styled.TrashIcon
                     onClick={(e) => {
