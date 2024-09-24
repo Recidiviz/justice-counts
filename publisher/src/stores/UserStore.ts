@@ -209,10 +209,6 @@ class UserStore {
       runInAction(() => {
         this.loadingError = true;
       });
-
-      console.error(
-        `Error fetching agency data for ID ${agencyId}: ${errorMessage}`
-      );
     }
   }
 
