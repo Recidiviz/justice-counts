@@ -65,7 +65,7 @@ const Settings = () => {
       <SettingsTitleContainer>
         <SettingsTitle>Settings</SettingsTitle>
         <SettingsSubTitle>
-          Edit you account settings or manage your team members.
+          Edit your account settings or manage your team members.
           <a href={learnMoreURL} target="_blank" rel="noopener noreferrer">
             &nbsp;Learn More
           </a>
