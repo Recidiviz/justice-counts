@@ -360,9 +360,16 @@ class AdminPanelStore {
 
       // Update the specific user's data in the store (without overwriting other users)
       runInAction(() => {
+        const existingAgency = this.agenciesByID[agencyID]?.[0] || {};
+
         this.agenciesByID = {
-          ...this.agenciesByID, // Keep existing users
-          [agencyID]: [AgencyWithTeam], // Overwrite or add the specific user
+          ...this.agenciesByID, // Preserve all other agencies
+          [agencyID]: [
+            {
+              ...AgencyWithTeam, // Spread all fields from the new agency object
+              child_agency_ids: existingAgency.child_agency_ids || [], // Preserve the existing child_agency_ids
+            },
+          ],
         };
       });
     } catch (error) {
