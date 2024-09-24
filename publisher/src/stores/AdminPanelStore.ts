@@ -180,33 +180,6 @@ class AdminPanelStore {
     return this.agencyResponse;
   }
 
-  async fetchUsersOld() {
-    try {
-      const response = (await this.api.request({
-        path: `/admin/user`,
-        method: "GET",
-      })) as Response;
-      const data = (await response.json()) as UserResponse;
-
-      if (response.status !== 200) {
-        throw new Error("There was an issue fetching users.");
-      }
-
-      /** Hydrate store with a list of users grouped by user ID (and a list of their agencies grouped by agency ID) from response  */
-      runInAction(() => {
-        this.usersByID = groupBy(
-          data.users.map((user) => ({
-            ...user,
-            agencies: groupBy(user.agencies, (agency) => agency.id),
-          })),
-          (user) => user.id
-        );
-      });
-    } catch (error) {
-      if (error instanceof Error) return new Error(error.message);
-    }
-  }
-
   async fetchUserById(userId: string) {
     try {
       // Make the API call to fetch data for the specific user by ID
@@ -244,7 +217,7 @@ class AdminPanelStore {
   async fetchUsersLightweight() {
     try {
       const response = (await this.api.request({
-        path: `/admin/all_users_lightweight`,
+        path: `/admin/user/overview`,
         method: "GET",
       })) as Response;
       const data = (await response.json()) as UserResponse;
@@ -268,10 +241,10 @@ class AdminPanelStore {
     }
   }
 
-  async fetchAgenciesLightweight() {
+  async fetchAgencyOverview() {
     try {
       const response = (await this.api.request({
-        path: `/admin/all_agencies_lightweight`,
+        path: `/admin/agency/overview`,
         method: "GET",
       })) as Response;
       const data = (await response.json()) as AgencyResponse;
@@ -359,7 +332,7 @@ class AdminPanelStore {
   async fetchUsersAndAgencies() {
     await Promise.all([
       this.fetchUsersLightweight(),
-      this.fetchAgenciesLightweight(),
+      this.fetchAgencyOverview(),
     ]);
     runInAction(() => {
       this.loading = false;
