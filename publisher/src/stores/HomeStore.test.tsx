@@ -18,8 +18,8 @@
 import { UserAgency } from "@justice-counts/common/types";
 import { runInAction } from "mobx";
 
-import { rootStore } from ".";
 import { LAW_ENFORCEMENT_LATEST_RECORDS_METRICS } from "../mocks/HomeMocksHelpers";
+import { rootStore } from ".";
 
 const { homeStore, userStore } = rootStore;
 const mockAgencyID = "10";

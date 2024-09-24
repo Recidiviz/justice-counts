@@ -140,7 +140,7 @@ describe("test create report button", () => {
           email: "test@email.com",
         };
         rootStore.userStore.userAgenciesById = {
-          [590]: {
+          590: {
             id: 590,
             name: "Test Agency",
             fips_county_code: "us_CA",
