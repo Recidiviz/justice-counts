@@ -46,28 +46,18 @@ const App: React.FC = (): ReactElement => {
     trackNavigation(location.pathname + location.search);
   }, [location]);
 
+  const agencyMatch = location.pathname.match(/\/agency\/(\d+)/);
+  const agencyId = agencyMatch ? agencyMatch[1] : "";
+
   useEffect(() => {
-    // Only load agency data after the user store has been constructed.
-    if (!userStore.userInfoLoaded) {
+    if (!agencyId || !userStore) {
       return;
     }
-    // Only run this effect if there is an agency id in the pathname.
-    const agencyMatch = location.pathname.match(/\/agency\/(\d+)/);
-    if (!agencyMatch) {
-      return;
-    }
-    // Don't query the agency if a query has already been sent.
-    const agencyId = agencyMatch[1];
-    if (userStore.queriedAgencies.includes(agencyId)) {
-      return;
-    }
-    // Record that we have queried for this agency already.
-    userStore.queriedAgencies.push(agencyId);
-    const fetchAgencyData = async () => {
-      await userStore.fetchAgencyGroupData(agencyId);
+    const loadAgencyData = async () => {
+      await userStore.loadAgencyData(agencyId);
     };
-    fetchAgencyData();
-  });
+    loadAgencyData();
+  }, [agencyId, userStore]);
 
   // using this variable to indicate whether user has any agencies
   // if true then depending on url either we
@@ -91,12 +81,7 @@ const App: React.FC = (): ReactElement => {
 
   // Show 'loading' in the interim of querying the agency group and waiting for that
   // data to reach the user store.
-  const agencyMatch = location.pathname.match(/\/agency\/(\d+)/);
-  if (
-    agencyMatch &&
-    userStore.queriedAgencies.includes(agencyMatch[1]) &&
-    !userStore.getAgency(agencyMatch[1])
-  )
+  if (agencyMatch && !userStore.getAgency(agencyId))
     return (
       <PageWrapper>
         <Loading />

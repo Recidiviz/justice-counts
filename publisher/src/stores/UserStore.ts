@@ -39,8 +39,6 @@ class UserStore {
 
   userAgencies: UserAgency[] | undefined;
 
-  queriedAgencies: string[] = [];
-
   userId: string | undefined;
 
   userInfoLoaded: boolean;
@@ -171,80 +169,72 @@ class UserStore {
   }
 
   /**
-   * Fetches agency group data for a given agencyId and adds those agency data to the
-   * userStore. An agency "group" is defined as the superagency and all the child
-   * agencies relevant to the agency.
-   * For example, if the agency is a child agency, this fetches its superagency and all
-   * of the child agencies of that superagency. If it is a superagency, we fetch that
-   * agency and all of its child agencies. If the agency is neither a child or
-   * superagency, we just fetch that one agency.
+   * Loads agency data for a given agencyId and adds that agency data to the
+   * userStore.
+   *
+   * This also loads the agency's superagency if one exists, which is necessary for
+   * rendering the child agency dropdown menus.
    *
    * @param {string} agencyId - The ID of the agency to fetch data for.
-   * @returns {Promise<UserAgency | undefined>} - The agency object or undefined if not found.
+   * @returns {Promise<void>} - Resolves when the data is loaded.
    */
-  async fetchAgencyGroupData(
-    agencyId: string
-  ): Promise<UserAgency | undefined> {
+  async loadAgencyData(agencyId: string): Promise<void> {
     if (!agencyId) {
-      return undefined;
+      return;
     }
     try {
       const response = (await this.api.request({
-        path: `/api/agency/${agencyId}/agency_group`,
+        path: `/api/agency/${agencyId}`,
         method: "GET",
       })) as Response;
-      if (response && response instanceof Response) {
-        if (response.status === 200) {
-          const { agencies: userAgencies } = await response.json();
 
-          runInAction(() => {
-            userAgencies.forEach((userAgency: UserAgency) => {
-              // If undefined, initialize the list.
-              if (!this.userAgencies) {
-                this.userAgencies = [];
-              }
-              const index = this.userAgencies.findIndex(
-                (a) => a.id === userAgency.id
-              );
-              if (index !== -1) {
-                this.userAgencies[index] = userAgency;
-              } else {
-                // Add to the list if the new agency doesn't exist already.
-                this.userAgencies = this.userAgencies.concat(userAgency);
-              }
-            });
-          });
-
-          if (agencyId in this.userAgenciesById) {
-            return this.userAgenciesById[agencyId];
-          }
-        }
+      if (response.status !== 200) {
+        this.handleFetchError(`Failed to fetch agency data for ID ${agencyId}`);
+        return;
       }
-      showToast({
-        message: "Failed to fetch agency data.",
-        color: "red",
-      });
+
+      const { agencies: userAgencies }: { agencies: UserAgency[] } =
+        await response.json();
+
       runInAction(() => {
-        this.loadingError = true;
+        this.userAgencies = this.userAgencies || []; // Initialize if undefined
+
+        const agencyMap = new Map(
+          this.userAgencies.map((agency) => [agency.id, agency])
+        );
+
+        userAgencies.forEach((userAgency: UserAgency) => {
+          agencyMap.set(userAgency.id, userAgency);
+        });
+
+        this.userAgencies = Array.from(agencyMap.values());
       });
-      return undefined;
     } catch (error) {
-      let errorMessage;
-      if (error instanceof Error) {
-        errorMessage = error.message;
-      } else {
-        errorMessage = String(error);
-      }
-
-      showToast({
-        message: `Error fetching agency data. ${errorMessage}`,
-        color: "red",
-      });
-      runInAction(() => {
-        this.loadingError = true;
-      });
-      return undefined;
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+      this.handleFetchError(
+        `Error fetching agency data for ID ${agencyId}: ${errorMessage}`
+      );
     }
+  }
+
+  /**
+   * Handles fetch error, logs it, shows a toast message, and updates the loading state.
+   *
+   * @param {string} message - The error message to show and log.
+   * @returns {void}
+   */
+  private handleFetchError(message: string): void {
+    showToast({
+      message,
+      color: "red",
+    });
+
+    runInAction(() => {
+      this.loadingError = true;
+    });
+
+    console.error(message); // For logging in the console
   }
 
   get name(): string | undefined {
