@@ -72,6 +72,7 @@ function MetricAvailability({
     metrics,
     disaggregations,
     dimensions,
+    dimensionContexts,
     updateMetricEnabledStatus,
     updateDisaggregationEnabledStatus,
     updateDimensionEnabledStatus,
@@ -716,6 +717,10 @@ function MetricAvailability({
               const otherDimensionKey = Object.values(currentDimensions).find(
                 (d) => d.key?.includes("Other")
               )?.key as string;
+              const otherDimensionBreakdownValue = dimensionContexts[
+                systemMetricKey
+              ]?.[disaggregationKey]?.[otherDimensionKey].ADDITIONAL_CONTEXT
+                .value as string;
               const isOtherDimensionEnabled =
                 currentEnabledDimensions.find((d) => d.key?.includes("Other"))
                   ?.enabled ?? false;
@@ -769,7 +774,8 @@ function MetricAvailability({
                                   onChangeOverride: () => {
                                     if (
                                       dimension.key === otherDimensionKey &&
-                                      !isOtherDimensionEnabled
+                                      !isOtherDimensionEnabled &&
+                                      !otherDimensionBreakdownValue
                                     ) {
                                       handleOtherDimensionCheck(
                                         disaggregationKey,
@@ -792,7 +798,10 @@ function MetricAvailability({
                               checked: allDimensionsEnabled,
                               disabled: isReadOnly,
                               onChangeOverride: () => {
-                                if (!isOtherDimensionEnabled)
+                                if (
+                                  !isOtherDimensionEnabled &&
+                                  !otherDimensionBreakdownValue
+                                )
                                   handleOtherDimensionCheck(
                                     disaggregationKey,
                                     otherDimensionKey
