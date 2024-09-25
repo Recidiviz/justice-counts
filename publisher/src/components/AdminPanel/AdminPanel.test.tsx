@@ -806,7 +806,7 @@ test("Adding a user adds a card to the list of team members", () => {
   expect(teamMember2Email).toBeInTheDocument();
 });
 
-test("Deleting a user deletes a card to the list of team members", async () => {
+test("Deleting a user deletes a card to the list of team members", () => {
   runInAction(() => {
     adminPanelStore.usersByID = usersByID;
     adminPanelStore.agenciesByID = agenciesByID;
