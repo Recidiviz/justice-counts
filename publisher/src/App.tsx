@@ -46,19 +46,6 @@ const App: React.FC = (): ReactElement => {
     trackNavigation(location.pathname + location.search);
   }, [location]);
 
-  const agencyMatch = location.pathname.match(/\/agency\/(\d+)/);
-  const agencyId = agencyMatch ? agencyMatch[1] : "";
-
-  useEffect(() => {
-    if (!agencyId || !userStore) {
-      return;
-    }
-    const loadAgencyData = async () => {
-      await userStore.loadAgencyData(agencyId);
-    };
-    loadAgencyData();
-  }, [agencyId, userStore]);
-
   // using this variable to indicate whether user has any agencies
   // if true then depending on url either we
   // go to report page with initial agency (example entering site by homepage)
@@ -78,13 +65,6 @@ const App: React.FC = (): ReactElement => {
       </PageWrapper>
     );
   }
-
-  if (agencyMatch && !userStore.getAgency(agencyId))
-    return (
-      <PageWrapper>
-        <Loading />
-      </PageWrapper>
-    );
 
   if (!userStore.userInfoLoaded)
     return (

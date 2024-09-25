@@ -35,7 +35,7 @@ class UserStore {
 
   api: API;
 
-  dropdownAgencies: DropdownAgency[] | undefined;
+  dropdownAgenciesById: { [agencyId: string]: DropdownAgency } = {};
 
   userAgenciesById: { [agencyId: string]: UserAgency } = {};
 
@@ -50,7 +50,7 @@ class UserStore {
 
     this.authStore = authStore;
     this.api = api;
-    this.dropdownAgencies = undefined;
+    this.dropdownAgenciesById = {};
     this.userAgenciesById = {};
     this.userInfoLoaded = false;
     this.userId = undefined;
@@ -141,6 +141,10 @@ class UserStore {
 
   get userAgencies(): UserAgency[] {
     return Object.values(this.userAgenciesById);
+  }
+
+  get dropdownAgencies(): DropdownAgency[] {
+    return Object.values(this.dropdownAgenciesById);
   }
 
   get userAgenciesFromMultipleStates(): boolean {
@@ -288,7 +292,9 @@ class UserStore {
       runInAction(() => {
         this.userId = userId;
         this.userInfoLoaded = true;
-        this.dropdownAgencies = dropdownAgencies;
+        dropdownAgencies.forEach((dropdownAgency: DropdownAgency) => {
+          this.dropdownAgenciesById[dropdownAgency.agency_id] = dropdownAgency;
+        });
       });
     } catch (error) {
       runInAction(() => {

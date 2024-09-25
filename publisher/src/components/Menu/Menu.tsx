@@ -43,7 +43,8 @@ const Menu: React.FC = () => {
   const pathWithoutAgency = removeAgencyFromPath(location.pathname);
   const currentAgency = userStore.getAgency(agencyId);
   const hasDashboardEnabled = currentAgency?.is_dashboard_enabled;
-  const agencyName = currentAgency?.name;
+  const agencyDisplayName =
+    userStore.dropdownAgenciesById[agencyId].dropdown_name;
 
   const handleCloseMobileMenu = () => {
     if (windowWidth < MIN_TABLET_WIDTH && isMobileMenuOpen) {
@@ -113,7 +114,11 @@ const Menu: React.FC = () => {
             label: "Agency Dashboard",
             onClick: () =>
               window.open(
-                generateDashboardURL(api.environment, agencyId, agencyName),
+                generateDashboardURL(
+                  api.environment,
+                  agencyId,
+                  currentAgency?.name
+                ),
                 "_blank"
               ),
           },
@@ -191,13 +196,13 @@ const Menu: React.FC = () => {
           <>
             {userStore.dropdownAgencies.length < 2 ? (
               <Styled.SingleAgencyHeader>
-                {currentAgency?.name}
+                {agencyDisplayName}
               </Styled.SingleAgencyHeader>
             ) : (
               <Styled.AgencyDropdownWrapper>
                 <Styled.MenuItem>
                   <Dropdown
-                    label={currentAgency?.name}
+                    label={agencyDisplayName}
                     options={agencyDropdownOptions}
                     size="small"
                     hover="label"
