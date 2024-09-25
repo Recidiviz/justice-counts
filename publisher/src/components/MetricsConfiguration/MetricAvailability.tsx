@@ -719,8 +719,8 @@ function MetricAvailability({
               )?.key as string;
               const otherDimensionBreakdownValue = dimensionContexts[
                 systemMetricKey
-              ]?.[disaggregationKey]?.[otherDimensionKey].ADDITIONAL_CONTEXT
-                .value as string;
+              ]?.[disaggregationKey]?.[otherDimensionKey]?.ADDITIONAL_CONTEXT
+                ?.value as string;
               const isOtherDimensionEnabled =
                 currentEnabledDimensions.find((d) => d.key?.includes("Other"))
                   ?.enabled ?? false;
