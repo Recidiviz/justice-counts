@@ -221,9 +221,9 @@ export const UserProvisioningOverview = observer(() => {
               return (
                 <Styled.Card
                   key={user.id}
-                  onClick={async () => {
+                  onClick={() => {
                     // Populate the user's agency associations.
-                    await adminPanelStore.fetchUserAgencies(String(user.id));
+                    adminPanelStore.fetchUserAgencies(String(user.id));
                     editUser(user.id);
                   }}
                 >

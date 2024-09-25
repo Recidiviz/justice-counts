@@ -301,9 +301,9 @@ export const AgencyProvisioningOverview = observer(() => {
           : filteredAgencies.map((agency) => (
               <Styled.Card
                 key={agency.id}
-                onClick={async () => {
+                onClick={() => {
                   // Fetch the team associations for the agency.
-                  await adminPanelStore.fetchAgencyTeam(String(agency.id));
+                  adminPanelStore.fetchAgencyTeam(String(agency.id));
                   editAgency(agency.id);
                 }}
               >
