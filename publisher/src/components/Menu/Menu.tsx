@@ -40,11 +40,12 @@ const Menu: React.FC = () => {
   const windowWidth = useWindowWidth();
   const headerBadge = useHeaderBadge();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
   const pathWithoutAgency = removeAgencyFromPath(location.pathname);
   const currentAgency = userStore.getAgency(agencyId);
   const hasDashboardEnabled = currentAgency?.is_dashboard_enabled;
   const agencyName = currentAgency?.name;
+  const agencyDisplayName =
+    userStore.dropdownAgenciesById[agencyId].dropdown_name;
 
   const handleCloseMobileMenu = () => {
     if (windowWidth < MIN_TABLET_WIDTH && isMobileMenuOpen) {
@@ -85,33 +86,18 @@ const Menu: React.FC = () => {
     }
   };
 
-  const includeStateCodeInAgencyName = userStore.userAgenciesFromMultipleStates;
-  const agencyDropdownOptions: DropdownOption[] = userStore.userAgencies
-    ? userStore.userAgencies
-        .slice()
-        .sort((a, b) => a.name.localeCompare(b.name))
-        .map((agency) => {
-          const stateCodeDisplayName = agency.state_code
-            ?.split("_")[1]
-            .toUpperCase();
-          const isStateCodeInAgencyName =
-            agency.name.includes(stateCodeDisplayName);
-          return {
-            key: agency.id,
-            label: `${agency.name} ${
-              agency.state_code &&
-              includeStateCodeInAgencyName &&
-              !isStateCodeInAgencyName
-                ? `(${stateCodeDisplayName})`
-                : ""
-            }`,
-            onClick: () => {
-              navigate(`/agency/${agency.id}/${pathWithoutAgency}`);
-              handleCloseMobileMenu();
-            },
-            highlight: agency.id === currentAgency?.id,
-          };
-        })
+  const agencyDropdownOptions: DropdownOption[] = userStore.dropdownAgencies
+    ? userStore.dropdownAgencies.map((agency) => {
+        return {
+          key: agency.agency_id,
+          label: agency.dropdown_name,
+          onClick: () => {
+            navigate(`/agency/${agency.agency_id}/${pathWithoutAgency}`);
+            handleCloseMobileMenu();
+          },
+          highlight: agency.agency_id === currentAgency?.id,
+        };
+      })
     : [];
 
   const profileDropdownMetadata = [
@@ -203,17 +189,17 @@ const Menu: React.FC = () => {
     <Styled.MenuContainer isMobileMenuOpen={isMobileMenuOpen}>
       <Styled.AgencyDropdownHeaderBadgeWrapper>
         {/* Agencies Dropdown */}
-        {userStore.userAgencies && (
+        {userStore.dropdownAgencies && (
           <>
-            {userStore.userAgencies.length < 2 ? (
+            {userStore.dropdownAgencies.length < 2 ? (
               <Styled.SingleAgencyHeader>
-                {currentAgency?.name}
+                {agencyDisplayName}
               </Styled.SingleAgencyHeader>
             ) : (
               <Styled.AgencyDropdownWrapper>
                 <Styled.MenuItem>
                   <Dropdown
-                    label={currentAgency?.name}
+                    label={agencyDisplayName}
                     options={agencyDropdownOptions}
                     size="small"
                     hover="label"

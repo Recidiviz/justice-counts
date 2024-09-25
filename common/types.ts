@@ -96,6 +96,11 @@ export interface PublicUserAgency {
   systems: AgencySystem[];
 }
 
+export interface DropdownAgency {
+  agency_id: number;
+  dropdown_name: string;
+}
+
 export interface UserAgency {
   id: number;
   name: string;
