@@ -188,7 +188,7 @@ test("Clicking the `Create User` button opens the create user modal", () => {
   expect(saveButton).toBeInTheDocument();
 });
 
-test("Clicking on an existing user card opens the edit user modal", () => {
+test("Clicking on an existing user card opens the edit user modal", async () => {
   runInAction(() => {
     adminPanelStore.usersByID = usersByID;
   });
@@ -214,9 +214,9 @@ test("Clicking on an existing user card opens the edit user modal", () => {
    */
   const userEmail = screen.getAllByText("user1@email.org")[1];
   const emailInput = screen.queryByText("Email");
-  const agency1 = screen.getAllByText("Department of X")[1];
-  const agency2 = screen.getAllByText("Department of Y")[1];
-  const agency3 = screen.getAllByText("Department of Z")[1];
+  const agency1 = screen.getAllByText("Department of X")[0];
+  const agency2 = screen.getAllByText("Department of Y")[0];
+  const agency3 = screen.getAllByText("Department of Z")[0];
   const addAgenciesButton = screen.getByText("Add Agencies");
   const deleteAgenciesButton = screen.getByText("Delete Agencies");
   const cancelButton = screen.getByText("Cancel");
@@ -274,7 +274,7 @@ test("Deleting an existing users agency deletes agency from user's agency list",
   );
   expect(selectAgenciesToDeleteLabel).toBeInTheDocument();
 
-  let agency1Chip = screen.getAllByText("Department of X")[1];
+  let agency1Chip = screen.getAllByText("Department of X")[0];
   /** Click on the 'Department of X' chip to select for deletion */
   fireEvent.click(agency1Chip);
 
@@ -425,7 +425,7 @@ test("Adding an agency adds agency to user's agency list", async () => {
    * Confirm that the agency is now on the user's list of agencies, and the user
    * is connected to all available agencies.
    */
-  agency3Chip = screen.getAllByText("Department of Z")[1];
+  agency3Chip = screen.getAllByText("Department of Z")[0];
   noAvailableAgenciesLabel = screen.getByText(
     "User is connected to all available agencies"
   );
@@ -656,10 +656,6 @@ test("Clicking the `Create Agency` button opens the create agency modal", () => 
   expect(getComputedStyle(saveButton).backgroundColor).toBe(
     palette.highlight.grey1
   ); // Indicating the button is disabled
-
-  fireEvent.click(teamMemberRolesTab);
-  const teamMember = screen.getByText("Anne Teak");
-  expect(teamMember).toBeInTheDocument();
 });
 
 test("Clicking on an existing agency card opens the edit agency modal", () => {
@@ -795,7 +791,7 @@ test("Adding a user adds a card to the list of team members", () => {
     "Select team members to add"
   );
   const existingTeamMember1 = screen.getByText("user1@email.org");
-  const teamMember2 = screen.getAllByText("Liz Erd")[2];
+  const teamMember2 = screen.getAllByText("Liz Erd")[0];
   const teamMember3 = screen.getByText("Percy Vere");
 
   expect(selectTeamMembersToAddLabel).toBeInTheDocument();
@@ -840,7 +836,7 @@ test("Deleting a user deletes a card to the list of team members", () => {
     "Select team members to delete"
   );
   const existingTeamMember1 = screen.getByText("user1@email.org");
-  const existingTeamMember1ChipToDelete = screen.queryAllByText("Anne Teak")[1];
+  const existingTeamMember1ChipToDelete = screen.queryAllByText("Anne Teak")[0];
   const teamMember2 = screen.queryAllByText("Liz Erd")[2];
   const teamMember3 = screen.queryByText("Percy Vere");
 

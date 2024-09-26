@@ -180,10 +180,10 @@ class AdminPanelStore {
     return this.agencyResponse;
   }
 
-  async fetchUsers() {
+  async fetchUsersOverview() {
     try {
       const response = (await this.api.request({
-        path: `/admin/user`,
+        path: `/admin/user/overview`,
         method: "GET",
       })) as Response;
       const data = (await response.json()) as UserResponse;
@@ -192,12 +192,12 @@ class AdminPanelStore {
         throw new Error("There was an issue fetching users.");
       }
 
-      /** Hydrate store with a list of users grouped by user ID (and a list of their agencies grouped by agency ID) from response  */
+      /** Hydrate store with a list of users grouped by user ID from response  */
       runInAction(() => {
         this.usersByID = groupBy(
           data.users.map((user) => ({
             ...user,
-            agencies: groupBy(user.agencies, (agency) => agency.id),
+            agencies: {}, // Agency associations will be fetched when a User Panel is opened.
           })),
           (user) => user.id
         );
@@ -207,10 +207,48 @@ class AdminPanelStore {
     }
   }
 
-  async fetchAgencies() {
+  async fetchUserAgencies(userId: string) {
     try {
       const response = (await this.api.request({
-        path: `/admin/agency`,
+        path: `/admin/user/${userId}/agencies`,
+        method: "GET",
+      })) as Response;
+
+      const data = (await response.json()) as { agencies: Agency[] };
+
+      if (response.status !== 200) {
+        throw new Error("There was an issue fetching the user's agencies.");
+      }
+
+      const userAgenciesGroupedByID = groupBy(
+        data.agencies,
+        (agency) => agency.id
+      );
+
+      runInAction(() => {
+        const existingUser = this.usersByID[userId]?.[0] || {};
+
+        this.usersByID = {
+          ...this.usersByID,
+          [userId]: [
+            {
+              ...existingUser,
+              agencies: userAgenciesGroupedByID, // Update only the agencies field.
+            },
+          ],
+        };
+      });
+    } catch (error) {
+      if (error instanceof Error) {
+        return new Error(error.message);
+      }
+    }
+  }
+
+  async fetchAgenciesOverview() {
+    try {
+      const response = (await this.api.request({
+        path: `/admin/agency/overview`,
         method: "GET",
       })) as Response;
       const data = (await response.json()) as AgencyResponse;
@@ -220,21 +258,52 @@ class AdminPanelStore {
       }
 
       /**
-       * Hydrate store with a list of systems and a list of agencies grouped by agency ID (and a list of
-       * their team members grouped by user ID) from response
+       * Hydrate store with a list of systems and a list of agencies grouped by agency
+       * ID from response
        */
       runInAction(() => {
         this.agenciesByID = groupBy(
           data.agencies.map((agency) => ({
             ...agency,
-            team: groupBy(
-              agency.team,
-              (member) => member.user_account_id || member.auth0_user_id
-            ),
+            team: {}, // Team associations will be fetched when an Agency Panel is opened.
           })),
           (agency) => agency.id
         );
         this.systems = data.systems;
+      });
+    } catch (error) {
+      if (error instanceof Error) return new Error(error.message);
+    }
+  }
+
+  async fetchAgencyTeam(agencyID: string) {
+    try {
+      const response = (await this.api.request({
+        path: `/admin/agency/${agencyID}/team`,
+        method: "GET",
+      })) as Response;
+      const data = (await response.json()) as { team: AgencyTeamMember[] };
+
+      if (response.status !== 200) {
+        throw new Error("There was an issue fetching agency teams.");
+      }
+      const updatedTeam = groupBy(
+        data.team,
+        (member) => member.user_account_id || member.auth0_user_id
+      );
+
+      // Only update the team field in the agency object without overwriting other fields.
+      runInAction(() => {
+        const existingAgency = this.agenciesByID[agencyID]?.[0] || {};
+        this.agenciesByID = {
+          ...this.agenciesByID,
+          [agencyID]: [
+            {
+              ...existingAgency,
+              team: updatedTeam, // Update only the team field
+            },
+          ],
+        };
       });
     } catch (error) {
       if (error instanceof Error) return new Error(error.message);
@@ -262,7 +331,10 @@ class AdminPanelStore {
   }
 
   async fetchUsersAndAgencies() {
-    await Promise.all([this.fetchUsers(), this.fetchAgencies()]);
+    await Promise.all([
+      this.fetchUsersOverview(),
+      this.fetchAgenciesOverview(),
+    ]);
     runInAction(() => {
       this.loading = false;
     });

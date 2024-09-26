@@ -251,7 +251,7 @@ test("fetchUsers gets a list of users and stores them in the AdminPanelStore", a
     json: async () => mockUsersResponse,
   });
 
-  await adminPanelStore.fetchUsers();
+  await adminPanelStore.fetchUsersOverview();
 
   expect(fetch).toBeCalledTimes(1);
   expect(adminPanelStore.users.length).toBe(mockUsersResponse.users.length);
@@ -268,7 +268,7 @@ test("fetchAgencies gets a list of agencies and stores them in the AdminPanelSto
     json: async () => mockAgenciesResponse,
   });
 
-  await adminPanelStore.fetchAgencies();
+  await adminPanelStore.fetchAgenciesOverview();
 
   expect(fetch).toBeCalledTimes(1);
   expect(adminPanelStore.agencies.length).toBe(

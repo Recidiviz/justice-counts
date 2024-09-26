@@ -218,10 +218,15 @@ export const UserProvisioningOverview = observer(() => {
         {filteredUsers.length === 0
           ? "No users found"
           : filteredUsers.map((user) => {
-              const userAgencies =
-                AdminPanelStore.objectToSortedFlatMappedValues(user.agencies);
               return (
-                <Styled.Card key={user.id} onClick={() => editUser(user.id)}>
+                <Styled.Card
+                  key={user.id}
+                  onClick={() => {
+                    // Populate the user's agency associations.
+                    adminPanelStore.fetchUserAgencies(String(user.id));
+                    editUser(user.id);
+                  }}
+                >
                   <Styled.TopCardRowWrapper>
                     <Styled.NameSubheaderWrapper>
                       <Styled.Name>{user.name}</Styled.Name>
@@ -229,14 +234,6 @@ export const UserProvisioningOverview = observer(() => {
                     </Styled.NameSubheaderWrapper>
                     <Styled.ID>ID {user.id}</Styled.ID>
                   </Styled.TopCardRowWrapper>
-                  <Styled.AgenciesWrapper>
-                    {userAgencies.map((agency) => (
-                      <Styled.Chip key={agency.id}>{agency.name}</Styled.Chip>
-                    ))}
-                  </Styled.AgenciesWrapper>
-                  <Styled.NumberOfAgencies>
-                    {userAgencies.length} agencies
-                  </Styled.NumberOfAgencies>
                   {/* Delete Users Button */}
                   <Styled.TrashIcon
                     onClick={(e) => {
