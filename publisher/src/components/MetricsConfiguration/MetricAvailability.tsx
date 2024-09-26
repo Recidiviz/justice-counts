@@ -654,7 +654,7 @@ function MetricAvailability({
 
         {/* Metric Breakdowns */}
         {isSettingsModalOpen && (
-          // This modal only opens if we check/uncheck "other" breakdown or "select all"
+          // This modal only opens if we check "Other" or "Select All" option
           <DefinitionModalForm
             systemMetricKey={systemMetricKey}
             activeDisaggregationKey={activeDisaggregationKey}
@@ -714,16 +714,22 @@ function MetricAvailability({
                 Object.values(currentDimensions).length ===
                 currentEnabledDimensions.length;
 
-              const otherDimensionKey = Object.values(currentDimensions).find(
-                (d) => d.key?.includes("Other")
-              )?.key as string;
+              /* In some cases we can have multiple dimensions that starts with the word "Other", 
+              however there could be only one fallback "Other" breakdown for the metric 
+              and we assume that it is located at the end of the list according to logical flow and specificity 
+              ("Other" and "Unknown" are typically catch-all or fallback options, used when none of the specific options are applicable or sufficient)
+              */
+              const otherDimensionKey = Object.values(currentDimensions)
+                .filter((d) => d.key?.startsWith("Other"))
+                .pop()?.key as string;
               const otherDimensionBreakdownValue = dimensionContexts[
                 systemMetricKey
               ]?.[disaggregationKey]?.[otherDimensionKey]?.ADDITIONAL_CONTEXT
                 ?.value as string;
               const isOtherDimensionEnabled =
-                currentEnabledDimensions.find((d) => d.key?.includes("Other"))
-                  ?.enabled ?? false;
+                currentEnabledDimensions.find(
+                  (d) => d.key === otherDimensionKey
+                )?.enabled ?? false;
 
               if (
                 activeDisaggregationKey &&
@@ -801,11 +807,12 @@ function MetricAvailability({
                                 if (
                                   !isOtherDimensionEnabled &&
                                   !otherDimensionBreakdownValue
-                                )
+                                ) {
                                   handleOtherDimensionCheck(
                                     disaggregationKey,
                                     otherDimensionKey
                                   );
+                                }
                                 handleDisaggregationSelection(
                                   disaggregationKey,
                                   !allDimensionsEnabled

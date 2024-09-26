@@ -380,6 +380,9 @@ function DefinitionModalForm({
     }
   };
 
+  const currentDimensions =
+    hasActiveDisaggregationAndDimensionKey &&
+    dimensions[systemMetricKey][activeDisaggregationKey];
   const currentDimension =
     (hasActiveDisaggregationAndDimensionKey &&
       dimensions[systemMetricKey]?.[activeDisaggregationKey]?.[
@@ -394,16 +397,31 @@ function DefinitionModalForm({
     : currentDimension?.description;
 
   const handleOtherDimensionUpdate = () => {
-    if (activeDisaggregationKey && activeDimensionKey?.includes("Other")) {
+    const otherDimensionKey =
+      currentDimensions &&
+      (Object.values(currentDimensions)
+        .filter((d) => d.key?.startsWith("Other"))
+        .pop()?.key as string);
+
+    if (
+      hasActiveDisaggregationAndDimensionKey &&
+      otherDimensionKey &&
+      activeDimensionKey === otherDimensionKey
+    ) {
       const updatedSetting = updateDimensionEnabledStatus(
         systemSearchParam,
         metricSearchParam,
         activeDisaggregationKey,
-        activeDimensionKey,
+        otherDimensionKey,
         !!currentContexts.ADDITIONAL_CONTEXT.value
       );
       saveMetricSettings(updatedSetting, agencyId);
     }
+  };
+
+  const handleCloseModal = () => {
+    handleOtherDimensionUpdate();
+    closeModal();
   };
 
   return (
@@ -411,7 +429,9 @@ function DefinitionModalForm({
       <Styled.Content>
         <Styled.Header>
           {displayLabel}
-          <Styled.CloseButton onClick={closeModal}>&#10005;</Styled.CloseButton>
+          <Styled.CloseButton onClick={handleCloseModal}>
+            &#10005;
+          </Styled.CloseButton>
         </Styled.Header>
         <Styled.ScrollableInnerWrapper>
           {hasNoSettingsAndNoContext && (
@@ -518,7 +538,7 @@ function DefinitionModalForm({
                   );
               }
               handleSaveSettings(updatedSettings);
-              closeModal();
+              handleCloseModal();
             }}
             saveAndClose
           />
@@ -527,8 +547,7 @@ function DefinitionModalForm({
               label="Save"
               onClick={() => {
                 handleSaveSettings();
-                handleOtherDimensionUpdate();
-                closeModal();
+                handleCloseModal();
               }}
               buttonColor="blue"
             />
