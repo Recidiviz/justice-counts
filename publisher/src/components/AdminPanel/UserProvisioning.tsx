@@ -388,6 +388,7 @@ export const UserProvisioning: React.FC<ProvisioningProps> = observer(
 
                 {/* User's Agencies */}
                 {activeSecondaryModal !== Setting.USERS && (
+                  // This is the whole box.
                   <InteractiveSearchList
                     list={userAgenciesAddedAgencies}
                     buttons={interactiveSearchListButtons}
