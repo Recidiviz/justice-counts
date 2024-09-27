@@ -53,6 +53,7 @@ import DefinitionModalForm from "./DefinitionModalForm";
 import * as Styled from "./MetricAvailability.styled";
 import { RaceEthnicitiesGrid } from "./RaceEthnicitiesGrid";
 import { ReportFrequencyUpdate } from "./types";
+import { getOtherDimensonKey } from "./utils";
 
 type MetricAvailabilityProps = {
   goToDefineMetrics: () => void;
@@ -714,14 +715,7 @@ function MetricAvailability({
                 Object.values(currentDimensions).length ===
                 currentEnabledDimensions.length;
 
-              /* In some cases we can have multiple dimensions that starts with the word "Other", 
-              however there could be only one fallback "Other" breakdown for the metric 
-              and we assume that it is located at the end of the list according to logical flow and specificity 
-              ("Other" and "Unknown" are typically catch-all or fallback options, used when none of the specific options are applicable or sufficient)
-              */
-              const otherDimensionKey = Object.values(currentDimensions)
-                .filter((d) => d.key?.startsWith("Other"))
-                .pop()?.key as string;
+              const otherDimensionKey = getOtherDimensonKey(currentDimensions);
               const otherDimensionBreakdownValue = dimensionContexts[
                 systemMetricKey
               ]?.[disaggregationKey]?.[otherDimensionKey]?.ADDITIONAL_CONTEXT

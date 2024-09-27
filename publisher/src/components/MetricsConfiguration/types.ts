@@ -75,6 +75,18 @@ export type SettingsByIncludesExcludesKey = {
   };
 };
 
+export type Dimensions = {
+  [dimensionKey: string]: {
+    enabled?: boolean | null;
+    label?: string;
+    description?: string;
+    key?: string;
+    race?: Races;
+    ethnicity?: Ethnicities;
+    is_dimension_includes_excludes_configured?: ConfigurationStatus | null;
+  };
+};
+
 export type DimensionSettings = {
   [dimensionKey: string]: SettingsByIncludesExcludesKey;
 };

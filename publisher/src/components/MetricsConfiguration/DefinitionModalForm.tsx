@@ -37,6 +37,7 @@ import {
   MetricSettings,
   SettingsByIncludesExcludesKey,
 } from "./types";
+import { getOtherDimensonKey } from "./utils";
 
 type DefinitionModalFormProps = {
   activeDisaggregationKey?: string;
@@ -398,10 +399,7 @@ function DefinitionModalForm({
 
   const handleOtherDimensionUpdate = () => {
     const otherDimensionKey =
-      currentDimensions &&
-      (Object.values(currentDimensions)
-        .filter((d) => d.key?.startsWith("Other"))
-        .pop()?.key as string);
+      currentDimensions && getOtherDimensonKey(currentDimensions);
 
     if (
       hasActiveDisaggregationAndDimensionKey &&
