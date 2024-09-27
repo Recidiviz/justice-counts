@@ -15,7 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { UpdatedDimension } from "./types";
+import { Dimensions, UpdatedDimension } from "./types";
 
 /**
  * Sort Races from an `ethnicitiesByRace` object entries array in the following order:
@@ -42,4 +42,15 @@ export const sortRaces = (
     return -1;
   }
   return 1;
+};
+
+/**  In some cases we can have multiple dimensions that starts with the word "Other",
+ * however there could be only one fallback "Other" breakdown for the metric
+ * and we assume that it is located at the end of the list according to logical flow and specificity
+ * ("Other" and "Unknown" are typically catch-all or fallback options, used when none of the specific options are applicable or sufficient)
+ */
+export const getOtherDimensonKey = (dimensions: Dimensions) => {
+  return Object.values(dimensions)
+    .filter((d) => d.key?.startsWith("Other"))
+    .pop()?.key as string;
 };
