@@ -604,7 +604,7 @@ test("Agency provisioning overview filter checkboxes properly filter superagenci
   expect(agency3).toBeNull();
 });
 
-test("Clicking the `Create Agency` button opens the create agency modal", () => {
+test("Clicking the `Create Agency` button opens the create agency modal", async () => {
   runInAction(() => {
     adminPanelStore.usersByID = usersByID;
     adminPanelStore.agenciesByID = agenciesByID;
@@ -627,7 +627,7 @@ test("Clicking the `Create Agency` button opens the create agency modal", () => 
   const createNewAgencyModalTitle = screen.getByText("Create New Agency");
   const editUserModalTitle = screen.queryByText("Edit Agency Information");
   const agencyInformationTab = screen.getByText("Agency Information");
-  const teamMemberRolesTab = screen.getByText("Team Members & Roles");
+  const teamMemberRolesTab = await screen.getByText("Team Members & Roles");
   const nameInput = screen.getByText("Name");
   const stateInput = screen.getByText("State");
   const countyInput = screen.getByText("County");
@@ -658,7 +658,7 @@ test("Clicking the `Create Agency` button opens the create agency modal", () => 
   ); // Indicating the button is disabled
 });
 
-test("Clicking on an existing agency card opens the edit agency modal", () => {
+test("Clicking on an existing agency card opens the edit agency modal", async () => {
   runInAction(() => {
     adminPanelStore.usersByID = usersByID;
     adminPanelStore.agenciesByID = agenciesByID;
@@ -676,7 +676,7 @@ test("Clicking on an existing agency card opens the edit agency modal", () => {
   fireEvent.click(agencyProvisioningTab);
 
   const agency1Card = screen.getByText("Super Agency");
-  fireEvent.click(agency1Card);
+  await act(() => fireEvent.click(agency1Card));
 
   const editAgencyModalTitle = screen.getByText("Edit Agency Information");
   const createNewAgencyModalTitle = screen.queryByText("Create New Agency");
@@ -729,7 +729,7 @@ test("Clicking on an existing agency card opens the edit agency modal", () => {
   expect(teamMember).toBeInTheDocument();
 });
 
-test("Team members tab renders with add/remove buttons and users who are connected to the agency", () => {
+test("Team members tab renders with add/remove buttons and users who are connected to the agency", async () => {
   runInAction(() => {
     adminPanelStore.usersByID = usersByID;
     adminPanelStore.agenciesByID = agenciesByID;
@@ -747,7 +747,7 @@ test("Team members tab renders with add/remove buttons and users who are connect
   fireEvent.click(agencyProvisioningTab);
 
   const agency1Card = screen.getByText("Super Agency");
-  fireEvent.click(agency1Card);
+  await act(() => fireEvent.click(agency1Card));
 
   const teamMemberRolesTab = screen.getByText("Team Members & Roles");
   fireEvent.click(teamMemberRolesTab);
@@ -761,7 +761,7 @@ test("Team members tab renders with add/remove buttons and users who are connect
   expect(deleteUsersButton).toBeInTheDocument();
 });
 
-test("Adding a user adds a card to the list of team members", () => {
+test("Adding a user adds a card to the list of team members", async () => {
   runInAction(() => {
     adminPanelStore.usersByID = usersByID;
     adminPanelStore.agenciesByID = agenciesByID;
@@ -779,7 +779,7 @@ test("Adding a user adds a card to the list of team members", () => {
   fireEvent.click(agencyProvisioningTab);
 
   const agency1Card = screen.getByText("Super Agency");
-  fireEvent.click(agency1Card);
+  await act(() => fireEvent.click(agency1Card));
 
   const teamMemberRolesTab = screen.getByText("Team Members & Roles");
   fireEvent.click(teamMemberRolesTab);
@@ -806,7 +806,7 @@ test("Adding a user adds a card to the list of team members", () => {
   expect(teamMember2Email).toBeInTheDocument();
 });
 
-test("Deleting a user deletes a card to the list of team members", () => {
+test("Deleting a user deletes a card to the list of team members", async () => {
   runInAction(() => {
     adminPanelStore.usersByID = usersByID;
     adminPanelStore.agenciesByID = agenciesByID;
@@ -824,7 +824,7 @@ test("Deleting a user deletes a card to the list of team members", () => {
   fireEvent.click(agencyProvisioningTab);
 
   const agency1Card = screen.getByText("Super Agency");
-  fireEvent.click(agency1Card);
+  await act(() => fireEvent.click(agency1Card));
 
   const teamMemberRolesTab = screen.getByText("Team Members & Roles");
   fireEvent.click(teamMemberRolesTab);
