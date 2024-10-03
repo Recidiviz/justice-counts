@@ -16,12 +16,10 @@
 // =============================================================================
 
 import { Button } from "@justice-counts/common/components/Button";
-import { formatExternalLink } from "@justice-counts/common/components/DataViz/utils";
 import { NewInput } from "@justice-counts/common/components/Input";
 import { Modal } from "@justice-counts/common/components/Modal";
-import { validateAgencyURL } from "@justice-counts/common/utils/helperUtils";
 import { observer } from "mobx-react-lite";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
@@ -29,7 +27,7 @@ import { AgencySettingsModalInputWrapperSmall } from "./AccountSettings.styles";
 import { SettingProps } from "./AgencySettings";
 import {
   AgencyInfoBlockDescription,
-  AgencyInfoLink,
+  AgencyInfoTextAreaLabel,
   AgencySettingActionRequiredIndicator,
   AgencySettingsBlock,
   AgencySettingsBlockTitle,
@@ -37,7 +35,7 @@ import {
 } from "./AgencySettings.styles";
 import { AgencySettingsEditModeModal } from "./AgencySettingsEditModeModal";
 
-const AgencySettingsUrl: React.FC<{
+const AgencySettingsZipcode: React.FC<{
   settingProps: SettingProps;
 }> = ({ settingProps }) => {
   const { isSettingInEditMode, openSetting, removeEditMode, allowEdit } =
@@ -48,58 +46,37 @@ const AgencySettingsUrl: React.FC<{
   const { currentAgencySettings, updateAgencySettings, saveAgencySettings } =
     agencyStore;
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
-  const [urlText, setUrlText] = useState("");
-  const textAreaRef = useRef<HTMLInputElement | null>(null);
+  const [infoText, setInfoText] = useState("");
 
-  const homepageUrlSetting =
+  const zipcodeSetting =
     (currentAgencySettings?.find(
-      (setting) => setting.setting_type === "HOMEPAGE_URL"
+      (setting) => setting.setting_type === "ZIPCODE"
     )?.value as string) || "";
+  const isAgencySettingConfigured = Boolean(zipcodeSetting);
 
-  const isAgencySettingConfigured = Boolean(homepageUrlSetting);
-  const [errorMsg, setErrorMsg] = React.useState<
-    { message: string } | undefined
-  >(undefined);
-  const checkValidURLSetResetErrorMsg = (urlUpdate: string) => {
-    const isValid = urlUpdate === "" || validateAgencyURL(urlUpdate);
-    setErrorMsg(!isValid ? { message: "Invalid URL" } : undefined);
-    return isValid;
-  };
   const handleSaveClick = () => {
-    if (checkValidURLSetResetErrorMsg(urlText)) {
-      const updatedSettings = updateAgencySettings(
-        "HOMEPAGE_URL",
-        urlText,
-        parseInt(agencyId)
-      );
-      saveAgencySettings(updatedSettings, agencyId);
-      removeEditMode();
-    }
+    const updatedSettings = updateAgencySettings(
+      "ZIPCODE",
+      infoText,
+      parseInt(agencyId)
+    );
+    saveAgencySettings(updatedSettings, agencyId);
+    removeEditMode();
   };
+
   const handleCancelClick = () => {
-    if (homepageUrlSetting === urlText) {
+    if (zipcodeSetting === infoText) {
       removeEditMode();
     } else {
       setIsConfirmModalOpen(true);
     }
-    setErrorMsg(undefined);
   };
+
   const handleModalConfirm = () => {
-    setUrlText(homepageUrlSetting || "");
+    setInfoText(zipcodeSetting || "");
     setIsConfirmModalOpen(false);
     removeEditMode();
   };
-
-  useEffect(() => {
-    if (textAreaRef.current) {
-      // eslint-disable-next-line no-param-reassign
-      textAreaRef.current.style.height = "0px";
-      const { scrollHeight } = textAreaRef.current;
-
-      // eslint-disable-next-line no-param-reassign
-      textAreaRef.current.style.height = `${Number(scrollHeight) + 1}px`;
-    }
-  }, [urlText, isSettingInEditMode]);
 
   return (
     <>
@@ -111,28 +88,27 @@ const AgencySettingsUrl: React.FC<{
           handleCancelModalConfirm={handleModalConfirm}
         >
           <Modal
-            title="Agency URL"
+            title="Agency Zipcode"
             description={
-              <AgencySettingsModalInputWrapperSmall
-                error={urlText !== "" && !validateAgencyURL(urlText)}
-              >
-                <NewInput
-                  style={{ marginBottom: "0" }}
-                  persistLabel
-                  value={urlText}
-                  error={errorMsg}
-                  placeholder="URL of agency (e.g., https://doc.iowa.gov/)"
-                  isPlaceholderVisible
-                  onChange={(e) => {
-                    const urlUpdate = e.target.value.trimStart();
-                    setUrlText(urlUpdate);
-                    checkValidURLSetResetErrorMsg(urlUpdate);
-                  }}
-                  agencySettingsConfigs
-                  fullWidth
-                  settingsCustomMargin
-                />
-              </AgencySettingsModalInputWrapperSmall>
+              <>
+                <AgencyInfoTextAreaLabel agencyDescriptionConfigs>
+                  This zipcode will go on your public-facing dashboard.
+                </AgencyInfoTextAreaLabel>
+                <AgencySettingsModalInputWrapperSmall>
+                  <NewInput
+                    style={{ marginBottom: "0" }}
+                    persistLabel
+                    value={infoText}
+                    placeholder="Enter your agency's zipcode (max 5, digits only)"
+                    isPlaceholderVisible
+                    maxLength={5}
+                    onChange={(e) =>
+                      setInfoText(e.target.value.replace(/\D/g, ""))
+                    }
+                    fullWidth
+                  />
+                </AgencySettingsModalInputWrapperSmall>
+              </>
             }
             buttons={[
               {
@@ -151,37 +127,24 @@ const AgencySettingsUrl: React.FC<{
         </AgencySettingsEditModeModal>
       )}
 
-      <AgencySettingsBlock withBorder id="homepage_url">
+      <AgencySettingsBlock id="zipcode">
         <AgencySettingsBlockTitle configured={isAgencySettingConfigured}>
-          Agency URL
-          {!homepageUrlSetting && (
+          Agency Zipcode
+          {!zipcodeSetting && (
             <AgencySettingActionRequiredIndicator>
               *
             </AgencySettingActionRequiredIndicator>
           )}
         </AgencySettingsBlockTitle>
         <AgencyInfoBlockDescription>
-          {homepageUrlSetting ? (
-            <AgencyInfoLink
-              href={formatExternalLink(homepageUrlSetting)}
-              target="_blank"
-            >
-              {
-                currentAgencySettings?.find(
-                  (setting) => setting.setting_type === "HOMEPAGE_URL"
-                )?.value
-              }
-            </AgencyInfoLink>
-          ) : (
-            "Enter your agency's URL"
-          )}
+          {zipcodeSetting || "Enter your agency's zipcode"}
         </AgencyInfoBlockDescription>
         {allowEdit && (
           <EditButtonContainer>
             <Button
               label={<>Edit</>}
               onClick={() => {
-                setUrlText(homepageUrlSetting);
+                setInfoText(zipcodeSetting);
                 openSetting();
               }}
               labelColor="blue"
@@ -195,4 +158,4 @@ const AgencySettingsUrl: React.FC<{
   );
 };
 
-export default observer(AgencySettingsUrl);
+export default observer(AgencySettingsZipcode);

@@ -40,6 +40,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useStore } from "../../stores";
 import AdminPanelStore from "../../stores/AdminPanelStore";
 import { ButtonWithMiniLoaderContainer, MiniLoaderWrapper } from "../Reports";
+import { dataSharingTypeNames } from "../Settings/AgencySettingsDataSharingType";
 import {
   AgencyProvisioningSetting,
   AgencyProvisioningSettings,
@@ -86,6 +87,8 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       csgAndRecidivizUsers,
       csgAndRecidivizDefaultRole,
       updateAgencyName,
+      updateAgencyZipcode,
+      updateDataSharingTypes,
       updateStateCode,
       updateCountyCode,
       updateIsDashboardEnabled,
@@ -152,7 +155,9 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       isCopySuperagencyMetricSettingsSelected,
       setIsCopySuperagencyMetricSettingsSelected,
     ] = useState(false);
-
+    const [selectedDataSharingTypes, setSelectedDataSharingTypes] = useState<
+      Set<string>
+    >(new Set());
     /** Setting Tabs (Agency Information/Team Members) */
     const settingOptions: TabOption[] = [
       {
@@ -268,6 +273,12 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
 
       // Update final agency name
       saveAgencyName(agencyProvisioningUpdates.name);
+
+      // Update final agency zipcode
+      updateAgencyZipcode(agencyProvisioningUpdates.zipcode);
+
+      // Update final list of data sharing types
+      updateDataSharingTypes(Array.from(selectedDataSharingTypes));
 
       /** Update final list of systems, child agencies, and team members */
       updateSystems(Array.from(selectedSystems));
@@ -402,6 +413,27 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
      * */
 
     /**
+     * Existing agency: an update has been made when the agency has a value for `agencyProvisioningUpdates.zipcode`
+     *                and it does not match the agency's zipcode before the modal was open.
+     * New agency: an update has been made when the agency has a value for `agencyProvisioningUpdates.zipcode`
+     */
+    const hasZipcodeUpdate = selectedAgency
+      ? Boolean(agencyProvisioningUpdates.zipcode) &&
+        agencyProvisioningUpdates.zipcode !== selectedAgency.zipcode
+      : Boolean(agencyProvisioningUpdates.zipcode);
+    /**
+     * An update has been made when the agency's # of data sharing type IDs and # of selected data sharing type IDs are not
+     * the same OR the list of current data sharing type IDs do not match the list
+     * of selected data sharing type IDs.
+     */
+    const hasDataSharingTypeUpdates =
+      selectedDataSharingTypes.size !==
+        agencyProvisioningUpdates.data_sharing_types.length ||
+      (agencyProvisioningUpdates.data_sharing_types.length > 0 &&
+        agencyProvisioningUpdates.data_sharing_types.filter((id) =>
+          selectedDataSharingTypes.has(id)
+        ).length === 0);
+    /**
      * Existing agency: an update has been made when the agency has a value for `agencyProvisioningUpdates.name`
      *                and it does not match the agency's name before the modal was open.
      * New agency: an update has been made when the agency has a value for `agencyProvisioningUpdates.name`
@@ -508,6 +540,8 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       hasChildAgenciesCopyUpdates && hasMetricsCopyUpdates;
     const hasAgencyInfoUpdates =
       hasNameUpdate ||
+      hasZipcodeUpdate ||
+      hasDataSharingTypeUpdates ||
       hasStateUpdate ||
       hasCountyUpdates ||
       hasSystemUpdates ||
@@ -596,6 +630,14 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       selectedChildAgencyIDs.has(Number(agency.id))
     );
     const hasChildAgencyMetrics = metrics.length > 0;
+
+    useEffect(() => {
+      setSelectedDataSharingTypes(
+        selectedAgency?.data_sharing_types
+          ? new Set(selectedAgency?.data_sharing_types.map((id) => String(id)))
+          : new Set()
+      );
+    }, [selectedAgency]);
 
     return (
       <Styled.ModalContainer offScreen={activeSecondaryModal === Setting.USERS}>
@@ -748,6 +790,25 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                       <label htmlFor="state">County</label>
                     </Styled.InputLabelWrapper>
 
+                    {/* Agency Zipcode Input */}
+                    <Styled.InputLabelWrapper>
+                      <input
+                        id="agency-zipcode"
+                        name="agency-zipcode"
+                        type="text"
+                        maxLength={5}
+                        value={
+                          agencyProvisioningUpdates.zipcode ||
+                          selectedAgency?.zipcode ||
+                          ""
+                        }
+                        onChange={(e) =>
+                          updateAgencyZipcode(e.target.value.replace(/\D/g, ""))
+                        }
+                      />
+                      <label htmlFor="agency-zipcode">Zipcode</label>
+                    </Styled.InputLabelWrapper>
+
                     {/* Agency Systems Input */}
                     {showSelectionBox === SelectionInputBoxTypes.SYSTEMS && (
                       <InteractiveSearchList
@@ -831,6 +892,60 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                       </Styled.ChipContainer>
                       <Styled.ChipContainerLabel>
                         Sectors
+                      </Styled.ChipContainerLabel>
+                    </Styled.InputLabelWrapper>
+
+                    {/* Data Sharing Type Checkboxes */}
+                    {showSelectionBox ===
+                      SelectionInputBoxTypes.DATA_SHARING_TYPES && (
+                      <InteractiveSearchList
+                        list={dataSharingTypeNames}
+                        boxActionType={InteractiveSearchListActions.ADD}
+                        selections={selectedDataSharingTypes}
+                        buttons={interactiveSearchListCloseButton}
+                        updateSelections={({ id }) => {
+                          setSelectedDataSharingTypes((prev) =>
+                            toggleAddRemoveSetItem(prev, String(id))
+                          );
+                        }}
+                        searchByKeys={["name"]}
+                        metadata={{
+                          listBoxLabel: "Select Data Sharing Types",
+                        }}
+                        isActiveBox={
+                          showSelectionBox ===
+                          SelectionInputBoxTypes.DATA_SHARING_TYPES
+                        }
+                      />
+                    )}
+                    <Styled.InputLabelWrapper>
+                      <Styled.ChipContainer
+                        onClick={() =>
+                          setShowSelectionBox(
+                            SelectionInputBoxTypes.DATA_SHARING_TYPES
+                          )
+                        }
+                        fitContentHeight
+                        hoverable
+                      >
+                        {selectedDataSharingTypes.size === 0 ? (
+                          <Styled.EmptyListMessage>
+                            No data sharing types selected
+                          </Styled.EmptyListMessage>
+                        ) : (
+                          Array.from(selectedDataSharingTypes).map((type) => (
+                            <Styled.Chip key={type}>
+                              {
+                                dataSharingTypeNames.find(
+                                  (typeObj) => typeObj.id === type
+                                )?.name
+                              }
+                            </Styled.Chip>
+                          ))
+                        )}
+                      </Styled.ChipContainer>
+                      <Styled.ChipContainerLabel>
+                        Data Sharing Types
                       </Styled.ChipContainerLabel>
                     </Styled.InputLabelWrapper>
 
