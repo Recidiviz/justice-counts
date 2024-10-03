@@ -127,8 +127,15 @@ export const AgencyProvisioningOverview = observer(() => {
   const searchAndFilter = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchInput(e.target.value);
   };
-  const editAgency = (agencyID: string | number) => {
-    const selectedAgency = agenciesByID[agencyID][0];
+  const editAgency = async (agencyID: string | number) => {
+    // Fetch the team associations for the agency.
+    await adminPanelStore.fetchAgencyTeam(String(agencyID));
+    /**
+     * Since we're performing a fetch and updating the store and using the updated value
+     * within this function, we need to use the `adminPanelStore._` instead of the destructured
+     * reference so mobX stays in sync with the update we just made to `agenciesByID`.
+     */
+    const selectedAgency = adminPanelStore.agenciesByID[agencyID][0];
     setSelectedAgencyID(agencyID);
     updateAgencyID(+agencyID);
     updateAgencyName(selectedAgency.name);
@@ -301,11 +308,7 @@ export const AgencyProvisioningOverview = observer(() => {
           : filteredAgencies.map((agency) => (
               <Styled.Card
                 key={agency.id}
-                onClick={() => {
-                  // Fetch the team associations for the agency.
-                  adminPanelStore.fetchAgencyTeam(String(agency.id));
-                  editAgency(agency.id);
-                }}
+                onClick={() => editAgency(agency.id)}
               >
                 {/* Name, State, ID */}
                 <Styled.TopCardRowWrapper>
