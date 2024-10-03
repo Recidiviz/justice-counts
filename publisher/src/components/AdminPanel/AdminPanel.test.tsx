@@ -627,7 +627,7 @@ test("Clicking the `Create Agency` button opens the create agency modal", async 
   const createNewAgencyModalTitle = screen.getByText("Create New Agency");
   const editUserModalTitle = screen.queryByText("Edit Agency Information");
   const agencyInformationTab = screen.getByText("Agency Information");
-  const teamMemberRolesTab = await screen.getByText("Team Members & Roles");
+  const teamMemberRolesTab = screen.getByText("Team Members & Roles");
   const nameInput = screen.getByText("Name");
   const stateInput = screen.getByText("State");
   const countyInput = screen.getByText("County");
@@ -676,9 +676,12 @@ test("Clicking on an existing agency card opens the edit agency modal", async ()
   fireEvent.click(agencyProvisioningTab);
 
   const agency1Card = screen.getByText("Super Agency");
-  await act(() => fireEvent.click(agency1Card));
+  fireEvent.click(agency1Card);
 
-  const editAgencyModalTitle = screen.getByText("Edit Agency Information");
+  const editAgencyModalTitle = await screen.findByText(
+    "Edit Agency Information"
+  );
+
   const createNewAgencyModalTitle = screen.queryByText("Create New Agency");
   const agencyInformationTab = screen.getByText("Agency Information");
   const teamMemberRolesTab = screen.getByText("Team Members & Roles");
@@ -747,9 +750,9 @@ test("Team members tab renders with add/remove buttons and users who are connect
   fireEvent.click(agencyProvisioningTab);
 
   const agency1Card = screen.getByText("Super Agency");
-  await act(() => fireEvent.click(agency1Card));
+  fireEvent.click(agency1Card);
 
-  const teamMemberRolesTab = screen.getByText("Team Members & Roles");
+  const teamMemberRolesTab = await screen.findByText("Team Members & Roles");
   fireEvent.click(teamMemberRolesTab);
 
   const addUsersButton = screen.getByText("Add Users");
@@ -779,9 +782,9 @@ test("Adding a user adds a card to the list of team members", async () => {
   fireEvent.click(agencyProvisioningTab);
 
   const agency1Card = screen.getByText("Super Agency");
-  await act(() => fireEvent.click(agency1Card));
+  fireEvent.click(agency1Card);
 
-  const teamMemberRolesTab = screen.getByText("Team Members & Roles");
+  const teamMemberRolesTab = await screen.findByText("Team Members & Roles");
   fireEvent.click(teamMemberRolesTab);
 
   const addUsersButton = screen.getByText("Add Users");
@@ -824,9 +827,9 @@ test("Deleting a user deletes a card to the list of team members", async () => {
   fireEvent.click(agencyProvisioningTab);
 
   const agency1Card = screen.getByText("Super Agency");
-  await act(() => fireEvent.click(agency1Card));
+  fireEvent.click(agency1Card);
 
-  const teamMemberRolesTab = screen.getByText("Team Members & Roles");
+  const teamMemberRolesTab = await screen.findByText("Team Members & Roles");
   fireEvent.click(teamMemberRolesTab);
 
   const deleteUsersButton = screen.getByText("Delete Users");
