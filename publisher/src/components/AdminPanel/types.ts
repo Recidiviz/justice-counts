@@ -82,8 +82,8 @@ export type Agency = {
   child_agency_ids: number[];
   is_dashboard_enabled: boolean | null;
   created_at: string | null;
-  zipcode: string;
-  data_sharing_types: string[];
+  zipcode?: string;
+  data_sharing_types?: string[];
   settings: {
     setting_type: string;
     value: string | null;
