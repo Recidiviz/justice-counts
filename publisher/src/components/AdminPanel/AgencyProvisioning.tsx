@@ -278,7 +278,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
        * newly added team members are automatically assigned a role by default)
        */
       updateTeamMembers([
-        ...agencyProvisioningUpdates.team.filter(
+        ...currentTeamMembers.filter(
           (member) =>
             member.user_account_id &&
             !selectedTeamMembersToDelete.has(member.user_account_id) &&
