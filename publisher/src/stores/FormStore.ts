@@ -69,7 +69,11 @@ class FormStore {
 
       metric.disaggregations.forEach((disaggregation) => {
         disaggregation.dimensions.forEach((dimension) => {
-          if (dimension.value !== null && dimension.value !== undefined) {
+          if (
+            dimension.value !== null &&
+            dimension.value !== undefined &&
+            dimension.enabled
+          ) {
             this.updateDisaggregationDimensionValue(
               reportID,
               metric.key,
