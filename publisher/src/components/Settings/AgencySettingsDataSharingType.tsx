@@ -29,19 +29,19 @@ import {
 
 export const dataSharingTypeNames = [
   {
-    id: "shares",
+    id: "sharesOwnData",
     name: "Agency shares its own data",
   },
   {
-    id: "sharesOnBehalf",
+    id: "externalAgencySharesCurrentAgencyData",
     name: "Another agency shares data on behalf of the agency",
   },
   {
-    id: "sharesOnBehalfMore",
+    id: "sharesDataForMultipleOtherAgencies",
     name: "Agency shares data on behalf of one or more other agencies",
   },
   {
-    id: "notShares",
+    id: "noDataSharing",
     name: "Agency does not share data",
   },
 ];
@@ -52,10 +52,11 @@ const AgencySettingsDataSharingType: React.FC = () => {
   const { currentAgencySettings, updateAgencySettings, saveAgencySettings } =
     agencyStore;
 
-  let dataSharingTypeSetting =
+  const [dataSharingTypeSetting, setDataSharingTypeSetting] = useState(
     (currentAgencySettings?.find(
       (setting) => setting.setting_type === "DATA_SHARING_TYPE"
-    )?.value as string[]) || [];
+    )?.value as string[]) || []
+  );
 
   const [allDimensionsEnabled, setAllDimensionsEnabled] = useState(
     dataSharingTypeSetting.length === dataSharingTypeNames.length
@@ -72,10 +73,10 @@ const AgencySettingsDataSharingType: React.FC = () => {
 
   const handleSharingTypeChange = (id: string) => {
     if (!dataSharingTypeSetting.includes(id)) {
-      dataSharingTypeSetting = [...dataSharingTypeSetting, id];
+      setDataSharingTypeSetting([...dataSharingTypeSetting, id]);
     } else {
-      dataSharingTypeSetting = dataSharingTypeSetting.filter(
-        (settingId) => settingId !== id
+      setDataSharingTypeSetting(
+        dataSharingTypeSetting.filter((settingId) => settingId !== id)
       );
     }
     handleSettingSave(dataSharingTypeSetting);
@@ -84,11 +85,11 @@ const AgencySettingsDataSharingType: React.FC = () => {
   const handleSelectAllChange = (allEnabled: boolean) => {
     setAllDimensionsEnabled(!allEnabled);
     if (!allEnabled) {
-      dataSharingTypeSetting = Object.values(dataSharingTypeNames).map(
-        (typeObj) => typeObj.id
+      setDataSharingTypeSetting(
+        Object.values(dataSharingTypeNames).map((typeObj) => typeObj.id)
       );
     } else {
-      dataSharingTypeSetting = [];
+      setDataSharingTypeSetting([]);
     }
     handleSettingSave(dataSharingTypeSetting);
   };

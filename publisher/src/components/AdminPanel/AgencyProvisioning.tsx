@@ -33,6 +33,8 @@ import {
   isCSGOrRecidivizUserByEmail,
   removeSnakeCase,
   toggleAddRemoveSetItem,
+  // TODO(#1537) Ungate zipcode and agency data sharing fields
+  // validateAgencyZipcode,
 } from "@justice-counts/common/utils";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useRef, useState } from "react";
@@ -40,7 +42,8 @@ import React, { useEffect, useRef, useState } from "react";
 import { useStore } from "../../stores";
 import AdminPanelStore from "../../stores/AdminPanelStore";
 import { ButtonWithMiniLoaderContainer, MiniLoaderWrapper } from "../Reports";
-import { dataSharingTypeNames } from "../Settings/AgencySettingsDataSharingType";
+// TODO(#1537) Ungate zipcode and agency data sharing fields
+// import { dataSharingTypeNames } from "../Settings/AgencySettingsDataSharingType";
 import {
   AgencyProvisioningSetting,
   AgencyProvisioningSettings,
@@ -87,8 +90,9 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       csgAndRecidivizUsers,
       csgAndRecidivizDefaultRole,
       updateAgencyName,
-      updateAgencyZipcode,
-      updateDataSharingTypes,
+      // TODO(#1537) Ungate zipcode and agency data sharing fields
+      // updateAgencyZipcode,
+      // updateDataSharingTypes,
       updateStateCode,
       updateCountyCode,
       updateIsDashboardEnabled,
@@ -155,9 +159,13 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       isCopySuperagencyMetricSettingsSelected,
       setIsCopySuperagencyMetricSettingsSelected,
     ] = useState(false);
-    const [selectedDataSharingTypes, setSelectedDataSharingTypes] = useState<
-      Set<string>
-    >(new Set());
+    // TODO(#1537) Ungate zipcode and agency data sharing fields
+    // const [selectedDataSharingTypes, setSelectedDataSharingTypes] = useState<
+    //   Set<string>
+    // >(new Set());
+    // const [zipcodeValidationError, setZipcodeValidationError] =
+    //   useState<string>();
+
     /** Setting Tabs (Agency Information/Team Members) */
     const settingOptions: TabOption[] = [
       {
@@ -268,6 +276,17 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       ];
     };
 
+    // TODO(#1537) Ungate zipcode and agency data sharing fields
+    // const validateAndUpdateZipcode = (zipcode: string) => {
+    //   const isValidZipcode = validateAgencyZipcode(zipcode);
+    //   updateAgencyZipcode(zipcode);
+
+    //   if (zipcode === "" || isValidZipcode) {
+    //     return setZipcodeValidationError(undefined);
+    //   }
+    //   setZipcodeValidationError("Please enter a valid zipcode");
+    // };
+
     const saveUpdates = async () => {
       setIsSaveInProgress(true);
 
@@ -275,10 +294,12 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       saveAgencyName(agencyProvisioningUpdates.name);
 
       // Update final agency zipcode
-      updateAgencyZipcode(agencyProvisioningUpdates.zipcode);
+      // TODO(#1537) Ungate zipcode and agency data sharing fields
+      // updateAgencyZipcode(agencyProvisioningUpdates.zipcode);
 
       // Update final list of data sharing types
-      updateDataSharingTypes(Array.from(selectedDataSharingTypes));
+      // TODO(#1537) Ungate zipcode and agency data sharing fields
+      // updateDataSharingTypes(Array.from(selectedDataSharingTypes));
 
       /** Update final list of systems, child agencies, and team members */
       updateSystems(Array.from(selectedSystems));
@@ -417,22 +438,24 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
      *                and it does not match the agency's zipcode before the modal was open.
      * New agency: an update has been made when the agency has a value for `agencyProvisioningUpdates.zipcode`
      */
-    const hasZipcodeUpdate = selectedAgency
-      ? Boolean(agencyProvisioningUpdates.zipcode) &&
-        agencyProvisioningUpdates.zipcode !== selectedAgency.zipcode
-      : Boolean(agencyProvisioningUpdates.zipcode);
+    // TODO(#1537) Ungate zipcode and agency data sharing fields
+    // const hasZipcodeUpdate = selectedAgency
+    //   ? Boolean(agencyProvisioningUpdates.zipcode) &&
+    //     agencyProvisioningUpdates.zipcode !== selectedAgency.zipcode
+    //   : Boolean(agencyProvisioningUpdates.zipcode);
     /**
      * An update has been made when the agency's # of data sharing type IDs and # of selected data sharing type IDs are not
      * the same OR the list of current data sharing type IDs do not match the list
      * of selected data sharing type IDs.
      */
-    const hasDataSharingTypeUpdates =
-      selectedDataSharingTypes.size !==
-        agencyProvisioningUpdates.data_sharing_types.length ||
-      (agencyProvisioningUpdates.data_sharing_types.length > 0 &&
-        agencyProvisioningUpdates.data_sharing_types.filter((id) =>
-          selectedDataSharingTypes.has(id)
-        ).length === 0);
+    // TODO(#1537) Ungate zipcode and agency data sharing fields
+    // const hasDataSharingTypeUpdates =
+    //   selectedDataSharingTypes.size !==
+    //     agencyProvisioningUpdates.data_sharing_types.length ||
+    //   (agencyProvisioningUpdates.data_sharing_types.length > 0 &&
+    //     agencyProvisioningUpdates.data_sharing_types.filter((id) =>
+    //       selectedDataSharingTypes.has(id)
+    //     ).length === 0);
     /**
      * Existing agency: an update has been made when the agency has a value for `agencyProvisioningUpdates.name`
      *                and it does not match the agency's name before the modal was open.
@@ -540,8 +563,9 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       hasChildAgenciesCopyUpdates && hasMetricsCopyUpdates;
     const hasAgencyInfoUpdates =
       hasNameUpdate ||
-      hasZipcodeUpdate ||
-      hasDataSharingTypeUpdates ||
+      // TODO(#1537) Ungate zipcode and agency data sharing fields
+      // hasZipcodeUpdate ||
+      // hasDataSharingTypeUpdates ||
       hasStateUpdate ||
       hasCountyUpdates ||
       hasSystemUpdates ||
@@ -556,6 +580,8 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
     const isSaveDisabled = isCopySuperagencyMetricSettingsSelected
       ? !hasCopySuperagencyMetricSettingsUpdates
       : isSaveInProgress ||
+        // TODO(#1537) Ungate zipcode and agency data sharing fields
+        // Boolean(zipcodeValidationError) ||
         !hasSystems ||
         (selectedAgency
           ? !hasAgencyInfoUpdates
@@ -631,13 +657,14 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
     );
     const hasChildAgencyMetrics = metrics.length > 0;
 
-    useEffect(() => {
-      setSelectedDataSharingTypes(
-        selectedAgency?.data_sharing_types
-          ? new Set(selectedAgency?.data_sharing_types.map((id) => String(id)))
-          : new Set()
-      );
-    }, [selectedAgency]);
+    // TODO(#1537) Ungate zipcode and agency data sharing fields
+    // useEffect(() => {
+    //   setSelectedDataSharingTypes(
+    //     selectedAgency?.data_sharing_types
+    //       ? new Set(selectedAgency?.data_sharing_types.map((id) => String(id)))
+    //       : new Set()
+    //   );
+    // }, [selectedAgency]);
 
     return (
       <Styled.ModalContainer offScreen={activeSecondaryModal === Setting.USERS}>
@@ -791,7 +818,10 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                     </Styled.InputLabelWrapper>
 
                     {/* Agency Zipcode Input */}
-                    <Styled.InputLabelWrapper>
+                    {/* TODO(#1537) Ungate zipcode and agency data sharing fields */}
+                    {/* <Styled.InputLabelWrapper
+                      hasError={Boolean(zipcodeValidationError)}
+                    >
                       <input
                         id="agency-zipcode"
                         name="agency-zipcode"
@@ -803,11 +833,20 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                           ""
                         }
                         onChange={(e) =>
-                          updateAgencyZipcode(e.target.value.replace(/\D/g, ""))
+                          validateAndUpdateZipcode(
+                            e.target.value.replace(/\D/g, "")
+                          )
                         }
                       />
-                      <label htmlFor="agency-zipcode">Zipcode</label>
-                    </Styled.InputLabelWrapper>
+                      <Styled.LabelWrapper>
+                        <label htmlFor="agency-zipcode">Zipcode</label>
+                        {zipcodeValidationError && (
+                          <Styled.ErrorLabel>
+                            {zipcodeValidationError}
+                          </Styled.ErrorLabel>
+                        )}
+                      </Styled.LabelWrapper>
+                    </Styled.InputLabelWrapper> */}
 
                     {/* Agency Systems Input */}
                     {showSelectionBox === SelectionInputBoxTypes.SYSTEMS && (
@@ -896,7 +935,8 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                     </Styled.InputLabelWrapper>
 
                     {/* Data Sharing Type Checkboxes */}
-                    {showSelectionBox ===
+                    {/* TODO(#1537) Ungate zipcode and agency data sharing fields */}
+                    {/* {showSelectionBox ===
                       SelectionInputBoxTypes.DATA_SHARING_TYPES && (
                       <InteractiveSearchList
                         list={dataSharingTypeNames}
@@ -947,7 +987,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                       <Styled.ChipContainerLabel>
                         Data Sharing Types
                       </Styled.ChipContainerLabel>
-                    </Styled.InputLabelWrapper>
+                    </Styled.InputLabelWrapper> */}
 
                     {/* Dashboard Enabled Checkbox */}
                     <Styled.InputLabelWrapper flexRow>

@@ -18,6 +18,7 @@
 import { Button } from "@justice-counts/common/components/Button";
 import { NewInput } from "@justice-counts/common/components/Input";
 import { Modal } from "@justice-counts/common/components/Modal";
+import { validateAgencyZipcode } from "@justice-counts/common/utils";
 import { observer } from "mobx-react-lite";
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
@@ -46,7 +47,17 @@ const AgencySettingsZipcode: React.FC<{
   const { currentAgencySettings, updateAgencySettings, saveAgencySettings } =
     agencyStore;
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
-  const [infoText, setInfoText] = useState("");
+  const [errorMsg, setErrorMsg] = React.useState<
+    { message: string } | undefined
+  >(undefined);
+  const [zipcodeText, setZipcodeText] = useState("");
+
+  const checkValidZipcodeSetResetErrorMsg = (zipcodeUpdate: string) => {
+    const isValid =
+      zipcodeUpdate === "" || validateAgencyZipcode(zipcodeUpdate);
+    setErrorMsg(!isValid ? { message: "Invalid Zipcode" } : undefined);
+    return isValid;
+  };
 
   const zipcodeSetting =
     (currentAgencySettings?.find(
@@ -55,25 +66,28 @@ const AgencySettingsZipcode: React.FC<{
   const isAgencySettingConfigured = Boolean(zipcodeSetting);
 
   const handleSaveClick = () => {
-    const updatedSettings = updateAgencySettings(
-      "ZIPCODE",
-      infoText,
-      parseInt(agencyId)
-    );
-    saveAgencySettings(updatedSettings, agencyId);
-    removeEditMode();
+    if (checkValidZipcodeSetResetErrorMsg(zipcodeText)) {
+      const updatedSettings = updateAgencySettings(
+        "ZIPCODE",
+        zipcodeText,
+        parseInt(agencyId)
+      );
+      saveAgencySettings(updatedSettings, agencyId);
+      removeEditMode();
+    }
   };
 
   const handleCancelClick = () => {
-    if (zipcodeSetting === infoText) {
+    if (zipcodeSetting === zipcodeText) {
       removeEditMode();
     } else {
       setIsConfirmModalOpen(true);
     }
+    setErrorMsg(undefined);
   };
 
   const handleModalConfirm = () => {
-    setInfoText(zipcodeSetting || "");
+    setZipcodeText(zipcodeSetting || "");
     setIsConfirmModalOpen(false);
     removeEditMode();
   };
@@ -94,18 +108,27 @@ const AgencySettingsZipcode: React.FC<{
                 <AgencyInfoTextAreaLabel agencyDescriptionConfigs>
                   This zipcode will go on your public-facing dashboard.
                 </AgencyInfoTextAreaLabel>
-                <AgencySettingsModalInputWrapperSmall>
+                <AgencySettingsModalInputWrapperSmall
+                  error={
+                    zipcodeText !== "" && !validateAgencyZipcode(zipcodeText)
+                  }
+                >
                   <NewInput
                     style={{ marginBottom: "0" }}
                     persistLabel
-                    value={infoText}
-                    placeholder="Enter your agency's zipcode (max 5, digits only)"
+                    value={zipcodeText}
+                    error={errorMsg}
+                    placeholder="Enter your agency's zipcode"
                     isPlaceholderVisible
                     maxLength={5}
-                    onChange={(e) =>
-                      setInfoText(e.target.value.replace(/\D/g, ""))
-                    }
+                    onChange={(e) => {
+                      const zipcodeUpdate = e.target.value.replace(/\D/g, "");
+                      setZipcodeText(zipcodeUpdate);
+                      checkValidZipcodeSetResetErrorMsg(zipcodeUpdate);
+                    }}
+                    agencySettingsConfigs
                     fullWidth
+                    settingsCustomMargin
                   />
                 </AgencySettingsModalInputWrapperSmall>
               </>
@@ -144,7 +167,7 @@ const AgencySettingsZipcode: React.FC<{
             <Button
               label={<>Edit</>}
               onClick={() => {
-                setInfoText(zipcodeSetting);
+                setZipcodeText(zipcodeSetting);
                 openSetting();
               }}
               labelColor="blue"

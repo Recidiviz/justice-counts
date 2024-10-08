@@ -282,6 +282,11 @@ export const validateAgencyURL = (url: string) => {
   return urlRegex.test(url);
 };
 
+export const validateAgencyZipcode = (zipcode: string) => {
+  const urlRegex = /^\d{5}$/;
+  return urlRegex.test(zipcode);
+};
+
 /**
  * Updates a set of selections by either adding or removing a specified item.
  * @param prevSet - The previous set of selected items to update
