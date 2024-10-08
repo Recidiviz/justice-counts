@@ -17,8 +17,12 @@
 
 /**
  * Agency-wide Includes/Excludes definitions for Court and Supervision Subpopulation sectors
+ *
+ * [PLEASE READ] NOTE: The Supervision Subpopulation TIG elements are duplicates of the ones found in https://github.com/Recidiviz/recidiviz-data/blob/main/recidiviz/justice_counts/includes_excludes/supervision.py
+ * If you wish to update any of those elements in this file, please make sure you also update the corresponding elements in the `recidiviz-data` repo as well.
  */
 
+// Helper function to map boolean values to `YES` | `NO` enums
 export const boolToYesNoEnum = (bool: boolean) => (bool ? "YES" : "NO");
 
 export const CourtsIncludesExcludes = {
