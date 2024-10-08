@@ -856,7 +856,7 @@ test("Deleting a user deletes a card to the list of team members", async () => {
     adminPanelStore.teamMemberListLoading = false;
   });
 
-  const teamMemberRolesTab = await screen.findByText("Team Members & Roles");
+  const teamMemberRolesTab = screen.getByText("Team Members & Roles");
   fireEvent.click(teamMemberRolesTab);
 
   const deleteUsersButton = screen.getByText("Delete Users");
