@@ -85,6 +85,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       searchableMetrics,
       csgAndRecidivizUsers,
       csgAndRecidivizDefaultRole,
+      teamMemberListLoading,
       updateAgencyName,
       updateStateCode,
       updateCountyCode,
@@ -596,6 +597,16 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       selectedChildAgencyIDs.has(Number(agency.id))
     );
     const hasChildAgencyMetrics = metrics.length > 0;
+
+    if (teamMemberListLoading) {
+      return (
+        <Styled.ModalContainer>
+          <Styled.MiniLoaderCenteredContainer>
+            <MiniLoader dark />
+          </Styled.MiniLoaderCenteredContainer>
+        </Styled.ModalContainer>
+      );
+    }
 
     return (
       <Styled.ModalContainer offScreen={activeSecondaryModal === Setting.USERS}>

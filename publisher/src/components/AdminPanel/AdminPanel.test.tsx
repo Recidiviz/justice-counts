@@ -17,7 +17,7 @@
 /* eslint-disable testing-library/prefer-presence-queries, prefer-destructuring */
 import { palette } from "@justice-counts/common/components/GlobalStyles";
 import { groupBy } from "@justice-counts/common/utils";
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { runInAction } from "mobx";
 import React, { act } from "react";
 import { BrowserRouter } from "react-router-dom";
@@ -58,6 +58,8 @@ jest.mock("react-router-dom", () => ({
 
 beforeEach(() => {
   adminPanelStore.loading = false;
+  adminPanelStore.userAgenciesLoading = false;
+  adminPanelStore.teamMemberListLoading = false;
 });
 
 test("AdminPanel renders with the expected elements in the default User Provisioning view", async () => {
@@ -205,6 +207,10 @@ test("Clicking on an existing user card opens the edit user modal", async () => 
   /** Click on Anne Teak's card from the `UserProvisioningOverview` */
   fireEvent.click(user1Card);
 
+  await waitFor(() => {
+    adminPanelStore.userAgenciesLoading = false;
+  });
+
   const editUserModalTitle = screen.getByText("Edit User Information");
   const nameInput = screen.getByLabelText("Name");
   /**
@@ -252,6 +258,10 @@ test("Deleting an existing users agency deletes agency from user's agency list",
   const user1Card = screen.getByText("Anne Teak");
   /** Click on Anne Teak's card from the `UserProvisioningOverview` */
   fireEvent.click(user1Card);
+
+  await waitFor(() => {
+    adminPanelStore.userAgenciesLoading = false;
+  });
 
   const deleteAgenciesButton = screen.getByText("Delete Agencies");
   /**
@@ -379,6 +389,10 @@ test("Adding an agency adds agency to user's agency list", async () => {
   const user1Card = screen.getByText("Anne Teak");
   /** Click on Anne Teak's card from the `UserProvisioningOverview` */
   fireEvent.click(user1Card);
+
+  await waitFor(() => {
+    adminPanelStore.userAgenciesLoading = false;
+  });
 
   const addAgenciesButton = screen.getByText("Add Agencies");
 
@@ -658,7 +672,7 @@ test("Clicking the `Create Agency` button opens the create agency modal", () => 
   ); // Indicating the button is disabled
 });
 
-test("Clicking on an existing agency card opens the edit agency modal", () => {
+test("Clicking on an existing agency card opens the edit agency modal", async () => {
   runInAction(() => {
     adminPanelStore.usersByID = usersByID;
     adminPanelStore.agenciesByID = agenciesByID;
@@ -677,6 +691,10 @@ test("Clicking on an existing agency card opens the edit agency modal", () => {
 
   const agency1Card = screen.getByText("Super Agency");
   fireEvent.click(agency1Card);
+
+  await waitFor(() => {
+    adminPanelStore.teamMemberListLoading = false;
+  });
 
   const editAgencyModalTitle = screen.getByText("Edit Agency Information");
   const createNewAgencyModalTitle = screen.queryByText("Create New Agency");
@@ -729,7 +747,7 @@ test("Clicking on an existing agency card opens the edit agency modal", () => {
   expect(teamMember).toBeInTheDocument();
 });
 
-test("Team members tab renders with add/remove buttons and users who are connected to the agency", () => {
+test("Team members tab renders with add/remove buttons and users who are connected to the agency", async () => {
   runInAction(() => {
     adminPanelStore.usersByID = usersByID;
     adminPanelStore.agenciesByID = agenciesByID;
@@ -748,6 +766,10 @@ test("Team members tab renders with add/remove buttons and users who are connect
 
   const agency1Card = screen.getByText("Super Agency");
   fireEvent.click(agency1Card);
+
+  await waitFor(() => {
+    adminPanelStore.teamMemberListLoading = false;
+  });
 
   const teamMemberRolesTab = screen.getByText("Team Members & Roles");
   fireEvent.click(teamMemberRolesTab);
@@ -761,7 +783,7 @@ test("Team members tab renders with add/remove buttons and users who are connect
   expect(deleteUsersButton).toBeInTheDocument();
 });
 
-test("Adding a user adds a card to the list of team members", () => {
+test("Adding a user adds a card to the list of team members", async () => {
   runInAction(() => {
     adminPanelStore.usersByID = usersByID;
     adminPanelStore.agenciesByID = agenciesByID;
@@ -780,6 +802,10 @@ test("Adding a user adds a card to the list of team members", () => {
 
   const agency1Card = screen.getByText("Super Agency");
   fireEvent.click(agency1Card);
+
+  await waitFor(() => {
+    adminPanelStore.teamMemberListLoading = false;
+  });
 
   const teamMemberRolesTab = screen.getByText("Team Members & Roles");
   fireEvent.click(teamMemberRolesTab);
@@ -806,7 +832,7 @@ test("Adding a user adds a card to the list of team members", () => {
   expect(teamMember2Email).toBeInTheDocument();
 });
 
-test("Deleting a user deletes a card to the list of team members", () => {
+test("Deleting a user deletes a card to the list of team members", async () => {
   runInAction(() => {
     adminPanelStore.usersByID = usersByID;
     adminPanelStore.agenciesByID = agenciesByID;
@@ -825,6 +851,10 @@ test("Deleting a user deletes a card to the list of team members", () => {
 
   const agency1Card = screen.getByText("Super Agency");
   fireEvent.click(agency1Card);
+
+  await waitFor(() => {
+    adminPanelStore.teamMemberListLoading = false;
+  });
 
   const teamMemberRolesTab = screen.getByText("Team Members & Roles");
   fireEvent.click(teamMemberRolesTab);

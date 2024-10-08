@@ -89,6 +89,10 @@ class AdminPanelStore {
 
   agencyResponse?: Agency;
 
+  userAgenciesLoading: boolean;
+
+  teamMemberListLoading: boolean;
+
   constructor(api: API) {
     makeAutoObservable(this, {}, { autoBind: true });
     this.api = api;
@@ -99,6 +103,8 @@ class AdminPanelStore {
     this.metrics = [];
     this.userProvisioningUpdates = initialEmptyUserProvisioningUpdates;
     this.agencyProvisioningUpdates = initialEmptyAgencyProvisioningUpdates;
+    this.userAgenciesLoading = true;
+    this.teamMemberListLoading = true;
   }
 
   get users(): UserWithAgenciesByID[] {
@@ -209,6 +215,8 @@ class AdminPanelStore {
 
   async fetchUserAgencies(userId: string) {
     try {
+      this.userAgenciesLoading = true;
+
       const response = (await this.api.request({
         path: `/admin/user/${userId}/agencies`,
         method: "GET",
@@ -237,6 +245,8 @@ class AdminPanelStore {
             },
           ],
         };
+
+        this.userAgenciesLoading = false;
       });
     } catch (error) {
       if (error instanceof Error) {
@@ -278,6 +288,8 @@ class AdminPanelStore {
 
   async fetchAgencyTeam(agencyID: string) {
     try {
+      this.teamMemberListLoading = true;
+
       const response = (await this.api.request({
         path: `/admin/agency/${agencyID}/team`,
         method: "GET",
@@ -304,6 +316,7 @@ class AdminPanelStore {
             },
           ],
         };
+        this.teamMemberListLoading = false;
       });
     } catch (error) {
       if (error instanceof Error) return new Error(error.message);
