@@ -15,6 +15,8 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { IncludesExcludesEnum, IncludesExcludesWithDefault } from "./types";
+
 /**
  * Agency-wide Includes/Excludes definitions for Court and Supervision Subpopulation sectors
  *
@@ -23,249 +25,251 @@
  */
 
 // Helper function to map boolean values to `YES` | `NO` enums
-export const boolToYesNoEnum = (bool: boolean) => (bool ? "YES" : "NO");
+export const boolToYesNoEnum = (bool: boolean): IncludesExcludesEnum =>
+  bool ? IncludesExcludesEnum.YES : IncludesExcludesEnum.NO;
 
-export const CourtsIncludesExcludes = {
+export const CourtsIncludesExcludes: IncludesExcludesWithDefault = {
   SPECIAL_OR_LIMITED_JURISDICTION: {
     label: "Courts of special or limited jurisdiction (e.g., traffic court)",
-    default: "YES",
+    default: IncludesExcludesEnum.YES,
   },
   GENERAL_JURISDICTION: {
     label: "Courts of general jurisdiction",
-    default: "YES",
+    default: IncludesExcludesEnum.YES,
   },
   PROBLEM_SOLVING: {
     label: "Problem-solving courts (e.g., drug court, veterans court)",
-    default: "YES",
+    default: IncludesExcludesEnum.YES,
   },
   APPEALS: {
     label: "Courts of appeal",
-    default: "YES",
+    default: IncludesExcludesEnum.YES,
   },
   CIVIL: {
     label: "Civil courts",
-    default: "NO",
+    default: IncludesExcludesEnum.NO,
   },
   FAMILY: {
     label: "Family courts",
-    default: "NO",
+    default: IncludesExcludesEnum.NO,
   },
   JUVENILE: {
     label: "Juvenile courts",
-    default: "NO",
+    default: IncludesExcludesEnum.NO,
   },
 };
 
-export const ProbationIncludesExcludes = {
+export const ProbationIncludesExcludes: IncludesExcludesWithDefault = {
   PROBATION_IN_LIEU_INCARCERATION: {
     label:
       "People sentenced to a period of probation in lieu of incarceration (including to electronic monitoring, home confinement, traditional supervision, etc.)",
-    default: "YES",
+    default: IncludesExcludesEnum.YES,
   },
   PROBATION_AFTER_INCARCERATION: {
     label:
       "People sentenced to a period of probation after a period of incarceration (including to electronic monitoring, home confinement, traditional supervision, etc.)",
-    default: "YES",
+    default: IncludesExcludesEnum.YES,
   },
   PROBATION_POST_ADJUCATION_PROGRAM: {
     label:
       "People on probation as part of a post-adjudication specialty or problem-solving court program (e.g., drug court)",
-    default: "YES",
+    default: IncludesExcludesEnum.YES,
   },
   PROBATION_TEMPORARILY_CONFINED: {
     label:
       "People sentenced to probation who are temporarily confined in jail, prison, or another confinement center for a short “dip” sanction (typically less than 30 days)",
-    default: "YES",
+    default: IncludesExcludesEnum.YES,
   },
   PROBATION_CONFINED_ANY_LENGTH: {
     label:
       "People sentenced to probation confined for any length of time in a violation center or halfway back facility operated by the supervision agency",
-    default: "YES",
+    default: IncludesExcludesEnum.YES,
   },
   PROBATION_HOLD_PENDING: {
     label:
       "People sentenced to probation who are in jail or prison on a hold pending resolution of a violation or revocation",
-    default: "YES",
+    default: IncludesExcludesEnum.YES,
   },
   PROBATION_LONGER_SANCTION: {
     label:
       "People sentenced to probation who are confined in jail or prison for a longer sanction (e.g., more than 30 days, 120 days, 6 months, etc.)",
-    default: "YES",
+    default: IncludesExcludesEnum.YES,
   },
   PROBATION_COMPACT_AGREEMENT: {
     label:
       "People sentenced to probation in another jurisdiction who are supervised by the agency through interstate compact, intercounty compact, or other mutual supervision agreement",
-    default: "YES",
+    default: IncludesExcludesEnum.YES,
   },
   PROBATION_ANOTHER_JURISTICTION: {
     label:
       "People sentenced to probation who are being supervised by another jurisdiction",
-    default: "NO",
+    default: IncludesExcludesEnum.NO,
   },
   PROBATION_IN_COMMUNITY: {
     label:
       "People who have not been sentenced but are supervised on probation in the community prior to the resolution of their case",
-    default: "NO",
+    default: IncludesExcludesEnum.NO,
   },
   PROBATION_ANOTHER_FORM_SUPERVISION: {
     label:
       "People sentenced to probation who are also on another form of supervision",
-    default: "NO",
+    default: IncludesExcludesEnum.NO,
   },
   PROBATION_PRE_ADJUCTATION_PROGRAM: {
     label:
       "People on probation as part of a pre-adjudication specialty or problem-solving court program (e.g., drug court)",
-    default: "NO",
+    default: IncludesExcludesEnum.NO,
   },
 };
 
-export const ParoleIncludesExcludes = {
+export const ParoleIncludesExcludes: IncludesExcludesWithDefault = {
   PAROLE_EARLY_RELEASE: {
     label:
       "People approved by a parole board or similar entity for early conditional release from incarceration to parole supervision (including to electronic monitoring, home confinement, traditional supervision, etc.)",
-    default: "YES",
+    default: IncludesExcludesEnum.YES,
   },
   PAROLE_STATUTORY_REQUIREMENT: {
     label:
       "People conditionally released from incarceration to parole supervision by statutory requirement (including to electronic monitoring, home confinement, traditional supervision, etc.)",
-    default: "YES",
+    default: IncludesExcludesEnum.YES,
   },
   PAROLE_TEMPORARILY_CONFINED: {
     label:
       "People on parole who are temporarily confined in jail, prison, or another confinement center for a short “dip” sanction (typically less than 30 days)",
-    default: "YES",
+    default: IncludesExcludesEnum.YES,
   },
   PAROLE_CONFINED_ANY_LENGTH: {
     label:
       "People on parole confined for any length of time in a violation center or halfway back facility operated by the supervision agency",
-    default: "YES",
+    default: IncludesExcludesEnum.YES,
   },
   PAROLE_HOLD_PENDING: {
     label:
       "People on parole who are in jail or prison on a hold pending resolution of a violation or revocation",
-    default: "YES",
+    default: IncludesExcludesEnum.YES,
   },
   PAROLE_LONGER_SANCTION: {
     label:
       "People on parole who are confined in jail or prison for a longer sanction (e.g., more than 30 days, 120 days, 6 months, etc.)",
-    default: "YES",
+    default: IncludesExcludesEnum.YES,
   },
   PAROLE_COMPACT_AGREEMENT: {
     label:
       "People released to parole in another jurisdiction who are supervised by the agency through interstate compact, intercounty compact, or other mutual supervision agreement",
-    default: "YES",
+    default: IncludesExcludesEnum.YES,
   },
   PAROLE_ANOTHER_FORM_SUPERVISION: {
     label: "People on parole who are also on another form of supervision",
-    default: "NO",
+    default: IncludesExcludesEnum.NO,
   },
   PAROLE_ANOTHER_JURISTICTION: {
     label: "People on parole who are being supervised by another jurisdiction",
-    default: "NO",
+    default: IncludesExcludesEnum.NO,
   },
 };
 
-export const PretrialSupervisionIncludesExcludes = {
-  PRETRIAL_CITATION_RELEASE: {
-    label: "People on citation release (i.e., were never booked)",
-    default: "YES",
-  },
-  PRETRIAL_CONDITION_SUPERVISION: {
-    label:
-      "People released from jail or otherwise not held pretrial on the condition of supervision (including electronic monitoring, home confinement, traditional supervision, etc.)",
-    default: "YES",
-  },
-  PRETRIAL_STATUTORY_REQUIREMENT: {
-    label:
-      "People released from jail or otherwise not held pretrial due to statutory requirement",
-    default: "YES",
-  },
-  PRETRIAL_COURT_PROGRAM: {
-    label:
-      "People supervised as part of a pre-adjudication specialty or problem-solving court program (e.g., drug court)",
-    default: "YES",
-  },
-  PRETRIAL_HOLD_PENDING: {
-    label:
-      "People on pretrial supervision who are incarcerated on a hold pending resolution of a violation or revocation",
-    default: "YES",
-  },
-  PRETRIAL_ANOTHER_FORM_SUPERVISION: {
-    label:
-      "People on pretrial supervision who are also on another form of supervision",
-    default: "NO",
-  },
-};
+export const PretrialSupervisionIncludesExcludes: IncludesExcludesWithDefault =
+  {
+    PRETRIAL_CITATION_RELEASE: {
+      label: "People on citation release (i.e., were never booked)",
+      default: IncludesExcludesEnum.YES,
+    },
+    PRETRIAL_CONDITION_SUPERVISION: {
+      label:
+        "People released from jail or otherwise not held pretrial on the condition of supervision (including electronic monitoring, home confinement, traditional supervision, etc.)",
+      default: IncludesExcludesEnum.YES,
+    },
+    PRETRIAL_STATUTORY_REQUIREMENT: {
+      label:
+        "People released from jail or otherwise not held pretrial due to statutory requirement",
+      default: IncludesExcludesEnum.YES,
+    },
+    PRETRIAL_COURT_PROGRAM: {
+      label:
+        "People supervised as part of a pre-adjudication specialty or problem-solving court program (e.g., drug court)",
+      default: IncludesExcludesEnum.YES,
+    },
+    PRETRIAL_HOLD_PENDING: {
+      label:
+        "People on pretrial supervision who are incarcerated on a hold pending resolution of a violation or revocation",
+      default: IncludesExcludesEnum.YES,
+    },
+    PRETRIAL_ANOTHER_FORM_SUPERVISION: {
+      label:
+        "People on pretrial supervision who are also on another form of supervision",
+      default: IncludesExcludesEnum.NO,
+    },
+  };
 
-export const OtherSupervisionIncludesExcludes = {
+export const OtherSupervisionIncludesExcludes: IncludesExcludesWithDefault = {
   OTHER_IN_LIEU_INCARCERATION: {
     label:
       "People sentenced to a period of other community supervision in lieu of incarceration (including to electronic monitoring, home confinement, traditional supervision, etc.)",
-    default: "YES",
+    default: IncludesExcludesEnum.YES,
   },
   OTHER_DETERMINATE_PERIOD: {
     label:
       "People sentenced to a determinate period of other community supervision after a period of incarceration (including to electronic monitoring, home confinement, traditional supervision, etc.)",
-    default: "YES",
+    default: IncludesExcludesEnum.YES,
   },
   OTHER_POST_ADJUCATION_PROGRAM: {
     label:
       "People on other community supervision as part of a post-adjudication specialty or problem-solving court program (e.g., drug court)",
-    default: "YES",
+    default: IncludesExcludesEnum.YES,
   },
   OTHER_EARLY_RELEASE: {
     label:
       "People approved by a parole board or similar entity for early conditional release from incarceration to other community supervision (including to electronic monitoring, home confinement, traditional supervision, etc.)",
-    default: "YES",
+    default: IncludesExcludesEnum.YES,
   },
   OTHER_STATUTORY_REQUIREMENT: {
     label:
       "People conditionally released from incarceration to other community supervision by statutory requirement (including to electronic monitoring, home confinement, traditional supervision, etc.)",
-    default: "YES",
+    default: IncludesExcludesEnum.YES,
   },
   OTHER_TEMPORARILY_CONFINED: {
     label:
       "People on other community supervision who are temporarily confined in jail, prison, or another confinement center for a short “dip” sanction (typically less than 30 days)",
-    default: "YES",
+    default: IncludesExcludesEnum.YES,
   },
   OTHER_CONFINED_ANY_LENGTH: {
     label:
       "People on other community supervision confined for any length of time in a violation center or halfway back facility operated by the supervision agency",
-    default: "YES",
+    default: IncludesExcludesEnum.YES,
   },
   OTHER_JAIL_OR_PRISON_HOLD_PENDING: {
     label:
       "People on other community supervision who are in jail or prison on a hold pending resolution of a violation or revocation",
-    default: "YES",
+    default: IncludesExcludesEnum.YES,
   },
   OTHER_LONGER_SANTION: {
     label:
       "People on other community supervision who are confined in jail or prison for a longer sanction (e.g., more than 30 days, 120 days, 6 months, etc.)",
-    default: "YES",
+    default: IncludesExcludesEnum.YES,
   },
   OTHER_INCARCERATED_HOLD_PENDING: {
     label:
       "People on other community supervision who are incarcerated on a hold pending resolution of a violation or revocation",
-    default: "YES",
+    default: IncludesExcludesEnum.YES,
   },
   OTHER_COMPACT_AGREEMENT: {
     label:
       "People on supervision in another jurisdiction who are supervised by the agency through interstate compact, intercounty compact, or other mutual supervision agreement",
-    default: "YES",
+    default: IncludesExcludesEnum.YES,
   },
   OTHER_ANOTHER_FORM_SUPERVISION: {
     label:
       "People on other community supervision who are also on another form of supervision",
-    default: "YES",
+    default: IncludesExcludesEnum.YES,
   },
   OTHER_PRIOR_TO_RESOLUTION: {
     label:
       "People on other community supervision who have not been sentenced but are supervised in the community prior to the resolution of their case",
-    default: "NO",
+    default: IncludesExcludesEnum.NO,
   },
   OTHER_COURT_PROGRAM: {
     label:
       "People on other community supervision in a pre-adjudication specialty or problem-solving court program (e.g., drug court, etc.)",
-    default: "NO",
+    default: IncludesExcludesEnum.NO,
   },
 };
