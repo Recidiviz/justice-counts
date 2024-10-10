@@ -61,11 +61,12 @@ class AgencyDataStore {
   }
 
   get agencyDescription(): string {
-    return this.agencySettingsBySettingType.PURPOSE_AND_FUNCTIONS?.value;
+    return this.agencySettingsBySettingType.PURPOSE_AND_FUNCTIONS
+      ?.value as string;
   }
 
   get agencyHomepageUrl(): string {
-    return this.agencySettingsBySettingType.HOMEPAGE_URL?.value;
+    return this.agencySettingsBySettingType.HOMEPAGE_URL?.value as string;
   }
 
   get agencySystems(): AgencySystem[] | undefined {

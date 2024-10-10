@@ -81,12 +81,16 @@ export type Jurisdiction = {
   type: JurisdictionType;
 };
 
-export type AgencySettingType = "PURPOSE_AND_FUNCTIONS" | "HOMEPAGE_URL";
+export type AgencySettingType =
+  | "PURPOSE_AND_FUNCTIONS"
+  | "HOMEPAGE_URL"
+  | "ZIPCODE"
+  | "DATA_SHARING_TYPE";
 
 export interface AgencySetting {
   setting_type: AgencySettingType;
   source_id: number;
-  value: string;
+  value: string | string[];
 }
 
 export interface PublicUserAgency {

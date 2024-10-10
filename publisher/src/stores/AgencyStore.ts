@@ -259,7 +259,7 @@ class AgencyStore {
 
   updateAgencySettings = (
     type: AgencySettingType,
-    text: string,
+    value: string | string[],
     sourceId: number
   ): { settings: AgencySetting[] } => {
     const newSettings = this.currentAgencySettings
@@ -270,7 +270,7 @@ class AgencyStore {
     );
     const newSetting = {
       setting_type: type,
-      value: text,
+      value,
       source_id: sourceId,
     };
     if (existingSettingIndex > -1) {

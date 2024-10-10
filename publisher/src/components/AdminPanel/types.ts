@@ -60,6 +60,7 @@ export enum SelectionInputBoxTypes {
   CHILD_AGENCIES = "CHILD AGENCIES",
   COPY_CHILD_AGENCIES = "COPY CHILD AGENCIES",
   COPY_AGENCY_METRICS = "COPY AGENCY METRICS",
+  DATA_SHARING_TYPES = "DATA SHARING TYPES",
 }
 
 export type SelectionInputBoxType = `${SelectionInputBoxTypes}`;
@@ -81,6 +82,8 @@ export type Agency = {
   child_agency_ids: number[];
   is_dashboard_enabled: boolean | null;
   created_at: string | null;
+  zipcode?: string;
+  data_sharing_types?: string[];
   settings: {
     setting_type: string;
     value: string | null;
@@ -127,6 +130,8 @@ export type AgencyProvisioningUpdates = {
   is_superagency: boolean | null;
   child_agency_ids: number[];
   team: AgencyTeamUpdates[];
+  zipcode: string;
+  data_sharing_types: string[];
 };
 
 export type AgencyTeamUpdates = {
@@ -228,7 +233,7 @@ export type InteractiveSearchListProps = {
   boxActionType?: InteractiveSearchListAction;
   metadata?: {
     listBoxLabel: string;
-    searchBoxLabel: string;
+    searchBoxLabel?: string;
     listBoxEmptyLabel?: string;
     title?: string;
   };

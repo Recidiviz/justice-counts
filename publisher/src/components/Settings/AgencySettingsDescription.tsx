@@ -49,9 +49,9 @@ const AgencySettingsDescription: React.FC<{
   const [infoText, setInfoText] = useState("");
 
   const purposeAndFunctionsSetting =
-    currentAgencySettings?.find(
+    (currentAgencySettings?.find(
       (setting) => setting.setting_type === "PURPOSE_AND_FUNCTIONS"
-    )?.value || "";
+    )?.value as string) || "";
   const isAgencySettingConfigured = Boolean(purposeAndFunctionsSetting);
 
   const handleSaveClick = () => {

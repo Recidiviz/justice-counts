@@ -166,22 +166,24 @@ export const InteractiveSearchList = ({
       </Styled.InputLabelWrapper>
 
       {/* Search Input */}
-      <Styled.InputLabelWrapper inputWidth={300}>
-        <input
-          name="search-input"
-          type="text"
-          value={searchInputValue}
-          onChange={filterListBySearchValue}
-        />
-        <label htmlFor="search-input">
-          {metadata?.searchBoxLabel}
-          {searchInputValue && (
-            <Styled.LabelButton onClick={resetFilteredList}>
-              Clear
-            </Styled.LabelButton>
-          )}
-        </label>
-      </Styled.InputLabelWrapper>
+      {metadata?.searchBoxLabel && (
+        <Styled.InputLabelWrapper inputWidth={300}>
+          <input
+            name="search-input"
+            type="text"
+            value={searchInputValue}
+            onChange={filterListBySearchValue}
+          />
+          <label htmlFor="search-input">
+            {metadata?.searchBoxLabel}
+            {searchInputValue && (
+              <Styled.LabelButton onClick={resetFilteredList}>
+                Clear
+              </Styled.LabelButton>
+            )}
+          </label>
+        </Styled.InputLabelWrapper>
+      )}
     </>
   );
 };

@@ -26,13 +26,18 @@ import {
   AgencySettingsWrapper,
 } from "./AgencySettings.styles";
 import { AgencySettingsBasicInfo } from "./AgencySettingsBasicInfo";
+// TODO(#1537) Ungate zipcode and agency data sharing fields
+// import AgencySettingsDataSharingType from "./AgencySettingsDataSharingType";
 import AgencySettingsDescription from "./AgencySettingsDescription";
 import { AgencySettingsEmailNotifications } from "./AgencySettingsEmailNotifications";
 import { AgencySettingsJurisdictions } from "./AgencySettingsJurisdictions";
 import { AgencySettingsSupervisions } from "./AgencySettingsSupervisions";
 import AgencySettingsUrl from "./AgencySettingsURL";
+// TODO(#1537) Ungate zipcode and agency data sharing fields
+// import AgencySettingsZipcode from "./AgencySettingsZipcode";
 
 export enum ActiveSetting {
+  Zipcode = "ZIPCODE",
   Description = "DESCRIPTION",
   HomepageUrl = "HOMEPAGE_URL",
   Supervisions = "SUPERVISIONS",
@@ -80,12 +85,18 @@ export const AgencySettings: React.FC = observer(() => {
     <AgencySettingsWrapper>
       <AgencySettingsContent>
         <AgencySettingsBasicInfo />
+        {/* TODO(#1537) Ungate zipcode and agency data sharing fields */}
+        {/* <AgencySettingsZipcode
+          settingProps={generateSettingProps(ActiveSetting.Zipcode)}
+        /> */}
         <AgencySettingsDescription
           settingProps={generateSettingProps(ActiveSetting.Description)}
         />
         <AgencySettingsUrl
           settingProps={generateSettingProps(ActiveSetting.HomepageUrl)}
         />
+        {/* TODO(#1537) Ungate zipcode and agency data sharing fields */}
+        {/* <AgencySettingsDataSharingType /> */}
         <AgencySettingsEmailNotifications />
         {isAgencySupervision && (
           <AgencySettingsSupervisions

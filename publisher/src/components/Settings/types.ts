@@ -23,4 +23,8 @@ export type SettingsSearchParams = {
 };
 
 // might add settings names here in future
-export type AgencySettingType = "PURPOSE_AND_FUNCTIONS" | "HOMEPAGE_URL";
+export type AgencySettingType =
+  | "PURPOSE_AND_FUNCTIONS"
+  | "HOMEPAGE_URL"
+  | "ZIPCODE"
+  | "DATA_SHARING_TYPE";
