@@ -31,7 +31,7 @@ import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
-import { useSettingsSearchParams } from "../Settings";
+import { useSettingsSearchParams } from "../AgencySettings";
 import * as Styled from "./ModalForm.styled";
 import {
   Ethnicity,

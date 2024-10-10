@@ -19,8 +19,8 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
+import { useSettingsSearchParams } from "../AgencySettings";
 import { Loading } from "../Loading";
-import { useSettingsSearchParams } from "../Settings";
 import Configuration from "./Configuration";
 import { MetricsOverview } from "./MetricsOverview";
 

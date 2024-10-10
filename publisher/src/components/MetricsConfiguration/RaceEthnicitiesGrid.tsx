@@ -19,8 +19,8 @@ import { observer } from "mobx-react-lite";
 import React from "react";
 
 import { useStore } from "../../stores";
+import { useSettingsSearchParams } from "../AgencySettings";
 import { ReactComponent as RightArrowIcon } from "../assets/right-arrow.svg";
-import { useSettingsSearchParams } from "../Settings";
 import * as Styled from "./RaceEthnicitiesGrid.styled";
 import { Ethnicity } from "./RaceEthnicitiesGridStates";
 import { sortRaces } from "./utils";

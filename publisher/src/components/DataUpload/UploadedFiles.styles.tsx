@@ -24,8 +24,8 @@ import {
 } from "@justice-counts/common/components/GlobalStyles";
 import styled from "styled-components/macro";
 
+import { AccountSettingsTitle } from "../AgencySettings/AccountSettings.styles";
 import { LabelRow, Row, Table } from "../Reports";
-import { AccountSettingsTitle } from "../Settings/AccountSettings.styles";
 
 const STICKY_RESPONSIVE_UPLOADED_FILES_TITLE_HEIGHT = 48;
 
