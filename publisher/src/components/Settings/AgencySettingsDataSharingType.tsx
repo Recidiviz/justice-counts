@@ -52,11 +52,10 @@ const AgencySettingsDataSharingType: React.FC = () => {
   const { currentAgencySettings, updateAgencySettings, saveAgencySettings } =
     agencyStore;
 
-  const [dataSharingTypeSetting, setDataSharingTypeSetting] = useState(
+  let dataSharingTypeSetting =
     (currentAgencySettings?.find(
       (setting) => setting.setting_type === "DATA_SHARING_TYPE"
-    )?.value as string[]) || []
-  );
+    )?.value as string[]) || [];
 
   const [allDimensionsEnabled, setAllDimensionsEnabled] = useState(
     dataSharingTypeSetting.length === dataSharingTypeNames.length
@@ -73,10 +72,10 @@ const AgencySettingsDataSharingType: React.FC = () => {
 
   const handleSharingTypeChange = (id: string) => {
     if (!dataSharingTypeSetting.includes(id)) {
-      setDataSharingTypeSetting([...dataSharingTypeSetting, id]);
+      dataSharingTypeSetting = [...dataSharingTypeSetting, id];
     } else {
-      setDataSharingTypeSetting(
-        dataSharingTypeSetting.filter((settingId) => settingId !== id)
+      dataSharingTypeSetting = dataSharingTypeSetting.filter(
+        (settingId) => settingId !== id
       );
     }
     handleSettingSave(dataSharingTypeSetting);
@@ -85,11 +84,11 @@ const AgencySettingsDataSharingType: React.FC = () => {
   const handleSelectAllChange = (allEnabled: boolean) => {
     setAllDimensionsEnabled(!allEnabled);
     if (!allEnabled) {
-      setDataSharingTypeSetting(
-        Object.values(dataSharingTypeNames).map((typeObj) => typeObj.id)
+      dataSharingTypeSetting = Object.values(dataSharingTypeNames).map(
+        (typeObj) => typeObj.id
       );
     } else {
-      setDataSharingTypeSetting([]);
+      dataSharingTypeSetting = [];
     }
     handleSettingSave(dataSharingTypeSetting);
   };
