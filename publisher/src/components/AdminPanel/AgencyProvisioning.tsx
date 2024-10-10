@@ -592,12 +592,24 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
         new Set(searchableMetrics.map((metric) => String(metric.id)))
       );
     }, [searchableMetrics]);
-
     const selectedChildAgencies = childAgencies.filter((agency) =>
       selectedChildAgencyIDs.has(Number(agency.id))
     );
     const hasChildAgencyMetrics = metrics.length > 0;
 
+    /** Team members search bar logic */
+    const [teamMembersSearchInput, setTeamMembersSearchInput] =
+      useState<string>("");
+    const getFilteredTeamMembers = () => {
+      return AdminPanelStore.searchList(
+        currentTeamMembers,
+        teamMembersSearchInput,
+        ["id", "name", "email"]
+      );
+    };
+    const filteredTeamMembers = getFilteredTeamMembers();
+
+    /** Shows mini loader while fetching agency's team members */
     if (teamMemberListLoading) {
       return (
         <Styled.ModalContainer>
@@ -1357,8 +1369,40 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                       </Styled.InputLabelWrapper>
                     )}
 
-                    {/* Newly Added Team Members */}
+                    {/* Search Team Members */}
+                    <Styled.InputLabelWrapper noBottomSpacing>
+                      <input
+                        id="search-team-members"
+                        name="search-team-members"
+                        type="text"
+                        value={teamMembersSearchInput}
+                        onChange={(e) =>
+                          setTeamMembersSearchInput(e.target.value)
+                        }
+                      />
+                      <Styled.LabelWrapper>
+                        <label htmlFor="search-team-members">
+                          Search by name, email or user ID
+                        </label>
+                        {teamMembersSearchInput && (
+                          <Styled.LabelButton
+                            onClick={() => {
+                              setTeamMembersSearchInput("");
+                            }}
+                          >
+                            Clear
+                          </Styled.LabelButton>
+                        )}
+                      </Styled.LabelWrapper>
+                      {!filteredTeamMembers.length && (
+                        <Styled.EmptyListMessage>
+                          No current team members found
+                        </Styled.EmptyListMessage>
+                      )}
+                    </Styled.InputLabelWrapper>
+
                     <Styled.TeamMembersContainer>
+                      {/* Newly Added Team Members */}
                       {availableTeamMembers
                         .filter((member) =>
                           selectedTeamMembersToAdd.has(+member.id)
@@ -1413,70 +1457,84 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                         ))}
 
                       {/* Existing Team Members */}
-                      {currentTeamMembers.map((member) => (
-                        <Styled.TeamMemberCard
-                          key={member.id}
-                          deleted={selectedTeamMembersToDelete.has(+member.id)}
-                        >
-                          <Styled.ChipInnerRow>
-                            <Styled.TopCardRowWrapper>
-                              <Styled.NameSubheaderWrapper>
-                                <Styled.ChipName>{member.name}</Styled.ChipName>
+                      {filteredTeamMembers
+                        .sort((a, b) => a.name.localeCompare(b.name))
+                        .map((member) => {
+                          return (
+                            <Styled.TeamMemberCard
+                              key={member.id}
+                              deleted={selectedTeamMembersToDelete.has(
+                                +member.id
+                              )}
+                            >
+                              <Styled.ChipInnerRow>
+                                <Styled.TopCardRowWrapper>
+                                  <Styled.NameSubheaderWrapper>
+                                    <Styled.ChipName>
+                                      {member.name}
+                                    </Styled.ChipName>
 
-                                <Styled.ChipEmail>
-                                  {member.email}
-                                </Styled.ChipEmail>
-                                <Styled.ChipInvitationStatus>
-                                  {member.invitation_status}
-                                </Styled.ChipInvitationStatus>
-                              </Styled.NameSubheaderWrapper>
-                              <Styled.ID>ID {member.user_account_id}</Styled.ID>
-                            </Styled.TopCardRowWrapper>
+                                    <Styled.ChipEmail>
+                                      {member.email}
+                                    </Styled.ChipEmail>
+                                    <Styled.ChipInvitationStatus>
+                                      {member.invitation_status}
+                                    </Styled.ChipInvitationStatus>
+                                  </Styled.NameSubheaderWrapper>
+                                  <Styled.ID>
+                                    ID {member.user_account_id}
+                                  </Styled.ID>
+                                </Styled.TopCardRowWrapper>
 
-                            <Styled.ChipRole>
-                              <Styled.InputLabelWrapper noBottomSpacing>
-                                <Dropdown
-                                  label={
-                                    <input
-                                      name={`${member.auth0_user_id}-role`}
-                                      type="button"
-                                      value={
-                                        removeSnakeCase(
-                                          teamMemberRoleUpdates[+member.id] ||
-                                            ""
-                                        ) || removeSnakeCase(member.role || "")
+                                <Styled.ChipRole>
+                                  <Styled.InputLabelWrapper noBottomSpacing>
+                                    <Dropdown
+                                      label={
+                                        <input
+                                          name={`${member.auth0_user_id}-role`}
+                                          type="button"
+                                          value={
+                                            removeSnakeCase(
+                                              teamMemberRoleUpdates[
+                                                +member.id
+                                              ] || ""
+                                            ) ||
+                                            removeSnakeCase(member.role || "")
+                                          }
+                                          disabled={selectedTeamMembersToDelete.has(
+                                            +member.id
+                                          )}
+                                        />
                                       }
-                                      disabled={selectedTeamMembersToDelete.has(
-                                        +member.id
-                                      )}
+                                      options={userRoles.map((role) => ({
+                                        key: role,
+                                        label: removeSnakeCase(role),
+                                        onClick: () => {
+                                          setTeamMemberRoleUpdates((prev) => {
+                                            if (role === member.role) {
+                                              const prevUpdates = { ...prev };
+                                              delete prevUpdates[+member.id];
+                                              return prevUpdates;
+                                            }
+                                            return {
+                                              ...prev,
+                                              [member.id]: role,
+                                            };
+                                          });
+                                        },
+                                      }))}
+                                      fullWidth
+                                      lightBoxShadow
                                     />
-                                  }
-                                  options={userRoles.map((role) => ({
-                                    key: role,
-                                    label: removeSnakeCase(role),
-                                    onClick: () => {
-                                      setTeamMemberRoleUpdates((prev) => {
-                                        if (role === member.role) {
-                                          const prevUpdates = { ...prev };
-                                          delete prevUpdates[+member.id];
-                                          return prevUpdates;
-                                        }
-                                        return {
-                                          ...prev,
-                                          [member.id]: role,
-                                        };
-                                      });
-                                    },
-                                  }))}
-                                  fullWidth
-                                  lightBoxShadow
-                                />
-                                <label htmlFor="new-team-member">Role</label>
-                              </Styled.InputLabelWrapper>
-                            </Styled.ChipRole>
-                          </Styled.ChipInnerRow>
-                        </Styled.TeamMemberCard>
-                      ))}
+                                    <label htmlFor="new-team-member">
+                                      Role
+                                    </label>
+                                  </Styled.InputLabelWrapper>
+                                </Styled.ChipRole>
+                              </Styled.ChipInnerRow>
+                            </Styled.TeamMemberCard>
+                          );
+                        })}
                     </Styled.TeamMembersContainer>
                   </>
                 )}
