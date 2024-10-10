@@ -161,9 +161,6 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       setIsCopySuperagencyMetricSettingsSelected,
     ] = useState(false);
     // TODO(#1537) Ungate zipcode and agency data sharing fields
-    // const [selectedDataSharingTypes, setSelectedDataSharingTypes] = useState<
-    //   Set<string>
-    // >(new Set());
     // const [zipcodeValidationError, setZipcodeValidationError] =
     //   useState<string>();
 
@@ -191,6 +188,15 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
     const selectedAgency = selectedIDToEdit
       ? agenciesByID[selectedIDToEdit][0]
       : undefined;
+
+    // TODO(#1537) Ungate zipcode and agency data sharing fields
+    // const [selectedDataSharingTypes, setSelectedDataSharingTypes] = useState<
+    //   Set<string>
+    // >(
+    //   selectedAgency?.data_sharing_types
+    //     ? new Set(selectedAgency?.data_sharing_types.map((id) => String(id)))
+    //     : new Set()
+    // );
 
     /** Available agencies ("available" meaning excluding the current agency) to select from */
     const agencyIDs = agencies.map((agency) => +agency.id);
@@ -285,7 +291,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
     //   if (zipcode === "" || isValidZipcode) {
     //     return setZipcodeValidationError(undefined);
     //   }
-    //   setZipcodeValidationError("Please enter a valid zipcode");
+    //   setZipcodeValidationError("Please enter a 5-digit zipcode");
     // };
 
     const saveUpdates = async () => {

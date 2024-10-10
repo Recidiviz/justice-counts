@@ -55,7 +55,9 @@ const AgencySettingsZipcode: React.FC<{
   const checkValidZipcodeSetResetErrorMsg = (zipcodeUpdate: string) => {
     const isValid =
       zipcodeUpdate === "" || validateAgencyZipcode(zipcodeUpdate);
-    setErrorMsg(!isValid ? { message: "Invalid Zipcode" } : undefined);
+    setErrorMsg(
+      !isValid ? { message: "Please enter a 5-digit zipcode" } : undefined
+    );
     return isValid;
   };
 
