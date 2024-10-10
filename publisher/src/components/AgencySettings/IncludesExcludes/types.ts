@@ -15,13 +15,27 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { AgencySystems } from "@justice-counts/common/types";
+
 export enum IncludesExcludesEnum {
   YES = "YES",
   NO = "NO",
 }
+
 export type IncludesExcludesWithDefault = {
   [key: string]: {
     label: string;
     default: IncludesExcludesEnum;
   };
+};
+
+type AgencySystemKeys =
+  | AgencySystems.COURTS_AND_PRETRIAL
+  | AgencySystems.PAROLE
+  | AgencySystems.PROBATION
+  | AgencySystems.PRETRIAL_SUPERVISION
+  | AgencySystems.OTHER_SUPERVISION;
+
+export type AgencyIncludesExcludesType = {
+  [key in AgencySystemKeys]: IncludesExcludesWithDefault;
 };
