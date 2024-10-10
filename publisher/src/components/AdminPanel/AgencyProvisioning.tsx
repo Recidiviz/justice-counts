@@ -89,6 +89,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       searchableMetrics,
       csgAndRecidivizUsers,
       csgAndRecidivizDefaultRole,
+      teamMemberListLoading,
       updateAgencyName,
       // TODO(#1537) Ungate zipcode and agency data sharing fields
       // updateAgencyZipcode,
@@ -310,7 +311,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
        * newly added team members are automatically assigned a role by default)
        */
       updateTeamMembers([
-        ...agencyProvisioningUpdates.team.filter(
+        ...currentTeamMembers.filter(
           (member) =>
             member.user_account_id &&
             !selectedTeamMembersToDelete.has(member.user_account_id) &&
@@ -665,6 +666,16 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
     //       : new Set()
     //   );
     // }, [selectedAgency]);
+
+    if (teamMemberListLoading) {
+      return (
+        <Styled.ModalContainer>
+          <Styled.MiniLoaderCenteredContainer>
+            <MiniLoader dark />
+          </Styled.MiniLoaderCenteredContainer>
+        </Styled.ModalContainer>
+      );
+    }
 
     return (
       <Styled.ModalContainer offScreen={activeSecondaryModal === Setting.USERS}>

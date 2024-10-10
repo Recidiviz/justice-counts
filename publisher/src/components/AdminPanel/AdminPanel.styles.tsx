@@ -116,6 +116,18 @@ export const ModalContainer = styled.div<{ offScreen?: boolean }>`
   justify-content: space-between;
 `;
 
+export const MiniLoaderCenteredContainer = styled.div`
+  width: 100%;
+  height: 100%;
+
+  & > div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+  }
+`;
+
 export const ModalHeader = styled.div`
   display: flex;
   flex-direction: column;
