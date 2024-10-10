@@ -16,6 +16,7 @@
 // =============================================================================
 
 import { AgencySystems } from "@justice-counts/common/types";
+
 import { AgencyIncludesExcludesType, IncludesExcludesEnum } from "./types";
 
 /**
