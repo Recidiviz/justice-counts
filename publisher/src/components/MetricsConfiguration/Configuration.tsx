@@ -33,7 +33,7 @@ import {
   getActiveSystemMetricKey,
   replaceSystemMetricKeyWithNewSystem,
   useSettingsSearchParams,
-} from "../Settings";
+} from "../AgencySettings";
 import * as Styled from "./Configuration.styled";
 import MetricAvailability from "./MetricAvailability";
 import MetricDefinitions from "./MetricDefinitions";
