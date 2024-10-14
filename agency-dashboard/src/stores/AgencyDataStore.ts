@@ -60,13 +60,16 @@ class AgencyDataStore {
     return this.agency?.name;
   }
 
-  get agencyDescription(): string {
-    return this.agencySettingsBySettingType.PURPOSE_AND_FUNCTIONS
-      ?.value as string;
+  get agencyDescription(): string | undefined {
+    return this.agencySettingsBySettingType.PURPOSE_AND_FUNCTIONS?.value as
+      | string
+      | undefined;
   }
 
-  get agencyHomepageUrl(): string {
-    return this.agencySettingsBySettingType.HOMEPAGE_URL?.value as string;
+  get agencyHomepageUrl(): string | undefined {
+    return this.agencySettingsBySettingType.HOMEPAGE_URL?.value as
+      | string
+      | undefined;
   }
 
   get agencySystems(): AgencySystem[] | undefined {
