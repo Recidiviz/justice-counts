@@ -37,7 +37,7 @@ import {
   getActiveSystemMetricKey,
   replaceSystemMetricKeyWithNewSystem,
   useSettingsSearchParams,
-} from "../Settings";
+} from "../AgencySettings";
 import { ConfigurationStatusText } from "./ConfigurationStatusButton";
 import { RACE_ETHNICITY_DISAGGREGATION_KEY } from "./constants";
 import DefinitionModalForm from "./DefinitionModalForm";

@@ -26,9 +26,9 @@ import {
 } from "@justice-counts/common/types";
 import { makeAutoObservable, runInAction } from "mobx";
 
+import { AgencySettingType } from "../components/AgencySettings";
 import { SYSTEMS_LOWERCASE } from "../components/Global/constants";
 import { ChildAgenciesRecord } from "../components/Home";
-import { AgencySettingType } from "../components/Settings";
 import API from "./API";
 import UserStore from "./UserStore";
 

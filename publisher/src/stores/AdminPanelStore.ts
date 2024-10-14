@@ -105,8 +105,8 @@ class AdminPanelStore {
     this.metrics = [];
     this.userProvisioningUpdates = initialEmptyUserProvisioningUpdates;
     this.agencyProvisioningUpdates = initialEmptyAgencyProvisioningUpdates;
-    this.userAgenciesLoading = true;
-    this.teamMemberListLoading = true;
+    this.userAgenciesLoading = false;
+    this.teamMemberListLoading = false;
   }
 
   get users(): UserWithAgenciesByID[] {

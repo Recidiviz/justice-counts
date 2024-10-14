@@ -31,14 +31,14 @@ import { useParams } from "react-router-dom";
 import { NotFound } from "../../pages/NotFound";
 import { useStore } from "../../stores";
 import { formatSystemName } from "../../utils";
+import {
+  replaceSystemMetricKeyWithNewSystem,
+  useSettingsSearchParams,
+} from "../AgencySettings";
 import { ReactComponent as RightArrowIcon } from "../assets/bold-right-arrow-icon.svg";
 import { AppGuideKeys, GuideKeys } from "../HelpCenter/types";
 import { createURLToGuide } from "../HelpCenter/utils";
 import { DisclaimerBanner } from "../primitives";
-import {
-  replaceSystemMetricKeyWithNewSystem,
-  useSettingsSearchParams,
-} from "../Settings";
 import { ChildAgenciesDropdown } from "./ChildAgenciesDropdown";
 import * as Styled from "./MetricsOverview.styled";
 import { MetricInfo } from "./types";
