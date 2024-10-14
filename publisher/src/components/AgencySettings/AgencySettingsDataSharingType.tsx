@@ -17,7 +17,7 @@
 
 import { CheckboxOptions } from "@justice-counts/common/components/CheckboxOptions";
 import { observer } from "mobx-react-lite";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
@@ -52,16 +52,24 @@ const AgencySettingsDataSharingType: React.FC = () => {
   const { currentAgencySettings, updateAgencySettings, saveAgencySettings } =
     agencyStore;
 
-  let dataSharingTypeSetting =
+  const [dataSharingTypeSetting, setDataSharingTypeSetting] = useState(
     (currentAgencySettings?.find(
       (setting) => setting.setting_type === "DATA_SHARING_TYPE"
-    )?.value as string[]) || [];
+    )?.value as string[]) || []
+  );
 
   const [allDimensionsEnabled, setAllDimensionsEnabled] = useState(
     dataSharingTypeSetting.length === dataSharingTypeNames.length
   );
 
+  useEffect(() => {
+    setAllDimensionsEnabled(
+      dataSharingTypeSetting.length === dataSharingTypeNames.length
+    );
+  }, [dataSharingTypeSetting.length]);
+
   const handleSettingSave = (setting: string[]) => {
+    setDataSharingTypeSetting(setting);
     const updatedSettings = updateAgencySettings(
       "DATA_SHARING_TYPE",
       setting,
@@ -71,26 +79,28 @@ const AgencySettingsDataSharingType: React.FC = () => {
   };
 
   const handleSharingTypeChange = (id: string) => {
+    let currentSetting: string[] = [];
     if (!dataSharingTypeSetting.includes(id)) {
-      dataSharingTypeSetting = [...dataSharingTypeSetting, id];
+      currentSetting = [...dataSharingTypeSetting, id];
     } else {
-      dataSharingTypeSetting = dataSharingTypeSetting.filter(
+      currentSetting = dataSharingTypeSetting.filter(
         (settingId) => settingId !== id
       );
     }
-    handleSettingSave(dataSharingTypeSetting);
+    handleSettingSave(currentSetting);
   };
 
   const handleSelectAllChange = (allEnabled: boolean) => {
     setAllDimensionsEnabled(!allEnabled);
+    let currentSetting: string[] = [];
     if (!allEnabled) {
-      dataSharingTypeSetting = Object.values(dataSharingTypeNames).map(
+      currentSetting = Object.values(dataSharingTypeNames).map(
         (typeObj) => typeObj.id
       );
     } else {
-      dataSharingTypeSetting = [];
+      currentSetting = [];
     }
-    handleSettingSave(dataSharingTypeSetting);
+    handleSettingSave(currentSetting);
   };
 
   return (
