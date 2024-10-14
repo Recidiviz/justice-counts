@@ -63,7 +63,7 @@
     "@auth0/auth0-spa-js": "^1.22.6",
     "@babel/core": "^7.24.3",
     "@babel/plugin-syntax-flow": "^7.24.6",
-    "@babel/plugin-transform-react-jsx": "^7.23.4",
+    "@babel/plugin-transform-react-jsx": "^7.25.7",
     "@recidiviz/eslint-config": "^3.0.0",
     "@recidiviz/tsconfig": "^2.0.0",
     "@testing-library/dom": "^9.3.4",
