@@ -280,7 +280,8 @@ export const InputLabelWrapper = styled.div<{
     }
   }
 
-  input[type="email"] {
+  input[type="email"],
+  input[type="text"] {
     ${({ hasError }) => hasError && `border: 1px solid ${palette.solid.red};`};
   }
 

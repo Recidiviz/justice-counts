@@ -151,10 +151,12 @@ export const AgencySettingsBlockDescription = styled.div`
 
 export const AgencyInfoBlockDescription = styled.div<{
   hasTopMargin?: boolean;
+  hasBottomMargin?: boolean;
 }>`
   ${typography.paragraph};
   color: ${palette.highlight.grey9};
   margin-top: ${({ hasTopMargin }) => hasTopMargin && "24px"};
+  margin-bottom: ${({ hasBottomMargin }) => hasBottomMargin && "16px"};
 `;
 
 export const AgencyInfoLink = styled.a`
