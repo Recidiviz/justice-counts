@@ -184,3 +184,19 @@ export const convertShortDateToUTCDateString = (shortDate: string) => {
 
   return new Date(Date.UTC(year, month)).toUTCString();
 };
+
+/**
+ * Sorts records that have year and month numbers in ascending order (oldest records -> newest records)
+ */
+export const sortByYearAndMonth = <T extends { month: number; year: number }>(
+  a: T,
+  b: T
+) => {
+  // Compare years first
+  if (a.year !== b.year) {
+    return a.year - b.year;
+  }
+
+  // If years are the same, compare months
+  return a.month - b.month;
+};
