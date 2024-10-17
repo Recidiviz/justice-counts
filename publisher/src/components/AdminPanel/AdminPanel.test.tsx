@@ -884,3 +884,70 @@ test("Deleting a user deletes a card to the list of team members", async () => {
   fireEvent.click(existingTeamMember1ChipToDelete);
   expect(existingTeamMember1Role).toBeDisabled();
 });
+
+test("Loading spinner works properly in Agency Provisioning", async () => {
+  runInAction(() => {
+    adminPanelStore.usersByID = usersByID;
+    adminPanelStore.agenciesByID = agenciesByID;
+  });
+
+  render(
+    <BrowserRouter>
+      <StoreProvider>
+        <AdminPanel />
+      </StoreProvider>
+    </BrowserRouter>
+  );
+
+  const agencyProvisioningTab = screen.getByText("Agency Provisioning");
+  fireEvent.click(agencyProvisioningTab);
+
+  const agency1Card = screen.getByText("Super Agency");
+  fireEvent.click(agency1Card);
+
+  const miniLoader = screen.getByText("dots anim");
+  expect(miniLoader).toBeInTheDocument();
+
+  await waitFor(() => {
+    adminPanelStore.teamMemberListLoading = false;
+  });
+
+  const teamMemberRolesTab = screen.getByText("Team Members & Roles");
+  fireEvent.click(teamMemberRolesTab);
+
+  const existingTeamMember1 = screen.getByText("user1@email.org");
+  expect(existingTeamMember1).toBeInTheDocument();
+});
+
+test("Loading spinner works properly in User Provisioning", async () => {
+  runInAction(() => {
+    adminPanelStore.usersByID = usersByID;
+  });
+
+  render(
+    <BrowserRouter>
+      <StoreProvider>
+        <AdminPanel />
+      </StoreProvider>
+    </BrowserRouter>
+  );
+
+  const user1Card = screen.getByText("Anne Teak");
+  /** Click on Anne Teak's card from the `UserProvisioningOverview` */
+  fireEvent.click(user1Card);
+
+  const miniLoader = screen.getByText("dots anim");
+  expect(miniLoader).toBeInTheDocument();
+
+  await waitFor(() => {
+    adminPanelStore.userAgenciesLoading = false;
+  });
+
+  /**
+   * Note: since the `UserProvisioningOverview` and its corresponding modal have the same information
+   * in the DOM (e.g. name, email, ID, list of agencies, etc.), when using `getAllByText`, the information
+   * in the modal that we are testing is always the second item in the `getAllByText` array.
+   */
+  const userEmail = screen.getAllByText("user1@email.org")[1];
+  expect(userEmail).toBeInTheDocument();
+});
