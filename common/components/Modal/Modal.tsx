@@ -112,6 +112,7 @@ export function Modal({
             <Styled.ButtonsContainer modalType={modalType}>
               {buttons?.map((button, index) => (
                 <Button
+                  key={button.label}
                   label={button.label}
                   onClick={button.onClick}
                   borderColor={
