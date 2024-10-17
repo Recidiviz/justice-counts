@@ -1149,7 +1149,8 @@ class MetricConfigStore {
     state: StateKeys,
     gridStates: RaceEthnicitiesGridStates,
     system: AgencySystem,
-    metricKey: string
+    metricKey: string,
+    otherDescription?: string
   ): UpdatedDisaggregation => {
     const ethnicitiesByRace = this.getEthnicitiesByRace(system, metricKey);
 
@@ -1191,6 +1192,15 @@ class MetricConfigStore {
     const dimensions =
       raceEthnicitiesDimensions &&
       (Object.values(raceEthnicitiesDimensions) as UpdatedDimension[]);
+
+    if (otherDescription) {
+      const otherDimension = dimensions.find(
+        (dimension) => dimension.race === "Other" && dimension.enabled
+      );
+      if (otherDimension) {
+        otherDimension.other_description = otherDescription;
+      }
+    }
 
     /** Return an object w/ all dimensions in the desired backend data structure for saving purposes */
     return {

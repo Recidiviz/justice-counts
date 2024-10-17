@@ -80,6 +80,7 @@ export type Dimensions = {
     enabled?: boolean | null;
     label?: string;
     description?: string;
+    other_description?: string;
     key?: string;
     race?: Races;
     ethnicity?: Ethnicities;
@@ -101,6 +102,7 @@ export type UpdatedDimension = {
   enabled: boolean;
   race: Races;
   ethnicity: Ethnicities;
+  other_description?: string;
 };
 
 export type UpdatedDisaggregation = {

@@ -170,3 +170,11 @@ export const ContextLabel = styled.div`
   color: ${palette.highlight.grey8};
   margin-bottom: 16px;
 `;
+
+export const InputWrapper = styled.div`
+  margin-bottom: 16px;
+
+  textarea {
+    height: 100px;
+  }
+`;
