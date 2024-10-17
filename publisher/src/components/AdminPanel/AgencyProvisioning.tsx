@@ -608,7 +608,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
         {} as UserRoleUpdates
       );
 
-      if (!selectedAgency) {
+      if (!selectedAgency && !secondaryCreatedId) {
         setSelectedTeamMembersToAdd(
           new Set(Object.keys(csgRecidivizTeamMembers).map((id) => +id))
         );
@@ -638,9 +638,11 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
     useEffect(() => {
       const newMember = users.find((user) => user.id === secondaryCreatedId);
       if (secondaryCreatedId && newMember) {
-        setSelectedTeamMembersToAdd((prev) =>
-          toggleAddRemoveSetItem(prev, +secondaryCreatedId)
-        );
+        setSelectedTeamMembersToAdd((prev) => {
+          const newSet = new Set(prev);
+          newSet.add(+secondaryCreatedId);
+          return newSet;
+        });
         setTeamMemberRoleUpdates((prev) => {
           return {
             ...prev,
