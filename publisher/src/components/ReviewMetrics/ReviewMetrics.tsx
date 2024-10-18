@@ -24,7 +24,7 @@ import { formatDateShortMonthYear } from "@justice-counts/common/components/Data
 import { HeaderBar } from "@justice-counts/common/components/HeaderBar";
 import { MiniLoader } from "@justice-counts/common/components/MiniLoader";
 import { useIsFooterVisible } from "@justice-counts/common/hooks";
-import { groupBy } from "@justice-counts/common/utils";
+import { groupBy, sortByYearAndMonth } from "@justice-counts/common/utils";
 import React, { Fragment, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -218,7 +218,7 @@ export const ReviewMetrics: React.FC<ReviewMetricsProps> = ({
           .map(([agencyName, agencyRecords]) => (
             <Fragment key={agencyName}>
               <SummaryAgencyName>{agencyName}</SummaryAgencyName>
-              {agencyRecords.map((record) => (
+              {agencyRecords.sort(sortByYearAndMonth).map((record) => (
                 <SummarySectionLine key={record.id}>
                   {printReportTitle(
                     record.month,
@@ -377,15 +377,17 @@ export const ReviewMetrics: React.FC<ReviewMetricsProps> = ({
                 <>
                   {isMultiAgencyUpload
                     ? renderRecordsListByAgencyName()
-                    : records.map((record) => (
-                        <SummarySectionLine key={record.id}>
-                          {printReportTitle(
-                            record.month,
-                            record.year,
-                            record.frequency
-                          )}
-                        </SummarySectionLine>
-                      ))}
+                    : records
+                        .sort(sortByYearAndMonth)
+                        .map((record) => (
+                          <SummarySectionLine key={record.id}>
+                            {printReportTitle(
+                              record.month,
+                              record.year,
+                              record.frequency
+                            )}
+                          </SummarySectionLine>
+                        ))}
                 </>
               )}
             </SummarySection>

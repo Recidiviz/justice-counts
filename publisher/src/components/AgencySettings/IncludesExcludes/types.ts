@@ -15,12 +15,27 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { AgencySystem } from "@justice-counts/common/types";
+import { AgencySystems } from "@justice-counts/common/types";
 
-export type SettingsSearchParams = {
-  system?: AgencySystem;
-  metric?: string;
+export enum IncludesExcludesEnum {
+  YES = "YES",
+  NO = "NO",
+}
+
+export type IncludesExcludesWithDefault = {
+  [key: string]: {
+    label: string;
+    default: IncludesExcludesEnum;
+  };
 };
 
-// might add settings names here in future
-export type AgencySettingType = "PURPOSE_AND_FUNCTIONS" | "HOMEPAGE_URL";
+type AgencySystemKeys =
+  | AgencySystems.COURTS_AND_PRETRIAL
+  | AgencySystems.PAROLE
+  | AgencySystems.PROBATION
+  | AgencySystems.PRETRIAL_SUPERVISION
+  | AgencySystems.OTHER_SUPERVISION;
+
+export type AgencyIncludesExcludesType = {
+  [key in AgencySystemKeys]: IncludesExcludesWithDefault;
+};

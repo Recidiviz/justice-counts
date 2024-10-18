@@ -66,6 +66,8 @@ const initialEmptyAgencyProvisioningUpdates = {
   is_superagency: null,
   child_agency_ids: [],
   team: [],
+  zipcode: "",
+  data_sharing_types: [],
 };
 
 class AdminPanelStore {
@@ -103,8 +105,8 @@ class AdminPanelStore {
     this.metrics = [];
     this.userProvisioningUpdates = initialEmptyUserProvisioningUpdates;
     this.agencyProvisioningUpdates = initialEmptyAgencyProvisioningUpdates;
-    this.userAgenciesLoading = true;
-    this.teamMemberListLoading = true;
+    this.userAgenciesLoading = false;
+    this.teamMemberListLoading = false;
   }
 
   get users(): UserWithAgenciesByID[] {
@@ -501,6 +503,14 @@ class AdminPanelStore {
 
   updateAgencyName(name: string) {
     this.agencyProvisioningUpdates.name = name;
+  }
+
+  updateAgencyZipcode(zipcode: string) {
+    this.agencyProvisioningUpdates.zipcode = zipcode;
+  }
+
+  updateDataSharingTypes(types: string[]) {
+    this.agencyProvisioningUpdates.data_sharing_types = types;
   }
 
   saveAgencyName(name: string) {

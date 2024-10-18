@@ -39,7 +39,7 @@ export const HeaderBar: React.FC = observer(() => {
 
   const agencyUrl = agencyDataStore.agency?.settings.find(
     (setting) => setting.setting_type === "HOMEPAGE_URL"
-  )?.value;
+  )?.value as string | undefined;
 
   return (
     <Styled.HeaderBarContainer>

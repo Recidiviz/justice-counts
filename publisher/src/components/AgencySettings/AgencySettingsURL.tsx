@@ -16,18 +16,20 @@
 // =============================================================================
 
 import { Button } from "@justice-counts/common/components/Button";
+import { formatExternalLink } from "@justice-counts/common/components/DataViz/utils";
 import { NewInput } from "@justice-counts/common/components/Input";
 import { Modal } from "@justice-counts/common/components/Modal";
+import { validateAgencyURL } from "@justice-counts/common/utils/helperUtils";
 import { observer } from "mobx-react-lite";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
-import { AgencySettingsModalInputWrapperLarge } from "./AccountSettings.styles";
+import { AgencySettingsModalInputWrapperSmall } from "./AccountSettings.styles";
 import { SettingProps } from "./AgencySettings";
 import {
   AgencyInfoBlockDescription,
-  AgencyInfoTextAreaLabel,
+  AgencyInfoLink,
   AgencySettingActionRequiredIndicator,
   AgencySettingsBlock,
   AgencySettingsBlockTitle,
@@ -35,7 +37,7 @@ import {
 } from "./AgencySettings.styles";
 import { AgencySettingsEditModeModal } from "./AgencySettingsEditModeModal";
 
-const AgencySettingsDescription: React.FC<{
+const AgencySettingsUrl: React.FC<{
   settingProps: SettingProps;
 }> = ({ settingProps }) => {
   const { isSettingInEditMode, openSetting, removeEditMode, allowEdit } =
@@ -46,35 +48,59 @@ const AgencySettingsDescription: React.FC<{
   const { currentAgencySettings, updateAgencySettings, saveAgencySettings } =
     agencyStore;
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
-  const [infoText, setInfoText] = useState("");
+  const [urlText, setUrlText] = useState("");
+  const textAreaRef = useRef<HTMLInputElement | null>(null);
 
-  const purposeAndFunctionsSetting =
-    currentAgencySettings?.find(
-      (setting) => setting.setting_type === "PURPOSE_AND_FUNCTIONS"
-    )?.value || "";
-  const isAgencySettingConfigured = Boolean(purposeAndFunctionsSetting);
+  const homepageUrlSetting =
+    (currentAgencySettings?.find(
+      (setting) => setting.setting_type === "HOMEPAGE_URL"
+    )?.value as string) || "";
 
+  const isAgencySettingConfigured = Boolean(homepageUrlSetting);
+  const [errorMsg, setErrorMsg] = React.useState<
+    { message: string } | undefined
+  >(undefined);
+  const checkValidURLSetResetErrorMsg = (urlUpdate: string) => {
+    const isValid = urlUpdate === "" || validateAgencyURL(urlUpdate);
+    setErrorMsg(!isValid ? { message: "Invalid URL" } : undefined);
+    return isValid;
+  };
   const handleSaveClick = () => {
-    const updatedSettings = updateAgencySettings(
-      "PURPOSE_AND_FUNCTIONS",
-      infoText,
-      parseInt(agencyId)
-    );
-    saveAgencySettings(updatedSettings, agencyId);
-    removeEditMode();
+    if (checkValidURLSetResetErrorMsg(urlText)) {
+      const updatedSettings = updateAgencySettings(
+        "HOMEPAGE_URL",
+        urlText,
+        parseInt(agencyId)
+      );
+      saveAgencySettings(updatedSettings, agencyId);
+      removeEditMode();
+    }
   };
   const handleCancelClick = () => {
-    if (purposeAndFunctionsSetting === infoText) {
+    if (homepageUrlSetting === urlText) {
       removeEditMode();
     } else {
       setIsConfirmModalOpen(true);
     }
+    setErrorMsg(undefined);
   };
   const handleModalConfirm = () => {
-    setInfoText(purposeAndFunctionsSetting || "");
+    setUrlText(homepageUrlSetting || "");
     setIsConfirmModalOpen(false);
     removeEditMode();
   };
+
+  useEffect(() => {
+    if (textAreaRef.current) {
+      // eslint-disable-next-line no-param-reassign
+      textAreaRef.current.style.height = "0px";
+      const { scrollHeight } = textAreaRef.current;
+
+      // eslint-disable-next-line no-param-reassign
+      textAreaRef.current.style.height = `${Number(scrollHeight) + 1}px`;
+    }
+  }, [urlText, isSettingInEditMode]);
+
   return (
     <>
       {isSettingInEditMode && (
@@ -85,26 +111,28 @@ const AgencySettingsDescription: React.FC<{
           handleCancelModalConfirm={handleModalConfirm}
         >
           <Modal
-            title="Agency Description"
+            title="Agency URL"
             description={
-              <>
-                <AgencyInfoTextAreaLabel agencyDescriptionConfigs>
-                  This description will go on your public-facing dashboard.
-                </AgencyInfoTextAreaLabel>
-                <AgencySettingsModalInputWrapperLarge>
-                  <NewInput
-                    style={{ marginBottom: "0" }}
-                    persistLabel
-                    value={infoText}
-                    placeholder="Write a description of your agency"
-                    isPlaceholderVisible
-                    multiline
-                    maxLength={750}
-                    onChange={(e) => setInfoText(e.target.value)}
-                    fullWidth
-                  />
-                </AgencySettingsModalInputWrapperLarge>
-              </>
+              <AgencySettingsModalInputWrapperSmall
+                error={urlText !== "" && !validateAgencyURL(urlText)}
+              >
+                <NewInput
+                  style={{ marginBottom: "0" }}
+                  persistLabel
+                  value={urlText}
+                  error={errorMsg}
+                  placeholder="URL of agency (e.g., https://doc.iowa.gov/)"
+                  isPlaceholderVisible
+                  onChange={(e) => {
+                    const urlUpdate = e.target.value.trimStart();
+                    setUrlText(urlUpdate);
+                    checkValidURLSetResetErrorMsg(urlUpdate);
+                  }}
+                  agencySettingsConfigs
+                  fullWidth
+                  settingsCustomMargin
+                />
+              </AgencySettingsModalInputWrapperSmall>
             }
             buttons={[
               {
@@ -123,25 +151,37 @@ const AgencySettingsDescription: React.FC<{
         </AgencySettingsEditModeModal>
       )}
 
-      <AgencySettingsBlock id="description">
+      <AgencySettingsBlock withBorder id="homepage_url">
         <AgencySettingsBlockTitle configured={isAgencySettingConfigured}>
-          Agency Description
-          {!purposeAndFunctionsSetting && (
+          Agency URL
+          {!homepageUrlSetting && (
             <AgencySettingActionRequiredIndicator>
               *
             </AgencySettingActionRequiredIndicator>
           )}
         </AgencySettingsBlockTitle>
         <AgencyInfoBlockDescription>
-          {purposeAndFunctionsSetting ||
-            "Write a description of your agency to go on your public facing dashboard"}
+          {homepageUrlSetting ? (
+            <AgencyInfoLink
+              href={formatExternalLink(homepageUrlSetting)}
+              target="_blank"
+            >
+              {
+                currentAgencySettings?.find(
+                  (setting) => setting.setting_type === "HOMEPAGE_URL"
+                )?.value
+              }
+            </AgencyInfoLink>
+          ) : (
+            "Enter your agency's URL"
+          )}
         </AgencyInfoBlockDescription>
         {allowEdit && (
           <EditButtonContainer>
             <Button
               label={<>Edit</>}
               onClick={() => {
-                setInfoText(purposeAndFunctionsSetting);
+                setUrlText(homepageUrlSetting);
                 openSetting();
               }}
               labelColor="blue"
@@ -155,4 +195,4 @@ const AgencySettingsDescription: React.FC<{
   );
 };
 
-export default observer(AgencySettingsDescription);
+export default observer(AgencySettingsUrl);
