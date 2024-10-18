@@ -517,6 +517,11 @@ export const EmptyListMessage = styled.div`
   margin-left: 3px;
 `;
 
+export const EmptySearchMessage = styled(EmptyListMessage)`
+  margin: auto;
+  margin-top: 48px;
+`;
+
 export const ChipContainerLabelAction = styled(ChipContainerLabel)`
   width: 100%;
   display: flex;
