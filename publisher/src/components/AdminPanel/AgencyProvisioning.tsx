@@ -666,14 +666,11 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
     /** Team members search bar logic */
     const [teamMembersSearchInput, setTeamMembersSearchInput] =
       useState<string>("");
-    const getFilteredTeamMembers = () => {
-      return AdminPanelStore.searchList(
-        currentTeamMembers,
-        teamMembersSearchInput,
-        ["id", "name", "email"]
-      );
-    };
-    const filteredTeamMembers = getFilteredTeamMembers();
+    const filteredTeamMembers = AdminPanelStore.searchList(
+      currentTeamMembers,
+      teamMembersSearchInput,
+      ["id", "name", "email"]
+    );
 
     /** Shows mini loader while fetching agency's team members */
     // TODO(#1537) Ungate zipcode and agency data sharing fields
@@ -1459,7 +1456,9 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                       {addOrDeleteUserAction ===
                         InteractiveSearchListActions.DELETE && (
                         <InteractiveSearchList
-                          list={currentTeamMembers}
+                          list={currentTeamMembers.sort((a, b) =>
+                            a.name.localeCompare(b.name)
+                          )}
                           boxActionType={InteractiveSearchListActions.DELETE}
                           selections={selectedTeamMembersToDelete}
                           buttons={getInteractiveSearchListSelectDeselectCloseButtons(
@@ -1556,9 +1555,10 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                         )}
                       </Styled.LabelWrapper>
                       {!filteredTeamMembers.length && (
-                        <Styled.EmptyListMessage>
-                          No current team members found
-                        </Styled.EmptyListMessage>
+                        <Styled.EmptySearchMessage>
+                          No current team members found. Please modify your
+                          search and try again.
+                        </Styled.EmptySearchMessage>
                       )}
                     </Styled.InputLabelWrapper>
 
