@@ -111,7 +111,7 @@ describe("test create report button", () => {
 
     await act(async () => {
       runInAction(() => {
-        rootStore.userStore.userAgencies = [];
+        rootStore.userStore.userAgenciesById = {};
       });
     });
 
@@ -139,8 +139,8 @@ describe("test create report button", () => {
           name: "Test User",
           email: "test@email.com",
         };
-        rootStore.userStore.userAgencies = [
-          {
+        rootStore.userStore.userAgenciesById = {
+          590: {
             id: 590,
             name: "Test Agency",
             fips_county_code: "us_CA",
@@ -162,7 +162,7 @@ describe("test create report button", () => {
             super_agency_id: null,
             is_dashboard_enabled: false,
           },
-        ];
+        };
       });
     });
 

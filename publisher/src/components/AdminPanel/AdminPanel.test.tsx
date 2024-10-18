@@ -17,7 +17,7 @@
 /* eslint-disable testing-library/prefer-presence-queries, prefer-destructuring */
 import { palette } from "@justice-counts/common/components/GlobalStyles";
 import { groupBy } from "@justice-counts/common/utils";
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { runInAction } from "mobx";
 import React, { act } from "react";
 import { BrowserRouter } from "react-router-dom";
@@ -58,6 +58,8 @@ jest.mock("react-router-dom", () => ({
 
 beforeEach(() => {
   adminPanelStore.loading = false;
+  adminPanelStore.userAgenciesLoading = false;
+  adminPanelStore.teamMemberListLoading = false;
 });
 
 test("AdminPanel renders with the expected elements in the default User Provisioning view", async () => {
@@ -188,7 +190,7 @@ test("Clicking the `Create User` button opens the create user modal", () => {
   expect(saveButton).toBeInTheDocument();
 });
 
-test("Clicking on an existing user card opens the edit user modal", () => {
+test("Clicking on an existing user card opens the edit user modal", async () => {
   runInAction(() => {
     adminPanelStore.usersByID = usersByID;
   });
@@ -205,6 +207,10 @@ test("Clicking on an existing user card opens the edit user modal", () => {
   /** Click on Anne Teak's card from the `UserProvisioningOverview` */
   fireEvent.click(user1Card);
 
+  await waitFor(() => {
+    adminPanelStore.userAgenciesLoading = false;
+  });
+
   const editUserModalTitle = screen.getByText("Edit User Information");
   const nameInput = screen.getByLabelText("Name");
   /**
@@ -214,9 +220,9 @@ test("Clicking on an existing user card opens the edit user modal", () => {
    */
   const userEmail = screen.getAllByText("user1@email.org")[1];
   const emailInput = screen.queryByText("Email");
-  const agency1 = screen.getAllByText("Department of X")[1];
-  const agency2 = screen.getAllByText("Department of Y")[1];
-  const agency3 = screen.getAllByText("Department of Z")[1];
+  const agency1 = screen.getAllByText("Department of X")[0];
+  const agency2 = screen.getAllByText("Department of Y")[0];
+  const agency3 = screen.getAllByText("Department of Z")[0];
   const addAgenciesButton = screen.getByText("Add Agencies");
   const deleteAgenciesButton = screen.getByText("Delete Agencies");
   const cancelButton = screen.getByText("Cancel");
@@ -253,6 +259,10 @@ test("Deleting an existing users agency deletes agency from user's agency list",
   /** Click on Anne Teak's card from the `UserProvisioningOverview` */
   fireEvent.click(user1Card);
 
+  await waitFor(() => {
+    adminPanelStore.userAgenciesLoading = false;
+  });
+
   const deleteAgenciesButton = screen.getByText("Delete Agencies");
   /**
    * Before clicking on the delete agencies button, confirm that it current shows 'User's agencies'
@@ -274,7 +284,7 @@ test("Deleting an existing users agency deletes agency from user's agency list",
   );
   expect(selectAgenciesToDeleteLabel).toBeInTheDocument();
 
-  let agency1Chip = screen.getAllByText("Department of X")[1];
+  let agency1Chip = screen.getAllByText("Department of X")[0];
   /** Click on the 'Department of X' chip to select for deletion */
   fireEvent.click(agency1Chip);
 
@@ -380,6 +390,10 @@ test("Adding an agency adds agency to user's agency list", async () => {
   /** Click on Anne Teak's card from the `UserProvisioningOverview` */
   fireEvent.click(user1Card);
 
+  await waitFor(() => {
+    adminPanelStore.userAgenciesLoading = false;
+  });
+
   const addAgenciesButton = screen.getByText("Add Agencies");
 
   expect(screen.queryByText("User's agencies")).not.toBeNull();
@@ -425,7 +439,7 @@ test("Adding an agency adds agency to user's agency list", async () => {
    * Confirm that the agency is now on the user's list of agencies, and the user
    * is connected to all available agencies.
    */
-  agency3Chip = screen.getAllByText("Department of Z")[1];
+  agency3Chip = screen.getAllByText("Department of Z")[0];
   noAvailableAgenciesLabel = screen.getByText(
     "User is connected to all available agencies"
   );
@@ -656,13 +670,9 @@ test("Clicking the `Create Agency` button opens the create agency modal", () => 
   expect(getComputedStyle(saveButton).backgroundColor).toBe(
     palette.highlight.grey1
   ); // Indicating the button is disabled
-
-  fireEvent.click(teamMemberRolesTab);
-  const teamMember = screen.getByText("Anne Teak");
-  expect(teamMember).toBeInTheDocument();
 });
 
-test("Clicking on an existing agency card opens the edit agency modal", () => {
+test("Clicking on an existing agency card opens the edit agency modal", async () => {
   runInAction(() => {
     adminPanelStore.usersByID = usersByID;
     adminPanelStore.agenciesByID = agenciesByID;
@@ -681,6 +691,10 @@ test("Clicking on an existing agency card opens the edit agency modal", () => {
 
   const agency1Card = screen.getByText("Super Agency");
   fireEvent.click(agency1Card);
+
+  await waitFor(() => {
+    adminPanelStore.teamMemberListLoading = false;
+  });
 
   const editAgencyModalTitle = screen.getByText("Edit Agency Information");
   const createNewAgencyModalTitle = screen.queryByText("Create New Agency");
@@ -733,7 +747,7 @@ test("Clicking on an existing agency card opens the edit agency modal", () => {
   expect(teamMember).toBeInTheDocument();
 });
 
-test("Team members tab renders with add/remove buttons and users who are connected to the agency", () => {
+test("Team members tab renders with add/remove buttons and users who are connected to the agency", async () => {
   runInAction(() => {
     adminPanelStore.usersByID = usersByID;
     adminPanelStore.agenciesByID = agenciesByID;
@@ -752,6 +766,10 @@ test("Team members tab renders with add/remove buttons and users who are connect
 
   const agency1Card = screen.getByText("Super Agency");
   fireEvent.click(agency1Card);
+
+  await waitFor(() => {
+    adminPanelStore.teamMemberListLoading = false;
+  });
 
   const teamMemberRolesTab = screen.getByText("Team Members & Roles");
   fireEvent.click(teamMemberRolesTab);
@@ -765,7 +783,7 @@ test("Team members tab renders with add/remove buttons and users who are connect
   expect(deleteUsersButton).toBeInTheDocument();
 });
 
-test("Adding a user adds a card to the list of team members", () => {
+test("Adding a user adds a card to the list of team members", async () => {
   runInAction(() => {
     adminPanelStore.usersByID = usersByID;
     adminPanelStore.agenciesByID = agenciesByID;
@@ -785,6 +803,10 @@ test("Adding a user adds a card to the list of team members", () => {
   const agency1Card = screen.getByText("Super Agency");
   fireEvent.click(agency1Card);
 
+  await waitFor(() => {
+    adminPanelStore.teamMemberListLoading = false;
+  });
+
   const teamMemberRolesTab = screen.getByText("Team Members & Roles");
   fireEvent.click(teamMemberRolesTab);
 
@@ -795,7 +817,7 @@ test("Adding a user adds a card to the list of team members", () => {
     "Select team members to add"
   );
   const existingTeamMember1 = screen.getByText("user1@email.org");
-  const teamMember2 = screen.getAllByText("Liz Erd")[2];
+  const teamMember2 = screen.getAllByText("Liz Erd")[0];
   const teamMember3 = screen.getByText("Percy Vere");
 
   expect(selectTeamMembersToAddLabel).toBeInTheDocument();
@@ -810,7 +832,7 @@ test("Adding a user adds a card to the list of team members", () => {
   expect(teamMember2Email).toBeInTheDocument();
 });
 
-test("Deleting a user deletes a card to the list of team members", () => {
+test("Deleting a user deletes a card to the list of team members", async () => {
   runInAction(() => {
     adminPanelStore.usersByID = usersByID;
     adminPanelStore.agenciesByID = agenciesByID;
@@ -830,6 +852,10 @@ test("Deleting a user deletes a card to the list of team members", () => {
   const agency1Card = screen.getByText("Super Agency");
   fireEvent.click(agency1Card);
 
+  await waitFor(() => {
+    adminPanelStore.teamMemberListLoading = false;
+  });
+
   const teamMemberRolesTab = screen.getByText("Team Members & Roles");
   fireEvent.click(teamMemberRolesTab);
 
@@ -840,7 +866,7 @@ test("Deleting a user deletes a card to the list of team members", () => {
     "Select team members to delete"
   );
   const existingTeamMember1 = screen.getByText("user1@email.org");
-  const existingTeamMember1ChipToDelete = screen.queryAllByText("Anne Teak")[1];
+  const existingTeamMember1ChipToDelete = screen.queryAllByText("Anne Teak")[0];
   const teamMember2 = screen.queryAllByText("Liz Erd")[2];
   const teamMember3 = screen.queryByText("Percy Vere");
 
@@ -857,4 +883,71 @@ test("Deleting a user deletes a card to the list of team members", () => {
   expect(existingTeamMember1Role).not.toBeDisabled();
   fireEvent.click(existingTeamMember1ChipToDelete);
   expect(existingTeamMember1Role).toBeDisabled();
+});
+
+test("Loading spinner works properly in Agency Provisioning", async () => {
+  runInAction(() => {
+    adminPanelStore.usersByID = usersByID;
+    adminPanelStore.agenciesByID = agenciesByID;
+  });
+
+  render(
+    <BrowserRouter>
+      <StoreProvider>
+        <AdminPanel />
+      </StoreProvider>
+    </BrowserRouter>
+  );
+
+  const agencyProvisioningTab = screen.getByText("Agency Provisioning");
+  fireEvent.click(agencyProvisioningTab);
+
+  const agency1Card = screen.getByText("Super Agency");
+  fireEvent.click(agency1Card);
+
+  const miniLoader = screen.getByText("dots anim");
+  expect(miniLoader).toBeInTheDocument();
+
+  await waitFor(() => {
+    adminPanelStore.teamMemberListLoading = false;
+  });
+
+  const teamMemberRolesTab = screen.getByText("Team Members & Roles");
+  fireEvent.click(teamMemberRolesTab);
+
+  const existingTeamMember1 = screen.getByText("user1@email.org");
+  expect(existingTeamMember1).toBeInTheDocument();
+});
+
+test("Loading spinner works properly in User Provisioning", async () => {
+  runInAction(() => {
+    adminPanelStore.usersByID = usersByID;
+  });
+
+  render(
+    <BrowserRouter>
+      <StoreProvider>
+        <AdminPanel />
+      </StoreProvider>
+    </BrowserRouter>
+  );
+
+  const user1Card = screen.getByText("Anne Teak");
+  /** Click on Anne Teak's card from the `UserProvisioningOverview` */
+  fireEvent.click(user1Card);
+
+  const miniLoader = screen.getByText("dots anim");
+  expect(miniLoader).toBeInTheDocument();
+
+  await waitFor(() => {
+    adminPanelStore.userAgenciesLoading = false;
+  });
+
+  /**
+   * Note: since the `UserProvisioningOverview` and its corresponding modal have the same information
+   * in the DOM (e.g. name, email, ID, list of agencies, etc.), when using `getAllByText`, the information
+   * in the modal that we are testing is always the second item in the `getAllByText` array.
+   */
+  const userEmail = screen.getAllByText("user1@email.org")[1];
+  expect(userEmail).toBeInTheDocument();
 });

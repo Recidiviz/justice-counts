@@ -15,14 +15,35 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { UserAgency } from "@justice-counts/common/types";
+
 import {
   DataUploadResponseBody,
   ErrorsWarningsMetrics,
   UploadedMetric,
 } from "./types";
 
+export const isSupervisionMetricForSupervisionAgencyThatReportsSubsystems = (
+  metric: UploadedMetric,
+  agency: UserAgency | undefined
+): boolean => {
+  if (
+    metric.key.includes("SUPERVISION") &&
+    agency?.systems.some(
+      (system) =>
+        system === "PAROLE" ||
+        system === "PROBATION" ||
+        system === "OTHER_SUPERVISION" ||
+        system === "PRETRIAL_SUPERVISION"
+    )
+  ) {
+    return true;
+  }
+  return false;
+};
 export const processUploadResponseBody = (
-  data: DataUploadResponseBody
+  data: DataUploadResponseBody,
+  currentAgency: UserAgency | undefined
 ): ErrorsWarningsMetrics => {
   const errorsWarningsAndSuccessfulMetrics = data.metrics.reduce(
     (acc, metric) => {
@@ -31,6 +52,11 @@ export const processUploadResponseBody = (
           (sheet) =>
             sheet.messages.filter((msg) => msg.type === "ERROR")?.length > 0
         ).length === 0;
+      const sheetWarningsFound =
+        metric.metric_errors.filter(
+          (sheet) =>
+            sheet.messages.filter((msg) => msg.type === "WARNING")?.length > 0
+        ).length > 0;
       const isSuccessfulMetric =
         noSheetErrorsFound && metric.datapoints.length > 0;
       const noMetricUpload =
@@ -49,10 +75,28 @@ export const processUploadResponseBody = (
       );
 
       if (isSuccessfulMetric) {
+        // If there are no errors/warnings associated with the metric, add it to successfulMetrics.
         acc.successfulMetrics.push(metric);
       } else if (noMetricUpload) {
-        acc.notUploadedMetrics.push(metric);
+        if (
+          isSupervisionMetricForSupervisionAgencyThatReportsSubsystems(
+            metric,
+            currentAgency
+          ) &&
+          // If the agency is a Supervision agency that also reports for subsystem, we want to add Supervision
+          // warnings to errorWarningMetrics. We group supervision sheet errors under the combined supervision
+          // metric keys. If there are errors/warnings we don't want to group them under "Metrics Not Uploaded"
+          // we want them to be in alerts.
+          sheetWarningsFound
+        ) {
+          acc.errorWarningMetrics.push(metric);
+        } else {
+          // In every other case, if no data metric was not explicitly uploaded for the metric, it should be
+          // added to notUploadedMetrics
+          acc.notUploadedMetrics.push(metric);
+        }
       } else {
+        // If there are errors and warnings associated with the metric add it to errorWarningMetrics.
         acc.errorWarningMetrics.push(metric);
       }
 

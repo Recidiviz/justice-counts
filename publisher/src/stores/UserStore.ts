@@ -15,7 +15,11 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 import { showToast } from "@justice-counts/common/components/Toast";
-import { AgencyTeamMemberRole, UserAgency } from "@justice-counts/common/types";
+import {
+  AgencyTeamMemberRole,
+  DropdownAgency,
+  UserAgency,
+} from "@justice-counts/common/types";
 import { makeAutoObservable, runInAction, when } from "mobx";
 
 import { AuthStore } from "../components/Auth";
@@ -31,7 +35,9 @@ class UserStore {
 
   api: API;
 
-  userAgencies: UserAgency[] | undefined;
+  dropdownAgenciesById: { [agencyId: string]: DropdownAgency } = {};
+
+  userAgenciesById: { [agencyId: string]: UserAgency } = {};
 
   userId: string | undefined;
 
@@ -44,7 +50,8 @@ class UserStore {
 
     this.authStore = authStore;
     this.api = api;
-    this.userAgencies = undefined;
+    this.dropdownAgenciesById = {};
+    this.userAgenciesById = {};
     this.userInfoLoaded = false;
     this.userId = undefined;
     this.loadingError = false;
@@ -126,22 +133,18 @@ class UserStore {
   }
 
   getInitialAgencyId(): number | undefined {
-    if (this.userAgencies && this.userAgencies.length > 0) {
-      // attempting to access 0 index in the empty array leads to the mobx warning "[mobx] Out of bounds read: 0"
-      // so check the length of the array before accessing
-      return this.userAgencies[0].id;
+    if (this.dropdownAgencies && this.dropdownAgencies.length > 0) {
+      return this.dropdownAgencies[0].agency_id;
     }
     return undefined;
   }
 
-  get userAgenciesById(): { [agencyId: string]: UserAgency } {
-    return (this.userAgencies || []).reduce(
-      (map: { [agencyId: string]: UserAgency }, agency: UserAgency) => ({
-        ...map,
-        [agency.id]: agency,
-      }),
-      {}
-    );
+  get userAgencies(): UserAgency[] {
+    return Object.values(this.userAgenciesById);
+  }
+
+  get dropdownAgencies(): DropdownAgency[] {
+    return Object.values(this.dropdownAgenciesById);
   }
 
   get userAgenciesFromMultipleStates(): boolean {
@@ -161,6 +164,56 @@ class UserStore {
       return this.userAgenciesById[agencyId];
     }
     return undefined;
+  }
+
+  /**
+   * Loads agency data for a given agencyId and adds that agency data to the
+   * userStore.
+   *
+   * This also loads the agency's superagency if one exists, which is necessary for
+   * rendering the child agency dropdown menus.
+   *
+   * @param {string} agencyId - The ID of the agency to fetch data for.
+   * @returns {Promise<void>} - Resolves when the data is loaded.
+   */
+  async loadAgencyData(agencyId: string): Promise<void> {
+    if (!agencyId) {
+      return;
+    }
+
+    try {
+      const response = (await this.api.request({
+        path: `/api/agency/${agencyId}`,
+        method: "GET",
+      })) as Response;
+
+      if (response.status !== 200) {
+        return Promise.reject(
+          new Error(`Failed to fetch agency data for ID ${agencyId}`)
+        );
+      }
+
+      const { agencies: userAgencies }: { agencies: UserAgency[] } =
+        await response.json();
+
+      runInAction(() => {
+        userAgencies.forEach((userAgency: UserAgency) => {
+          this.userAgenciesById[userAgency.id] = userAgency;
+        });
+      });
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+
+      showToast({
+        message: `Error fetching agency data for ID ${agencyId}: ${errorMessage}`,
+        color: "red",
+      });
+
+      runInAction(() => {
+        this.loadingError = true;
+      });
+    }
   }
 
   get name(): string | undefined {
@@ -225,8 +278,8 @@ class UserStore {
 
   async updateAndRetrieveUserPermissionsAndAgencies() {
     try {
-      const response = (await this.api.request({
-        path: "/api/users",
+      const dropdownResponse = (await this.api.request({
+        path: "/api/user_dropdown",
         method: "PUT",
         body: {
           name: this.name,
@@ -234,11 +287,14 @@ class UserStore {
           email_verified: this.email_verified,
         },
       })) as Response;
-      const { agencies: userAgencies, id: userId } = await response.json();
+      const { agency_id_to_dropdown_names: dropdownAgencies, user_id: userId } =
+        await dropdownResponse.json();
       runInAction(() => {
-        this.userAgencies = userAgencies;
         this.userId = userId;
         this.userInfoLoaded = true;
+        dropdownAgencies.forEach((dropdownAgency: DropdownAgency) => {
+          this.dropdownAgenciesById[dropdownAgency.agency_id] = dropdownAgency;
+        });
       });
     } catch (error) {
       runInAction(() => {

@@ -60,6 +60,7 @@ export const UserProvisioning: React.FC<ProvisioningProps> = observer(
       updateEmail,
       updateUserAgencies,
       userProvisioningUpdates,
+      userAgenciesLoading,
     } = adminPanelStore;
 
     const [isSaveInProgress, setIsSaveInProgress] = useState<boolean>(false);
@@ -233,9 +234,9 @@ export const UserProvisioning: React.FC<ProvisioningProps> = observer(
       ]);
 
       const shouldRefetch = hasAgencyUpdates;
-      const response = await adminPanelStore.saveUserProvisioningUpdates(
-        shouldRefetch
-      );
+      // eslint-disable-next-line prettier/prettier
+      const response =
+        await adminPanelStore.saveUserProvisioningUpdates(shouldRefetch);
 
       setShowSaveConfirmation({
         show: true,
@@ -315,6 +316,16 @@ export const UserProvisioning: React.FC<ProvisioningProps> = observer(
       (selectedUser
         ? !hasNameUpdate && !hasAgencyUpdates
         : (hasNameUpdate && hasEmailUpdate) !== true);
+
+    if (userAgenciesLoading) {
+      return (
+        <Styled.ModalContainer>
+          <Styled.MiniLoaderCenteredContainer>
+            <MiniLoader dark />
+          </Styled.MiniLoaderCenteredContainer>
+        </Styled.ModalContainer>
+      );
+    }
 
     return (
       <Styled.ModalContainer

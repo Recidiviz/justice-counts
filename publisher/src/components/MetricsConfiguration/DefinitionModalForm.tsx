@@ -37,6 +37,7 @@ import {
   MetricSettings,
   SettingsByIncludesExcludesKey,
 } from "./types";
+import { getOtherDimensonKey } from "./utils";
 
 type DefinitionModalFormProps = {
   activeDisaggregationKey?: string;
@@ -67,6 +68,7 @@ function DefinitionModalForm({
     updateContextValue,
     updateMetricIncludesExcludesConfigurationStatus,
     updateDimensionIncludesExcludesConfigurationStatus,
+    updateDimensionEnabledStatus,
   } = metricConfigStore;
 
   // read only check
@@ -379,6 +381,9 @@ function DefinitionModalForm({
     }
   };
 
+  const currentDimensions =
+    hasActiveDisaggregationAndDimensionKey &&
+    dimensions[systemMetricKey][activeDisaggregationKey];
   const currentDimension =
     (hasActiveDisaggregationAndDimensionKey &&
       dimensions[systemMetricKey]?.[activeDisaggregationKey]?.[
@@ -392,12 +397,39 @@ function DefinitionModalForm({
     ? metrics[systemMetricKey]?.description
     : currentDimension?.description;
 
+  const handleOtherDimensionUpdate = () => {
+    const otherDimensionKey =
+      currentDimensions && getOtherDimensonKey(currentDimensions);
+
+    if (
+      hasActiveDisaggregationAndDimensionKey &&
+      otherDimensionKey &&
+      activeDimensionKey === otherDimensionKey
+    ) {
+      const updatedSetting = updateDimensionEnabledStatus(
+        systemSearchParam,
+        metricSearchParam,
+        activeDisaggregationKey,
+        otherDimensionKey,
+        !!currentContexts.ADDITIONAL_CONTEXT.value
+      );
+      saveMetricSettings(updatedSetting, agencyId);
+    }
+  };
+
+  const handleCloseModal = () => {
+    handleOtherDimensionUpdate();
+    closeModal();
+  };
+
   return (
     <Styled.Wrapper>
       <Styled.Content>
         <Styled.Header>
           {displayLabel}
-          <Styled.CloseButton onClick={closeModal}>&#10005;</Styled.CloseButton>
+          <Styled.CloseButton onClick={handleCloseModal}>
+            &#10005;
+          </Styled.CloseButton>
         </Styled.Header>
         <Styled.ScrollableInnerWrapper>
           {hasNoSettingsAndNoContext && (
@@ -504,7 +536,7 @@ function DefinitionModalForm({
                   );
               }
               handleSaveSettings(updatedSettings);
-              closeModal();
+              handleCloseModal();
             }}
             saveAndClose
           />
@@ -513,7 +545,7 @@ function DefinitionModalForm({
               label="Save"
               onClick={() => {
                 handleSaveSettings();
-                closeModal();
+                handleCloseModal();
               }}
               buttonColor="blue"
             />

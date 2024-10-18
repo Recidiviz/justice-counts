@@ -26,8 +26,8 @@ const mockAgencyID = "10";
 
 beforeEach(() => {
   runInAction(() => {
-    userStore.userAgencies = [
-      {
+    userStore.userAgenciesById = {
+      [Number(mockAgencyID)]: {
         is_dashboard_enabled: false,
         child_agencies: [],
         fips_county_code: "",
@@ -41,7 +41,7 @@ beforeEach(() => {
         systems: ["LAW_ENFORCEMENT"],
         team: [],
       } as UserAgency,
-    ];
+    };
   });
   homeStore.loading = false;
   homeStore.hydrateReportStoreWithLatestRecords(

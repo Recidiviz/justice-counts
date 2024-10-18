@@ -46,12 +46,14 @@ import {
   getActiveSystemMetricKey,
   replaceSystemMetricKeyWithNewSystem,
   useSettingsSearchParams,
-} from "../Settings";
+} from "../AgencySettings";
 import { ConfigurationStatusButton } from "./ConfigurationStatusButton";
 import { RACE_ETHNICITY_DISAGGREGATION_KEY } from "./constants";
+import DefinitionModalForm from "./DefinitionModalForm";
 import * as Styled from "./MetricAvailability.styled";
 import { RaceEthnicitiesGrid } from "./RaceEthnicitiesGrid";
 import { ReportFrequencyUpdate } from "./types";
+import { getOtherDimensonKey } from "./utils";
 
 type MetricAvailabilityProps = {
   goToDefineMetrics: () => void;
@@ -71,6 +73,7 @@ function MetricAvailability({
     metrics,
     disaggregations,
     dimensions,
+    dimensionContexts,
     updateMetricEnabledStatus,
     updateDisaggregationEnabledStatus,
     updateDimensionEnabledStatus,
@@ -82,9 +85,12 @@ function MetricAvailability({
   } = metricConfigStore;
   const [activeDisaggregationKey, setActiveDisaggregationKey] =
     useState<string>();
+  const [activeDimensionKey, setActiveDimensionnKey] = useState<string>();
   // For when a user selects "Other" for Starting Month and has made no dropdown selection
   const [showCustomYearDropdownOverride, setShowCustomYearDropdownOverride] =
     useState<boolean>();
+
+  const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
 
   const isReadOnly = userStore.isUserReadOnly(agencyId);
   const systemMetricKey = getActiveSystemMetricKey(settingsSearchParams);
@@ -339,6 +345,15 @@ function MetricAvailability({
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  const handleOtherDimensionCheck = (
+    disaggregationKey: string,
+    dimensionKey: string
+  ) => {
+    setActiveDisaggregationKey(disaggregationKey);
+    setActiveDimensionnKey(dimensionKey);
+    setIsSettingsModalOpen(true);
+  };
 
   return (
     <Styled.Wrapper>
@@ -639,6 +654,15 @@ function MetricAvailability({
         </Styled.SettingsContainer>
 
         {/* Metric Breakdowns */}
+        {isSettingsModalOpen && (
+          // This modal only opens if we check "Other" or "Select All" option
+          <DefinitionModalForm
+            systemMetricKey={systemMetricKey}
+            activeDisaggregationKey={activeDisaggregationKey}
+            activeDimensionKey={activeDimensionKey}
+            closeModal={() => setIsSettingsModalOpen(false)}
+          />
+        )}
         {hasDisaggregations && (
           <Styled.BreakdownsSection disabled={false}>
             <Styled.BreakdownsSectionTitle>
@@ -691,6 +715,16 @@ function MetricAvailability({
                 Object.values(currentDimensions).length ===
                 currentEnabledDimensions.length;
 
+              const otherDimensionKey = getOtherDimensonKey(currentDimensions);
+              const otherDimensionBreakdownValue = dimensionContexts[
+                systemMetricKey
+              ]?.[disaggregationKey]?.[otherDimensionKey]?.ADDITIONAL_CONTEXT
+                ?.value as string;
+              const isOtherDimensionEnabled =
+                currentEnabledDimensions.find(
+                  (d) => d.key === otherDimensionKey
+                )?.enabled ?? false;
+
               if (
                 activeDisaggregationKey &&
                 activeDisaggregationKey !== disaggregationKey
@@ -732,22 +766,52 @@ function MetricAvailability({
                         <CheckboxOptions
                           options={[
                             ...Object.values(currentDimensions).map(
-                              (dimension) => ({
-                                key: dimension.key as string,
-                                label: dimension.label as string,
-                                checked: Boolean(dimension.enabled),
-                              })
+                              (dimension) => {
+                                return {
+                                  key: dimension.key as string,
+                                  label: dimension.label as string,
+                                  checked: Boolean(dimension.enabled),
+                                  onChangeOverride: () => {
+                                    if (
+                                      dimension.key === otherDimensionKey &&
+                                      !isOtherDimensionEnabled &&
+                                      !otherDimensionBreakdownValue
+                                    ) {
+                                      handleOtherDimensionCheck(
+                                        disaggregationKey,
+                                        otherDimensionKey
+                                      );
+                                    } else {
+                                      handleDimensionEnabledStatus(
+                                        !dimension.enabled,
+                                        dimension.key as string,
+                                        disaggregationKey
+                                      );
+                                    }
+                                  },
+                                };
+                              }
                             ),
                             {
                               key: "select-all",
                               label: "Select All",
                               checked: allDimensionsEnabled,
                               disabled: isReadOnly,
-                              onChangeOverride: () =>
+                              onChangeOverride: () => {
+                                if (
+                                  !isOtherDimensionEnabled &&
+                                  !otherDimensionBreakdownValue
+                                ) {
+                                  handleOtherDimensionCheck(
+                                    disaggregationKey,
+                                    otherDimensionKey
+                                  );
+                                }
                                 handleDisaggregationSelection(
                                   disaggregationKey,
                                   !allDimensionsEnabled
-                                ),
+                                );
+                              },
                             },
                           ]}
                           onChange={({ key, checked }) =>

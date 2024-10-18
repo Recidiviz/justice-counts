@@ -116,6 +116,18 @@ export const ModalContainer = styled.div<{ offScreen?: boolean }>`
   justify-content: space-between;
 `;
 
+export const MiniLoaderCenteredContainer = styled.div`
+  width: 100%;
+  height: 100%;
+
+  & > div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+  }
+`;
+
 export const ModalHeader = styled.div`
   display: flex;
   flex-direction: column;
@@ -268,7 +280,8 @@ export const InputLabelWrapper = styled.div<{
     }
   }
 
-  input[type="email"] {
+  input[type="email"],
+  input[type="text"] {
     ${({ hasError }) => hasError && `border: 1px solid ${palette.solid.red};`};
   }
 
@@ -564,7 +577,7 @@ export const CardContainer = styled.div`
 `;
 
 export const Card = styled.div`
-  min-height: 250px;
+  min-height: 125px;
   width: 350px;
   display: flex;
   flex-direction: column;

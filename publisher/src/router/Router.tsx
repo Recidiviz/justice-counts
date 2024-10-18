@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { observer } from "mobx-react-lite";
 import React, { useEffect } from "react";
 import { Navigate, Route, Routes, useParams } from "react-router-dom";
 
@@ -24,9 +25,11 @@ import ShareSpreadsheetReview from "../components/DataUpload/ShareSpreadsheet";
 import ShareUploadErrorWarnings from "../components/DataUpload/ShareUploadErrorWarnings";
 import UploadSpreadsheetReview from "../components/DataUpload/UploadSpreadsheet";
 import { MetricsDataChart } from "../components/DataViz/MetricsDataChart";
+import { PageWrapper } from "../components/Forms";
 import { REPORTS_LOWERCASE } from "../components/Global/constants";
 import Header from "../components/Header";
 import { Home } from "../components/Home";
+import { Loading } from "../components/Loading";
 import { MetricsConfiguration } from "../components/MetricsConfiguration";
 import BulkActionReview from "../components/Reports/BulkActionReview";
 import CreateReport from "../components/Reports/CreateReport";
@@ -37,15 +40,33 @@ import Reports from "../pages/Reports";
 import Settings from "../pages/Settings";
 import { useStore } from "../stores";
 
-export const Router = () => {
+export const Router = observer(() => {
   const { agencyId } = useParams() as { agencyId: string };
   const { userStore } = useStore();
 
   const isAgencyIdInUserAgencies = userStore.getAgency(agencyId);
 
   useEffect(() => {
+    // Track the user's visit to the agency page.
     userStore.updateUserAgencyPageVisit(agencyId);
+
+    if (!agencyId || !userStore) {
+      return;
+    }
+    // Only load the visited agency's data, instead of loading every agency every time.
+    const loadAgencyData = async () => {
+      await userStore.loadAgencyData(agencyId);
+    };
+    loadAgencyData();
   }, [userStore, agencyId]);
+
+  if (!userStore.getAgency(agencyId))
+    return (
+      <PageWrapper>
+        <Header />
+        <Loading />
+      </PageWrapper>
+    );
 
   return (
     <>
@@ -95,4 +116,4 @@ export const Router = () => {
       )}
     </>
   );
-};
+});

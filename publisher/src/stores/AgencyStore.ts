@@ -26,9 +26,9 @@ import {
 } from "@justice-counts/common/types";
 import { makeAutoObservable, runInAction } from "mobx";
 
+import { AgencySettingType } from "../components/AgencySettings";
 import { SYSTEMS_LOWERCASE } from "../components/Global/constants";
 import { ChildAgenciesRecord } from "../components/Home";
-import { AgencySettingType } from "../components/Settings";
 import API from "./API";
 import UserStore from "./UserStore";
 
@@ -259,7 +259,7 @@ class AgencyStore {
 
   updateAgencySettings = (
     type: AgencySettingType,
-    text: string,
+    value: string | string[],
     sourceId: number
   ): { settings: AgencySetting[] } => {
     const newSettings = this.currentAgencySettings
@@ -270,7 +270,7 @@ class AgencyStore {
     );
     const newSetting = {
       setting_type: type,
-      value: text,
+      value,
       source_id: sourceId,
     };
     if (existingSettingIndex > -1) {
