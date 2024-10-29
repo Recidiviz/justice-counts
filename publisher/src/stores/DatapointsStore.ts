@@ -16,6 +16,7 @@
 // =============================================================================
 
 import {
+  datapointMatchingEnabledDimension,
   datapointMatchingMetricFrequency,
   getMetricKeyToFrequencyMap,
 } from "@justice-counts/common/components/DataViz/utils";
@@ -81,8 +82,13 @@ class DatapointsStore extends BaseDatapointsStore {
           const metricKeyToFrequency = getMetricKeyToFrequencyMap(
             this.reportStore.agencyMetrics
           );
-          this.rawDatapoints = result.datapoints.filter((dp: Datapoint) =>
-            datapointMatchingMetricFrequency(dp, metricKeyToFrequency)
+          this.rawDatapoints = result.datapoints.filter(
+            (dp: Datapoint) =>
+              datapointMatchingMetricFrequency(dp, metricKeyToFrequency) &&
+              datapointMatchingEnabledDimension(
+                dp,
+                this.reportStore.agencyMetrics
+              )
           );
           this.dimensionNamesByMetricAndDisaggregation =
             result.dimension_names_by_metric_and_disaggregation;

@@ -119,20 +119,8 @@ const DataEntryReview = () => {
   const metrics = hasPublishReviewProps
     ? metricsToDisplay
         .reduce((acc, metric) => {
-          const enabledDatapointsDimensions = Object.values(
-            formStore.disaggregations?.[reportID]?.[metric.key] || {}
-          ).flatMap((dimensions) => Object.keys(dimensions));
-
-          const enabledDatapoints = datapointsByMetric[metric.key].filter(
-            (datapoint) =>
-              datapoint.dimension_display_name === null ||
-              enabledDatapointsDimensions.includes(
-                datapoint.dimension_display_name
-              )
-          );
-
           const reviewMetric = {
-            datapoints: enabledDatapoints,
+            datapoints: datapointsByMetric[metric.key],
             display_name: metric.displayName,
             key: metric.key,
             metricHasError: checkMetricForErrors(metric.key),

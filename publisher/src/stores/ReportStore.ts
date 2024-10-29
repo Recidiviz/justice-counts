@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { datapointMatchingEnabledDimension } from "@justice-counts/common/components/DataViz/utils";
 import {
   AgencySystem,
   Metric,
@@ -300,19 +301,23 @@ class ReportStore {
           return acc;
         }, {} as PublishReviewMetricErrors);
 
+      const currentAgencyMetrics: Metric[] = Object.values(
+        await this.initializeReportSettings(currentAgencyId)
+      ).flatMap((metric) => metric);
+
       const filteredDatapoints =
         combinedFilteredDatapointsFromAllReports.filter(
-          (dp) => dp.value || dp.value === 0 // Filter out null values
+          (dp) =>
+            (dp.value || dp.value === 0) && // Filter out null values
+            datapointMatchingEnabledDimension(dp, currentAgencyMetrics) // Filter out disabled dimensions
         );
 
       const datapointsByMetric =
         DatapointsStore.keyRawDatapointsByMetric(filteredDatapoints);
+
       const datapointsEntries = Object.entries(datapointsByMetric).filter(
         ([metricKey]) =>
-          Object.values(this.reportMetrics)
-            .flat()
-            .filter((d) => d.enabled)
-            .find((d) => d.key === metricKey)
+          currentAgencyMetrics.find((d) => d.enabled && d.key === metricKey)
       );
 
       const metricsToDisplay = datapointsEntries.map(
