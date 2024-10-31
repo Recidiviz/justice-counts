@@ -21,7 +21,7 @@ import {
   getMetricKeyToFrequencyMap,
 } from "@justice-counts/common/components/DataViz/utils";
 import BaseDatapointsStore from "@justice-counts/common/stores/BaseDatapointsStore";
-import { Datapoint, Metric } from "@justice-counts/common/types";
+import { Metric, RawDatapoint } from "@justice-counts/common/types";
 import {
   IReactionDisposer,
   makeObservable,
@@ -83,7 +83,7 @@ class DatapointsStore extends BaseDatapointsStore {
             this.reportStore.agencyMetrics
           );
           this.rawDatapoints = result.datapoints.filter(
-            (dp: Datapoint) =>
+            (dp: RawDatapoint) =>
               datapointMatchingMetricFrequency(dp, metricKeyToFrequency) &&
               datapointMatchingEnabledDimension(
                 dp,

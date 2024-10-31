@@ -301,15 +301,13 @@ class ReportStore {
           return acc;
         }, {} as PublishReviewMetricErrors);
 
-      const currentAgencyMetrics: Metric[] = Object.values(
-        await this.initializeReportSettings(currentAgencyId)
-      ).flatMap((metric) => metric);
+      await this.initializeReportSettings(currentAgencyId);
 
       const filteredDatapoints =
         combinedFilteredDatapointsFromAllReports.filter(
           (dp) =>
             (dp.value || dp.value === 0) && // Filter out null values
-            datapointMatchingEnabledDimension(dp, currentAgencyMetrics) // Filter out disabled dimensions
+            datapointMatchingEnabledDimension(dp, this.agencyMetrics) // Filter out disabled dimensions
         );
 
       const datapointsByMetric =
@@ -317,7 +315,9 @@ class ReportStore {
 
       const datapointsEntries = Object.entries(datapointsByMetric).filter(
         ([metricKey]) =>
-          currentAgencyMetrics.find((d) => d.enabled && d.key === metricKey)
+          this.agencyMetrics.find(
+            (metric) => metric.enabled && metric.key === metricKey
+          )
       );
 
       const metricsToDisplay = datapointsEntries.map(
