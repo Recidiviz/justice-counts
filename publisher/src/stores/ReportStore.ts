@@ -301,7 +301,9 @@ class ReportStore {
           return acc;
         }, {} as PublishReviewMetricErrors);
 
-      await this.initializeReportSettings(currentAgencyId);
+      if (!this.agencyMetrics.length) {
+        await this.initializeReportSettings(currentAgencyId);
+      }
 
       const filteredDatapoints =
         combinedFilteredDatapointsFromAllReports.filter(
