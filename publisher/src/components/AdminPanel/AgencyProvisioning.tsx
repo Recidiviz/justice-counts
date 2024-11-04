@@ -1513,7 +1513,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
 
                           {/* Create New User Button */}
                           <Styled.ActionButton onClick={openSecondaryModal}>
-                            Create New User
+                            Create User
                           </Styled.ActionButton>
                         </Styled.FormActions>
                       </Styled.InputLabelWrapper>
