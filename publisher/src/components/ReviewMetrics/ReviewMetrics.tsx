@@ -251,7 +251,7 @@ export const ReviewMetrics: React.FC<ReviewMetricsProps> = ({
               isPublishButton,
               isPublishInProgress,
             }) => (
-              <ButtonWithMiniLoaderContainer>
+              <ButtonWithMiniLoaderContainer key={name}>
                 {isPublishInProgress && (
                   <MiniLoaderWrapper>
                     <MiniLoader dark />
