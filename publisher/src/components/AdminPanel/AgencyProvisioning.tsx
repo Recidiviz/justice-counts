@@ -1530,37 +1530,39 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                     )}
 
                     {/* Search Team Members */}
-                    <Styled.InputLabelWrapper noBottomSpacing>
-                      <input
-                        id="search-team-members"
-                        name="search-team-members"
-                        type="text"
-                        value={teamMembersSearchInput}
-                        onChange={(e) =>
-                          setTeamMembersSearchInput(e.target.value)
-                        }
-                      />
-                      <Styled.LabelWrapper>
-                        <label htmlFor="search-team-members">
-                          Search by name, email or user ID
-                        </label>
-                        {teamMembersSearchInput && (
-                          <Styled.LabelButton
-                            onClick={() => {
-                              setTeamMembersSearchInput("");
-                            }}
-                          >
-                            Clear
-                          </Styled.LabelButton>
+                    {selectedIDToEdit && (
+                      <Styled.InputLabelWrapper noBottomSpacing>
+                        <input
+                          id="search-team-members"
+                          name="search-team-members"
+                          type="text"
+                          value={teamMembersSearchInput}
+                          onChange={(e) =>
+                            setTeamMembersSearchInput(e.target.value)
+                          }
+                        />
+                        <Styled.LabelWrapper>
+                          <label htmlFor="search-team-members">
+                            Search by name, email or user ID
+                          </label>
+                          {teamMembersSearchInput && (
+                            <Styled.LabelButton
+                              onClick={() => {
+                                setTeamMembersSearchInput("");
+                              }}
+                            >
+                              Clear
+                            </Styled.LabelButton>
+                          )}
+                        </Styled.LabelWrapper>
+                        {!filteredTeamMembers.length && (
+                          <Styled.EmptySearchMessage>
+                            No current team members found. Please modify your
+                            search and try again.
+                          </Styled.EmptySearchMessage>
                         )}
-                      </Styled.LabelWrapper>
-                      {!filteredTeamMembers.length && (
-                        <Styled.EmptySearchMessage>
-                          No current team members found. Please modify your
-                          search and try again.
-                        </Styled.EmptySearchMessage>
-                      )}
-                    </Styled.InputLabelWrapper>
+                      </Styled.InputLabelWrapper>
+                    )}
 
                     <Styled.TeamMembersContainer>
                       {/* Newly Added Team Members */}
