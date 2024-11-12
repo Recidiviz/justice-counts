@@ -164,6 +164,9 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       setIsCopySuperagencyMetricSettingsSelected,
     ] = useState(false);
     const [URLValidationError, setURLValidationError] = useState<string>();
+    const [URLValue, setURLValue] = useState<string>(
+      agencyProvisioningUpdates.agency_url
+    );
     // TODO(#1537) Ungate zipcode and agency data sharing fields
     // const [zipcodeValidationError, setZipcodeValidationError] =
     //   useState<string>();
@@ -300,9 +303,10 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
 
     const validateAndUpdateURL = (url: string) => {
       const isValidURL = validateAgencyURL(url);
-      updateAgencyURL(url);
+      setURLValue(url);
 
       if (url === "" || isValidURL) {
+        updateAgencyURL(url);
         return setURLValidationError(undefined);
       }
       setURLValidationError("Invalid URL");
@@ -1037,6 +1041,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                         value={
                           agencyProvisioningUpdates.agency_url ||
                           selectedAgency?.agency_url ||
+                          URLValue ||
                           ""
                         }
                         onChange={(e) =>
