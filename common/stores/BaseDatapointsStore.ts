@@ -90,7 +90,7 @@ abstract class DatapointsStore {
         });
         // the res object could be overwritten based on the datapoint order since the logic is grouping by start_date
         // and this check essentially skips all null datapoints and writes correct data
-      } else if (dp.value) {
+      } else if (dp.value || dp.value === 0) {
         if (
           !res[dp.metric_definition_key].disaggregations[
             dp.disaggregation_display_name

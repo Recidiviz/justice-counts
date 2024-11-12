@@ -731,6 +731,28 @@ export const getMetricKeyToFrequencyMap = (
 };
 
 /**
+ * Used to filter out datapoints that do not match the metric's enabled dimension
+ * @returns `true` or `false` based on whether the datapoint matches the metric's enabled dimension
+ */
+export const datapointMatchingEnabledDimension = (
+  dp: Datapoint | RawDatapoint,
+  metrics: Metric[]
+) => {
+  if (dp.dimension_display_name) {
+    return metrics.find((metric) =>
+      metric.disaggregations.find((disaggregation) =>
+        disaggregation.dimensions
+          .filter((dimension) => dimension.enabled)
+          .map((dimension) => dimension.key)
+          .includes(dp.dimension_display_name as string)
+      )
+    );
+  }
+
+  return true;
+};
+
+/**
  * Used to filter out datapoints that do not match the metric's current frequency
  * @returns `true` or `false` based on whether the datapoint matches the metric's frequency
  */
