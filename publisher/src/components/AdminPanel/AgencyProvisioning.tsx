@@ -686,10 +686,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
     }
 
     return (
-      <Styled.ModalContainer
-        role="complementary"
-        offScreen={activeSecondaryModal === Setting.USERS}
-      >
+      <Styled.ModalContainer offScreen={activeSecondaryModal === Setting.USERS}>
         {showSaveConfirmation.show ? (
           <SaveConfirmation
             type={showSaveConfirmation.type}
