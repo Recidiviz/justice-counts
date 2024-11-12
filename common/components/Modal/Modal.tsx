@@ -77,7 +77,7 @@ export function Modal({
   }, []);
 
   const Portal = (
-    <Styled.OuterWrapper modalBackground={modalBackground}>
+    <Styled.OuterWrapper role="complementary" modalBackground={modalBackground}>
       {children || (
         <Styled.InnerWrapper
           modalType={modalType}

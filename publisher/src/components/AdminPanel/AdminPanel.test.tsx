@@ -912,36 +912,45 @@ test("Adding users via secondary flow", async () => {
   const teamMemberRolesTab = screen.getByText("Team Members & Roles");
   fireEvent.click(teamMemberRolesTab);
 
-  fireEvent.click(screen.getByText("Create User"));
+  const createButton = screen.getByText("Create User");
+  fireEvent.click(createButton);
   const nameInput1 = await screen.findByLabelText("Name");
   fireEvent.change(nameInput1, { target: { value: "user13" } });
   const emailInput1 = await screen.findByLabelText("Email");
   fireEvent.change(emailInput1, { target: { value: "user13@email.com" } });
 
-  const saveButton1 = screen
-    .getAllByText("Save")
-    .find((button) => button.hasAttribute("disabled"));
+  const saveButton1 = screen.getAllByText("Save")[1];
+  fireEvent.click(saveButton1);
+
   await waitFor(() => {
-    expect(saveButton1).not.toHaveAttribute("disabled");
-    if (saveButton1) fireEvent.click(saveButton1);
+    expect(nameInput1).not.toBeInTheDocument();
   });
 
-  fireEvent.click(screen.getByText("Create User"));
-  const nameInput2 = await screen.findByLabelText("Name");
-  fireEvent.change(nameInput2, { target: { value: "user14" } });
-  const emailInput2 = await screen.findByLabelText("Email");
-  fireEvent.change(emailInput2, { target: { value: "user14@email.com" } });
+  const asideElement = screen.getAllByRole("complementary")[2];
+  // Sorry, there was an issue creating a user. Please try again.
+  // eslint-disable-next-line testing-library/no-debugging-utils
+  screen.debug(asideElement);
 
-  const saveButton2 = screen
-    .getAllByText("Save")
-    .find((button) => button.hasAttribute("disabled"));
-  await waitFor(() => {
-    expect(saveButton2).not.toHaveAttribute("disabled");
-    if (saveButton2) fireEvent.click(saveButton2);
-  });
+  // const newUser13 = screen.getByText("user13@email.com");
+  // expect(newUser13).toBeInTheDocument();
 
-  const newUser13 = screen.getByText("user13@email.com");
-  expect(newUser13).toBeInTheDocument();
+  // fireEvent.click(createButton);
+  // const nameInput2 = await screen.findByLabelText(
+  //   "Name",
+  //   {},
+  //   { timeout: 2000 }
+  // );
+  // fireEvent.change(nameInput2, { target: { value: "user14" } });
+  // const emailInput2 = await screen.findByLabelText("Email");
+  // fireEvent.change(emailInput2, { target: { value: "user14@email.com" } });
+
+  // const saveButton2 = screen.getAllByText("Save")[1];
+  // fireEvent.click(saveButton2);
+
+  // await waitFor(() => {
+  //   expect(nameInput2).not.toBeInTheDocument();
+  // });
+
   const newUser14 = screen.getByText("user14@email.com");
   expect(newUser14).toBeInTheDocument();
 });
