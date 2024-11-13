@@ -112,9 +112,8 @@ export const UploadedFilesCell = styled.div<{ capitalize?: boolean }>`
   }
 
   &:last-child {
-    flex: 1 2 100px;
+    flex: 1.5 2 100px;
     min-width: 100px;
-    justify-content: flex-end;
     padding-right: unset;
   }
 
@@ -154,7 +153,9 @@ export const UploadedFilesError = styled.div`
 `;
 
 export const UploadedFilesTable = styled(Table)`
+  width: unset;
   padding: unset;
+  margin: unset;
   padding-bottom: 100px;
 
   @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
