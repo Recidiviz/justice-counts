@@ -205,17 +205,6 @@ export const UploadedFileRow: React.FC<{
 
           {rowHovered && id && (
             <ActionsContainer onClick={(e) => e.stopPropagation()}>
-              {userStore.isJusticeCountsAdmin(agencyId) && (
-                <>
-                  {badgeText !== "error" && (
-                    <Button
-                      label="Mark as Error"
-                      onClick={() => updateUploadedFileStatus(id, "ERRORED")}
-                      labelColor="blue"
-                    />
-                  )}
-                </>
-              )}
               {!isReadOnly && (
                 <Button
                   label="Delete"
