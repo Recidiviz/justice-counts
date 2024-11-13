@@ -33,6 +33,7 @@ import {
   isCSGOrRecidivizUserByEmail,
   removeSnakeCase,
   toggleAddRemoveSetItem,
+  validateAgencyURL,
   // TODO(#1537) Ungate zipcode and agency data sharing fields
   // validateAgencyZipcode,
 } from "@justice-counts/common/utils";
@@ -91,6 +92,8 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       csgAndRecidivizDefaultRole,
       teamMemberListLoading,
       updateAgencyName,
+      updateAgencyDescription,
+      updateAgencyURL,
       // TODO(#1537) Ungate zipcode and agency data sharing fields
       // updateAgencyZipcode,
       // updateDataSharingTypes,
@@ -160,6 +163,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       isCopySuperagencyMetricSettingsSelected,
       setIsCopySuperagencyMetricSettingsSelected,
     ] = useState(false);
+    const [URLValidationError, setURLValidationError] = useState<string>();
     // TODO(#1537) Ungate zipcode and agency data sharing fields
     // const [zipcodeValidationError, setZipcodeValidationError] =
     //   useState<string>();
@@ -188,6 +192,16 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
     const selectedAgency = selectedIDToEdit
       ? agenciesByID[selectedIDToEdit][0]
       : undefined;
+
+    const [nameValue, setNameValue] = useState<string>(
+      selectedAgency?.name ?? ""
+    );
+    const [URLValue, setURLValue] = useState<string>(
+      selectedAgency?.agency_url ?? ""
+    );
+    const [descriptionValue, setDescriptionValue] = useState<string>(
+      selectedAgency?.agency_description ?? ""
+    );
 
     // TODO(#1537) Ungate zipcode and agency data sharing fields
     // const [selectedDataSharingTypes, setSelectedDataSharingTypes] = useState<
@@ -294,11 +308,27 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
     //   setZipcodeValidationError("Please enter a 5-digit zipcode");
     // };
 
+    const validateAndUpdateURL = (url: string) => {
+      const isValidURL = validateAgencyURL(url);
+      setURLValue(url);
+
+      if (url === "" || isValidURL) {
+        return setURLValidationError(undefined);
+      }
+      setURLValidationError("Invalid URL");
+    };
+
     const saveUpdates = async () => {
       setIsSaveInProgress(true);
 
       // Update final agency name
       saveAgencyName(agencyProvisioningUpdates.name);
+
+      // Update final agency description
+      updateAgencyDescription(descriptionValue);
+
+      // Update final agency URL
+      updateAgencyURL(URLValue);
 
       // Update final agency zipcode
       // TODO(#1537) Ungate zipcode and agency data sharing fields
@@ -463,6 +493,25 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
     //     agencyProvisioningUpdates.data_sharing_types.filter((id) =>
     //       selectedDataSharingTypes.has(id)
     //     ).length === 0);
+
+    /**
+     * Existing agency: an update has been made when the agency has a value for `agencyProvisioningUpdates.agency_description`
+     *                and it does not match the agency's description before the modal was open, or value has been deleted.
+     * New agency: an update has been made when the agency has a value for `agencyProvisioningUpdates.agency_description`
+     */
+    const hasDescriptionUpdate = selectedAgency
+      ? descriptionValue !== (selectedAgency.agency_description || "")
+      : Boolean(agencyProvisioningUpdates.agency_description);
+
+    /**
+     * Existing agency: an update has been made when the agency has a value for `agencyProvisioningUpdates.agency_url`
+     *                and it does not match the agency's url before the modal was open, or value has been deleted.
+     * New agency: an update has been made when the agency has a value for `agencyProvisioningUpdates.agency_url`
+     */
+    const hasURLUpdate = selectedAgency
+      ? URLValue !== (selectedAgency.agency_url || "")
+      : Boolean(agencyProvisioningUpdates.agency_url);
+
     /**
      * Existing agency: an update has been made when the agency has a value for `agencyProvisioningUpdates.name`
      *                and it does not match the agency's name before the modal was open.
@@ -573,6 +622,8 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       // TODO(#1537) Ungate zipcode and agency data sharing fields
       // hasZipcodeUpdate ||
       // hasDataSharingTypeUpdates ||
+      hasDescriptionUpdate ||
+      hasURLUpdate ||
       hasStateUpdate ||
       hasCountyUpdates ||
       hasSystemUpdates ||
@@ -589,6 +640,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       : isSaveInProgress ||
         // TODO(#1537) Ungate zipcode and agency data sharing fields
         // Boolean(zipcodeValidationError) ||
+        Boolean(URLValidationError) ||
         !hasSystems ||
         (selectedAgency
           ? !hasAgencyInfoUpdates
@@ -674,7 +726,6 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       ["id", "name", "email"]
     );
 
-    /** Shows mini loader while fetching agency's team members */
     // TODO(#1537) Ungate zipcode and agency data sharing fields
     // useEffect(() => {
     //   setSelectedDataSharingTypes(
@@ -684,6 +735,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
     //   );
     // }, [selectedAgency]);
 
+    /** Shows mini loader while fetching agency's team members */
     if (teamMemberListLoading) {
       return (
         <Styled.ModalContainer>
@@ -735,12 +787,11 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                         id="agency-name"
                         name="agency-name"
                         type="text"
-                        value={
-                          agencyProvisioningUpdates.name ||
-                          selectedAgency?.name ||
-                          ""
-                        }
-                        onChange={(e) => updateAgencyName(e.target.value)}
+                        value={nameValue}
+                        onChange={(e) => {
+                          setNameValue(e.target.value);
+                          updateAgencyName(e.target.value);
+                        }}
                       />
                       <label htmlFor="agency-name">Name</label>
                     </Styled.InputLabelWrapper>
@@ -960,6 +1011,47 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                       <Styled.ChipContainerLabel>
                         Sectors
                       </Styled.ChipContainerLabel>
+                    </Styled.InputLabelWrapper>
+
+                    {/* Agency Description Input */}
+                    <Styled.InputLabelWrapper>
+                      <input
+                        id="agency-description"
+                        name="agency-description"
+                        type="text"
+                        maxLength={750}
+                        value={descriptionValue}
+                        onChange={(e) => {
+                          setDescriptionValue(e.target.value);
+                          updateAgencyDescription(e.target.value);
+                        }}
+                      />
+                      <label htmlFor="agency-description">
+                        Agency Description
+                      </label>
+                    </Styled.InputLabelWrapper>
+
+                    {/* Agency URL Input */}
+                    <Styled.InputLabelWrapper
+                      hasError={Boolean(URLValidationError)}
+                    >
+                      <input
+                        id="agency-url"
+                        name="agency-url"
+                        type="text"
+                        value={URLValue}
+                        onChange={(e) =>
+                          validateAndUpdateURL(e.target.value.trimStart())
+                        }
+                      />
+                      <Styled.LabelWrapper>
+                        <label htmlFor="agency-url">Agency URL</label>
+                        {URLValidationError && (
+                          <Styled.ErrorLabel>
+                            {URLValidationError}
+                          </Styled.ErrorLabel>
+                        )}
+                      </Styled.LabelWrapper>
                     </Styled.InputLabelWrapper>
 
                     {/* Data Sharing Type Checkboxes */}

@@ -66,6 +66,8 @@ const initialEmptyAgencyProvisioningUpdates = {
   is_superagency: null,
   child_agency_ids: [],
   team: [],
+  agency_description: "",
+  agency_url: "",
   zipcode: "",
   data_sharing_types: [],
 };
@@ -503,6 +505,14 @@ class AdminPanelStore {
 
   updateAgencyName(name: string) {
     this.agencyProvisioningUpdates.name = name;
+  }
+
+  updateAgencyDescription(description: string) {
+    this.agencyProvisioningUpdates.agency_description = description;
+  }
+
+  updateAgencyURL(url: string) {
+    this.agencyProvisioningUpdates.agency_url = url;
   }
 
   updateAgencyZipcode(zipcode: string) {
