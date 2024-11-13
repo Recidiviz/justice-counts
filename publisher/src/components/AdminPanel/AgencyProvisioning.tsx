@@ -193,6 +193,9 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       ? agenciesByID[selectedIDToEdit][0]
       : undefined;
 
+    const [nameValue, setNameValue] = useState<string>(
+      selectedAgency?.name ?? ""
+    );
     const [URLValue, setURLValue] = useState<string>(
       selectedAgency?.agency_url ?? ""
     );
@@ -782,12 +785,11 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                         id="agency-name"
                         name="agency-name"
                         type="text"
-                        value={
-                          agencyProvisioningUpdates.name ||
-                          selectedAgency?.name ||
-                          ""
-                        }
-                        onChange={(e) => updateAgencyName(e.target.value)}
+                        value={nameValue}
+                        onChange={(e) => {
+                          setNameValue(e.target.value);
+                          updateAgencyName(e.target.value);
+                        }}
                       />
                       <label htmlFor="agency-name">Name</label>
                     </Styled.InputLabelWrapper>
