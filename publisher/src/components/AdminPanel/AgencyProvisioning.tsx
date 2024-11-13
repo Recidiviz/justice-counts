@@ -164,9 +164,6 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       setIsCopySuperagencyMetricSettingsSelected,
     ] = useState(false);
     const [URLValidationError, setURLValidationError] = useState<string>();
-    const [URLValue, setURLValue] = useState<string>(
-      agencyProvisioningUpdates.agency_url
-    );
     // TODO(#1537) Ungate zipcode and agency data sharing fields
     // const [zipcodeValidationError, setZipcodeValidationError] =
     //   useState<string>();
@@ -195,6 +192,13 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
     const selectedAgency = selectedIDToEdit
       ? agenciesByID[selectedIDToEdit][0]
       : undefined;
+
+    const [URLValue, setURLValue] = useState<string>(
+      selectedAgency?.agency_url ?? ""
+    );
+    const [descriptionValue, setDescriptionValue] = useState<string>(
+      selectedAgency?.agency_description ?? ""
+    );
 
     // TODO(#1537) Ungate zipcode and agency data sharing fields
     // const [selectedDataSharingTypes, setSelectedDataSharingTypes] = useState<
@@ -306,7 +310,6 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       setURLValue(url);
 
       if (url === "" || isValidURL) {
-        updateAgencyURL(url);
         return setURLValidationError(undefined);
       }
       setURLValidationError("Invalid URL");
@@ -319,10 +322,10 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       saveAgencyName(agencyProvisioningUpdates.name);
 
       // Update final agency description
-      updateAgencyDescription(agencyProvisioningUpdates.agency_description);
+      updateAgencyDescription(descriptionValue);
 
       // Update final agency URL
-      updateAgencyURL(agencyProvisioningUpdates.agency_url);
+      updateAgencyURL(URLValue);
 
       // Update final agency zipcode
       // TODO(#1537) Ungate zipcode and agency data sharing fields
@@ -490,23 +493,20 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
 
     /**
      * Existing agency: an update has been made when the agency has a value for `agencyProvisioningUpdates.agency_description`
-     *                and it does not match the agency's description before the modal was open.
+     *                and it does not match the agency's description before the modal was open, or value has been deleted.
      * New agency: an update has been made when the agency has a value for `agencyProvisioningUpdates.agency_description`
      */
     const hasDescriptionUpdate = selectedAgency
-      ? Boolean(agencyProvisioningUpdates.agency_description) &&
-        agencyProvisioningUpdates.agency_description !==
-          selectedAgency.agency_description
+      ? descriptionValue !== (selectedAgency.agency_description || "")
       : Boolean(agencyProvisioningUpdates.agency_description);
 
     /**
      * Existing agency: an update has been made when the agency has a value for `agencyProvisioningUpdates.agency_url`
-     *                and it does not match the agency's url before the modal was open.
+     *                and it does not match the agency's url before the modal was open, or value has been deleted.
      * New agency: an update has been made when the agency has a value for `agencyProvisioningUpdates.agency_url`
      */
     const hasURLUpdate = selectedAgency
-      ? Boolean(agencyProvisioningUpdates.agency_url) &&
-        agencyProvisioningUpdates.agency_url !== selectedAgency.agency_url
+      ? URLValue !== (selectedAgency.agency_url || "")
       : Boolean(agencyProvisioningUpdates.agency_url);
 
     /**
@@ -1016,14 +1016,11 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                         name="agency-description"
                         type="text"
                         maxLength={750}
-                        value={
-                          agencyProvisioningUpdates.agency_description ||
-                          selectedAgency?.agency_description ||
-                          ""
-                        }
-                        onChange={(e) =>
-                          updateAgencyDescription(e.target.value)
-                        }
+                        value={descriptionValue}
+                        onChange={(e) => {
+                          setDescriptionValue(e.target.value);
+                          updateAgencyDescription(e.target.value);
+                        }}
                       />
                       <label htmlFor="agency-description">
                         Agency Description
@@ -1038,12 +1035,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                         id="agency-url"
                         name="agency-url"
                         type="text"
-                        value={
-                          agencyProvisioningUpdates.agency_url ||
-                          selectedAgency?.agency_url ||
-                          URLValue ||
-                          ""
-                        }
+                        value={URLValue}
                         onChange={(e) =>
                           validateAndUpdateURL(e.target.value.trimStart())
                         }
