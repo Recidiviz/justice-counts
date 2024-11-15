@@ -85,12 +85,13 @@ export type AgencySettingType =
   | "PURPOSE_AND_FUNCTIONS"
   | "HOMEPAGE_URL"
   | "ZIPCODE"
-  | "DATA_SHARING_TYPE";
+  | "DATA_SHARING_TYPE"
+  | "BIOLOGICAL_SEX_RACE_ETHNICITY_DATA_SOURCE";
 
 export interface AgencySetting {
   setting_type: AgencySettingType;
   source_id: number;
-  value: string | string[];
+  value: string | string[] | object;
 }
 
 export interface PublicUserAgency {
