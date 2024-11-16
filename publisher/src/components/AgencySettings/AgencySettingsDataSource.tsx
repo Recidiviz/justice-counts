@@ -139,6 +139,14 @@ type DataSourceSettingValue = {
   other_description: string;
 };
 
+const getSettingLabel = (
+  settingType: keyof DataSourceSettingType,
+  settingKey: string
+) =>
+  dataSourceMappingByType[settingType].find(
+    (mapObj) => mapObj.key === settingKey
+  )?.label;
+
 const QuestionCheckboxBlock: React.FC<{
   question: string;
   setting: DataSourceSetting;
@@ -148,18 +156,16 @@ const QuestionCheckboxBlock: React.FC<{
   onChange: (setting: DataSourceSetting) => void;
 }> = ({ question, setting, sourceType, settingType, settingKey, onChange }) => {
   const [currentKey, setCurrentKey] = useState(settingKey);
-  const currentSetting = setting;
+  const updatedSetting = { ...setting };
 
   const handleChange = (key: string) => {
     if (key !== "CURRENT_AGENCY") {
-      currentSetting[sourceType].collection_method.value = "";
-      currentSetting[sourceType][settingType].value = key;
+      updatedSetting[sourceType].collection_method.value = "";
     }
     if (key !== "OTHER_AGENCY_OR_SYSTEM") {
-      currentSetting[sourceType].modification.value = "";
-      currentSetting[sourceType][settingType].value = key;
+      updatedSetting[sourceType].modification.value = "";
     }
-    currentSetting[sourceType][settingType].value = key;
+    updatedSetting[sourceType][settingType].value = key;
   };
 
   return (
@@ -180,7 +186,7 @@ const QuestionCheckboxBlock: React.FC<{
         onChange={({ key }) => {
           setCurrentKey(key);
           handleChange(key);
-          onChange(currentSetting);
+          onChange(updatedSetting);
         }}
       />
     </>
@@ -206,23 +212,25 @@ const AgencySettingsDataSource: React.FC<{
         setting.setting_type === "BIOLOGICAL_SEX_RACE_ETHNICITY_DATA_SOURCE"
     )?.value as DataSourceSetting) || {};
 
-  const isAgencySettingConfigured = Object.keys(dataSourceSetting).length > 0;
+  const isSettingConfigured = Object.keys(dataSourceSetting).length > 0;
 
-  const [currentDataSourceSetting, setCurrentDataSourceSetting] = useState(
-    isAgencySettingConfigured ? dataSourceSetting : emptyDataSourceSetting
-  );
+  const defaultSetting = isSettingConfigured
+    ? structuredClone(dataSourceSetting)
+    : structuredClone(emptyDataSourceSetting);
+
+  const [updatedSetting, setUpdatedSetting] = useState(defaultSetting);
 
   const [biologicalSexSource, setBiologicalSexSource] = useState(
-    currentDataSourceSetting.biological_sex.source.value
+    updatedSetting.biological_sex.source.value
   );
   const [raceAndEthnicitySource, setRaceAndEthnicitySource] = useState(
-    currentDataSourceSetting.race_ethnicity.source.value
+    updatedSetting.race_ethnicity.source.value
   );
 
   const handleSaveClick = () => {
     const updatedSettings = updateAgencySettings(
       "BIOLOGICAL_SEX_RACE_ETHNICITY_DATA_SOURCE",
-      currentDataSourceSetting,
+      updatedSetting,
       parseInt(agencyId)
     );
     saveAgencySettings(updatedSettings, agencyId);
@@ -230,12 +238,7 @@ const AgencySettingsDataSource: React.FC<{
   };
 
   const handleCancelClick = () => {
-    if (
-      JSON.stringify(currentDataSourceSetting) ===
-        JSON.stringify(dataSourceSetting) ||
-      JSON.stringify(currentDataSourceSetting) ===
-        JSON.stringify(emptyDataSourceSetting)
-    ) {
+    if (JSON.stringify(updatedSetting) === JSON.stringify(defaultSetting)) {
       removeEditMode();
     } else {
       setIsConfirmModalOpen(true);
@@ -243,22 +246,12 @@ const AgencySettingsDataSource: React.FC<{
   };
 
   const handleCancelModalConfirm = () => {
-    if (isAgencySettingConfigured) {
-      setCurrentDataSourceSetting(dataSourceSetting);
-    } else {
-      setCurrentDataSourceSetting(emptyDataSourceSetting);
-    }
-    setBiologicalSexSource(
-      currentDataSourceSetting.biological_sex.source.value
-    );
-    setRaceAndEthnicitySource(
-      currentDataSourceSetting.race_ethnicity.source.value
-    );
+    setUpdatedSetting(defaultSetting);
+    setBiologicalSexSource(defaultSetting.biological_sex.source.value);
+    setRaceAndEthnicitySource(defaultSetting.race_ethnicity.source.value);
     setIsConfirmModalOpen(false);
     removeEditMode();
   };
-
-  console.log(emptyDataSourceSetting);
 
   return (
     <>
@@ -277,14 +270,12 @@ const AgencySettingsDataSource: React.FC<{
                 <DataSourceTitle>Biological Sex</DataSourceTitle>
                 <QuestionCheckboxBlock
                   question="What is the source of biological sex data in your system?"
-                  setting={currentDataSourceSetting}
+                  setting={updatedSetting}
                   sourceType="biological_sex"
                   settingType="source"
-                  settingKey={
-                    currentDataSourceSetting.biological_sex.source.value
-                  }
+                  settingKey={updatedSetting.biological_sex.source.value}
                   onChange={(setting) => {
-                    setCurrentDataSourceSetting({ ...setting });
+                    setUpdatedSetting(setting);
                     setBiologicalSexSource(setting.biological_sex.source.value);
                   }}
                 />
@@ -292,30 +283,25 @@ const AgencySettingsDataSource: React.FC<{
                   <QuestionCheckboxBlock
                     question="Does your agency modify or amend biological sex data
                       received from another agency or data system?"
-                    setting={currentDataSourceSetting}
+                    setting={updatedSetting}
                     sourceType="biological_sex"
                     settingType="modification"
                     settingKey={
-                      currentDataSourceSetting.biological_sex.modification.value
+                      updatedSetting.biological_sex.modification.value
                     }
-                    onChange={(setting) =>
-                      setCurrentDataSourceSetting({ ...setting })
-                    }
+                    onChange={(setting) => setUpdatedSetting(setting)}
                   />
                 )}
                 {biologicalSexSource === "CURRENT_AGENCY" && (
                   <QuestionCheckboxBlock
                     question="How is biological sex data collected?"
-                    setting={currentDataSourceSetting}
+                    setting={updatedSetting}
                     sourceType="biological_sex"
                     settingType="collection_method"
                     settingKey={
-                      currentDataSourceSetting.biological_sex.collection_method
-                        .value
+                      updatedSetting.biological_sex.collection_method.value
                     }
-                    onChange={(setting) =>
-                      setCurrentDataSourceSetting({ ...setting })
-                    }
+                    onChange={(setting) => setUpdatedSetting(setting)}
                   />
                 )}
 
@@ -324,14 +310,12 @@ const AgencySettingsDataSource: React.FC<{
                 <QuestionCheckboxBlock
                   question="What is the source of race and ethnicity data in your data
                   system?"
-                  setting={currentDataSourceSetting}
+                  setting={updatedSetting}
                   sourceType="race_ethnicity"
                   settingType="source"
-                  settingKey={
-                    currentDataSourceSetting.race_ethnicity.source.value
-                  }
+                  settingKey={updatedSetting.race_ethnicity.source.value}
                   onChange={(setting) => {
-                    setCurrentDataSourceSetting({ ...setting });
+                    setUpdatedSetting(setting);
                     setRaceAndEthnicitySource(
                       setting.race_ethnicity.source.value
                     );
@@ -341,30 +325,25 @@ const AgencySettingsDataSource: React.FC<{
                   <QuestionCheckboxBlock
                     question="Does your agency modify or amend race and ethnicity data
                       received from another agency or data system?"
-                    setting={currentDataSourceSetting}
+                    setting={updatedSetting}
                     sourceType="race_ethnicity"
                     settingType="modification"
                     settingKey={
-                      currentDataSourceSetting.race_ethnicity.modification.value
+                      updatedSetting.race_ethnicity.modification.value
                     }
-                    onChange={(setting) =>
-                      setCurrentDataSourceSetting({ ...setting })
-                    }
+                    onChange={(setting) => setUpdatedSetting(setting)}
                   />
                 )}
                 {raceAndEthnicitySource === "CURRENT_AGENCY" && (
                   <QuestionCheckboxBlock
                     question="How are race and ethnicity data collected?"
-                    setting={currentDataSourceSetting}
+                    setting={updatedSetting}
                     sourceType="race_ethnicity"
                     settingType="collection_method"
                     settingKey={
-                      currentDataSourceSetting.race_ethnicity.collection_method
-                        .value
+                      updatedSetting.race_ethnicity.collection_method.value
                     }
-                    onChange={(setting) =>
-                      setCurrentDataSourceSetting({ ...setting })
-                    }
+                    onChange={(setting) => setUpdatedSetting(setting)}
                   />
                 )}
               </DataSourceContainer>
@@ -388,7 +367,7 @@ const AgencySettingsDataSource: React.FC<{
       )}
 
       <AgencySettingsBlock withBorder id="data_source">
-        <BasicInfoBlockTitle configured={isAgencySettingConfigured}>
+        <BasicInfoBlockTitle configured={isSettingConfigured}>
           Biological Sex & Race and Ethnicity Data Source
           {allowEdit && (
             <EditButtonContainer>
@@ -407,6 +386,51 @@ const AgencySettingsDataSource: React.FC<{
         <AgencyInfoBlockDescription>
           Describe the data source of biological sex and race and ethnicity data
         </AgencyInfoBlockDescription>
+
+        {isSettingConfigured && (
+          <>
+            {biologicalSexSource && (
+              <>
+                <BasicInfoBlockTitle withPadding>
+                  Biological Sex Data Source
+                </BasicInfoBlockTitle>
+                <AgencyInfoBlockDescription>
+                  {getSettingLabel("source", biologicalSexSource)}
+                </AgencyInfoBlockDescription>
+                <AgencyInfoBlockDescription>
+                  {getSettingLabel(
+                    "collection_method",
+                    updatedSetting.biological_sex.collection_method.value
+                  ) ||
+                    getSettingLabel(
+                      "modification",
+                      updatedSetting.biological_sex.modification.value
+                    )}
+                </AgencyInfoBlockDescription>
+              </>
+            )}
+            {raceAndEthnicitySource && (
+              <>
+                <BasicInfoBlockTitle withPadding>
+                  Race and Ethnicity Data Source
+                </BasicInfoBlockTitle>
+                <AgencyInfoBlockDescription>
+                  {getSettingLabel("source", raceAndEthnicitySource)}
+                </AgencyInfoBlockDescription>
+                <AgencyInfoBlockDescription>
+                  {getSettingLabel(
+                    "collection_method",
+                    updatedSetting.race_ethnicity.collection_method.value
+                  ) ||
+                    getSettingLabel(
+                      "modification",
+                      updatedSetting.race_ethnicity.modification.value
+                    )}
+                </AgencyInfoBlockDescription>
+              </>
+            )}
+          </>
+        )}
       </AgencySettingsBlock>
     </>
   );

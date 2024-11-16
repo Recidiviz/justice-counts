@@ -234,10 +234,14 @@ export const EditModeButtonsContainer = styled.div<{ noMargin?: boolean }>`
 
 // Basic Info
 
-export const BasicInfoBlockTitle = styled(AgencySettingsBlockTitle)`
+export const BasicInfoBlockTitle = styled(AgencySettingsBlockTitle)<{
+  withPadding?: boolean;
+}>`
   ${typography.body};
   justify-content: space-between;
   align-items: center;
+
+  ${({ withPadding }) => withPadding && `padding: 24px 0 4px;`}
 `;
 
 export const CheckboxSpacingWrapper = styled.div`
