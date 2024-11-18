@@ -18,6 +18,7 @@
 import { Button } from "@justice-counts/common/components/Button";
 import { CheckboxOptions } from "@justice-counts/common/components/CheckboxOptions";
 import { Modal } from "@justice-counts/common/components/Modal";
+import { cloneDeep } from "lodash";
 import { observer } from "mobx-react-lite";
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
@@ -215,8 +216,8 @@ const AgencySettingsDataSource: React.FC<{
   const isSettingConfigured = Object.keys(dataSourceSetting).length > 0;
 
   const defaultSetting = isSettingConfigured
-    ? structuredClone(dataSourceSetting)
-    : structuredClone(emptyDataSourceSetting);
+    ? cloneDeep(dataSourceSetting)
+    : cloneDeep(emptyDataSourceSetting);
 
   const [updatedSetting, setUpdatedSetting] = useState(defaultSetting);
 
