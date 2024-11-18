@@ -20,7 +20,7 @@ import { CheckboxOptions } from "@justice-counts/common/components/CheckboxOptio
 import { Modal } from "@justice-counts/common/components/Modal";
 import { cloneDeep } from "lodash";
 import { observer } from "mobx-react-lite";
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
@@ -207,11 +207,14 @@ const AgencySettingsDataSource: React.FC<{
 
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
 
-  const dataSourceSetting =
-    (currentAgencySettings?.find(
-      (setting) =>
-        setting.setting_type === "BIOLOGICAL_SEX_RACE_ETHNICITY_DATA_SOURCE"
-    )?.value as DataSourceSetting) || {};
+  const dataSourceSetting = useMemo(() => {
+    return (
+      (currentAgencySettings?.find(
+        (setting) =>
+          setting.setting_type === "BIOLOGICAL_SEX_RACE_ETHNICITY_DATA_SOURCE"
+      )?.value as DataSourceSetting) || {}
+    );
+  }, [currentAgencySettings]);
 
   const isSettingConfigured = Object.keys(dataSourceSetting).length > 0;
 
@@ -220,6 +223,13 @@ const AgencySettingsDataSource: React.FC<{
     : cloneDeep(emptyDataSourceSetting);
 
   const [updatedSetting, setUpdatedSetting] = useState(defaultSetting);
+
+  useEffect(() => {
+    setUpdatedSetting(defaultSetting);
+    setBiologicalSexSource(defaultSetting.biological_sex.source.value);
+    setRaceAndEthnicitySource(defaultSetting.race_ethnicity.source.value);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dataSourceSetting]);
 
   const [biologicalSexSource, setBiologicalSexSource] = useState(
     updatedSetting.biological_sex.source.value
