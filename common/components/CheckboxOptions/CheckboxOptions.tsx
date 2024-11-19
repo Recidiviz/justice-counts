@@ -15,9 +15,16 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import React from "react";
+import React, { useState } from "react";
 
 import * as Styled from "./CheckboxOptions.styles";
+
+export type OtherDescriptionParams = {
+  value: string;
+  isEnabled: boolean;
+  placeholder?: string;
+  onChange: (value: string) => void;
+};
 
 export type CheckboxOption = {
   key: string;
@@ -25,6 +32,7 @@ export type CheckboxOption = {
   checked: boolean;
   disabled?: boolean;
   icon?: string | React.ReactNode;
+  otherDescription?: OtherDescriptionParams;
   onChangeOverride?: () => void;
 };
 
@@ -39,26 +47,56 @@ export const CheckboxOptions: React.FC<CheckboxOptionsProps> = ({
   options,
   onChange,
 }) => {
+  const [otherDescriptionValue, setOtherDescriptionValue] = useState("");
+
   return (
     <Styled.CheckboxContainer>
       {options.map(
-        ({ key, label, checked, disabled, icon, onChangeOverride }) => (
-          <Styled.CheckboxOptionsWrapper key={key}>
-            <Styled.Checkbox
-              id={key}
-              type="checkbox"
-              checked={checked}
-              onChange={() =>
-                onChangeOverride
-                  ? onChangeOverride()
-                  : onChange({ key, checked })
-              }
-              disabled={disabled}
-            />
-            <Styled.CheckboxLabel>
-              {label} {icon}
-            </Styled.CheckboxLabel>
-          </Styled.CheckboxOptionsWrapper>
+        ({
+          key,
+          label,
+          checked,
+          disabled,
+          icon,
+          otherDescription,
+          onChangeOverride,
+        }) => (
+          <React.Fragment key={key}>
+            <Styled.CheckboxOptionsWrapper>
+              <Styled.Checkbox
+                id={key}
+                type="checkbox"
+                checked={checked}
+                onChange={() =>
+                  onChangeOverride
+                    ? onChangeOverride()
+                    : onChange({ key, checked })
+                }
+                disabled={disabled}
+              />
+              <Styled.CheckboxLabel>
+                {label} {icon}
+              </Styled.CheckboxLabel>
+            </Styled.CheckboxOptionsWrapper>
+            {otherDescription?.isEnabled && (
+              <Styled.OtherInput
+                id="checkbox-other-description"
+                name="checkbox-other-description"
+                type="text"
+                multiline
+                placeholder={
+                  otherDescription.placeholder ||
+                  "Please provide additional information..."
+                }
+                value={otherDescriptionValue || otherDescription.value}
+                onChange={(e) => {
+                  setOtherDescriptionValue(e.target.value);
+                  otherDescription.onChange(e.target.value);
+                }}
+                fullWidth
+              />
+            )}
+          </React.Fragment>
         )
       )}
     </Styled.CheckboxContainer>

@@ -159,12 +159,19 @@ const QuestionCheckboxBlock: React.FC<{
   const [currentKey, setCurrentKey] = useState(settingKey);
   const updatedSetting = { ...setting };
 
+  const handleOtherDescriptionChange = (value: string) => {
+    updatedSetting[sourceType][settingType].other_description = value;
+  };
+
   const handleChange = (key: string) => {
     if (key !== "CURRENT_AGENCY") {
       updatedSetting[sourceType].collection_method.value = "";
     }
     if (key !== "OTHER_AGENCY_OR_SYSTEM") {
       updatedSetting[sourceType].modification.value = "";
+    }
+    if (key !== "OTHER") {
+      updatedSetting[sourceType][settingType].other_description = "";
     }
     updatedSetting[sourceType][settingType].value = key;
   };
@@ -176,10 +183,20 @@ const QuestionCheckboxBlock: React.FC<{
         options={[
           ...Object.values(dataSourceMappingByType[settingType]).map(
             (mapObj) => {
+              const otherDescriptionParams = {
+                isEnabled: currentKey === "OTHER" && currentKey === mapObj.key,
+                placeholder: "Please describe your data source...",
+                value:
+                  updatedSetting[sourceType][settingType].other_description,
+                onChange: (value: string) =>
+                  handleOtherDescriptionChange(value),
+              };
+
               return {
                 key: mapObj.key,
                 label: mapObj.label,
                 checked: currentKey === mapObj.key,
+                otherDescription: otherDescriptionParams,
               };
             }
           ),
@@ -367,6 +384,7 @@ const AgencySettingsDataSource: React.FC<{
                 },
               },
             ]}
+            maxHeight={777}
             modalBackground="opaque"
             onClickClose={handleCancelClick}
             agencySettingsConfigs
@@ -409,6 +427,9 @@ const AgencySettingsDataSource: React.FC<{
                   {getSettingLabel("source", biologicalSexSource)}
                 </AgencyInfoBlockDescription>
                 <AgencyInfoBlockDescription>
+                  {updatedSetting.biological_sex.source.other_description}
+                </AgencyInfoBlockDescription>
+                <AgencyInfoBlockDescription>
                   {getSettingLabel(
                     "collection_method",
                     updatedSetting.biological_sex.collection_method.value
@@ -427,6 +448,9 @@ const AgencySettingsDataSource: React.FC<{
                 </BasicInfoBlockTitle>
                 <AgencyInfoBlockDescription>
                   {getSettingLabel("source", raceAndEthnicitySource)}
+                </AgencyInfoBlockDescription>
+                <AgencyInfoBlockDescription>
+                  {updatedSetting.race_ethnicity.source.other_description}
                 </AgencyInfoBlockDescription>
                 <AgencyInfoBlockDescription>
                   {getSettingLabel(
