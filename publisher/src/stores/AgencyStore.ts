@@ -259,7 +259,7 @@ class AgencyStore {
 
   updateAgencySettings = (
     type: AgencySettingType,
-    value: string | string[],
+    value: string | string[] | object,
     sourceId: number
   ): { settings: AgencySetting[] } => {
     const newSettings = this.currentAgencySettings

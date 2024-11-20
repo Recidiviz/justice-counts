@@ -62,6 +62,7 @@ export const InnerWrapper = styled.div<{
   centerText?: boolean;
   customPadding?: string;
   noBottomDiv?: boolean;
+  maxHeight?: number;
 }>`
   background-color: ${palette.solid.white};
   width: 100%;
@@ -77,6 +78,8 @@ export const InnerWrapper = styled.div<{
       return `& > div:last-child {display: none;}`;
     }
   }};
+  ${({ maxHeight }) =>
+    maxHeight && `max-height: ${maxHeight}px; overflow-y: auto;`};
 `;
 
 export const Icon = styled.img`

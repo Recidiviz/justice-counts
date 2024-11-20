@@ -234,10 +234,14 @@ export const EditModeButtonsContainer = styled.div<{ noMargin?: boolean }>`
 
 // Basic Info
 
-export const BasicInfoBlockTitle = styled(AgencySettingsBlockTitle)`
+export const BasicInfoBlockTitle = styled(AgencySettingsBlockTitle)<{
+  withPadding?: boolean;
+}>`
   ${typography.body};
   justify-content: space-between;
   align-items: center;
+
+  ${({ withPadding }) => withPadding && `padding: 24px 0 4px;`}
 `;
 
 export const CheckboxSpacingWrapper = styled.div`
@@ -438,6 +442,22 @@ export const SupervisionSystemRow = styled(AgencySettingsInfoRow)<{
       ? palette.solid.black
       : palette.highlight.grey9};
   border: none;
+`;
+
+// Data Source
+export const DataSourceContainer = styled.div`
+  border-top: 1px solid ${palette.highlight.grey5};
+  border-bottom: 1px solid ${palette.highlight.grey5};
+  margin-left: -40px;
+  margin-right: -40px;
+  padding: 16px 40px;
+`;
+export const DataSourceTitle = styled.div`
+  font-weight: 700;
+  padding-bottom: 8px;
+`;
+export const DataSourceQuestionWrapper = styled.div`
+  padding-bottom: 12px;
 `;
 
 // Jurisdictions
