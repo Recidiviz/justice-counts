@@ -16,6 +16,7 @@
 // =============================================================================
 
 /* eslint-disable camelcase */
+import mappedJurisdictionsJSONData from "@justice-counts/common/all_geos.json";
 import addIcon from "@justice-counts/common/assets/add-icon.svg";
 import blackCheck from "@justice-counts/common/assets/black-check-icon.svg";
 import { Button } from "@justice-counts/common/components/Button";
@@ -24,7 +25,6 @@ import {
   RadioButton,
   RadioButtonsWrapper,
 } from "@justice-counts/common/components/RadioButton";
-import mappedJurisdictionsJSONData from "@justice-counts/common/fips_with_county_subdivisions.json";
 import { Jurisdiction } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
@@ -175,19 +175,19 @@ export const AgencySettingsJurisdictions: React.FC<{
   ) => {
     const matched = jurisdictions.filter(
       (area) =>
-        area.state_abbrev.toLowerCase().includes(word) ||
+        area.state_abbr.toLowerCase().includes(word) ||
         area.name.toLowerCase().includes(word)
     );
     const matchedWithScore = matched.reduce((acc, area) => {
-      acc[area.id] = 0;
-      if (area.state_abbrev.toLowerCase().startsWith(word)) acc[area.id] += 1;
-      if (area.name.toLowerCase().startsWith(word)) acc[area.id] += 1;
+      acc[area.geoid] = 0;
+      if (area.state_abbr.toLowerCase().startsWith(word)) acc[area.geoid] += 1;
+      if (area.name.toLowerCase().startsWith(word)) acc[area.geoid] += 1;
       return acc;
     }, {} as { [id: string]: number });
     return matched
       .map((area) => ({
         ...area,
-        score: area.score + matchedWithScore[area.id],
+        score: area.score + matchedWithScore[area.geoid],
       }))
       .sort((a, b) => b.score - a.score || a.name.length - b.name.length);
   };
@@ -205,7 +205,7 @@ export const AgencySettingsJurisdictions: React.FC<{
       ...editedExcludedJurisdictionsIds,
     ];
     setSearchResult(
-      result.filter((entry) => !addedJurisdictions.includes(entry.id))
+      result.filter((entry) => !addedJurisdictions.includes(entry.geoid))
     );
   };
 
@@ -301,9 +301,9 @@ export const AgencySettingsJurisdictions: React.FC<{
                           .slice(0, totalSearchResultsShow)
                           .map((result) => (
                             <JurisdictionsSearchResult
-                              key={result.id}
+                              key={result.geoid}
                               hasAction
-                              onClick={() => handleAddArea(result.id)}
+                              onClick={() => handleAddArea(result.geoid)}
                             >
                               <JurisdictionsInfoCol>
                                 <div>{result.name}</div>
