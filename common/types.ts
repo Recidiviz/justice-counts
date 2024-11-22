@@ -87,7 +87,8 @@ export type AgencySettingType =
   | "HOMEPAGE_URL"
   | "ZIPCODE"
   | "DATA_SHARING_TYPE"
-  | "BIOLOGICAL_SEX_RACE_ETHNICITY_DATA_SOURCE";
+  | "BIOLOGICAL_SEX_RACE_ETHNICITY_DATA_SOURCE"
+  | "SECTOR_INCLUDES_EXCLUDES";
 
 export interface AgencySetting {
   setting_type: AgencySettingType;

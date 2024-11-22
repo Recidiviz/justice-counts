@@ -453,6 +453,7 @@ export const DataSourceContainer = styled.div`
   padding: 16px 40px;
 `;
 export const DataSourceTitle = styled.div`
+  text-transform: capitalize;
   font-weight: 700;
   padding-bottom: 8px;
 `;

@@ -27,6 +27,7 @@ import {
 } from "./AgencySettings.styles";
 import { AgencySettingsBasicInfo } from "./AgencySettingsBasicInfo";
 import AgencySettingsDataSource from "./AgencySettingsDataSource";
+import AgencySettingsDefinition from "./AgencySettingsDefinition";
 // TODO(#1537) Ungate zipcode and agency data sharing fields
 // import AgencySettingsDataSharingType from "./AgencySettingsDataSharingType";
 import AgencySettingsDescription from "./AgencySettingsDescription";
@@ -44,6 +45,7 @@ export enum ActiveSetting {
   Supervisions = "SUPERVISIONS",
   Jurisdictions = "JURISDICTIONS",
   DataSource = "BIOLOGICAL_SEX_RACE_ETHNICITY_DATA_SOURCE",
+  Definition = "SECTOR_INCLUDES_EXCLUDES",
 }
 
 export type SettingProps = {
@@ -96,6 +98,9 @@ export const AgencySettings: React.FC = observer(() => {
         />
         <AgencySettingsUrl
           settingProps={generateSettingProps(ActiveSetting.HomepageUrl)}
+        />
+        <AgencySettingsDefinition
+          settingProps={generateSettingProps(ActiveSetting.Definition)}
         />
         {/* TODO(#1537) Ungate zipcode and agency data sharing fields */}
         {/* <AgencySettingsDataSharingType /> */}
