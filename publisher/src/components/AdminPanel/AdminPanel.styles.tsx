@@ -104,7 +104,7 @@ export const ModalWrapper = styled.div``;
 
 export const ModalContainer = styled.div<{ offScreen?: boolean }>`
   height: 90vh;
-  width: 50vw;
+  width: 60vw;
   background: ${palette.solid.white};
   border-radius: 4px;
   padding: 32px;
@@ -249,7 +249,7 @@ export const InputLabelWrapper = styled.div<{
   input,
   input[type="button"] {
     width: 100%;
-    min-width: 210px;
+    min-width: 190px;
     font-size: 0.8rem;
     font-weight: 400;
     line-height: 1rem;
@@ -346,7 +346,7 @@ export const TeamMemberCard = styled.div<{
   ${typography.sizeCSS.normal}
   display: flex;
   flex-direction: column;
-  width: 250px;
+  width: 230px;
   align-items: flex-start;
   justify-content: center;
   border: 1px solid ${palette.highlight.grey5};
@@ -358,7 +358,7 @@ export const TeamMemberCard = styled.div<{
   ${({ deleted }) => deleted && `background: ${palette.gradient.lightred};`}
 
   input[type="button"] {
-    width: 210px;
+    width: 190px;
   }
 `;
 
