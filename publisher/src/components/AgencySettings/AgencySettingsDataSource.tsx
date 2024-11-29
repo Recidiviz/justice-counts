@@ -164,16 +164,29 @@ const QuestionCheckboxBlock: React.FC<{
   };
 
   const handleChange = (key: string) => {
-    if (key !== "CURRENT_AGENCY") {
-      updatedSetting[sourceType].collection_method.value = "";
+    if (currentKey === key) {
+      setCurrentKey("");
+      updatedSetting[sourceType][settingType].value = "";
+    } else {
+      if (key !== "CURRENT_AGENCY") {
+        updatedSetting[sourceType].collection_method.value = "";
+        if (key !== "OTHER") {
+          updatedSetting[sourceType].collection_method.other_description = "";
+        }
+      }
+      if (key !== "OTHER_AGENCY_OR_SYSTEM") {
+        updatedSetting[sourceType].modification.value = "";
+        if (key !== "OTHER") {
+          updatedSetting[sourceType].modification.other_description = "";
+        }
+      }
+      if (key !== "OTHER") {
+        updatedSetting[sourceType][settingType].other_description = "";
+      }
+
+      setCurrentKey(key);
+      updatedSetting[sourceType][settingType].value = key;
     }
-    if (key !== "OTHER_AGENCY_OR_SYSTEM") {
-      updatedSetting[sourceType].modification.value = "";
-    }
-    if (key !== "OTHER") {
-      updatedSetting[sourceType][settingType].other_description = "";
-    }
-    updatedSetting[sourceType][settingType].value = key;
   };
 
   return (
