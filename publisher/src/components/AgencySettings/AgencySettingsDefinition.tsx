@@ -96,12 +96,18 @@ const AgencySettingsDefinition: React.FC<{
     saveAgencySettings,
   } = agencyStore;
 
-  const isSupervisionAgency = currentAgencySystems?.includes(
-    AgencySystems.SUPERVISION
-  );
+  const isSupervisionAgency =
+    currentAgencySystems?.includes(AgencySystems.SUPERVISION) &&
+    currentAgencySystems?.some((system) =>
+      SupervisionSubsystems.includes(system)
+    );
   const isCourtAgency = currentAgencySystems?.includes(
     AgencySystems.COURTS_AND_PRETRIAL
   );
+  const isCombinedAgency = isSupervisionAgency && isCourtAgency;
+
+  const discreteAgencyTitle = isSupervisionAgency ? "Supervision" : "Court";
+  const agencyTitle = isCombinedAgency ? "Combined" : discreteAgencyTitle;
 
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [currentSystems, setCurrentSystems] = useState<AgencySystemKeys[]>([]);
@@ -119,14 +125,29 @@ const AgencySettingsDefinition: React.FC<{
 
   useEffect(() => {
     setCurrentSystems([]);
-    if (isSupervisionAgency)
-      setCurrentSystems(
-        (currentAgencySystems?.filter((system) =>
+
+    if (isCombinedAgency) {
+      setCurrentSystems([
+        ...((currentAgencySystems?.filter((system) =>
           SupervisionSubsystems.includes(system)
-        ) as AgencySystemKeys[]) || []
-      );
-    if (isCourtAgency) setCurrentSystems([AgencySystems.COURTS_AND_PRETRIAL]);
-  }, [currentAgencySystems, isCourtAgency, isSupervisionAgency]);
+        ) as AgencySystemKeys[]) || []),
+        AgencySystems.COURTS_AND_PRETRIAL,
+      ]);
+    } else {
+      if (isSupervisionAgency)
+        setCurrentSystems(
+          (currentAgencySystems?.filter((system) =>
+            SupervisionSubsystems.includes(system)
+          ) as AgencySystemKeys[]) || []
+        );
+      if (isCourtAgency) setCurrentSystems([AgencySystems.COURTS_AND_PRETRIAL]);
+    }
+  }, [
+    currentAgencySystems,
+    isCourtAgency,
+    isSupervisionAgency,
+    isCombinedAgency,
+  ]);
 
   const defaultSetting = isSettingConfigured
     ? agencyDefinitionSetting
@@ -176,9 +197,7 @@ const AgencySettingsDefinition: React.FC<{
           handleCancelModalConfirm={handleCancelModalConfirm}
         >
           <Modal
-            title={`${
-              isSupervisionAgency ? "Supervision" : "Court"
-            } Agency Definition`}
+            title={`${agencyTitle} Agency Definition`}
             description={
               <DataSourceContainer>
                 <DataSourceQuestionWrapper>
@@ -265,7 +284,7 @@ const AgencySettingsDefinition: React.FC<{
                 },
               },
             ]}
-            maxHeight={777}
+            maxHeight={900}
             modalBackground="opaque"
             onClickClose={handleCancelClick}
             agencySettingsConfigs
@@ -278,7 +297,7 @@ const AgencySettingsDefinition: React.FC<{
 
       <AgencySettingsBlock withBorder id="agency_definition">
         <BasicInfoBlockTitle configured={isSettingConfigured}>
-          {isSupervisionAgency ? "Supervision" : "Court"} Agency Definition
+          {agencyTitle} Agency Definition
           {allowEdit && (
             <EditButtonContainer>
               <Button
@@ -294,8 +313,7 @@ const AgencySettingsDefinition: React.FC<{
           )}
         </BasicInfoBlockTitle>
         <AgencyInfoBlockDescription>
-          Information about how your{" "}
-          {isSupervisionAgency ? "supervision" : "court"} agency is defined
+          Information about how your agency is defined
         </AgencyInfoBlockDescription>
       </AgencySettingsBlock>
     </>
