@@ -47,7 +47,9 @@ export const CheckboxOptions: React.FC<CheckboxOptionsProps> = ({
   options,
   onChange,
 }) => {
-  const [otherDescriptionValue, setOtherDescriptionValue] = useState("");
+  const [otherDescriptionValue, setOtherDescriptionValue] = useState<
+    string | null
+  >(null);
 
   return (
     <Styled.CheckboxContainer>
@@ -88,7 +90,11 @@ export const CheckboxOptions: React.FC<CheckboxOptionsProps> = ({
                   otherDescription.placeholder ||
                   "Please provide additional information..."
                 }
-                value={otherDescriptionValue || otherDescription.value}
+                value={
+                  otherDescriptionValue !== null
+                    ? otherDescriptionValue
+                    : otherDescription.value || ""
+                }
                 onChange={(e) => {
                   setOtherDescriptionValue(e.target.value);
                   otherDescription.onChange(e.target.value);

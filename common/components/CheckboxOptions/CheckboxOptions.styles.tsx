@@ -34,7 +34,6 @@ export const CheckboxLabel = styled.div`
   display: flex;
   align-items: center;
   gap: 8px;
-  text-transform: capitalize;
 `;
 
 export const Checkbox = styled.input`
