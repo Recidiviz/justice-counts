@@ -185,7 +185,7 @@ const AgencySettingsDefinition: React.FC<{
     removeEditMode();
   };
 
-  if (!defaultSetting.length) return null;
+  if (!currentSystems.length) return null;
 
   return (
     <>
