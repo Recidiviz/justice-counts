@@ -165,25 +165,32 @@ const QuestionCheckboxBlock: React.FC<{
 
   const handleChange = (key: string) => {
     if (currentKey === key) {
+      // this handles checkbox unchecking
       setCurrentKey("");
       updatedSetting[sourceType][settingType].value = "";
     } else {
+      // this handles unchecking collection method checkbox & removing other description value of collection method
+      // if we uncheck "Data is collected directly by the agency" question
       if (key !== "CURRENT_AGENCY") {
         updatedSetting[sourceType].collection_method.value = "";
         if (key !== "OTHER") {
           updatedSetting[sourceType].collection_method.other_description = "";
         }
       }
+      // this handles unchecking modification checkbox & removing other description value of modification
+      // if we uncheck "Data is received from another agency or data system" question
       if (key !== "OTHER_AGENCY_OR_SYSTEM") {
         updatedSetting[sourceType].modification.value = "";
         if (key !== "OTHER") {
           updatedSetting[sourceType].modification.other_description = "";
         }
       }
+      // this handles removing general other description value if we unckeck Other checkbox
       if (key !== "OTHER") {
         updatedSetting[sourceType][settingType].other_description = "";
       }
 
+      // this handles checkbox checking
       setCurrentKey(key);
       updatedSetting[sourceType][settingType].value = key;
     }
