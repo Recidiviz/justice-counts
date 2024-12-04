@@ -57,6 +57,7 @@ type AgencyDefinitionSetting = {
   settings: {
     key: string;
     included: IncludedValue;
+    value?: string;
   }[];
 };
 
@@ -96,7 +97,7 @@ const AgencySettingsDefinition: React.FC<{
     saveAgencySettings,
   } = agencyStore;
 
-  const isSupervisionAgency =
+  const isSupervisionAgencyWithEnabledSubpopulations =
     currentAgencySystems?.includes(AgencySystems.SUPERVISION) &&
     currentAgencySystems?.some((system) =>
       SupervisionSubsystems.includes(system)
@@ -104,9 +105,12 @@ const AgencySettingsDefinition: React.FC<{
   const isCourtAgency = currentAgencySystems?.includes(
     AgencySystems.COURTS_AND_PRETRIAL
   );
-  const isCombinedAgency = isSupervisionAgency && isCourtAgency;
+  const isCombinedAgency =
+    isSupervisionAgencyWithEnabledSubpopulations && isCourtAgency;
 
-  const discreteAgencyTitle = isSupervisionAgency ? "Supervision" : "Court";
+  const discreteAgencyTitle = isSupervisionAgencyWithEnabledSubpopulations
+    ? "Supervision"
+    : "Court";
   const agencyTitle = isCombinedAgency ? "Combined" : discreteAgencyTitle;
 
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
@@ -126,37 +130,36 @@ const AgencySettingsDefinition: React.FC<{
   useEffect(() => {
     setCurrentSystems([]);
 
+    const supervisionSystems =
+      (currentAgencySystems?.filter((system) =>
+        SupervisionSubsystems.includes(system)
+      ) as AgencySystemKeys[]) || [];
+
     if (isCombinedAgency) {
       setCurrentSystems([
-        ...((currentAgencySystems?.filter((system) =>
-          SupervisionSubsystems.includes(system)
-        ) as AgencySystemKeys[]) || []),
+        ...supervisionSystems,
         AgencySystems.COURTS_AND_PRETRIAL,
       ]);
     } else {
-      if (isSupervisionAgency)
-        setCurrentSystems(
-          (currentAgencySystems?.filter((system) =>
-            SupervisionSubsystems.includes(system)
-          ) as AgencySystemKeys[]) || []
-        );
+      if (isSupervisionAgencyWithEnabledSubpopulations)
+        setCurrentSystems(supervisionSystems);
       if (isCourtAgency) setCurrentSystems([AgencySystems.COURTS_AND_PRETRIAL]);
     }
   }, [
     currentAgencySystems,
     isCourtAgency,
-    isSupervisionAgency,
+    isSupervisionAgencyWithEnabledSubpopulations,
     isCombinedAgency,
   ]);
 
-  const defaultSetting = isSettingConfigured
+  const initialSetting = isSettingConfigured
     ? agencyDefinitionSetting
     : getDefaultSetting(currentSystems, IncludesExcludesEnum.NO);
 
-  const [updatedSetting, setUpdatedSetting] = useState(defaultSetting);
+  const [updatedSetting, setUpdatedSetting] = useState(initialSetting);
 
   useEffect(() => {
-    setUpdatedSetting(defaultSetting);
+    setUpdatedSetting(initialSetting);
     setDescriptionValue("");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [agencyDefinitionSetting, currentSystems]);
@@ -172,7 +175,7 @@ const AgencySettingsDefinition: React.FC<{
   };
 
   const handleCancelClick = () => {
-    if (JSON.stringify(updatedSetting) === JSON.stringify(defaultSetting)) {
+    if (JSON.stringify(updatedSetting) === JSON.stringify(initialSetting)) {
       removeEditMode();
     } else {
       setIsConfirmModalOpen(true);
@@ -180,9 +183,36 @@ const AgencySettingsDefinition: React.FC<{
   };
 
   const handleCancelModalConfirm = () => {
-    setUpdatedSetting(defaultSetting);
+    setUpdatedSetting(initialSetting);
     setIsConfirmModalOpen(false);
     removeEditMode();
+  };
+
+  const handleCheckboxChange = (
+    key: string,
+    checked: boolean,
+    system: AgencySystemKeys
+  ) => {
+    setUpdatedSetting((prevSettings) => {
+      const updates = prevSettings.map((sector) => {
+        if (sector.sector === system) {
+          return {
+            ...sector,
+            settings: sector.settings.map((setting) =>
+              setting.key === key
+                ? {
+                    ...setting,
+                    included: boolToYesNoEnum(!checked),
+                  }
+                : setting
+            ),
+          };
+        }
+        return sector;
+      });
+
+      return updates;
+    });
   };
 
   if (!currentSystems.length) return null;
@@ -215,7 +245,7 @@ const AgencySettingsDefinition: React.FC<{
                 {currentSystems?.map((system) => {
                   return (
                     <React.Fragment key={system}>
-                      {isSupervisionAgency && (
+                      {isSupervisionAgencyWithEnabledSubpopulations && (
                         <DataSourceTitle>
                           {removeSnakeCase(system).toLocaleLowerCase()}
                         </DataSourceTitle>
@@ -223,7 +253,7 @@ const AgencySettingsDefinition: React.FC<{
                       <CheckboxOptions
                         options={[
                           ...Object.entries(AgencyIncludesExcludes[system]).map(
-                            ([key, mapObj]) => {
+                            ([key, option]) => {
                               const included = updatedSetting
                                 .find((sector) => sector.sector === system)
                                 ?.settings.find(
@@ -232,34 +262,15 @@ const AgencySettingsDefinition: React.FC<{
 
                               return {
                                 key,
-                                label: mapObj.label,
+                                label: option.label,
                                 checked: included === IncludesExcludesEnum.YES,
                               };
                             }
                           ),
                         ]}
-                        onChange={({ key, checked }) => {
-                          setUpdatedSetting((prevSettings) => {
-                            const updates = prevSettings.map((sector) => {
-                              if (sector.sector === system) {
-                                return {
-                                  ...sector,
-                                  settings: sector.settings.map((setting) =>
-                                    setting.key === key
-                                      ? {
-                                          ...setting,
-                                          included: boolToYesNoEnum(!checked),
-                                        }
-                                      : setting
-                                  ),
-                                };
-                              }
-                              return sector;
-                            });
-
-                            return updates;
-                          });
-                        }}
+                        onChange={({ key, checked }) =>
+                          handleCheckboxChange(key, checked, system)
+                        }
                       />
                     </React.Fragment>
                   );
@@ -271,7 +282,9 @@ const AgencySettingsDefinition: React.FC<{
                   multiline
                   placeholder="If the listed categories do not adequately describe your breakdown, please describe additional data elements included in your agency’s definition."
                   value={descriptionValue}
-                  onChange={(e) => setDescriptionValue(e.target.value)}
+                  onChange={(e) => {
+                    setDescriptionValue(e.target.value);
+                  }}
                   fullWidth
                 />
               </DataSourceContainer>
