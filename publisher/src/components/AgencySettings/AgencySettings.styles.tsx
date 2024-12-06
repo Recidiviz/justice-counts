@@ -444,7 +444,7 @@ export const SupervisionSystemRow = styled(AgencySettingsInfoRow)<{
   border: none;
 `;
 
-// Agency Defifnition
+// Agency Definition
 export const DefinitionDescriptionInputWrapper = styled.div`
   :not(:last-child) {
     padding-bottom: 24px;
