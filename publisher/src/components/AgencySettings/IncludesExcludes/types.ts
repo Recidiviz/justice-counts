@@ -29,7 +29,7 @@ export type IncludesExcludesWithDefault = {
   };
 };
 
-type AgencySystemKeys =
+export type AgencySystemKeys =
   | AgencySystems.COURTS_AND_PRETRIAL
   | AgencySystems.PAROLE
   | AgencySystems.PROBATION

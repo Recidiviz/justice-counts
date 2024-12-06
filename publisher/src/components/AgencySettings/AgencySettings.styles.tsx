@@ -444,6 +444,13 @@ export const SupervisionSystemRow = styled(AgencySettingsInfoRow)<{
   border: none;
 `;
 
+// Agency Definition
+export const DefinitionDescriptionInputWrapper = styled.div`
+  :not(:last-child) {
+    padding-bottom: 24px;
+  }
+`;
+
 // Data Source
 export const DataSourceContainer = styled.div`
   border-top: 1px solid ${palette.highlight.grey5};
@@ -453,6 +460,7 @@ export const DataSourceContainer = styled.div`
   padding: 16px 40px;
 `;
 export const DataSourceTitle = styled.div`
+  text-transform: capitalize;
   font-weight: 700;
   padding-bottom: 8px;
 `;
