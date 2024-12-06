@@ -126,6 +126,8 @@ const AgencySettingsDefinition: React.FC<{
   }, [currentAgencySettings]);
 
   useEffect(() => {
+    // When we select agency without applicable sectors we need to reset currentSystems, otherwise it can have values from previous agencies in it.
+    // We also can't do it in reset effect below, because it depends on currentSystems and it'll cause infinite loop.
     setCurrentSystems([]);
 
     const supervisionSystems =
@@ -164,6 +166,8 @@ const AgencySettingsDefinition: React.FC<{
 
   const [updatedSetting, setUpdatedSetting] = useState(initialSetting);
 
+  // This is a reset effect and it's used to reset setting for UI to work properly.
+  // The absence of this effect causes visual bug where setting from the previous agency may be displayed.
   useEffect(() => {
     setUpdatedSetting(initialSetting);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -199,11 +203,11 @@ const AgencySettingsDefinition: React.FC<{
     system: AgencySystemKeys
   ) => {
     setUpdatedSetting((prevSettings) => {
-      const updates = prevSettings.map((sector) => {
-        if (sector.sector === system) {
+      const updates = prevSettings.map((prevSetting) => {
+        if (prevSetting.sector === system) {
           return {
-            ...sector,
-            settings: sector.settings.map((setting) =>
+            ...prevSetting,
+            settings: prevSetting.settings.map((setting) =>
               setting.key === key
                 ? {
                     ...setting,
@@ -213,7 +217,7 @@ const AgencySettingsDefinition: React.FC<{
             ),
           };
         }
-        return sector;
+        return prevSetting;
       });
 
       return updates;
@@ -222,12 +226,12 @@ const AgencySettingsDefinition: React.FC<{
 
   const handleDescriptionChange = (system: AgencySystemKeys, value: string) => {
     setUpdatedSetting((prevSettings) => {
-      return prevSettings.map((sector) => {
-        if (sector.sector === system) {
+      return prevSettings.map((prevSetting) => {
+        if (prevSetting.sector === system) {
           return {
-            ...sector,
+            ...prevSetting,
             settings: [
-              ...sector.settings.filter(
+              ...prevSetting.settings.filter(
                 (setting) => setting.key !== "ADDITIONAL_CONTEXT"
               ), // Ensure no duplicate keys
               {
@@ -237,7 +241,7 @@ const AgencySettingsDefinition: React.FC<{
             ],
           };
         }
-        return sector;
+        return prevSetting;
       });
     });
   };
