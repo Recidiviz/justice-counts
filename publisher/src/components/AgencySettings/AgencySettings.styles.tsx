@@ -444,6 +444,13 @@ export const SupervisionSystemRow = styled(AgencySettingsInfoRow)<{
   border: none;
 `;
 
+// Agency Defifnition
+export const DefinitionDescriptionInputWrapper = styled.div`
+  :not(:last-child) {
+    padding-bottom: 24px;
+  }
+`;
+
 // Data Source
 export const DataSourceContainer = styled.div`
   border-top: 1px solid ${palette.highlight.grey5};

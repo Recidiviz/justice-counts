@@ -38,6 +38,7 @@ import {
   DataSourceContainer,
   DataSourceQuestionWrapper,
   DataSourceTitle,
+  DefinitionDescriptionInputWrapper,
   EditButtonContainer,
 } from "./AgencySettings.styles";
 import { AgencySettingsEditModeModal } from "./AgencySettingsEditModeModal";
@@ -56,14 +57,14 @@ type AgencyDefinitionSetting = {
   sector: AgencySystemKeys;
   settings: {
     key: string;
-    included: IncludedValue;
+    included?: IncludedValue;
     value?: string;
   }[];
 };
 
 const getDefaultSetting = (
   systems: AgencySystemKeys[],
-  defaultIncluded?: IncludedValue
+  unconfiguredDefault?: IncludedValue
 ): AgencyDefinitionSetting[] => {
   if (!systems.length) return [];
 
@@ -74,7 +75,7 @@ const getDefaultSetting = (
         ([key, obj]) => {
           return {
             key,
-            included: defaultIncluded ?? obj.default,
+            included: unconfiguredDefault ?? obj.default,
           };
         }
       ),
@@ -115,7 +116,6 @@ const AgencySettingsDefinition: React.FC<{
 
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [currentSystems, setCurrentSystems] = useState<AgencySystemKeys[]>([]);
-  const [descriptionValue, setDescriptionValue] = useState("");
 
   const agencyDefinitionSetting = useMemo(() => {
     return (
@@ -124,8 +124,6 @@ const AgencySettingsDefinition: React.FC<{
       )?.value as AgencyDefinitionSetting[]) || []
     );
   }, [currentAgencySettings]);
-
-  const isSettingConfigured = agencyDefinitionSetting.length > 0;
 
   useEffect(() => {
     setCurrentSystems([]);
@@ -152,15 +150,22 @@ const AgencySettingsDefinition: React.FC<{
     isCombinedAgency,
   ]);
 
-  const initialSetting = isSettingConfigured
-    ? agencyDefinitionSetting
-    : getDefaultSetting(currentSystems, IncludesExcludesEnum.NO);
+  const configuredSystems = agencyDefinitionSetting.map(
+    (setting) => setting.sector
+  );
+  const unconfiguredSystems = currentSystems.filter(
+    (sector) => !configuredSystems.includes(sector)
+  );
+
+  const initialSetting = [
+    ...agencyDefinitionSetting,
+    ...getDefaultSetting(unconfiguredSystems, IncludesExcludesEnum.NO),
+  ];
 
   const [updatedSetting, setUpdatedSetting] = useState(initialSetting);
 
   useEffect(() => {
     setUpdatedSetting(initialSetting);
-    setDescriptionValue("");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [agencyDefinitionSetting, currentSystems]);
 
@@ -215,6 +220,28 @@ const AgencySettingsDefinition: React.FC<{
     });
   };
 
+  const handleDescriptionChange = (system: AgencySystemKeys, value: string) => {
+    setUpdatedSetting((prevSettings) => {
+      return prevSettings.map((sector) => {
+        if (sector.sector === system) {
+          return {
+            ...sector,
+            settings: [
+              ...sector.settings.filter(
+                (setting) => setting.key !== "ADDITIONAL_CONTEXT"
+              ), // Ensure no duplicate keys
+              {
+                key: "ADDITIONAL_CONTEXT",
+                value,
+              },
+            ],
+          };
+        }
+        return sector;
+      });
+    });
+  };
+
   if (!currentSystems.length) return null;
 
   return (
@@ -243,6 +270,12 @@ const AgencySettingsDefinition: React.FC<{
                 </DataSourceQuestionWrapper>
 
                 {currentSystems?.map((system) => {
+                  const defaultDescription = initialSetting
+                    .find((setting) => setting.sector === system)
+                    ?.settings.find(
+                      (setting) => setting.key === "ADDITIONAL_CONTEXT"
+                    )?.value;
+
                   return (
                     <React.Fragment key={system}>
                       {isSupervisionAgencyWithEnabledSubpopulations && (
@@ -272,21 +305,23 @@ const AgencySettingsDefinition: React.FC<{
                           handleCheckboxChange(key, checked, system)
                         }
                       />
+                      <DefinitionDescriptionInputWrapper>
+                        <NewInput
+                          name={`${system.toLocaleLowerCase()}_description`}
+                          id={`${system.toLocaleLowerCase()}_description`}
+                          type="text"
+                          multiline
+                          placeholder="If the listed categories do not adequately describe your agency, please describe additional data elements included in your agency’s definition."
+                          defaultValue={defaultDescription}
+                          onChange={(e) =>
+                            handleDescriptionChange(system, e.target.value)
+                          }
+                          fullWidth
+                        />
+                      </DefinitionDescriptionInputWrapper>
                     </React.Fragment>
                   );
                 })}
-                <NewInput
-                  name="agency_definition_description"
-                  id="agency_definition_description"
-                  type="text"
-                  multiline
-                  placeholder="If the listed categories do not adequately describe your breakdown, please describe additional data elements included in your agency’s definition."
-                  value={descriptionValue}
-                  onChange={(e) => {
-                    setDescriptionValue(e.target.value);
-                  }}
-                  fullWidth
-                />
               </DataSourceContainer>
             }
             buttons={[
@@ -309,7 +344,7 @@ const AgencySettingsDefinition: React.FC<{
       )}
 
       <AgencySettingsBlock withBorder id="agency_definition">
-        <BasicInfoBlockTitle configured={isSettingConfigured}>
+        <BasicInfoBlockTitle>
           {agencyTitle} Agency Definition
           {allowEdit && (
             <EditButtonContainer>
