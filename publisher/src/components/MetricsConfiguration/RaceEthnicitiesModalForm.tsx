@@ -21,6 +21,7 @@ import {
   CheckboxOption,
   CheckboxOptions,
 } from "@justice-counts/common/components/CheckboxOptions";
+import { NewInput } from "@justice-counts/common/components/Input";
 import {
   RadioButton,
   RadioButtonsWrapper,
@@ -144,6 +145,9 @@ function RaceEthnicitiesModalForm({
     return "NO_ETHNICITY_HISPANIC_NOT_SPECIFIED";
   };
 
+  const [isOtherChecked, setOtherChecked] = useState(false);
+  const [otherDescription, setOtherDescription] = useState("");
+
   const handleUpdateRacesDimensions = () => {
     if (!systemSearchParam || !metricSearchParam) return;
     const currentState = determineCurrentState();
@@ -160,7 +164,8 @@ function RaceEthnicitiesModalForm({
       currentState,
       raceEthnicityGridStates,
       systemSearchParam,
-      metricSearchParam
+      metricSearchParam,
+      otherDescription
     );
     saveMetricSettings(updatedDimensions, agencyId);
   };
@@ -207,9 +212,25 @@ function RaceEthnicitiesModalForm({
             capture for race?
           </Styled.ToggleSwitchesListHeader>
           <Styled.CheckboxWrapper>
+            {isOtherChecked && (
+              <Styled.InputWrapper>
+                <NewInput
+                  type="text"
+                  label=""
+                  placeholder={`If the listed categories do not adequately describe this breakdown, please describe additional definition/clarification of the "Other" selection.`}
+                  value={otherDescription}
+                  multiline
+                  onChange={(e) => setOtherDescription(e.target.value)}
+                  fullWidth
+                />
+              </Styled.InputWrapper>
+            )}
             <CheckboxOptions
               options={raceEthnicityOptions}
               onChange={({ key, checked }) => {
+                if (key === "Other") {
+                  setOtherChecked(!checked);
+                }
                 setRacesStatusObject({
                   ...racesStatusObject,
                   [key]: !checked,
