@@ -19,7 +19,7 @@ import blueCheck from "@justice-counts/common/assets/status-check-icon.png";
 import { Button } from "@justice-counts/common/components/Button";
 import { Modal } from "@justice-counts/common/components/Modal";
 import { AgencySystem } from "@justice-counts/common/types";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
@@ -71,6 +71,10 @@ export const AgencySettingsSupervisions: React.FC<{
   const isAdmin =
     userStore.isAgencyAdmin(agencyId) ||
     userStore.isJusticeCountsAdmin(agencyId);
+
+  useEffect(() => {
+    setSupervisionSystemsToSave(currentAgencySystems);
+  }, [currentAgencySystems]);
 
   const handleSaveClick = () => {
     if (supervisionSystemsToSave) {

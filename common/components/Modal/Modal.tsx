@@ -43,6 +43,7 @@ type ModalProps = Partial<{
   jurisdictionsSettingsConfigs?: boolean;
   agencySettingsAndJurisdictionsTitleConfigs?: boolean;
   noBottomDiv?: boolean;
+  maxHeight?: number;
 }>;
 
 export function Modal({
@@ -61,6 +62,7 @@ export function Modal({
   jurisdictionsSettingsConfigs,
   agencySettingsAndJurisdictionsTitleConfigs,
   noBottomDiv,
+  maxHeight,
 }: ModalProps) {
   const primaryButtonColor = (): ButtonColor => {
     if (modalType === "alert") return "red";
@@ -84,6 +86,7 @@ export function Modal({
           centerText={centerText}
           customPadding={customPadding}
           noBottomDiv={noBottomDiv}
+          maxHeight={maxHeight}
         >
           {modalType === "success" && <Styled.Icon src={successIcon} alt="" />}
           {modalType === "warning" && <Styled.Icon src={warningIcon} alt="" />}
@@ -112,6 +115,7 @@ export function Modal({
             <Styled.ButtonsContainer modalType={modalType}>
               {buttons?.map((button, index) => (
                 <Button
+                  key={button.label}
                   label={button.label}
                   onClick={button.onClick}
                   borderColor={

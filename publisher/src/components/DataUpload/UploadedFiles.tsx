@@ -205,31 +205,6 @@ export const UploadedFileRow: React.FC<{
 
           {rowHovered && id && (
             <ActionsContainer onClick={(e) => e.stopPropagation()}>
-              {userStore.isJusticeCountsAdmin(agencyId) && (
-                <>
-                  {(badgeText === "processed" || badgeText === "error") && (
-                    <Button
-                      label="Mark as Pending"
-                      onClick={() => updateUploadedFileStatus(id, "UPLOADED")}
-                      labelColor="blue"
-                    />
-                  )}
-                  {(badgeText === "pending" || badgeText === "error") && (
-                    <Button
-                      label="Mark as Processed"
-                      onClick={() => updateUploadedFileStatus(id, "INGESTED")}
-                      labelColor="blue"
-                    />
-                  )}
-                  {badgeText !== "error" && (
-                    <Button
-                      label="Mark as Error"
-                      onClick={() => updateUploadedFileStatus(id, "ERRORED")}
-                      labelColor="blue"
-                    />
-                  )}
-                </>
-              )}
               {!isReadOnly && (
                 <Button
                   label="Delete"

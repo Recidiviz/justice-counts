@@ -169,7 +169,7 @@ const AgencySettingsUrl: React.FC<{
               {
                 currentAgencySettings?.find(
                   (setting) => setting.setting_type === "HOMEPAGE_URL"
-                )?.value
+                )?.value as string
               }
             </AgencyInfoLink>
           ) : (

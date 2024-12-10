@@ -65,32 +65,35 @@ export const SupervisionSubsystems: AgencySystem[] = [
 ];
 
 export type JurisdictionType =
-  | "territory"
-  | "district"
   | "state"
   | "county"
-  | "county_subdivision";
+  | "county_subdivision"
+  | "place";
 
 export type Jurisdiction = {
-  id: string;
-  name: string;
   state_name: string;
-  state_abbrev: string;
+  state_abbr: string;
+  fips: string | null;
+  type: JurisdictionType;
   county_name: string | null;
   county_subdivision_name: string | null;
-  type: JurisdictionType;
+  place_name: string | null;
+  geoid: string;
+  name: string;
 };
 
 export type AgencySettingType =
   | "PURPOSE_AND_FUNCTIONS"
   | "HOMEPAGE_URL"
   | "ZIPCODE"
-  | "DATA_SHARING_TYPE";
+  | "DATA_SHARING_TYPE"
+  | "BIOLOGICAL_SEX_RACE_ETHNICITY_DATA_SOURCE"
+  | "SECTOR_INCLUDES_EXCLUDES";
 
 export interface AgencySetting {
   setting_type: AgencySettingType;
   source_id: number;
-  value: string | string[];
+  value: string | string[] | object;
 }
 
 export interface PublicUserAgency {

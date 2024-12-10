@@ -18,6 +18,7 @@
 import styled from "styled-components/macro";
 
 import { typography } from "../GlobalStyles";
+import { NewInput } from "../Input";
 
 export const CheckboxContainer = styled.div``;
 
@@ -33,11 +34,16 @@ export const CheckboxLabel = styled.div`
   display: flex;
   align-items: center;
   gap: 8px;
-  text-transform: capitalize;
 `;
 
 export const Checkbox = styled.input`
   min-width: 16px;
   min-height: 16px;
   border: 1px solid red;
+`;
+
+export const OtherInput = styled(NewInput)`
+  height: 120px;
+  gap: unset;
+  margin-bottom: 16px;
 `;

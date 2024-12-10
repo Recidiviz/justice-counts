@@ -15,8 +15,9 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { Datapoint } from "../../types";
+import { Datapoint, Metric, RawDatapoint } from "../../types";
 import {
+  datapointMatchingEnabledDimension,
   fillTimeGapsBetweenDatapoints,
   filterByTimeRange,
   filterNullDatapoints,
@@ -1909,6 +1910,150 @@ const testDatapoints5Transformed: Datapoint[] = [
   },
 ];
 
+const mockTestMetric: Metric[] = [
+  {
+    key: "TEST_METRIC",
+    system: {
+      key: "PROSECUTION",
+      display_name: "Prosecution",
+    },
+    display_name: "Test display name",
+    description: "Test description",
+    reporting_note: "Test note",
+    enabled: true,
+    value: 1000,
+    unit: "test",
+    category: "TEST_CATEGORY",
+    label: "Test label",
+    is_includes_excludes_configured: null,
+    filenames: ["test"],
+    definitions: [
+      {
+        term: "test term",
+        definition: "test definition",
+      },
+    ],
+    contexts: [
+      {
+        key: "TEST_CONTEXTS",
+        display_name: "test contexts display name",
+        reporting_note: null,
+        required: true,
+        type: "MULTIPLE_CHOICE",
+        multiple_choice_options: ["YES", "NO"],
+        value: "YES",
+      },
+    ],
+    disaggregations: [
+      {
+        key: "TEST_TYPE",
+        display_name: "Test Types",
+        dimensions: [
+          {
+            key: "TEST DIMENSION 1",
+            label: "Test dimension 1",
+            value: 120,
+            enabled: true,
+            reporting_note: "Test note",
+            is_dimension_includes_excludes_configured: null,
+          },
+          {
+            key: "TEST DIMENSION 2",
+            label: "Test dimension 2",
+            value: 0,
+            enabled: true,
+            reporting_note: "Test note",
+            is_dimension_includes_excludes_configured: null,
+          },
+          {
+            key: "TEST DIMENSION 3",
+            label: "Test dimension 3",
+            value: 0,
+            enabled: false,
+            reporting_note: "Test note",
+            is_dimension_includes_excludes_configured: null,
+          },
+          {
+            key: "TEST DIMENSION 4",
+            label: "Test dimension 4",
+            value: 0,
+            enabled: undefined,
+            reporting_note: "Test note",
+            is_dimension_includes_excludes_configured: null,
+          },
+        ],
+        required: false,
+        helper_text: "Test helper text.",
+        should_sum_to_total: false,
+        is_breakdown_configured: null,
+      },
+    ],
+  },
+];
+
+const testMetricDatapoints: RawDatapoint[] = [
+  {
+    agency_name: "Test Agency",
+    dimension_display_name: "TEST DIMENSION 1",
+    disaggregation_display_name: "Test Types",
+    end_date: "Sun, 01 Oct 2023 00:00:00 GMT",
+    frequency: "MONTHLY",
+    id: 123,
+    is_published: false,
+    metric_definition_key: "TEST_METRIC",
+    metric_display_name: "Test display name",
+    old_value: null,
+    report_id: 65,
+    start_date: "Fri, 01 Sep 2023 00:00:00 GMT",
+    value: 120,
+  },
+  {
+    agency_name: "Test Agency",
+    dimension_display_name: "TEST DIMENSION 2",
+    disaggregation_display_name: "Test Types",
+    end_date: "Sun, 01 Oct 2023 00:00:00 GMT",
+    frequency: "MONTHLY",
+    id: 234,
+    is_published: false,
+    metric_definition_key: "TEST_METRIC",
+    metric_display_name: "Test display name",
+    old_value: null,
+    report_id: 654,
+    start_date: "Fri, 01 Sep 2023 00:00:00 GMT",
+    value: 0,
+  },
+  {
+    agency_name: "Test Agency",
+    dimension_display_name: "TEST DIMENSION 3",
+    disaggregation_display_name: "Test Types",
+    end_date: "Sun, 01 Oct 2023 00:00:00 GMT",
+    frequency: "MONTHLY",
+    id: 345,
+    is_published: false,
+    metric_definition_key: "TEST_METRIC",
+    metric_display_name: "Test display name",
+    old_value: null,
+    report_id: 98,
+    start_date: "Fri, 01 Sep 2023 00:00:00 GMT",
+    value: 0,
+  },
+  {
+    agency_name: "Test Agency",
+    dimension_display_name: "TEST DIMENSION 4",
+    disaggregation_display_name: "Test Types",
+    end_date: "Sun, 01 Oct 2023 00:00:00 GMT",
+    frequency: "MONTHLY",
+    id: 3425,
+    is_published: false,
+    metric_definition_key: "TEST_METRIC",
+    metric_display_name: "Test display name",
+    old_value: null,
+    report_id: 9128,
+    start_date: "Fri, 01 Sep 2023 00:00:00 GMT",
+    value: 0,
+  },
+];
+
 beforeAll(() => {
   jest.useFakeTimers("modern");
   jest.setSystemTime(new Date(2022, 7, 23));
@@ -2035,5 +2180,17 @@ describe("getShortStartDateStrFromDisplayDate", () => {
       yearStr: "2024",
     });
     expect(nonCalendarYearStartDate).toBe("Mar 2023");
+  });
+});
+
+describe("datapointMatchingEnabledDimension", () => {
+  test("returns only datapoints that match the metric's enabled dimensions", () => {
+    const result = testMetricDatapoints.filter((dp: RawDatapoint) =>
+      datapointMatchingEnabledDimension(dp, mockTestMetric)
+    );
+    expect(result).toStrictEqual([
+      testMetricDatapoints[0],
+      testMetricDatapoints[1],
+    ]);
   });
 });

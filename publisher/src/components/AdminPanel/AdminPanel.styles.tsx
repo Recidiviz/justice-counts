@@ -104,7 +104,7 @@ export const ModalWrapper = styled.div``;
 
 export const ModalContainer = styled.div<{ offScreen?: boolean }>`
   height: 90vh;
-  width: 50vw;
+  width: 60vw;
   background: ${palette.solid.white};
   border-radius: 4px;
   padding: 32px;
@@ -249,7 +249,7 @@ export const InputLabelWrapper = styled.div<{
   input,
   input[type="button"] {
     width: 100%;
-    min-width: 210px;
+    min-width: 200px;
     font-size: 0.8rem;
     font-weight: 400;
     line-height: 1rem;
@@ -334,8 +334,9 @@ export const ButtonWrapper = styled.div`
 `;
 
 export const TeamMembersContainer = styled.div`
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 10px;
   margin-top: 12px;
 `;
 
@@ -346,20 +347,16 @@ export const TeamMemberCard = styled.div<{
   ${typography.sizeCSS.normal}
   display: flex;
   flex-direction: column;
-  width: 250px;
+  width: 100%;
+  min-width: 240px;
   align-items: flex-start;
   justify-content: center;
   border: 1px solid ${palette.highlight.grey5};
   border-radius: 4px;
   padding: 16px;
-  margin: 5px;
 
   ${({ added }) => added && `background: ${palette.gradient.lightgreen};`}
   ${({ deleted }) => deleted && `background: ${palette.gradient.lightred};`}
-
-  input[type="button"] {
-    width: 210px;
-  }
 `;
 
 /** Chips */
@@ -480,6 +477,7 @@ export const ChipContainerLabel = styled.label<{
 export const ChipName = styled.div``;
 
 export const ChipRole = styled.div`
+  width: 100%;
   color: ${palette.solid.green};
 `;
 
@@ -515,6 +513,11 @@ export const EmptyListMessage = styled.div`
   line-height: 1rem;
   margin-top: 7px;
   margin-left: 3px;
+`;
+
+export const EmptySearchMessage = styled(EmptyListMessage)`
+  margin: auto;
+  margin-top: 48px;
 `;
 
 export const ChipContainerLabelAction = styled(ChipContainerLabel)`
