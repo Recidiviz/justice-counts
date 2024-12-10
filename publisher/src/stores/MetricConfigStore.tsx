@@ -1193,13 +1193,15 @@ class MetricConfigStore {
       raceEthnicitiesDimensions &&
       (Object.values(raceEthnicitiesDimensions) as UpdatedDimension[]);
 
-    if (otherDescription) {
-      const otherDimension = dimensions.find(
-        (dimension) => dimension.race === "Other" && dimension.enabled
-      );
-      if (otherDimension) {
-        otherDimension.other_description = otherDescription;
-      }
+    if (otherDescription !== undefined) {
+      dimensions
+        .filter((dimension) => dimension.race === "Other")
+        .forEach((otherDimension) => {
+          const updatedDimension = otherDimension;
+          updatedDimension.other_description = otherDimension.enabled
+            ? otherDescription
+            : "";
+        });
     }
 
     /** Return an object w/ all dimensions in the desired backend data structure for saving purposes */

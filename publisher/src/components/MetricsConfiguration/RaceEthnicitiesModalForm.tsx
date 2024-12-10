@@ -21,7 +21,6 @@ import {
   CheckboxOption,
   CheckboxOptions,
 } from "@justice-counts/common/components/CheckboxOptions";
-import { NewInput } from "@justice-counts/common/components/Input";
 import {
   RadioButton,
   RadioButtonsWrapper,
@@ -119,11 +118,38 @@ function RaceEthnicitiesModalForm({
         }
       : undefined;
 
+  const currentOtherDescription =
+    Object.values(
+      Object.entries(ethnicitiesByRace).find(
+        ([race]) => race === "Other"
+      )?.[1] || {}
+    ).find((ethnicity) => {
+      if (!canSpecifyEthnicity && !specifiesHispanicAsRace)
+        return ethnicity.key === "Other / Unknown Ethnicity";
+
+      if (!canSpecifyEthnicity && specifiesHispanicAsRace)
+        return ethnicity.key === "Other / Not Hispanic or Latino";
+
+      return ethnicity.key === "Other / Hispanic or Latino";
+    })?.other_description || "";
+
+  const [otherDescription, setOtherDescription] = useState(
+    currentOtherDescription
+  );
+
   const raceEthnicityOptions: CheckboxOption[] = [
     ...(hispanicOrLatinoOption ? [hispanicOrLatinoOption] : []),
     ...Object.entries(racesStatusObject).map(([race, enabled]) => {
       const disabledUnknownRace =
         race === "Unknown" && specifiesHispanicAsRace && !canSpecifyEthnicity;
+
+      const otherDescriptionParams = {
+        isEnabled: race === "Other" && Boolean(enabled),
+        placeholder:
+          "Please describe additional definition/clarification of the 'Other' selection.",
+        value: currentOtherDescription,
+        onChange: (value: string) => setOtherDescription(value),
+      };
 
       return {
         key: race,
@@ -131,6 +157,7 @@ function RaceEthnicitiesModalForm({
         checked: Boolean(enabled),
         disabled: disabledUnknownRace,
         icon: disabledUnknownRace ? <InfoIcon id="unknown-race" /> : undefined,
+        otherDescription: otherDescriptionParams,
       };
     }),
   ];
@@ -144,9 +171,6 @@ function RaceEthnicitiesModalForm({
     }
     return "NO_ETHNICITY_HISPANIC_NOT_SPECIFIED";
   };
-
-  const [isOtherChecked, setOtherChecked] = useState(false);
-  const [otherDescription, setOtherDescription] = useState("");
 
   const handleUpdateRacesDimensions = () => {
     if (!systemSearchParam || !metricSearchParam) return;
@@ -212,25 +236,9 @@ function RaceEthnicitiesModalForm({
             capture for race?
           </Styled.ToggleSwitchesListHeader>
           <Styled.CheckboxWrapper>
-            {isOtherChecked && (
-              <Styled.InputWrapper>
-                <NewInput
-                  type="text"
-                  label=""
-                  placeholder={`If the listed categories do not adequately describe this breakdown, please describe additional definition/clarification of the "Other" selection.`}
-                  value={otherDescription}
-                  multiline
-                  onChange={(e) => setOtherDescription(e.target.value)}
-                  fullWidth
-                />
-              </Styled.InputWrapper>
-            )}
             <CheckboxOptions
               options={raceEthnicityOptions}
               onChange={({ key, checked }) => {
-                if (key === "Other") {
-                  setOtherChecked(!checked);
-                }
                 setRacesStatusObject({
                   ...racesStatusObject,
                   [key]: !checked,
