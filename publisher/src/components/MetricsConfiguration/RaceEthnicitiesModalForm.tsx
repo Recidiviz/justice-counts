@@ -27,7 +27,7 @@ import {
 } from "@justice-counts/common/components/RadioButton";
 import { Tooltip } from "@justice-counts/common/components/Tooltip";
 import { observer } from "mobx-react-lite";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
@@ -136,6 +136,14 @@ function RaceEthnicitiesModalForm({
   const [otherDescription, setOtherDescription] = useState(
     currentOtherDescription
   );
+  const [isOtherChecked, setOtherChecked] = useState(Boolean(otherDescription));
+
+  useEffect(() => {
+    setRacesStatusObject((prev) => ({
+      ...prev,
+      Other: Boolean(otherDescription),
+    }));
+  }, [otherDescription]);
 
   const raceEthnicityOptions: CheckboxOption[] = [
     ...(hispanicOrLatinoOption ? [hispanicOrLatinoOption] : []),
@@ -143,13 +151,22 @@ function RaceEthnicitiesModalForm({
       const disabledUnknownRace =
         race === "Unknown" && specifiesHispanicAsRace && !canSpecifyEthnicity;
 
-      const otherDescriptionParams = {
-        isEnabled: race === "Other" && Boolean(enabled),
-        placeholder:
-          "Please describe additional definition/clarification of the 'Other' selection.",
-        value: currentOtherDescription,
-        onChange: (value: string) => setOtherDescription(value),
-      };
+      if (race === "Other") {
+        const otherDescriptionParams = {
+          isEnabled: race === "Other" && isOtherChecked,
+          placeholder:
+            "Please describe additional definition/clarification of the 'Other' selection.",
+          value: currentOtherDescription,
+          onChange: (value: string) => setOtherDescription(value),
+        };
+
+        return {
+          key: race,
+          label: race,
+          checked: Boolean(otherDescription),
+          otherDescription: otherDescriptionParams,
+        };
+      }
 
       return {
         key: race,
@@ -157,7 +174,6 @@ function RaceEthnicitiesModalForm({
         checked: Boolean(enabled),
         disabled: disabledUnknownRace,
         icon: disabledUnknownRace ? <InfoIcon id="unknown-race" /> : undefined,
-        otherDescription: otherDescriptionParams,
       };
     }),
   ];
@@ -239,10 +255,24 @@ function RaceEthnicitiesModalForm({
             <CheckboxOptions
               options={raceEthnicityOptions}
               onChange={({ key, checked }) => {
-                setRacesStatusObject({
-                  ...racesStatusObject,
-                  [key]: !checked,
-                });
+                if (key === "Other") {
+                  setOtherChecked(!checked);
+
+                  if (checked) {
+                    // Clear otherDescription if "Other" is unchecked
+                    setOtherDescription("");
+                  }
+
+                  setRacesStatusObject((prev) => ({
+                    ...prev,
+                    Other: Boolean(otherDescription),
+                  }));
+                } else {
+                  setRacesStatusObject({
+                    ...racesStatusObject,
+                    [key]: !checked,
+                  });
+                }
               }}
             />
             <Tooltip
