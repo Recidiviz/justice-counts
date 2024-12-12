@@ -27,7 +27,7 @@ import {
 } from "@justice-counts/common/components/RadioButton";
 import { Tooltip } from "@justice-counts/common/components/Tooltip";
 import { observer } from "mobx-react-lite";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
@@ -118,11 +118,55 @@ function RaceEthnicitiesModalForm({
         }
       : undefined;
 
+  const currentOtherDescription =
+    Object.values(
+      Object.entries(ethnicitiesByRace).find(
+        ([race]) => race === "Other"
+      )?.[1] || {}
+    ).find((ethnicity) => {
+      if (!canSpecifyEthnicity && !specifiesHispanicAsRace)
+        return ethnicity.key === "Other / Unknown Ethnicity";
+
+      if (!canSpecifyEthnicity && specifiesHispanicAsRace)
+        return ethnicity.key === "Other / Not Hispanic or Latino";
+
+      return ethnicity.key === "Other / Hispanic or Latino";
+    })?.other_description || "";
+
+  const [otherDescription, setOtherDescription] = useState(
+    currentOtherDescription
+  );
+  const [isOtherChecked, setOtherChecked] = useState(Boolean(otherDescription));
+
+  useEffect(() => {
+    setRacesStatusObject((prev) => ({
+      ...prev,
+      Other: Boolean(otherDescription),
+    }));
+  }, [otherDescription]);
+
   const raceEthnicityOptions: CheckboxOption[] = [
     ...(hispanicOrLatinoOption ? [hispanicOrLatinoOption] : []),
     ...Object.entries(racesStatusObject).map(([race, enabled]) => {
       const disabledUnknownRace =
         race === "Unknown" && specifiesHispanicAsRace && !canSpecifyEthnicity;
+
+      if (race === "Other") {
+        const otherDescriptionParams = {
+          isEnabled: race === "Other" && isOtherChecked,
+          placeholder:
+            "Please describe additional definition/clarification of the 'Other' selection.",
+          value: currentOtherDescription,
+          onChange: (value: string) => setOtherDescription(value),
+        };
+
+        return {
+          key: race,
+          label: race,
+          checked: Boolean(otherDescription),
+          otherDescription: otherDescriptionParams,
+        };
+      }
 
       return {
         key: race,
@@ -160,7 +204,8 @@ function RaceEthnicitiesModalForm({
       currentState,
       raceEthnicityGridStates,
       systemSearchParam,
-      metricSearchParam
+      metricSearchParam,
+      otherDescription
     );
     saveMetricSettings(updatedDimensions, agencyId);
   };
@@ -210,10 +255,24 @@ function RaceEthnicitiesModalForm({
             <CheckboxOptions
               options={raceEthnicityOptions}
               onChange={({ key, checked }) => {
-                setRacesStatusObject({
-                  ...racesStatusObject,
-                  [key]: !checked,
-                });
+                if (key === "Other") {
+                  setOtherChecked(!checked);
+
+                  if (checked) {
+                    // Clear otherDescription if "Other" is unchecked
+                    setOtherDescription("");
+                  }
+
+                  setRacesStatusObject((prev) => ({
+                    ...prev,
+                    Other: Boolean(otherDescription),
+                  }));
+                } else {
+                  setRacesStatusObject({
+                    ...racesStatusObject,
+                    [key]: !checked,
+                  });
+                }
               }}
             />
             <Tooltip
