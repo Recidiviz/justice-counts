@@ -29,7 +29,6 @@ import {
 import styled from "styled-components/macro";
 
 import { Form, FormWrapper } from "../Forms";
-import { TWO_PANEL_MAX_WIDTH } from "./ReportDataEntry.styles";
 
 export const CreateReportFormWrapper = styled(FormWrapper)`
   margin-bottom: 0;
@@ -37,13 +36,14 @@ export const CreateReportFormWrapper = styled(FormWrapper)`
 `;
 
 export const CreateReportForm = styled(Form)`
+  position: relative;
   padding-bottom: 0;
 `;
 
 export const BackButtonWrapper = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: start;
+  position: absolute;
+  left: -190px;
+  top: 24px;
 `;
 
 export const LoadingWrapper = styled.div`
@@ -57,16 +57,16 @@ export const LoadingWrapper = styled.div`
 
 export const Heading = styled.div`
   font-size: ${typography.sizeCSS.medium};
-  margin-top: 24px;
-  margin-bottom: 12px;
+  font-weight: 400;
+  margin-top: 48px;
+  margin-bottom: 16px;
 `;
 
 export const DropdownsWrapper = styled.div`
   width: 100%;
   display: flex;
   flex-direction: row;
-  gap: 8px;
-  height: 56px;
+  gap: 32px;
   z-index: 4;
 `;
 
@@ -106,13 +106,11 @@ export const DropdownContainer = styled.div`
 `;
 
 export const CreateReportInfoContainer = styled.div`
-  border-radius: 5px;
-  padding: 20px 30px 20px 30px;
-  border: 2px solid ${palette.highlight.lightblue2};
-  background: ${palette.highlight.lightblue1};
-  margin-top: 38px;
   color: ${palette.solid.blue};
   ${typography.sizeCSS.medium}
+  font-weight: 400;
+  font-size: 16px;
+  margin-top: 32px;
 `;
 
 export const BoldFont = styled.span`
@@ -124,13 +122,8 @@ export const CreateButtonContainer = styled.div`
 `;
 
 export const FormCreateButtonContainer = styled.div`
-  display: none;
-  margin-top: 48px;
-  width: 200px;
-
-  @media only screen and (max-width: ${TWO_PANEL_MAX_WIDTH}px) {
-    display: block;
-  }
+  margin-top: 24px;
+  width: 80px;
 `;
 
 export const NoRecordsForTaskCardManualEntryMessage = styled.div`

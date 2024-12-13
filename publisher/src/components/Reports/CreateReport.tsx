@@ -42,12 +42,8 @@ import { useStore } from "../../stores";
 import { monthsByName, printDateRangeFromMonthYear } from "../../utils";
 import {
   GoBackToReportsOverviewLink,
-  MetricSectionSubTitle,
-  MetricSectionTitle,
   OnePanelBackLinkContainer,
-  PreTitle,
   Title,
-  TitleWrapper,
 } from "../Forms";
 import {
   REPORT_CAPITALIZED,
@@ -58,8 +54,6 @@ import {
 } from "../Global/constants";
 import { Loading } from "../Loading";
 import * as Styled from "./CreateReport.styled";
-import { PublishDataWrapper } from "./ReportDataEntry.styles";
-import { ReportSummaryWrapper } from "./ReportSummaryPanel";
 
 function createIntegerRange(start: number, end: number) {
   return Array.from({ length: end - start + 1 }, (_, i) => start + i);
@@ -235,20 +229,6 @@ const CreateReport = () => {
           <Loading />
         </Styled.LoadingWrapper>
       )}
-      {/* Create Report Details Panel */}
-      <ReportSummaryWrapper>
-        <Styled.BackButtonWrapper>
-          <Button
-            label={`<- Back to ${REPORTS_CAPITALIZED} Overview`}
-            onClick={() => navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}`)}
-            noSidePadding
-            noTopBottomPadding
-            labelColor="blue"
-            noHover
-          />
-        </Styled.BackButtonWrapper>
-        {/* <Title>Report Details</Title> */}
-      </ReportSummaryWrapper>
 
       {/* Create Report Form */}
       <Styled.CreateReportFormWrapper>
@@ -269,14 +249,19 @@ const CreateReport = () => {
               }
             />
           </OnePanelBackLinkContainer>
-          <PreTitle>Create {REPORT_CAPITALIZED}</PreTitle>
+          <Styled.BackButtonWrapper>
+            <Button
+              label={`<- Back to ${REPORTS_CAPITALIZED}`}
+              onClick={() =>
+                navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}`)
+              }
+              noSidePadding
+              noTopBottomPadding
+              labelColor="blue"
+              noHover
+            />
+          </Styled.BackButtonWrapper>
           <Title>New {REPORT_CAPITALIZED}</Title>
-          <TitleWrapper underlined>
-            <MetricSectionTitle>
-              {REPORT_CAPITALIZED} Parameters
-            </MetricSectionTitle>
-            <MetricSectionSubTitle />
-          </TitleWrapper>
           <Styled.Heading>
             What {REPORTING_LOWERCASE} frequency is this {REPORT_LOWERCASE}?
           </Styled.Heading>
@@ -385,6 +370,7 @@ const CreateReport = () => {
                       hover="background"
                       caretPosition="right"
                       fullWidth
+                      size="small"
                     />
                   </Styled.DropdownContainer>
                 )}
@@ -397,6 +383,7 @@ const CreateReport = () => {
                       hover="background"
                       caretPosition="right"
                       fullWidth
+                      size="small"
                     />
                   </Styled.DropdownContainer>
                 )}
@@ -414,41 +401,24 @@ const CreateReport = () => {
             </>
           )}
           <Styled.CreateReportInfoContainer>
-            The{" "}
-            <Styled.BoldFont>{isRecurring ? `recurring` : ``}</Styled.BoldFont>{" "}
-            {REPORT_LOWERCASE} will be created for{` `}
-            <Styled.BoldFont>
-              {printDateRangeFromMonthYear(
-                frequency === "ANNUAL" ? annualStartMonth : month,
-                getDateRangeYear(),
-                frequency
-              )}
-            </Styled.BoldFont>
+            The {isRecurring ? `recurring` : ``} {REPORT_LOWERCASE} will be
+            created for{` `}
+            {printDateRangeFromMonthYear(
+              frequency === "ANNUAL" ? annualStartMonth : month,
+              getDateRangeYear(),
+              frequency
+            )}
             .
           </Styled.CreateReportInfoContainer>
           <Styled.FormCreateButtonContainer>
             <Button
-              label={`Create ${REPORT_CAPITALIZED}`}
+              label="Create"
               onClick={createNewReport}
               buttonColor="blue"
-              size="medium"
             />
           </Styled.FormCreateButtonContainer>
         </Styled.CreateReportForm>
       </Styled.CreateReportFormWrapper>
-
-      {/* Create Report Review Panel */}
-      <PublishDataWrapper>
-        <Styled.CreateButtonContainer>
-          <Button
-            label={`Create ${REPORT_CAPITALIZED}`}
-            /** Should trigger a confirmation dialogue before submitting */
-            onClick={createNewReport}
-            buttonColor="blue"
-            size="medium"
-          />
-        </Styled.CreateButtonContainer>
-      </PublishDataWrapper>
     </>
   );
 };
