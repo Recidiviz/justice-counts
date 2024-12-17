@@ -39,17 +39,30 @@ export type CheckboxOption = {
 export type CheckboxOnChangeParams = { key: string; checked: boolean };
 
 export type CheckboxOptionsProps = {
+  multiselect?: boolean;
   options: CheckboxOption[];
   onChange: (onChangeParams: CheckboxOnChangeParams) => void;
 };
 
 export const CheckboxOptions: React.FC<CheckboxOptionsProps> = ({
+  multiselect = true,
   options,
   onChange,
 }) => {
+  const [radioKey, setRadioKey] = useState<string>("");
   const [otherDescriptionValue, setOtherDescriptionValue] = useState<
     string | null
   >(null);
+
+  const handleChange = (key: string, checked: boolean) => {
+    if (multiselect) {
+      onChange({ key, checked });
+    } else {
+      const newKey = radioKey !== key ? key : "";
+      setRadioKey(newKey);
+      onChange({ key: newKey, checked: true });
+    }
+  };
 
   return (
     <Styled.CheckboxContainer>
@@ -67,12 +80,12 @@ export const CheckboxOptions: React.FC<CheckboxOptionsProps> = ({
             <Styled.CheckboxOptionsWrapper>
               <Styled.Checkbox
                 id={key}
-                type="checkbox"
-                checked={checked}
+                type={multiselect ? "checkbox" : "radio"}
+                checked={multiselect || !radioKey ? checked : radioKey === key}
                 onChange={() =>
                   onChangeOverride
                     ? onChangeOverride()
-                    : onChange({ key, checked })
+                    : handleChange(key, checked)
                 }
                 disabled={disabled}
               />

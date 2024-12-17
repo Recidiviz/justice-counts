@@ -164,17 +164,18 @@ function DefinitionModalForm({
   // handlers
   const handleChooseDefaults = () => {
     const defaultSettings = Object.entries(currentSettings).reduce(
-      (acc, [includesExcludesKey, { settings }]) => {
+      (acc, [includesExcludesKey, { multiselect, settings }]) => {
         return {
           ...acc,
           [includesExcludesKey]: {
+            multiselect,
             settings: Object.entries(settings).reduce(
               (innerAcc, [settingKey, setting]) => {
                 return {
                   ...innerAcc,
                   [settingKey]: {
                     ...setting,
-                    included: setting.default,
+                    included: multiselect ? setting.default : "No",
                   },
                 };
               },
@@ -193,25 +194,46 @@ function DefinitionModalForm({
 
   const handleChangeDefinitionIncluded = (
     includesExcludesKey: string,
-    settingKey: string
+    settingKey: string,
+    multiselect?: boolean
   ) => {
-    setCurrentSettings({
-      ...currentSettings,
-      [includesExcludesKey]: {
-        ...currentSettings[includesExcludesKey],
-        settings: {
-          ...currentSettings[includesExcludesKey].settings,
-          [settingKey]: {
-            ...currentSettings[includesExcludesKey].settings[settingKey],
-            included:
-              currentSettings[includesExcludesKey].settings[settingKey]
-                .included === "Yes"
-                ? "No"
-                : "Yes",
+    if (!multiselect) {
+      setCurrentSettings({
+        ...currentSettings,
+        [includesExcludesKey]: {
+          ...currentSettings[includesExcludesKey],
+          settings: Object.fromEntries(
+            Object.entries(currentSettings[includesExcludesKey].settings).map(
+              ([key, setting]) => [
+                key,
+                {
+                  ...setting,
+                  included: key === settingKey ? "Yes" : "No",
+                },
+              ]
+            )
+          ),
+        },
+      });
+    } else {
+      setCurrentSettings({
+        ...currentSettings,
+        [includesExcludesKey]: {
+          ...currentSettings[includesExcludesKey],
+          settings: {
+            ...currentSettings[includesExcludesKey].settings,
+            [settingKey]: {
+              ...currentSettings[includesExcludesKey].settings[settingKey],
+              included:
+                currentSettings[includesExcludesKey].settings[settingKey]
+                  .included === "Yes"
+                  ? "No"
+                  : "Yes",
+            },
           },
         },
-      },
-    });
+      });
+    }
   };
 
   const handleContextValueChange = (
@@ -470,6 +492,7 @@ function DefinitionModalForm({
                           includesExcludesKey}
                       </p>
                       <CheckboxOptions
+                        multiselect={value.multiselect}
                         options={Object.entries(value.settings).map(
                           ([settingKey, setting]) => {
                             return {
@@ -482,7 +505,8 @@ function DefinitionModalForm({
                         onChange={({ key }) =>
                           handleChangeDefinitionIncluded(
                             includesExcludesKey,
-                            key
+                            key,
+                            value.multiselect
                           )
                         }
                       />
