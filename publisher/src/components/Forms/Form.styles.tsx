@@ -136,9 +136,7 @@ export const MetricSummarySectionTitle = styled.div`
 
 export const Title = styled.h1`
   ${typography.sizeCSS.title};
-  margin-top: 4px;
-  padding-bottom: 14px;
-  border-bottom: 1px solid ${palette.highlight.grey9};
+  margin-top: 16px;
   transition: 0.3s ease;
 `;
 
