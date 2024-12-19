@@ -220,6 +220,7 @@ export interface Metric {
 }
 
 export interface MetricIncludesExcludes {
+  multiselect: boolean;
   description: string;
   settings: MetricConfigurationSettings[];
 }

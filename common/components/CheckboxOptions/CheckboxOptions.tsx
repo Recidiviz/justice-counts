@@ -39,11 +39,13 @@ export type CheckboxOption = {
 export type CheckboxOnChangeParams = { key: string; checked: boolean };
 
 export type CheckboxOptionsProps = {
+  multiselect?: boolean;
   options: CheckboxOption[];
   onChange: (onChangeParams: CheckboxOnChangeParams) => void;
 };
 
 export const CheckboxOptions: React.FC<CheckboxOptionsProps> = ({
+  multiselect = true,
   options,
   onChange,
 }) => {
@@ -67,7 +69,7 @@ export const CheckboxOptions: React.FC<CheckboxOptionsProps> = ({
             <Styled.CheckboxOptionsWrapper>
               <Styled.Checkbox
                 id={key}
-                type="checkbox"
+                type={multiselect ? "checkbox" : "radio"}
                 checked={checked}
                 onChange={() =>
                   onChangeOverride
