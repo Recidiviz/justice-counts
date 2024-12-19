@@ -175,7 +175,7 @@ function DefinitionModalForm({
                   ...innerAcc,
                   [settingKey]: {
                     ...setting,
-                    included: multiselect ? setting.default : "No",
+                    included: setting.default,
                   },
                 };
               },
