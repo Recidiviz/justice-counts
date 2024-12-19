@@ -61,6 +61,7 @@ class MetricConfigStore {
   metricDefinitionSettings: {
     [systemMetricKey: string]: {
       [includesExcludesKey: string]: {
+        multiselect: boolean;
         description?: string;
         settings: {
           [settingKey: string]: Partial<MetricConfigurationSettings>;
@@ -122,6 +123,7 @@ class MetricConfigStore {
       [disaggregationKey: string]: {
         [dimensionKey: string]: {
           [includesExcludesKey: string]: {
+            multiselect: boolean;
             description?: string;
             settings: {
               [settingKey: string]: Partial<MetricConfigurationSettings>;
@@ -259,6 +261,7 @@ class MetricConfigStore {
             this.initializeMetricDefinitionSetting(
               metric.system.key,
               metric.key,
+              includesExcludes.multiselect,
               includesExcludes.description || "NO_DESCRIPTION",
               includesExcludes.settings
             );
@@ -328,6 +331,7 @@ class MetricConfigStore {
                   metric.key,
                   disaggregation.key,
                   dimension.key,
+                  includesExcludes.multiselect,
                   includesExcludes.description || "NO_DESCRIPTION",
                   includesExcludes.settings
                 );
@@ -368,6 +372,7 @@ class MetricConfigStore {
   initializeMetricDefinitionSetting = (
     system: AgencySystem,
     metricKey: string,
+    multiselect: boolean,
     includesExcludesKey: string,
     metricDefinitionSettings: MetricConfigurationSettings[]
   ) => {
@@ -382,6 +387,7 @@ class MetricConfigStore {
     }
     if (!this.metricDefinitionSettings[systemMetricKey][includesExcludesKey]) {
       this.metricDefinitionSettings[systemMetricKey][includesExcludesKey] = {
+        multiselect,
         description: includesExcludesKey,
         settings: {},
       };
@@ -479,6 +485,7 @@ class MetricConfigStore {
     metricKey: string,
     disaggregationKey: string,
     dimensionKey: string,
+    multiselect: boolean,
     includesExcludesKey: string,
     dimensionDefinitionSettings: MetricConfigurationSettings[]
   ) => {
@@ -512,6 +519,7 @@ class MetricConfigStore {
       this.dimensionDefinitionSettings[systemMetricKey][disaggregationKey][
         dimensionKey
       ][includesExcludesKey] = {
+        multiselect,
         description: includesExcludesKey,
         settings: {},
       };

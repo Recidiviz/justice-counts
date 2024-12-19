@@ -334,6 +334,7 @@ export const LAW_ENFORCEMENT_LATEST_RECORDS_METRICS: LatestRecordsAgencyMetrics 
         frequency: "MONTHLY",
         includes_excludes: [
           {
+            multiselect: true,
             description: "",
             settings: [],
           },
@@ -377,6 +378,7 @@ export const LAW_ENFORCEMENT_LATEST_RECORDS_METRICS: LatestRecordsAgencyMetrics 
         frequency: "ANNUAL",
         includes_excludes: [
           {
+            multiselect: true,
             description: "",
             settings: [],
           },
@@ -420,6 +422,7 @@ export const LAW_ENFORCEMENT_LATEST_RECORDS_METRICS: LatestRecordsAgencyMetrics 
         frequency: "ANNUAL",
         includes_excludes: [
           {
+            multiselect: true,
             description: "",
             settings: [],
           },
