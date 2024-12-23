@@ -123,20 +123,28 @@ function RaceEthnicitiesModalForm({
       Object.entries(ethnicitiesByRace).find(
         ([race]) => race === "Other"
       )?.[1] || {}
-    ).find((ethnicity) => {
-      if (!canSpecifyEthnicity && !specifiesHispanicAsRace)
-        return ethnicity.key === "Other / Unknown Ethnicity";
+    )
+      .find((ethnicity) => {
+        if (!canSpecifyEthnicity && !specifiesHispanicAsRace)
+          return ethnicity.key === "Other / Unknown Ethnicity";
 
-      if (!canSpecifyEthnicity && specifiesHispanicAsRace)
-        return ethnicity.key === "Other / Not Hispanic or Latino";
+        if (!canSpecifyEthnicity && specifiesHispanicAsRace)
+          return ethnicity.key === "Other / Not Hispanic or Latino";
 
-      return ethnicity.key === "Other / Hispanic or Latino";
-    })?.other_description || "";
+        return ethnicity.key === "Other / Hispanic or Latino";
+      })
+      ?.contexts?.find(
+        (context) => context.key === "INCLUDES_EXCLUDES_DESCRIPTION"
+      )?.value || "";
 
   const [otherDescription, setOtherDescription] = useState(
     currentOtherDescription
   );
   const [isOtherChecked, setOtherChecked] = useState(Boolean(otherDescription));
+
+  useEffect(() => {
+    setOtherDescription(currentOtherDescription);
+  }, [currentOtherDescription]);
 
   useEffect(() => {
     setRacesStatusObject((prev) => ({

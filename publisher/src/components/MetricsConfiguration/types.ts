@@ -21,6 +21,7 @@ import {
   MetricConfigurationSettings,
   MetricConfigurationSettingsOptions,
   MetricContext,
+  MetricDimensionContext,
   ReportFrequency,
 } from "@justice-counts/common/types";
 
@@ -80,7 +81,7 @@ export type Dimensions = {
     enabled?: boolean | null;
     label?: string;
     description?: string;
-    other_description?: string;
+    contexts?: MetricDimensionContext[];
     key?: string;
     race?: Races;
     ethnicity?: Ethnicities;
@@ -102,6 +103,7 @@ export type UpdatedDimension = {
   enabled: boolean;
   race: Races;
   ethnicity: Ethnicities;
+  contexts?: MetricDimensionContext[];
   other_description?: string;
 };
 
