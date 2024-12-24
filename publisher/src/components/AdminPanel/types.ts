@@ -84,8 +84,6 @@ export type Agency = {
   created_at: string | null;
   agency_description?: string;
   agency_url?: string;
-  zipcode?: string;
-  data_sharing_types?: string[];
   settings: {
     setting_type: string;
     value: string | null;
@@ -134,8 +132,6 @@ export type AgencyProvisioningUpdates = {
   team: AgencyTeamUpdates[];
   agency_description: string;
   agency_url: string;
-  zipcode: string;
-  data_sharing_types: string[];
 };
 
 export type AgencyTeamUpdates = {

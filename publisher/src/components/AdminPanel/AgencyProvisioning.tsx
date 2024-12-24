@@ -34,8 +34,6 @@ import {
   removeSnakeCase,
   toggleAddRemoveSetItem,
   validateAgencyURL,
-  // TODO(#1537) Ungate zipcode and agency data sharing fields
-  // validateAgencyZipcode,
 } from "@justice-counts/common/utils";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useRef, useState } from "react";
@@ -43,8 +41,6 @@ import React, { useEffect, useRef, useState } from "react";
 import { useStore } from "../../stores";
 import AdminPanelStore from "../../stores/AdminPanelStore";
 import { ButtonWithMiniLoaderContainer, MiniLoaderWrapper } from "../Reports";
-// TODO(#1537) Ungate zipcode and agency data sharing fields
-// import { dataSharingTypeNames } from "../Settings/AgencySettingsDataSharingType";
 import {
   AgencyProvisioningSetting,
   AgencyProvisioningSettings,
@@ -94,9 +90,6 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       updateAgencyName,
       updateAgencyDescription,
       updateAgencyURL,
-      // TODO(#1537) Ungate zipcode and agency data sharing fields
-      // updateAgencyZipcode,
-      // updateDataSharingTypes,
       updateStateCode,
       updateCountyCode,
       updateIsDashboardEnabled,
@@ -164,9 +157,6 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       setIsCopySuperagencyMetricSettingsSelected,
     ] = useState(false);
     const [URLValidationError, setURLValidationError] = useState<string>();
-    // TODO(#1537) Ungate zipcode and agency data sharing fields
-    // const [zipcodeValidationError, setZipcodeValidationError] =
-    //   useState<string>();
 
     /** Setting Tabs (Agency Information/Team Members) */
     const settingOptions: TabOption[] = [
@@ -202,15 +192,6 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
     const [descriptionValue, setDescriptionValue] = useState<string>(
       selectedAgency?.agency_description ?? ""
     );
-
-    // TODO(#1537) Ungate zipcode and agency data sharing fields
-    // const [selectedDataSharingTypes, setSelectedDataSharingTypes] = useState<
-    //   Set<string>
-    // >(
-    //   selectedAgency?.data_sharing_types
-    //     ? new Set(selectedAgency?.data_sharing_types.map((id) => String(id)))
-    //     : new Set()
-    // );
 
     /** Available agencies ("available" meaning excluding the current agency) to select from */
     const agencyIDs = agencies.map((agency) => +agency.id);
@@ -297,17 +278,6 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       ];
     };
 
-    // TODO(#1537) Ungate zipcode and agency data sharing fields
-    // const validateAndUpdateZipcode = (zipcode: string) => {
-    //   const isValidZipcode = validateAgencyZipcode(zipcode);
-    //   updateAgencyZipcode(zipcode);
-
-    //   if (zipcode === "" || isValidZipcode) {
-    //     return setZipcodeValidationError(undefined);
-    //   }
-    //   setZipcodeValidationError("Please enter a 5-digit zipcode");
-    // };
-
     const validateAndUpdateURL = (url: string) => {
       const isValidURL = validateAgencyURL(url);
       setURLValue(url);
@@ -329,14 +299,6 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
 
       // Update final agency URL
       updateAgencyURL(URLValue);
-
-      // Update final agency zipcode
-      // TODO(#1537) Ungate zipcode and agency data sharing fields
-      // updateAgencyZipcode(agencyProvisioningUpdates.zipcode);
-
-      // Update final list of data sharing types
-      // TODO(#1537) Ungate zipcode and agency data sharing fields
-      // updateDataSharingTypes(Array.from(selectedDataSharingTypes));
 
       /** Update final list of systems, child agencies, and team members */
       updateSystems(Array.from(selectedSystems));
@@ -471,30 +433,6 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
      * */
 
     /**
-     * Existing agency: an update has been made when the agency has a value for `agencyProvisioningUpdates.zipcode`
-     *                and it does not match the agency's zipcode before the modal was open.
-     * New agency: an update has been made when the agency has a value for `agencyProvisioningUpdates.zipcode`
-     */
-    // TODO(#1537) Ungate zipcode and agency data sharing fields
-    // const hasZipcodeUpdate = selectedAgency
-    //   ? Boolean(agencyProvisioningUpdates.zipcode) &&
-    //     agencyProvisioningUpdates.zipcode !== selectedAgency.zipcode
-    //   : Boolean(agencyProvisioningUpdates.zipcode);
-    /**
-     * An update has been made when the agency's # of data sharing type IDs and # of selected data sharing type IDs are not
-     * the same OR the list of current data sharing type IDs do not match the list
-     * of selected data sharing type IDs.
-     */
-    // TODO(#1537) Ungate zipcode and agency data sharing fields
-    // const hasDataSharingTypeUpdates =
-    //   selectedDataSharingTypes.size !==
-    //     agencyProvisioningUpdates.data_sharing_types.length ||
-    //   (agencyProvisioningUpdates.data_sharing_types.length > 0 &&
-    //     agencyProvisioningUpdates.data_sharing_types.filter((id) =>
-    //       selectedDataSharingTypes.has(id)
-    //     ).length === 0);
-
-    /**
      * Existing agency: an update has been made when the agency has a value for `agencyProvisioningUpdates.agency_description`
      *                and it does not match the agency's description before the modal was open, or value has been deleted.
      * New agency: an update has been made when the agency has a value for `agencyProvisioningUpdates.agency_description`
@@ -619,9 +557,6 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       hasChildAgenciesCopyUpdates && hasMetricsCopyUpdates;
     const hasAgencyInfoUpdates =
       hasNameUpdate ||
-      // TODO(#1537) Ungate zipcode and agency data sharing fields
-      // hasZipcodeUpdate ||
-      // hasDataSharingTypeUpdates ||
       hasDescriptionUpdate ||
       hasURLUpdate ||
       hasStateUpdate ||
@@ -638,8 +573,6 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
     const isSaveDisabled = isCopySuperagencyMetricSettingsSelected
       ? !hasCopySuperagencyMetricSettingsUpdates
       : isSaveInProgress ||
-        // TODO(#1537) Ungate zipcode and agency data sharing fields
-        // Boolean(zipcodeValidationError) ||
         Boolean(URLValidationError) ||
         !hasSystems ||
         (selectedAgency
@@ -725,15 +658,6 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       teamMembersSearchInput,
       ["id", "name", "email"]
     );
-
-    // TODO(#1537) Ungate zipcode and agency data sharing fields
-    // useEffect(() => {
-    //   setSelectedDataSharingTypes(
-    //     selectedAgency?.data_sharing_types
-    //       ? new Set(selectedAgency?.data_sharing_types.map((id) => String(id)))
-    //       : new Set()
-    //   );
-    // }, [selectedAgency]);
 
     /** Shows mini loader while fetching agency's team members */
     if (teamMemberListLoading) {
@@ -896,37 +820,6 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                       <label htmlFor="state">County</label>
                     </Styled.InputLabelWrapper>
 
-                    {/* Agency Zipcode Input */}
-                    {/* TODO(#1537) Ungate zipcode and agency data sharing fields */}
-                    {/* <Styled.InputLabelWrapper
-                      hasError={Boolean(zipcodeValidationError)}
-                    >
-                      <input
-                        id="agency-zipcode"
-                        name="agency-zipcode"
-                        type="text"
-                        maxLength={5}
-                        value={
-                          agencyProvisioningUpdates.zipcode ||
-                          selectedAgency?.zipcode ||
-                          ""
-                        }
-                        onChange={(e) =>
-                          validateAndUpdateZipcode(
-                            e.target.value.replace(/\D/g, "")
-                          )
-                        }
-                      />
-                      <Styled.LabelWrapper>
-                        <label htmlFor="agency-zipcode">Zipcode</label>
-                        {zipcodeValidationError && (
-                          <Styled.ErrorLabel>
-                            {zipcodeValidationError}
-                          </Styled.ErrorLabel>
-                        )}
-                      </Styled.LabelWrapper>
-                    </Styled.InputLabelWrapper> */}
-
                     {/* Agency Systems Input */}
                     {showSelectionBox === SelectionInputBoxTypes.SYSTEMS && (
                       <InteractiveSearchList
@@ -1053,61 +946,6 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                         )}
                       </Styled.LabelWrapper>
                     </Styled.InputLabelWrapper>
-
-                    {/* Data Sharing Type Checkboxes */}
-                    {/* TODO(#1537) Ungate zipcode and agency data sharing fields */}
-                    {/* {showSelectionBox ===
-                      SelectionInputBoxTypes.DATA_SHARING_TYPES && (
-                      <InteractiveSearchList
-                        list={dataSharingTypeNames}
-                        boxActionType={InteractiveSearchListActions.ADD}
-                        selections={selectedDataSharingTypes}
-                        buttons={interactiveSearchListCloseButton}
-                        updateSelections={({ id }) => {
-                          setSelectedDataSharingTypes((prev) =>
-                            toggleAddRemoveSetItem(prev, String(id))
-                          );
-                        }}
-                        searchByKeys={["name"]}
-                        metadata={{
-                          listBoxLabel: "Select Data Sharing Types",
-                        }}
-                        isActiveBox={
-                          showSelectionBox ===
-                          SelectionInputBoxTypes.DATA_SHARING_TYPES
-                        }
-                      />
-                    )}
-                    <Styled.InputLabelWrapper>
-                      <Styled.ChipContainer
-                        onClick={() =>
-                          setShowSelectionBox(
-                            SelectionInputBoxTypes.DATA_SHARING_TYPES
-                          )
-                        }
-                        fitContentHeight
-                        hoverable
-                      >
-                        {selectedDataSharingTypes.size === 0 ? (
-                          <Styled.EmptyListMessage>
-                            No data sharing types selected
-                          </Styled.EmptyListMessage>
-                        ) : (
-                          Array.from(selectedDataSharingTypes).map((type) => (
-                            <Styled.Chip key={type}>
-                              {
-                                dataSharingTypeNames.find(
-                                  (typeObj) => typeObj.id === type
-                                )?.name
-                              }
-                            </Styled.Chip>
-                          ))
-                        )}
-                      </Styled.ChipContainer>
-                      <Styled.ChipContainerLabel>
-                        Data Sharing Types
-                      </Styled.ChipContainerLabel>
-                    </Styled.InputLabelWrapper> */}
 
                     {/* Dashboard Enabled Checkbox */}
                     <Styled.InputLabelWrapper flexRow>

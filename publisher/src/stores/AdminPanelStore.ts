@@ -68,8 +68,6 @@ const initialEmptyAgencyProvisioningUpdates = {
   team: [],
   agency_description: "",
   agency_url: "",
-  zipcode: "",
-  data_sharing_types: [],
 };
 
 class AdminPanelStore {
@@ -513,14 +511,6 @@ class AdminPanelStore {
 
   updateAgencyURL(url: string) {
     this.agencyProvisioningUpdates.agency_url = url;
-  }
-
-  updateAgencyZipcode(zipcode: string) {
-    this.agencyProvisioningUpdates.zipcode = zipcode;
-  }
-
-  updateDataSharingTypes(types: string[]) {
-    this.agencyProvisioningUpdates.data_sharing_types = types;
   }
 
   saveAgencyName(name: string) {
