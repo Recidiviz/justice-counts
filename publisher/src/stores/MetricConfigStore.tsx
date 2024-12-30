@@ -25,6 +25,7 @@ import {
   MetricConfigurationSettingsOptions,
   MetricContext,
   MetricDimensionContext,
+  MetricDisaggregationContext,
   MetricDisaggregationDimensions,
   MetricDisaggregations,
 } from "@justice-counts/common/types";
@@ -88,6 +89,7 @@ class MetricConfigStore {
         enabled?: boolean;
         display_name?: string;
         is_breakdown_configured?: ConfigurationStatus | null;
+        contexts?: MetricDisaggregationContext[];
       };
     };
   };
@@ -276,6 +278,7 @@ class MetricConfigStore {
                 display_name: disaggregation.display_name,
                 enabled: disaggregation.enabled,
                 is_breakdown_configured: disaggregation.is_breakdown_configured,
+                contexts: disaggregation.contexts,
               }
             );
 
@@ -406,7 +409,7 @@ class MetricConfigStore {
     disaggregationKey: string,
     disaggregationData: Pick<
       MetricDisaggregations,
-      "display_name" | "enabled" | "is_breakdown_configured"
+      "display_name" | "enabled" | "is_breakdown_configured" | "contexts"
     >
   ) => {
     const systemMetricKey = MetricConfigStore.getSystemMetricKey(
@@ -1160,10 +1163,6 @@ class MetricConfigStore {
     otherDescription?: string
   ): UpdatedDisaggregation => {
     const ethnicitiesByRace = this.getEthnicitiesByRace(system, metricKey);
-    console.log(
-      "🚀 ~ MetricConfigStore ~ ethnicitiesByRace:",
-      ethnicitiesByRace
-    );
 
     Object.entries(racesStatusObject).forEach(([race, enabled]) =>
       ethnicities.forEach((ethnicity) => {
@@ -1204,20 +1203,14 @@ class MetricConfigStore {
       raceEthnicitiesDimensions &&
       (Object.values(raceEthnicitiesDimensions) as UpdatedDimension[]);
 
+    const otherDescriptionContext = this.disaggregations[systemMetricKey]?.[
+      RACE_ETHNICITY_DISAGGREGATION_KEY
+    ].contexts?.find((context) => context.key === "OTHER_RACE_DESCRIPTION");
+
     if (otherDescription !== undefined) {
-      dimensions
-        .filter((dimension) => dimension.race === "Other")
-        .forEach((otherDimension) => {
-          const updatedDimension = otherDimension;
-          if (Array.isArray(updatedDimension.contexts)) {
-            const context = updatedDimension.contexts.find(
-              (ctx) => ctx.key === "INCLUDES_EXCLUDES_DESCRIPTION"
-            );
-            if (context) {
-              context.value = otherDimension.enabled ? otherDescription : "";
-            }
-          }
-        });
+      if (otherDescriptionContext) {
+        otherDescriptionContext.value = otherDescription;
+      }
     }
 
     /** Return an object w/ all dimensions in the desired backend data structure for saving purposes */
@@ -1226,6 +1219,7 @@ class MetricConfigStore {
       disaggregations: [
         {
           key: RACE_ETHNICITY_DISAGGREGATION_KEY,
+          contexts: otherDescriptionContext && [otherDescriptionContext],
           dimensions,
         },
       ],

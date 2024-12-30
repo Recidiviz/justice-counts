@@ -31,7 +31,11 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
-import { useSettingsSearchParams } from "../AgencySettings";
+import {
+  getActiveSystemMetricKey,
+  useSettingsSearchParams,
+} from "../AgencySettings";
+import { RACE_ETHNICITY_DISAGGREGATION_KEY } from "./constants";
 import * as Styled from "./ModalForm.styled";
 import {
   Ethnicity,
@@ -53,6 +57,7 @@ function RaceEthnicitiesModalForm({
   const [settingsSearchParams] = useSettingsSearchParams();
   const { metricConfigStore } = useStore();
   const {
+    disaggregations,
     getEthnicitiesByRace,
     updateRacesDimensions,
     updateAllRaceEthnicitiesToDefaultState,
@@ -118,24 +123,13 @@ function RaceEthnicitiesModalForm({
         }
       : undefined;
 
+  const systemMetricKey = getActiveSystemMetricKey(settingsSearchParams);
+
   const currentOtherDescription =
-    Object.values(
-      Object.entries(ethnicitiesByRace).find(
-        ([race]) => race === "Other"
-      )?.[1] || {}
-    )
-      .find((ethnicity) => {
-        if (!canSpecifyEthnicity && !specifiesHispanicAsRace)
-          return ethnicity.key === "Other / Unknown Ethnicity";
-
-        if (!canSpecifyEthnicity && specifiesHispanicAsRace)
-          return ethnicity.key === "Other / Not Hispanic or Latino";
-
-        return ethnicity.key === "Other / Hispanic or Latino";
-      })
-      ?.contexts?.find(
-        (context) => context.key === "INCLUDES_EXCLUDES_DESCRIPTION"
-      )?.value || "";
+    disaggregations[systemMetricKey]?.[
+      RACE_ETHNICITY_DISAGGREGATION_KEY
+    ].contexts?.find((context) => context.key === "OTHER_RACE_DESCRIPTION")
+      ?.value || "";
 
   const [otherDescription, setOtherDescription] = useState(
     currentOtherDescription

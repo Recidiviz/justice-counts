@@ -22,6 +22,7 @@ import {
   MetricConfigurationSettingsOptions,
   MetricContext,
   MetricDimensionContext,
+  MetricDisaggregationContext,
   ReportFrequency,
 } from "@justice-counts/common/types";
 
@@ -38,6 +39,7 @@ export type MetricSettings = {
   disaggregations?: {
     key: string;
     enabled?: boolean;
+    contexts?: MetricDisaggregationContext[];
     dimensions?: {
       key: string;
       enabled?: boolean;
@@ -104,13 +106,13 @@ export type UpdatedDimension = {
   race: Races;
   ethnicity: Ethnicities;
   contexts?: MetricDimensionContext[];
-  other_description?: string;
 };
 
 export type UpdatedDisaggregation = {
   key: string;
   disaggregations: {
     key: string;
+    contexts?: MetricDisaggregationContext[];
     dimensions: UpdatedDimension[];
   }[];
 };

@@ -247,8 +247,15 @@ export interface MetricDisaggregations {
   helper_text: string | null | undefined;
   enabled?: boolean;
   should_sum_to_total: boolean;
+  contexts?: MetricDisaggregationContext[];
   is_breakdown_configured: ConfigurationStatus | null;
 }
+
+export type MetricDisaggregationContext = {
+  key?: string;
+  value?: string;
+  display_name?: string;
+};
 
 export type MetricDimensionContext = {
   key?: string;
