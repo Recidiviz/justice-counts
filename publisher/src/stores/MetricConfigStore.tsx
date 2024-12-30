@@ -24,6 +24,8 @@ import {
   MetricConfigurationSettings,
   MetricConfigurationSettingsOptions,
   MetricContext,
+  MetricDimensionContext,
+  MetricDisaggregationContext,
   MetricDisaggregationDimensions,
   MetricDisaggregations,
 } from "@justice-counts/common/types";
@@ -88,6 +90,7 @@ class MetricConfigStore {
         enabled?: boolean;
         display_name?: string;
         is_breakdown_configured?: ConfigurationStatus | null;
+        contexts?: MetricDisaggregationContext[];
       };
     };
   };
@@ -102,6 +105,7 @@ class MetricConfigStore {
           key?: string;
           race?: Races;
           ethnicity?: Ethnicities;
+          contexts?: MetricDimensionContext[];
           is_dimension_includes_excludes_configured?: ConfigurationStatus | null;
         };
       };
@@ -277,6 +281,7 @@ class MetricConfigStore {
                 display_name: disaggregation.display_name,
                 enabled: disaggregation.enabled,
                 is_breakdown_configured: disaggregation.is_breakdown_configured,
+                contexts: disaggregation.contexts,
               }
             );
 
@@ -288,6 +293,7 @@ class MetricConfigStore {
                       key: dimension.key,
                       enabled: dimension.enabled,
                       description: dimension.description,
+                      contexts: dimension.contexts,
                       race: dimension.race,
                       ethnicity: dimension.ethnicity,
                       is_dimension_includes_excludes_configured:
@@ -298,6 +304,7 @@ class MetricConfigStore {
                       key: dimension.key,
                       enabled: dimension.enabled,
                       description: dimension.description,
+                      contexts: dimension.contexts,
                       is_dimension_includes_excludes_configured:
                         dimension.is_dimension_includes_excludes_configured,
                     };
@@ -408,7 +415,7 @@ class MetricConfigStore {
     disaggregationKey: string,
     disaggregationData: Pick<
       MetricDisaggregations,
-      "display_name" | "enabled" | "is_breakdown_configured"
+      "display_name" | "enabled" | "is_breakdown_configured" | "contexts"
     >
   ) => {
     const systemMetricKey = MetricConfigStore.getSystemMetricKey(
@@ -438,6 +445,7 @@ class MetricConfigStore {
       | "ethnicity"
       | "description"
       | "is_dimension_includes_excludes_configured"
+      | "contexts"
     >
   ) => {
     const systemMetricKey = MetricConfigStore.getSystemMetricKey(
@@ -469,6 +477,8 @@ class MetricConfigStore {
     this.dimensions[systemMetricKey][disaggregationKey][
       dimensionKey
     ].description = dimensionData.description;
+    this.dimensions[systemMetricKey][disaggregationKey][dimensionKey].contexts =
+      dimensionData.contexts;
     this.dimensions[systemMetricKey][disaggregationKey][dimensionKey].enabled =
       dimensionData.enabled;
     if (disaggregationKey === RACE_ETHNICITY_DISAGGREGATION_KEY) {
@@ -1157,7 +1167,8 @@ class MetricConfigStore {
     state: StateKeys,
     gridStates: RaceEthnicitiesGridStates,
     system: AgencySystem,
-    metricKey: string
+    metricKey: string,
+    otherDescription?: string
   ): UpdatedDisaggregation => {
     const ethnicitiesByRace = this.getEthnicitiesByRace(system, metricKey);
 
@@ -1200,12 +1211,23 @@ class MetricConfigStore {
       raceEthnicitiesDimensions &&
       (Object.values(raceEthnicitiesDimensions) as UpdatedDimension[]);
 
+    const otherDescriptionContext = this.disaggregations[systemMetricKey]?.[
+      RACE_ETHNICITY_DISAGGREGATION_KEY
+    ].contexts?.find((context) => context.key === "OTHER_RACE_DESCRIPTION");
+
+    if (otherDescription !== undefined) {
+      if (otherDescriptionContext) {
+        otherDescriptionContext.value = otherDescription;
+      }
+    }
+
     /** Return an object w/ all dimensions in the desired backend data structure for saving purposes */
     return {
       key: metricKey,
       disaggregations: [
         {
           key: RACE_ETHNICITY_DISAGGREGATION_KEY,
+          contexts: otherDescriptionContext && [otherDescriptionContext],
           dimensions,
         },
       ],
