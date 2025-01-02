@@ -32,7 +32,6 @@ import {
 } from "@justice-counts/common/components/GlobalStyles";
 import { useWindowWidth } from "@justice-counts/common/hooks";
 import {
-  AgencySystem,
   AgencySystems,
   ReportFrequency,
   SupervisionSubsystems,
@@ -103,7 +102,7 @@ export const MetricsDataChart: React.FC = observer(() => {
   const currentMetric = currentSystem
     ? metricsBySystem[currentSystem]?.find(
         (m) => m.key === (metricSearchParam || enabledMetrics[0]?.key)
-      ) || metricsBySystem[currentSystem]?.[0]
+      ) || enabledMetrics[0]
     : undefined;
   const metricName = currentMetric?.display_name || "";
   const metricFrequency =
@@ -276,11 +275,34 @@ export const MetricsDataChart: React.FC = observer(() => {
               return (
                 <React.Fragment key={system}>
                   {currEnabledMetrics.length > 0 ? (
-                    <Styled.SystemNameContainer isSystemActive>
-                      <Styled.SystemName>
-                        {systemNameOrSystemNameWithSpan}
-                      </Styled.SystemName>
-                    </Styled.SystemNameContainer>
+                    <>
+                      <Styled.SystemNameContainer isSystemActive>
+                        <Styled.SystemName>
+                          {systemNameOrSystemNameWithSpan}
+                        </Styled.SystemName>
+                      </Styled.SystemNameContainer>
+                      <Styled.MetricsItemsContainer
+                        isSystemActive={
+                          system === currentSystem ||
+                          currEnabledMetrics.length > 0
+                        }
+                      >
+                        {currEnabledMetrics.map((metric) => (
+                          <Styled.MetricItem
+                            key={metric.key}
+                            selected={currentMetric.key === metric.key}
+                            onClick={() =>
+                              setSettingsSearchParams({
+                                system: system as AgencySystem,
+                                metric: metric.key,
+                              })
+                            }
+                          >
+                            {metric.display_name}
+                          </Styled.MetricItem>
+                        ))}
+                      </Styled.MetricsItemsContainer>
+                    </>
                   ) : (
                     <Styled.SystemNameContainer isSystemActive>
                       <Styled.SystemName>
@@ -289,27 +311,6 @@ export const MetricsDataChart: React.FC = observer(() => {
                       </Styled.SystemName>
                     </Styled.SystemNameContainer>
                   )}
-
-                  <Styled.MetricsItemsContainer
-                    isSystemActive={
-                      system === currentSystem || currEnabledMetrics.length > 0
-                    }
-                  >
-                    {currEnabledMetrics.map((metric) => (
-                      <Styled.MetricItem
-                        key={metric.key}
-                        selected={currentMetric.key === metric.key}
-                        onClick={() =>
-                          setSettingsSearchParams({
-                            system: system as AgencySystem,
-                            metric: metric.key,
-                          })
-                        }
-                      >
-                        {metric.display_name}
-                      </Styled.MetricItem>
-                    ))}
-                  </Styled.MetricsItemsContainer>
                 </React.Fragment>
               );
             })}
