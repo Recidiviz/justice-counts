@@ -32,6 +32,7 @@ import {
 } from "@justice-counts/common/components/GlobalStyles";
 import { useWindowWidth } from "@justice-counts/common/hooks";
 import {
+  AgencySystem,
   AgencySystems,
   ReportFrequency,
   SupervisionSubsystems,
@@ -214,13 +215,6 @@ export const MetricsDataChart: React.FC = observer(() => {
   if (!systemBelongsToAgency) {
     return <NotFound />;
   }
-  if (isLoading || !currentSystem || !currentMetric) {
-    return <Loading />;
-  }
-  if (loadingError) {
-    return <div>Error: {loadingError}</div>;
-  }
-
   if (enabledMetrics.length === 0) {
     return (
       <Styled.NoEnabledMetricsMessage>
@@ -235,6 +229,12 @@ export const MetricsDataChart: React.FC = observer(() => {
         to enable a metric.
       </Styled.NoEnabledMetricsMessage>
     );
+  }
+  if (isLoading || !currentSystem || !currentMetric) {
+    return <Loading />;
+  }
+  if (loadingError) {
+    return <div>Error: {loadingError}</div>;
   }
 
   return (
