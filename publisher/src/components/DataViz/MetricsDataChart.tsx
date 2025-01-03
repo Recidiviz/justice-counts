@@ -81,6 +81,7 @@ export const MetricsDataChart: React.FC = observer(() => {
 
   const { system: systemSearchParam, metric: metricSearchParam } =
     settingsSearchParams;
+
   /**
    * When navigating from Explore Data to Metric Settings, if it is a supervision subsystem,
    * then use the "SUPERVISION" system and metric params to redirect to the correct Metric Settings page
@@ -98,13 +99,12 @@ export const MetricsDataChart: React.FC = observer(() => {
           ),
         }
       : settingsSearchParams;
-  const enabledMetrics = agencyMetrics.filter((metric) => metric.enabled);
-  const currentSystem = systemSearchParam || currentAgency?.systems[0];
+  const currentSystem = systemSearchParam;
   const currentMetric = currentSystem
-    ? metricsBySystem[currentSystem]?.find(
-        (m) => m.key === (metricSearchParam || enabledMetrics[0]?.key)
-      ) || metricsBySystem[currentSystem]?.[0]
+    ? metricsBySystem[currentSystem]?.find((m) => m.key === metricSearchParam)
     : undefined;
+  const enabledMetrics = agencyMetrics.filter((metric) => metric.enabled);
+
   const metricName = currentMetric?.display_name || "";
   const metricFrequency =
     currentMetric?.custom_frequency || currentMetric?.frequency;
@@ -167,6 +167,18 @@ export const MetricsDataChart: React.FC = observer(() => {
         setIsLoading(false);
         return setLoadingError(result.message);
       }
+
+      // Initialize the search params with the first enabled system and metric
+      const currentEnabledMetrics = Object.values(result)
+        .flatMap((metric) => metric)
+        .filter((metric) => metric.enabled);
+      const firstEnabledSystemKey = currentEnabledMetrics[0]?.system.key;
+      const firstEnabledMetricKey = currentEnabledMetrics[0]?.key;
+
+      setSettingsSearchParams({
+        system: firstEnabledSystemKey,
+        metric: firstEnabledMetricKey,
+      });
       /**
        * Wait for `initializeReportSettings` so we can look up each metric frequency
        * to filter out datapoints w/ frequencies that do not match the currently set frequency
@@ -212,17 +224,11 @@ export const MetricsDataChart: React.FC = observer(() => {
     }
   }, [windowWidth]);
 
-  if (!systemBelongsToAgency) {
+  if (currentSystem && !systemBelongsToAgency) {
     return <NotFound />;
   }
-  if (isLoading || !currentSystem || !currentMetric) {
-    return <Loading />;
-  }
-  if (loadingError) {
-    return <div>Error: {loadingError}</div>;
-  }
 
-  if (enabledMetrics.length === 0) {
+  if (!isLoading && enabledMetrics.length === 0) {
     return (
       <Styled.NoEnabledMetricsMessage>
         There are no enabled metrics to view. Please go to{" "}
@@ -236,6 +242,13 @@ export const MetricsDataChart: React.FC = observer(() => {
         to enable a metric.
       </Styled.NoEnabledMetricsMessage>
     );
+  }
+
+  if (isLoading || !currentSystem || !currentMetric) {
+    return <Loading />;
+  }
+  if (loadingError) {
+    return <div>Error: {loadingError}</div>;
   }
 
   return (
@@ -276,11 +289,34 @@ export const MetricsDataChart: React.FC = observer(() => {
               return (
                 <React.Fragment key={system}>
                   {currEnabledMetrics.length > 0 ? (
-                    <Styled.SystemNameContainer isSystemActive>
-                      <Styled.SystemName>
-                        {systemNameOrSystemNameWithSpan}
-                      </Styled.SystemName>
-                    </Styled.SystemNameContainer>
+                    <>
+                      <Styled.SystemNameContainer isSystemActive>
+                        <Styled.SystemName>
+                          {systemNameOrSystemNameWithSpan}
+                        </Styled.SystemName>
+                      </Styled.SystemNameContainer>
+                      <Styled.MetricsItemsContainer
+                        isSystemActive={
+                          system === currentSystem ||
+                          currEnabledMetrics.length > 0
+                        }
+                      >
+                        {currEnabledMetrics.map((metric) => (
+                          <Styled.MetricItem
+                            key={metric.key}
+                            selected={currentMetric.key === metric.key}
+                            onClick={() =>
+                              setSettingsSearchParams({
+                                system: system as AgencySystem,
+                                metric: metric.key,
+                              })
+                            }
+                          >
+                            {metric.display_name}
+                          </Styled.MetricItem>
+                        ))}
+                      </Styled.MetricsItemsContainer>
+                    </>
                   ) : (
                     <Styled.SystemNameContainer isSystemActive>
                       <Styled.SystemName>
@@ -289,27 +325,6 @@ export const MetricsDataChart: React.FC = observer(() => {
                       </Styled.SystemName>
                     </Styled.SystemNameContainer>
                   )}
-
-                  <Styled.MetricsItemsContainer
-                    isSystemActive={
-                      system === currentSystem || currEnabledMetrics.length > 0
-                    }
-                  >
-                    {currEnabledMetrics.map((metric) => (
-                      <Styled.MetricItem
-                        key={metric.key}
-                        selected={currentMetric.key === metric.key}
-                        onClick={() =>
-                          setSettingsSearchParams({
-                            system: system as AgencySystem,
-                            metric: metric.key,
-                          })
-                        }
-                      >
-                        {metric.display_name}
-                      </Styled.MetricItem>
-                    ))}
-                  </Styled.MetricsItemsContainer>
                 </React.Fragment>
               );
             })}
