@@ -169,11 +169,11 @@ export const MetricsDataChart: React.FC = observer(() => {
       }
 
       // Initialize the search params with the first enabled system and metric
-      const refreshedEnabledMetrics = Object.values(result)
+      const currentEnabledMetrics = Object.values(result)
         .flatMap((metric) => metric)
         .filter((metric) => metric.enabled);
-      const firstEnabledSystemKey = refreshedEnabledMetrics[0]?.system.key;
-      const firstEnabledMetricKey = refreshedEnabledMetrics[0]?.key;
+      const firstEnabledSystemKey = currentEnabledMetrics[0]?.system.key;
+      const firstEnabledMetricKey = currentEnabledMetrics[0]?.key;
 
       setSettingsSearchParams({
         system: firstEnabledSystemKey,
