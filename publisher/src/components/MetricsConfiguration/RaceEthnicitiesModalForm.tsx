@@ -134,11 +134,9 @@ function RaceEthnicitiesModalForm({
   const [otherDescription, setOtherDescription] = useState(
     currentOtherDescription
   );
-  const [isOtherChecked, setOtherChecked] = useState(Boolean(otherDescription));
-
-  useEffect(() => {
-    setOtherDescription(currentOtherDescription);
-  }, [currentOtherDescription]);
+  const [isOtherChecked, setOtherChecked] = useState(
+    Boolean(currentOtherDescription)
+  );
 
   useEffect(() => {
     setRacesStatusObject((prev) => ({
@@ -158,7 +156,7 @@ function RaceEthnicitiesModalForm({
           isEnabled: race === "Other" && isOtherChecked,
           placeholder:
             "Please describe additional definition/clarification of the 'Other' selection.",
-          value: currentOtherDescription,
+          value: otherDescription,
           onChange: (value: string) => setOtherDescription(value),
         };
 

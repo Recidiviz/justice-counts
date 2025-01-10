@@ -290,7 +290,6 @@ class MetricConfigStore {
                       key: dimension.key,
                       enabled: dimension.enabled,
                       description: dimension.description,
-                      contexts: dimension.contexts,
                       race: dimension.race,
                       ethnicity: dimension.ethnicity,
                       is_dimension_includes_excludes_configured:
@@ -301,7 +300,6 @@ class MetricConfigStore {
                       key: dimension.key,
                       enabled: dimension.enabled,
                       description: dimension.description,
-                      contexts: dimension.contexts,
                       is_dimension_includes_excludes_configured:
                         dimension.is_dimension_includes_excludes_configured,
                     };
@@ -439,7 +437,6 @@ class MetricConfigStore {
       | "ethnicity"
       | "description"
       | "is_dimension_includes_excludes_configured"
-      | "contexts"
     >
   ) => {
     const systemMetricKey = MetricConfigStore.getSystemMetricKey(
@@ -471,8 +468,6 @@ class MetricConfigStore {
     this.dimensions[systemMetricKey][disaggregationKey][
       dimensionKey
     ].description = dimensionData.description;
-    this.dimensions[systemMetricKey][disaggregationKey][dimensionKey].contexts =
-      dimensionData.contexts;
     this.dimensions[systemMetricKey][disaggregationKey][dimensionKey].enabled =
       dimensionData.enabled;
     if (disaggregationKey === RACE_ETHNICITY_DISAGGREGATION_KEY) {
@@ -1207,10 +1202,8 @@ class MetricConfigStore {
       RACE_ETHNICITY_DISAGGREGATION_KEY
     ].contexts?.find((context) => context.key === "OTHER_RACE_DESCRIPTION");
 
-    if (otherDescription !== undefined) {
-      if (otherDescriptionContext) {
-        otherDescriptionContext.value = otherDescription;
-      }
+    if (otherDescription !== undefined && otherDescriptionContext) {
+      otherDescriptionContext.value = otherDescription;
     }
 
     /** Return an object w/ all dimensions in the desired backend data structure for saving purposes */
