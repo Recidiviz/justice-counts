@@ -739,13 +739,15 @@ export const datapointMatchingEnabledDimension = (
   metrics: Metric[]
 ) => {
   if (dp.dimension_display_name) {
-    return metrics.find((metric) =>
-      metric.disaggregations.find((disaggregation) =>
-        disaggregation.dimensions
-          .filter((dimension) => dimension.enabled)
-          .map((dimension) => dimension.key)
-          .includes(dp.dimension_display_name as string)
-      )
+    return metrics.find(
+      (metric) =>
+        dp.metric_definition_key === metric.key &&
+        metric.disaggregations.find((disaggregation) => {
+          return disaggregation.dimensions
+            .filter((dimension) => dimension.enabled)
+            .map((dimension) => dimension.key)
+            .includes(dp.dimension_display_name as string);
+        })
     );
   }
 
