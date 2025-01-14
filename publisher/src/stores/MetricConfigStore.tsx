@@ -1198,11 +1198,18 @@ class MetricConfigStore {
       raceEthnicitiesDimensions &&
       (Object.values(raceEthnicitiesDimensions) as UpdatedDimension[]);
 
-    const otherDescriptionContext = this.disaggregations[systemMetricKey]?.[
-      RACE_ETHNICITY_DISAGGREGATION_KEY
-    ].contexts?.find((context) => context.key === "OTHER_RACE_DESCRIPTION");
+    const defaultOtherDescriptionContext: MetricDisaggregationContext = {
+      key: "OTHER_RACE_DESCRIPTION",
+      value: "",
+    };
 
-    if (otherDescription !== undefined && otherDescriptionContext) {
+    const otherDescriptionContext =
+      this.disaggregations[systemMetricKey]?.[
+        RACE_ETHNICITY_DISAGGREGATION_KEY
+      ].contexts?.find((context) => context.key === "OTHER_RACE_DESCRIPTION") ||
+      defaultOtherDescriptionContext;
+
+    if (otherDescription !== undefined) {
       otherDescriptionContext.value = otherDescription;
     }
 
@@ -1212,7 +1219,7 @@ class MetricConfigStore {
       disaggregations: [
         {
           key: RACE_ETHNICITY_DISAGGREGATION_KEY,
-          contexts: otherDescriptionContext && [otherDescriptionContext],
+          contexts: [otherDescriptionContext],
           dimensions,
         },
       ],
