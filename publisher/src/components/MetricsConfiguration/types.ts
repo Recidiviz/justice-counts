@@ -71,6 +71,7 @@ export type ReportFrequencyUpdate = {
 
 export type SettingsByIncludesExcludesKey = {
   [includesExcludesKey: string]: {
+    multiselect: boolean;
     description?: string;
     settings: {
       [settingKey: string]: Partial<MetricConfigurationSettings>;
