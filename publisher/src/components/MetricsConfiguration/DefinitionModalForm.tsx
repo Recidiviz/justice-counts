@@ -419,7 +419,7 @@ function DefinitionModalForm({
     ? metrics[systemMetricKey]?.description
     : currentDimension?.description;
 
-  const handleOtherDimensionUpdate = () => {
+  const handleOtherDimensionUpdate = async () => {
     const otherDimensionKey =
       currentDimensions && getOtherDimensonKey(currentDimensions);
 
@@ -435,12 +435,11 @@ function DefinitionModalForm({
         otherDimensionKey,
         !!currentContexts.ADDITIONAL_CONTEXT.value
       );
-      saveMetricSettings(updatedSetting, agencyId);
+      await saveMetricSettings(updatedSetting, agencyId);
     }
   };
 
   const handleCloseModal = () => {
-    handleOtherDimensionUpdate();
     closeModal();
   };
 
@@ -567,7 +566,8 @@ function DefinitionModalForm({
           {!isReadOnly && !hasNoSettingsAndNoContext && (
             <Button
               label="Save"
-              onClick={() => {
+              onClick={async () => {
+                await handleOtherDimensionUpdate();
                 handleSaveSettings();
                 handleCloseModal();
               }}
