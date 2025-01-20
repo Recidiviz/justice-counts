@@ -297,6 +297,46 @@ function DefinitionModalForm({
             contextsToSave.push({ key, value });
           });
         }
+
+        // below we updating any "Other" dimension separately because it depends on ADDITIONAL_CONTEXT value
+        const otherDimensionKey =
+          currentDimensions && getOtherDimensonKey(currentDimensions);
+        if (
+          otherDimensionKey &&
+          activeDimensionKey === otherDimensionKey &&
+          currentContexts.ADDITIONAL_CONTEXT?.value !== undefined
+        ) {
+          updateDimensionEnabledStatus(
+            systemSearchParam,
+            metricSearchParam,
+            activeDisaggregationKey,
+            otherDimensionKey,
+            !!currentContexts.ADDITIONAL_CONTEXT.value
+          );
+
+          const updatedOtherSettingsAndContexts = {
+            key: metricSearchParam,
+            disaggregations: [
+              {
+                key: activeDisaggregationKey,
+                dimensions: [
+                  {
+                    key: otherDimensionKey,
+                    settings: settingsToSave,
+                    contexts: contextsToSave,
+                    enabled: !!currentContexts.ADDITIONAL_CONTEXT.value,
+                    is_dimension_includes_excludes_configured:
+                      configurationStatusSettings?.is_dimension_includes_excludes_configured ??
+                      null,
+                  },
+                ],
+              },
+            ],
+          };
+          saveMetricSettings(updatedOtherSettingsAndContexts, agencyId);
+          return;
+        }
+
         const updatedSettingsAndContexts = {
           key: metricSearchParam,
           disaggregations: [
@@ -315,6 +355,7 @@ function DefinitionModalForm({
             },
           ],
         };
+
         saveMetricSettings(updatedSettingsAndContexts, agencyId);
         return;
       }
@@ -418,26 +459,6 @@ function DefinitionModalForm({
   const displayDescription = isMetricDefinitionSettings
     ? metrics[systemMetricKey]?.description
     : currentDimension?.description;
-
-  const handleOtherDimensionUpdate = async () => {
-    const otherDimensionKey =
-      currentDimensions && getOtherDimensonKey(currentDimensions);
-
-    if (
-      hasActiveDisaggregationAndDimensionKey &&
-      otherDimensionKey &&
-      activeDimensionKey === otherDimensionKey
-    ) {
-      const updatedSetting = updateDimensionEnabledStatus(
-        systemSearchParam,
-        metricSearchParam,
-        activeDisaggregationKey,
-        otherDimensionKey,
-        !!currentContexts.ADDITIONAL_CONTEXT.value
-      );
-      await saveMetricSettings(updatedSetting, agencyId);
-    }
-  };
 
   const handleCloseModal = () => {
     closeModal();
@@ -566,8 +587,7 @@ function DefinitionModalForm({
           {!isReadOnly && !hasNoSettingsAndNoContext && (
             <Button
               label="Save"
-              onClick={async () => {
-                await handleOtherDimensionUpdate();
+              onClick={() => {
                 handleSaveSettings();
                 handleCloseModal();
               }}
