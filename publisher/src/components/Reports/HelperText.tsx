@@ -69,7 +69,7 @@ const HelperTextContainer = styled.div`
 `;
 
 const HelperTextSection = styled.div`
-  margin-bottom: 31px;
+  margin-bottom: 24px;
 
   &:last-child {
     margin-bottom: 0;
@@ -98,12 +98,12 @@ const HelperTextContent = styled.div`
 `;
 
 const HelperTextMetricName = styled.div`
-  ${typography.sizeCSS.medium}
-  margin-bottom: 6px;
+  ${typography.sizeCSS.normal}
+  margin-bottom: 16px;
 `;
 
 const HelperTextMetricDescription = styled.div`
-  color: ${palette.highlight.grey10};
+  font-weight: 400;
 `;
 
 const Term = styled.span`
@@ -152,13 +152,13 @@ const HelperText: React.FC<{
       )}
 
       <HelperTextSection>
-        <HelperTextTitle>
+        <HelperTextMetricDescription>
           Additional context can be viewed and entered via the{" "}
           <HelperTextLink onClick={() => navigate("../metric-config")}>
             Metric Configuration
           </HelperTextLink>{" "}
           page in Settings.
-        </HelperTextTitle>
+        </HelperTextMetricDescription>
       </HelperTextSection>
     </HelperTextContainer>
   );

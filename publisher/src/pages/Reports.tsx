@@ -323,7 +323,7 @@ const Reports: React.FC = () => {
       <>
         {filteredReportsMemoized.length > 0 ? (
           sortedReportsEntries.map(([reportYear, reports]) => (
-            <>
+            <Fragment key={reportYear}>
               {/* Only show report year marker for prior years (before current year) */}
               {new Date().getUTCFullYear() !== Number(reportYear) && (
                 <Row noHover isRowReportYear>
@@ -463,7 +463,7 @@ const Reports: React.FC = () => {
                     </Fragment>
                   );
                 })}
-            </>
+            </Fragment>
           ))
         ) : (
           <NoReportsDisplay>

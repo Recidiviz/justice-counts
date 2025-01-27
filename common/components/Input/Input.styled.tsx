@@ -259,7 +259,8 @@ export const NewInputLabel = styled.label<{ error: boolean }>`
 `;
 
 export const ErrorMessage = styled.div<{ settingsCustomMargin?: boolean }>`
-  ${typography.body}
+  ${typography.sizeCSS.small}
+  font-weight: 400;
   color: ${palette.solid.red};
   margin-top: ${({ settingsCustomMargin }) =>
     settingsCustomMargin ? "-4px" : "8px"};

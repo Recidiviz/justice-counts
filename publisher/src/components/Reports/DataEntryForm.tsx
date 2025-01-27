@@ -49,7 +49,6 @@ import {
   MetricSectionTitle,
   MetricSectionTitleWrapper,
   MetricSystemTitle,
-  PreTitle,
   TabbedDisaggregations,
   Title,
 } from "../Forms";
@@ -278,7 +277,6 @@ const DataEntryForm: React.FC<{
           <FormFieldSet disabled={isReadOnly}>
             {/* Form Title */}
             <DataEntryFormTitleWrapper>
-              <PreTitle>Enter Data</PreTitle>
               <Title>
                 {reportOverview &&
                   printReportTitle(

@@ -15,7 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { Input } from "@justice-counts/common/components/Input";
+import { NewInput } from "@justice-counts/common/components/Input";
 import {
   Metric,
   MetricDisaggregationDimensions,
@@ -53,7 +53,7 @@ export const MetricTextInput = observer(
       updateMetricsValues(reportID, metric.key, e.target.value, metric.enabled);
 
     return (
-      <Input
+      <NewInput
         label={metric.label}
         error={metricsValues[reportID]?.[metric.key]?.error}
         type="text"
@@ -73,6 +73,7 @@ export const MetricTextInput = observer(
         onFocus={updateFieldDescription}
         onBlur={clearFieldDescription}
         disabled={disabled}
+        settingsCustomMargin
       />
     );
   }
@@ -115,7 +116,7 @@ export const DisaggregationDimensionTextInput = observer(
       );
 
     return (
-      <Input
+      <NewInput
         key={dimension.key}
         label={customLabel || dimension.label}
         error={
@@ -153,6 +154,7 @@ export const DisaggregationDimensionTextInput = observer(
           tooltipLinkLabel: "Settings",
           tooltipLink: () => navigate(`/agency/${agencyId}/metric-config`),
         }}
+        settingsCustomMargin
       />
     );
   }
