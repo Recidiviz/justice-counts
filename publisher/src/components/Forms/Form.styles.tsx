@@ -100,8 +100,7 @@ export const TitleWrapper = styled.div<TitleWrapperProps>`
 `;
 
 export const DataEntryFormTitleWrapper = styled.div`
-  width: ${DATA_ENTRY_WIDTH + 2}px;
-  margin: 0 -1px;
+  width: ${DATA_ENTRY_WIDTH + 4}px;
   position: fixed;
   top: ${HEADER_BAR_HEIGHT}px;
   padding-top: 32px;
@@ -137,6 +136,7 @@ export const MetricSummarySectionTitle = styled.div`
 export const Title = styled.h1`
   ${typography.sizeCSS.title};
   margin-top: 16px;
+  margin-bottom: 8px;
   transition: 0.3s ease;
 `;
 
