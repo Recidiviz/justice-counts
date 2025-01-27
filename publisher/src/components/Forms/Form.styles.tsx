@@ -130,7 +130,7 @@ export const OnePanelBackLinkContainer = styled(PreTitle)`
 export const MetricSummarySectionTitle = styled.div`
   ${typography.sizeCSS.normal}
   text-transform: capitalize;
-  margin-top: 6px;
+  margin: 6px 0;
   margin-right: 17px;
 `;
 
@@ -151,10 +151,10 @@ export const MetricSectionTitleWrapper = styled.div`
 `;
 
 export const MetricSectionTitle = styled.div<{ notReporting?: boolean }>`
-  ${typography.sizeCSS.large}
+  ${typography.sizeCSS.medium}
   text-transform: capitalize;
   margin-right: 17px;
-  margin-top: 32px;
+  margin-bottom: 8px;
   color: ${({ notReporting }) =>
     notReporting ? palette.highlight.grey8 : palette.solid.darkgrey};
 `;
@@ -163,30 +163,25 @@ export const MetricSystemTitle = styled(MetricSectionTitle)<{
   firstTitle?: boolean;
 }>`
   color: ${palette.highlight.grey8};
-  border-top: ${({ firstTitle }) =>
-    firstTitle ? `none` : `1px solid ${palette.highlight.grey8}`};
-  padding-top: ${({ firstTitle }) => (firstTitle ? `none` : `30px`)};
+  padding-top: ${({ firstTitle }) => (firstTitle ? `none` : `24px`)};
   width: 100%;
   text-transform: capitalize;
-
-  &:first-child {
-    border-top: none;
-  }
 `;
 
 export const MetricSectionSubTitle = styled.div`
-  ${typography.sizeCSS.medium}
+  ${typography.sizeCSS.normal}
+  font-weight: 400;
   color: ${palette.highlight.grey8};
-  margin-top: 8px;
-  margin-bottom: 16px;
+  margin-bottom: 24px;
 `;
 
 export const DisabledMetricsInfoWrapper = styled.div`
   ${typography.sizeCSS.normal}
+  font-weight: 400;
   color: ${palette.highlight.grey8};
   padding-top: 10px;
   margin-top: 1px;
-  border-top: 1px solid ${palette.highlight.grey9};
+  border-top: 1px solid ${palette.solid.lightgrey4};
 `;
 
 export const DisabledMetricsInfoLink = styled.span`
@@ -198,12 +193,14 @@ export const DisabledMetricsInfoLink = styled.span`
 export const DisaggregationDisplayContainer = styled.div`
   display: flex;
   flex-direction: column;
+  padding-bottom: 8px;
+  margin-bottom: 40px;
+  border-bottom: 1px solid ${palette.solid.lightgrey4};
 `;
 
 export const DisaggregationsTabbedBarContainer = styled.div`
   width: 100%;
-  margin-bottom: 32px;
-  border-bottom: 1px solid ${palette.solid.darkgrey};
+  margin: 24px 0;
 
   @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
     display: none;
@@ -271,6 +268,7 @@ export const DisaggregationDimensions = styled.div`
 
 export const DisaggregationInputWrapper = styled.div`
   width: 49%;
+  padding-bottom: 24px;
 
   label {
     width: 100%;
@@ -278,6 +276,10 @@ export const DisaggregationInputWrapper = styled.div`
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+
+  input {
+    height: 36px;
   }
 
   @media only screen and (max-width: ${SINGLE_COLUMN_MAX_WIDTH}px) {
@@ -342,5 +344,5 @@ export const OpacityGradient = styled.div`
 
 export const EthnicityHeader = styled.div`
   width: 100%;
-  margin-bottom: 20px;
+  margin-bottom: 16px;
 `;
