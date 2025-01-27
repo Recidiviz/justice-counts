@@ -1072,7 +1072,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                           </Styled.ChipContainerLabel>
                         </Styled.InputLabelWrapper>
 
-                        {hasSystems && hasChildAgencies && (
+                        {hasSystems && hasChildAgencies && selectedIDToEdit && (
                           <>
                             <Styled.InputLabelWrapper flexRow wrapLabelText>
                               <input
