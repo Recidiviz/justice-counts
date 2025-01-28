@@ -57,7 +57,7 @@ export const TaskCard: React.FC<{
               return;
             const isReadOnlyCreateRecordTaskCard =
               isUserReadOnly &&
-              action.path === taskCardLabelsActionLinks.createRecord.path &&
+              action.path === taskCardLabelsActionLinks.manualEntry.path &&
               !recordID;
             const tooltipAnchorID =
               action.path === taskCardLabelsActionLinks.uploadData.path ||
