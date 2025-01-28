@@ -56,11 +56,14 @@ export const TaskCard: React.FC<{
             )
               return;
             const isReadOnlyCreateRecordTaskCard =
-              isUserReadOnly && action.path === "records/" && !recordID;
+              isUserReadOnly &&
+              action.path === taskCardLabelsActionLinks.createRecord.path &&
+              !recordID;
             const tooltipAnchorID =
-              action.path === "upload" || isReadOnlyCreateRecordTaskCard
+              action.path === taskCardLabelsActionLinks.uploadData.path ||
+              isReadOnlyCreateRecordTaskCard
                 ? `${HomeStore.replaceSpacesAndParenthesesWithHyphen(
-                    title
+                    `${title}-${action.label}`
                   )}-tooltip-anchor`
                 : undefined;
             /** Which action type is this? */
@@ -74,19 +77,26 @@ export const TaskCard: React.FC<{
             const isSuperagencyAddDataTaskCard =
               key === "SUPERAGENCY_UPLOAD_DATA";
             /** Add `/review` to Publish Actions' navigation path  */
-            const reviewPagePath = isPublishAction ? "/review" : "";
+            const reviewPagePath = isPublishAction
+              ? taskCardLabelsActionLinks.review.path
+              : "";
 
             return (
               <Styled.TaskCardActionLink
                 id={tooltipAnchorID}
                 key={action.label}
+                disabled={isReadOnlyCreateRecordTaskCard}
                 onClick={() => {
                   if (isSetMetricAvailabilityAction) {
                     return navigate(`./${action.path + metricSettingsParams}`);
                   }
                   if (isManualEntryAction) {
                     return navigate(
-                      `./${action.path + (recordID || `create`)}`,
+                      `./${
+                        action.path +
+                        (recordID ||
+                          taskCardLabelsActionLinks.createRecord.path)
+                      }`,
                       {
                         state: { scrollToMetricKey: metricKey, from: "Home" },
                       }
@@ -111,21 +121,26 @@ export const TaskCard: React.FC<{
                 }}
               >
                 {action.label}
-                {tooltipAnchorID && !isSuperagencyAddDataTaskCard && (
-                  <Tooltip
-                    anchorId={tooltipAnchorID}
-                    position="top"
-                    content="You can also upload data for other metrics within the same file"
-                    centerText
-                  />
-                )}
-                {tooltipAnchorID && isReadOnlyCreateRecordTaskCard && (
-                  <Tooltip
-                    anchorId={tooltipAnchorID}
-                    position="top"
-                    content="You do not have permissions to create records, please reach out to your administrator for more assistance"
-                    centerText
-                  />
+                {tooltipAnchorID && (
+                  <>
+                    {!isSuperagencyAddDataTaskCard &&
+                      !isReadOnlyCreateRecordTaskCard && (
+                        <Tooltip
+                          anchorId={tooltipAnchorID}
+                          position="top"
+                          content="You can also upload data for other metrics within the same file"
+                          centerText
+                        />
+                      )}
+                    {isReadOnlyCreateRecordTaskCard && (
+                      <Tooltip
+                        anchorId={tooltipAnchorID}
+                        position="top"
+                        content="You do not have permissions to create records, please reach out to your administrator for more assistance"
+                        centerText
+                      />
+                    )}
+                  </>
                 )}
               </Styled.TaskCardActionLink>
             );

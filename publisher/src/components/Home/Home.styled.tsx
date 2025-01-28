@@ -118,8 +118,13 @@ export const TaskCardActionLinksWrapper = styled.div`
   gap: 24px;
 `;
 
-export const TaskCardActionLink = styled.div`
+export const TaskCardActionLink = styled.button`
+  all: unset;
   color: ${palette.solid.blue};
+
+  &:disabled {
+    color: ${palette.highlight.grey8} !important;
+  }
 
   &:hover {
     cursor: pointer;
