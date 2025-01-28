@@ -28,7 +28,8 @@ import * as Styled from "./Home.styled";
 export const TaskCard: React.FC<{
   metadata: TaskCardMetadata;
   isSuperagency?: boolean;
-}> = observer(({ metadata, isSuperagency }) => {
+  isUserReadOnly?: boolean;
+}> = observer(({ metadata, isSuperagency, isUserReadOnly }) => {
   const { formStore } = useStore();
   const navigate = useNavigate();
   const {
@@ -54,8 +55,10 @@ export const TaskCard: React.FC<{
               action.label === taskCardLabelsActionLinks.uploadData.label
             )
               return;
+            const isReadOnlyCreateRecordTaskCard =
+              isUserReadOnly && action.path === "records/" && !recordID;
             const tooltipAnchorID =
-              action.path === "upload"
+              action.path === "upload" || isReadOnlyCreateRecordTaskCard
                 ? `${HomeStore.replaceSpacesAndParenthesesWithHyphen(
                     title
                   )}-tooltip-anchor`
@@ -113,6 +116,14 @@ export const TaskCard: React.FC<{
                     anchorId={tooltipAnchorID}
                     position="top"
                     content="You can also upload data for other metrics within the same file"
+                    centerText
+                  />
+                )}
+                {tooltipAnchorID && isReadOnlyCreateRecordTaskCard && (
+                  <Tooltip
+                    anchorId={tooltipAnchorID}
+                    position="top"
+                    content="You do not have permissions to create records, please reach out to your administrator for more assistance"
                     centerText
                   />
                 )}

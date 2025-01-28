@@ -33,7 +33,7 @@ export const Home = observer(() => {
   const { agencyId } = useParams() as { agencyId: string };
   const navigate = useNavigate();
 
-  const { name, isAgencySuperagency } = userStore;
+  const { name, isAgencySuperagency, isUserReadOnly } = userStore;
   const {
     loading,
     systemSelectionOptions,
@@ -63,6 +63,7 @@ export const Home = observer(() => {
   };
 
   const isSuperagency = isAgencySuperagency(agencyId);
+  const isReadOnly = isUserReadOnly(agencyId);
   const hasMonthlyRecordsToPublish =
     publishMetricsTaskCardMetadatas &&
     publishMetricsTaskCardMetadatas.MONTHLY.length > 0;
@@ -136,6 +137,7 @@ export const Home = observer(() => {
                         key={taskCardMetadata.key}
                         metadata={taskCardMetadata}
                         isSuperagency={isSuperagency}
+                        isUserReadOnly={isReadOnly}
                       />
                     )
                   )}
