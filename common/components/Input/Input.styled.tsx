@@ -210,6 +210,7 @@ export const TooltipLink = styled.span`
 `;
 
 export const NewInputWrapper = styled.div`
+  position: relative;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -264,4 +265,15 @@ export const ErrorMessage = styled.div<{ settingsCustomMargin?: boolean }>`
   color: ${palette.solid.red};
   margin-top: ${({ settingsCustomMargin }) =>
     settingsCustomMargin ? "-4px" : "8px"};
+`;
+
+export const NewInputTooltipWrapper = styled.span`
+  position: absolute;
+  bottom: 6px;
+  right: 8px;
+
+  & > img {
+    width: 16px;
+    height: 16px;
+  }
 `;
