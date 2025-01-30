@@ -97,6 +97,16 @@ export type AgencyMetric = {
   sector: string;
 };
 
+export type Vendor = {
+  id: string;
+  name: string;
+  url: string;
+};
+
+export type VendorResponse = {
+  vendors: Vendor[];
+};
+
 export type AgencyWithTeamByID = Omit<Agency, "team"> & {
   team: Record<string, AgencyTeamMember[]>;
 };
