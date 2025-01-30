@@ -28,6 +28,8 @@ export const taskCardLabelsActionLinks: TaskCardActionLinksMetadataList = {
   publish: { label: "Publish", path: "records/" },
   uploadData: { label: "Bulk Upload", path: "upload" },
   manualEntry: { label: "Manual Entry", path: "records/" },
+  createRecord: { label: "Create Record", path: "create" },
+  review: { label: "Review", path: "/review" },
   metricAvailability: {
     label: "Set Metric Availability",
     path: "metric-config",
