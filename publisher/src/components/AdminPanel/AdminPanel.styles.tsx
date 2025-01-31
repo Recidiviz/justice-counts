@@ -919,17 +919,23 @@ export const VendorsScrollableInnerWrapper = styled.div`
 export const VendorsTitle = styled.div`
   ${typography.sizeCSS.normal};
   color: ${palette.highlight.grey8};
-  margin-bottom: 4px;
+  margin-bottom: 5px;
 `;
 
 export const VendorsListItem = styled.div`
   display: flex;
   justify-content: space-between;
+  padding: 5px 0;
+  border-bottom: 1px solid ${palette.solid.lightgrey4};
 
   &:hover {
     color: ${palette.solid.blue};
     cursor: poinet;
   }
+`;
+
+export const VendorsInfo = styled.div`
+  max-width: 300px;
 `;
 
 export const VendorsEditPrompts = styled.span`

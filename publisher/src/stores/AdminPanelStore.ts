@@ -45,7 +45,6 @@ import {
   UserResponse,
   UserWithAgenciesByID,
   Vendor,
-  VendorResponse,
 } from "../components/AdminPanel";
 import { groupBy } from "../utils";
 import API from "./API";
@@ -356,14 +355,14 @@ class AdminPanelStore {
         path: `admin/vendors`,
         method: "GET",
       })) as Response;
-      const data = (await response.json()) as VendorResponse;
+      const data = (await response.json()) as Vendor[];
 
       if (response.status !== 200) {
         throw new Error("There was an issue fetching vendors.");
       }
 
       runInAction(() => {
-        this.vendors = data.vendors;
+        this.vendors = data;
       });
     } catch (error) {
       if (error instanceof Error) return new Error(error.message);
@@ -377,10 +376,14 @@ class AdminPanelStore {
         method: "PUT",
         body: { id: id ?? null, name, url },
       })) as Response;
-      const vendorResponse = (await response.json()) as VendorResponse;
+      const vendorResponse = (await response.json()) as Vendor[];
 
       if (response.status !== 200) {
-        throw new Error("There was an issue adding vendor.");
+        throw new Error(
+          `There was an issue ${id ? "editing" : "adding"} vendor.`
+        );
+      } else {
+        await this.fetchVendors();
       }
 
       return vendorResponse;
@@ -389,20 +392,15 @@ class AdminPanelStore {
     }
   }
 
-  async deleteVendor(vendorID: string) {
+  async deleteVendor(vendorID: number) {
     try {
       const response = (await this.api.request({
         path: `admin/vendors/${vendorID}`,
         method: "DELETE",
       })) as Response;
-      if (response.status === 200) {
-        runInAction(() => {
-          const updatedVendors = this.vendors.filter(
-            (vendor) => vendor.id !== vendorID
-          );
-          this.vendors = updatedVendors;
-        });
-      }
+
+      await this.fetchVendors();
+
       return response;
     } catch (error) {
       if (error instanceof Error)
@@ -414,6 +412,7 @@ class AdminPanelStore {
     await Promise.all([
       this.fetchUsersOverview(),
       this.fetchAgenciesOverview(),
+      this.fetchVendors(),
     ]);
     runInAction(() => {
       this.loading = false;

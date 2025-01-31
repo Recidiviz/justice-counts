@@ -19,10 +19,9 @@ import { Button } from "@justice-counts/common/components/Button";
 import { Modal } from "@justice-counts/common/components/Modal";
 import { validateAgencyURL } from "@justice-counts/common/utils";
 import { observer } from "mobx-react-lite";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 import { useStore } from "../../stores";
-import AdminPanelStore from "../../stores/AdminPanelStore";
 import * as Styled from "./AdminPanel.styles";
 import { Vendor } from "./types";
 
@@ -46,7 +45,9 @@ const VendorItem = ({
       onMouseEnter={() => setShowEditPrompts(true)}
       onMouseLeave={() => setShowEditPrompts(false)}
     >
-      {vendor.name} ({vendor.url})
+      <Styled.VendorsInfo>
+        {vendor.name} ({vendor.url})
+      </Styled.VendorsInfo>
       <Styled.VendorsEditPrompts>
         {showEditPrompts && (
           <>
@@ -66,9 +67,11 @@ const VendorItem = ({
 export const VendorManagementModal: React.FC<VendorManagementModalProps> =
   observer(({ closeModal }) => {
     const { adminPanelStore } = useStore();
-    const { addOrEditVendor, deleteVendor } = adminPanelStore;
+    const { vendors, addOrEditVendor, deleteVendor } = adminPanelStore;
 
-    const [editId, setEditId] = useState<string | null>(null);
+    const sortedVendors = vendors.slice().sort((a, b) => b.id - a.id);
+
+    const [editId, setEditId] = useState<number | undefined>(undefined);
     const [nameValue, setNameValue] = useState("");
     const [urlValue, setUrlValue] = useState("");
     const [editNameValue, setEditNameValue] = useState("");
@@ -87,32 +90,13 @@ export const VendorManagementModal: React.FC<VendorManagementModalProps> =
       setUrlValidationError("Invalid URL format");
     };
 
-    const vendors = [
-      { id: "1", name: "Vendor A", url: "https://vendor-a.com" },
-      { id: "2", name: "Vendor B", url: "https://vendor-b.com" },
-      { id: "3", name: "Vendor C", url: "https://vendor-c.com" },
-      { id: "4", name: "Vendor D", url: "https://vendor-d.com" },
-      { id: "5", name: "Vendor E", url: "https://vendor-e.com" },
-      { id: "6", name: "Vendor F", url: "https://vendor-f.com" },
-      { id: "7", name: "Vendor G", url: "https://vendor-g.com" },
-      { id: "8", name: "Vendor H", url: "https://vendor-h.com" },
-      { id: "9", name: "Vendor I", url: "https://vendor-i.com" },
-      { id: "10", name: "Vendor J", url: "https://vendor-j.com" },
-      { id: "11", name: "Vendor K", url: "https://vendor-k.com" },
-      { id: "12", name: "Vendor L", url: "https://vendor-l.com" },
-      { id: "13", name: "Vendor M", url: "https://vendor-m.com" },
-      { id: "14", name: "Vendor N", url: "https://vendor-n.com" },
-      { id: "15", name: "Vendor O", url: "https://vendor-o.com" },
-      { id: "16", name: "Vendor P", url: "https://vendor-p.com" },
-      { id: "17", name: "Vendor Q", url: "https://vendor-q.com" },
-      { id: "18", name: "Vendor R", url: "https://vendor-r.com" },
-      { id: "19", name: "Vendor S", url: "https://vendor-s.com" },
-      { id: "20", name: "Vendor T", url: "https://vendor-t.com" },
-    ];
-
-    // useEffect(() => {
-    //   adminPanelStore.fetchVendors();
-    // });
+    const handleClearVendorInfo = () => {
+      setEditId(undefined);
+      setNameValue("");
+      setUrlValue("");
+      setEditNameValue("");
+      setEditUrlValue("");
+    };
 
     // Determine if the "Add/Update" button should be enabled
     const hasValues = Boolean(nameValue) && Boolean(urlValue);
@@ -162,14 +146,24 @@ export const VendorManagementModal: React.FC<VendorManagementModalProps> =
               </Styled.InputLabelWrapper>
               <Button
                 label={editId ? "Update" : "Add"}
-                onClick={() => addOrEditVendor(nameValue, urlValue)}
+                onClick={() => {
+                  addOrEditVendor(nameValue, urlValue, editId);
+                  handleClearVendorInfo();
+                }}
                 buttonColor="blue"
                 disabled={!hasChanges}
+              />
+              &emsp;
+              <Button
+                label="Clear"
+                onClick={() => handleClearVendorInfo()}
+                buttonColor="blue"
+                disabled={!hasValues}
               />
             </Styled.VendorsContentSection>
             <Styled.VendorsTitle>Current Vendors</Styled.VendorsTitle>
             <Styled.VendorsScrollableInnerWrapper>
-              {vendors.map((vendor) => (
+              {sortedVendors.map((vendor) => (
                 <VendorItem
                   key={vendor.id}
                   vendor={vendor}
@@ -180,12 +174,12 @@ export const VendorManagementModal: React.FC<VendorManagementModalProps> =
                     setEditNameValue(vendor.name);
                     setEditUrlValue(vendor.url);
                   }}
-                  onRemove={() => console.log(vendor.id)}
+                  onRemove={() => deleteVendor(vendor.id)}
                 />
               ))}
             </Styled.VendorsScrollableInnerWrapper>
             <Styled.VendorsButtonsContainer>
-              <Button label="Save" onClick={closeModal} buttonColor="blue" />
+              <Button label="Close" onClick={closeModal} buttonColor="blue" />
             </Styled.VendorsButtonsContainer>
           </Styled.VendorsContent>
         </Styled.VendorsWrapper>

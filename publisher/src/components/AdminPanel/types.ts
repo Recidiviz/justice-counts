@@ -98,13 +98,9 @@ export type AgencyMetric = {
 };
 
 export type Vendor = {
-  id: string;
+  id: number;
   name: string;
   url: string;
-};
-
-export type VendorResponse = {
-  vendors: Vendor[];
 };
 
 export type AgencyWithTeamByID = Omit<Agency, "team"> & {
