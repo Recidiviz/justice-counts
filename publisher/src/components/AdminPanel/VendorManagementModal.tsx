@@ -19,7 +19,7 @@ import { Button } from "@justice-counts/common/components/Button";
 import { Modal } from "@justice-counts/common/components/Modal";
 import { validateAgencyURL } from "@justice-counts/common/utils";
 import { observer } from "mobx-react-lite";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { useStore } from "../../stores";
 import * as Styled from "./AdminPanel.styles";
@@ -96,6 +96,7 @@ export const VendorManagementModal: React.FC<VendorManagementModalProps> =
       setUrlValue("");
       setEditNameValue("");
       setEditUrlValue("");
+      setUrlValidationError(undefined);
     };
 
     // Determine if the "Add/Update" button should be enabled
@@ -104,6 +105,12 @@ export const VendorManagementModal: React.FC<VendorManagementModalProps> =
       hasValues &&
       !urlValidationError &&
       (nameValue !== editNameValue || urlValue !== editlUrlValue); // Changes detected in "Update" mode
+
+    useEffect(() => {
+      if (!nameValue && !urlValue) {
+        handleClearVendorInfo();
+      }
+    }, [nameValue, urlValue]);
 
     return (
       <Modal>
@@ -158,7 +165,7 @@ export const VendorManagementModal: React.FC<VendorManagementModalProps> =
                 label="Clear"
                 onClick={() => handleClearVendorInfo()}
                 buttonColor="blue"
-                disabled={!hasValues}
+                disabled={!(nameValue || urlValue)}
               />
             </Styled.VendorsContentSection>
             <Styled.VendorsTitle>Current Vendors</Styled.VendorsTitle>
