@@ -201,10 +201,27 @@ export function NewInput({
   fullWidth,
   agencySettingsConfigs,
   settingsCustomMargin,
+  notReported,
+  notReportedIconTooltip,
   ...props
 }: InputProps) {
+  const [showNotReportedTooltip, setShowNotReportedTooltip] =
+    useState<boolean>(false);
+  const tooltipId = replaceSymbolsWithDash(`input-${metricKey}-${name}`);
+
+  const showTooltip = () => {
+    setShowNotReportedTooltip(true);
+  };
+  const clearTooltip = () => {
+    setShowNotReportedTooltip(false);
+  };
+
   return (
-    <Styled.NewInputWrapper>
+    <Styled.NewInputWrapper
+      onMouseEnter={showTooltip}
+      onMouseLeave={clearTooltip}
+      onFocus={clearTooltip}
+    >
       {!hideLabel && (
         <Styled.NewInputLabel htmlFor={`input-${name}`} error={Boolean(error)}>
           {label}
@@ -227,6 +244,32 @@ export function NewInput({
         <Styled.ErrorMessage settingsCustomMargin={settingsCustomMargin}>
           {error.message}
         </Styled.ErrorMessage>
+      )}
+
+      {notReported && (
+        <Styled.NewInputTooltipWrapper>
+          <img id={`img-${tooltipId}`} src={notReportedIcon} alt="" />
+          {notReportedIconTooltip && (
+            <Tooltip
+              anchorId={`img-${tooltipId}`}
+              position="bottom"
+              content={
+                <>
+                  {notReportedIconTooltip.tooltipText}{" "}
+                  <Styled.TooltipLink
+                    onClick={notReportedIconTooltip.tooltipLink}
+                  >
+                    {notReportedIconTooltip.tooltipLinkLabel}
+                  </Styled.TooltipLink>
+                  .
+                </>
+              }
+              tooltipWidth="narrow"
+              clickable
+              isOpen={showNotReportedTooltip}
+            />
+          )}
+        </Styled.NewInputTooltipWrapper>
       )}
     </Styled.NewInputWrapper>
   );

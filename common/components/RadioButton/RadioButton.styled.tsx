@@ -22,7 +22,7 @@ import { RadioButtonSize, WrapperSpacing } from "./types";
 
 /** TODO(#1167) Replace existing radio button styles with new styles */
 
-export const RadioButtonsWrapper = styled.form<{
+export const RadioButtonsWrapper = styled.div<{
   spacing?: WrapperSpacing;
 }>`
   width: 100%;

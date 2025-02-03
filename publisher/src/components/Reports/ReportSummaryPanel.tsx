@@ -102,7 +102,7 @@ export const ReportSummarySection = styled.a`
   justify-content: flex-start;
   position: relative;
   text-decoration: none;
-  margin-bottom: 2px;
+  margin-bottom: 6px;
   border-radius: 2px;
   color: ${palette.highlight.grey8};
   transition: 0.2s ease;
@@ -122,9 +122,7 @@ export const MetricDisplayName = styled.div<{ activeSection?: boolean }>`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  border-bottom: 2px solid
-    ${({ activeSection }) =>
-      activeSection ? palette.solid.blue : `transparent`};
+  font-weight: 400;
   &:hover {
     cursor: pointer;
     color: ${palette.solid.darkgrey};
@@ -168,17 +166,20 @@ export const EditDetails = styled.div`
 `;
 
 export const EditDetailsTitle = styled.div`
-  ${typography.sizeCSS.small}
-  padding-top: 8px;
-  border-top: 1px solid ${palette.solid.darkgrey};
+  ${typography.sizeCSS.normal}
+  font-weight: 500;
+  padding-top: 16px;
+  margin-bottom: 4px;
+  border-top: 1px solid ${palette.solid.lightgrey4};
 `;
 
 export const EditDetailsContent = styled.div`
   display: flex;
   flex-wrap: wrap;
   ${typography.sizeCSS.normal}
-  color: ${palette.highlight.grey9};
-  margin-bottom: 18px;
+  font-weight: 400;
+  color: ${palette.highlight.grey8};
+  margin-bottom: 16px;
 `;
 
 const PublishContainer = styled.div`
@@ -187,7 +188,7 @@ const PublishContainer = styled.div`
   @media only screen and (max-width: ${TWO_PANEL_MAX_WIDTH}px) {
     display: block;
     position: absolute;
-    border-top: 1px solid ${palette.highlight.grey9};
+    border-top: 1px solid ${palette.solid.lightgrey4};
     background: ${palette.solid.white};
     right: 0;
     bottom: 0;
