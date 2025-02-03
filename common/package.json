@@ -25,7 +25,7 @@
     "react-tooltip": "^5.28.0",
     "recharts": "^2.15.0",
     "styled-components": "^5.3.11",
-    "typescript": "^5.6.3"
+    "typescript": "^5.7.3"
   },
   "eslintConfig": {
     "extends": [
