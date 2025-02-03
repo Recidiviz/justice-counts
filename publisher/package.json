@@ -18,7 +18,7 @@
     "lodash.debounce": "^4.0.8",
     "lodash.mapvalues": "^4.6.0",
     "lodash.pickby": "^4.6.0",
-    "mobx": "^6.13.5",
+    "mobx": "^6.13.6",
     "mobx-persist-store": "^1.1.5",
     "mobx-react-lite": "^4.1.0",
     "polished": "^4.3.1",
