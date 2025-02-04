@@ -34,6 +34,7 @@ import {
   AgencyKey,
   AgencyProvisioning,
   AgencyWithTeamByID,
+  Environment,
   Setting,
   SettingType,
   UserProvisioning,
@@ -42,7 +43,7 @@ import * as Styled from "./AdminPanel.styles";
 import { VendorManagementModal } from "./VendorManagementModal";
 
 export const AgencyProvisioningOverview = observer(() => {
-  const { adminPanelStore } = useStore();
+  const { adminPanelStore, api } = useStore();
   const {
     loading,
     agencies,
@@ -296,11 +297,13 @@ export const AgencyProvisioningOverview = observer(() => {
 
         <Styled.ButtonWrapper>
           {/* Manage Vendors Button */}
-          <Button
-            label="Manage Vendors"
-            onClick={() => setIsVendorsModalOpen(true)}
-            buttonColor="blue"
-          />
+          {api.environment !== Environment.PRODUCTION && (
+            <Button
+              label="Manage Vendors"
+              onClick={() => setIsVendorsModalOpen(true)}
+              buttonColor="blue"
+            />
+          )}
           {/* Create Agency Button */}
           <Button
             label="Create Agency"

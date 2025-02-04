@@ -107,6 +107,7 @@ export const VendorManagementModal: React.FC<VendorManagementModalProps> =
       (nameValue !== editNameValue || urlValue !== editlUrlValue); // Changes detected in "Update" mode
 
     useEffect(() => {
+      // Handle return to "Add" mode when manually removing all values in "Update" mode
       if (!nameValue && !urlValue) {
         handleClearVendorInfo();
       }
@@ -181,7 +182,12 @@ export const VendorManagementModal: React.FC<VendorManagementModalProps> =
                     setEditNameValue(vendor.name);
                     setEditUrlValue(vendor.url);
                   }}
-                  onRemove={() => deleteVendor(vendor.id)}
+                  onRemove={() => {
+                    deleteVendor(vendor.id);
+                    if (vendor.id === editId) {
+                      handleClearVendorInfo();
+                    }
+                  }}
                 />
               ))}
             </Styled.VendorsScrollableInnerWrapper>
