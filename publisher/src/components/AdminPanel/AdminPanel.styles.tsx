@@ -856,3 +856,107 @@ export const WarningMessage = styled.div`
     text-align: center;
   }
 `;
+
+/* Vendor Management Modal styles */
+
+export const VendorsWrapper = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: ${palette.highlight.grey2};
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 4;
+`;
+
+export const VendorsCloseButton = styled.div`
+  font-size: 18px;
+  color: ${palette.highlight.grey8};
+
+  &:hover {
+    cursor: pointer;
+    color: ${palette.highlight.grey10};
+  }
+`;
+
+export const VendorsHeader = styled.div`
+  ${typography.sizeCSS.normal};
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+`;
+
+export const VendorsContent = styled.div`
+  ${typography.sizeCSS.normal};
+  width: 480px;
+  height: fit-content;
+  max-height: 750px;
+  padding: 32px 40px;
+  background-color: ${palette.solid.white};
+  position: relative;
+  border-radius: 3px;
+`;
+
+export const VendorsContentSection = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+`;
+
+export const VendorsScrollableInnerWrapper = styled.div`
+  position: relative;
+  width: 100%;
+  max-height: 210px;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+`;
+
+export const VendorsTitle = styled.div`
+  ${typography.sizeCSS.normal};
+  color: ${palette.highlight.grey8};
+  margin-bottom: 5px;
+`;
+
+export const VendorsListItem = styled.div`
+  display: flex;
+  justify-content: space-between;
+  padding: 5px 0;
+  border-bottom: 1px solid ${palette.solid.lightgrey4};
+
+  &:hover {
+    color: ${palette.solid.blue};
+    cursor: poinet;
+  }
+`;
+
+export const VendorsInfo = styled.div`
+  max-width: 300px;
+`;
+
+export const VendorsEditPrompts = styled.span`
+  display: flex;
+  align-items: center;
+  gap: 14px;
+`;
+
+export const VendorsEditButton = styled.button<{ isRemove?: boolean }>`
+  all: unset;
+  color: ${({ isRemove }) =>
+    isRemove ? palette.solid.red : palette.solid.blue};
+  cursor: pointer;
+`;
+
+export const VendorsButtonsContainer = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: end;
+  gap: 16px;
+  align-items: center;
+  z-index: 2;
+  margin-top: 24px;
+`;

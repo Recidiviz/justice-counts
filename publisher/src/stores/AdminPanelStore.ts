@@ -44,6 +44,7 @@ import {
   UserProvisioningUpdates,
   UserResponse,
   UserWithAgenciesByID,
+  Vendor,
 } from "../components/AdminPanel";
 import { groupBy } from "../utils";
 import API from "./API";
@@ -83,6 +84,8 @@ class AdminPanelStore {
 
   metrics: AgencyMetric[];
 
+  vendors: Vendor[];
+
   userProvisioningUpdates: UserProvisioningUpdates;
 
   agencyProvisioningUpdates: AgencyProvisioningUpdates;
@@ -103,6 +106,7 @@ class AdminPanelStore {
     this.agenciesByID = {};
     this.systems = [];
     this.metrics = [];
+    this.vendors = [];
     this.userProvisioningUpdates = initialEmptyUserProvisioningUpdates;
     this.agencyProvisioningUpdates = initialEmptyAgencyProvisioningUpdates;
     this.userAgenciesLoading = false;
@@ -345,10 +349,70 @@ class AdminPanelStore {
     }
   }
 
+  async fetchVendors() {
+    try {
+      const response = (await this.api.request({
+        path: `admin/vendors`,
+        method: "GET",
+      })) as Response;
+      const data = (await response.json()) as Vendor[];
+
+      if (response.status !== 200) {
+        throw new Error("There was an issue fetching vendors.");
+      }
+
+      runInAction(() => {
+        this.vendors = data;
+      });
+    } catch (error) {
+      if (error instanceof Error) return new Error(error.message);
+    }
+  }
+
+  async addOrEditVendor(name: string, url: string, id?: number) {
+    try {
+      const response = (await this.api.request({
+        path: `admin/vendors`,
+        method: "PUT",
+        body: { id: id ?? null, name, url },
+      })) as Response;
+      const vendorResponse = (await response.json()) as Vendor[];
+
+      if (response.status !== 200) {
+        throw new Error(
+          `There was an issue ${id ? "editing" : "adding"} vendor.`
+        );
+      } else {
+        await this.fetchVendors();
+      }
+
+      return vendorResponse;
+    } catch (error) {
+      if (error instanceof Error) return new Error(error.message);
+    }
+  }
+
+  async deleteVendor(vendorID: number) {
+    try {
+      const response = (await this.api.request({
+        path: `admin/vendors/${vendorID}`,
+        method: "DELETE",
+      })) as Response;
+
+      await this.fetchVendors();
+
+      return response;
+    } catch (error) {
+      if (error instanceof Error)
+        return new Error(`There was an issue deleting vendor ID ${vendorID}.`);
+    }
+  }
+
   async fetchUsersAndAgencies() {
     await Promise.all([
       this.fetchUsersOverview(),
       this.fetchAgenciesOverview(),
+      this.fetchVendors(),
     ]);
     runInAction(() => {
       this.loading = false;
@@ -631,7 +695,8 @@ class AdminPanelStore {
       | User
       | UserWithAgenciesByID
       | AgencyWithTeamByID
-      | AgencyTeamMember
+      // eslint-disable-next-line prettier/prettier
+      | AgencyTeamMember,
   >(list: T[], order: "ascending" | "descending" = "ascending"): T[] {
     return list.sort((a, b) => {
       if (order === "descending") {
@@ -676,7 +741,8 @@ class AdminPanelStore {
       | Agency
       | AgencyWithTeamByID
       | UserWithAgenciesByID
-      | AgencyTeamMember
+      // eslint-disable-next-line prettier/prettier
+      | AgencyTeamMember,
   >(obj: Record<string, T[]>) {
     return AdminPanelStore.sortListByName(
       Object.values(obj).flatMap((item) => item)

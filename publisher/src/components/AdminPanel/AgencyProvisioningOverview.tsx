@@ -34,14 +34,16 @@ import {
   AgencyKey,
   AgencyProvisioning,
   AgencyWithTeamByID,
+  Environment,
   Setting,
   SettingType,
   UserProvisioning,
 } from ".";
 import * as Styled from "./AdminPanel.styles";
+import { VendorManagementModal } from "./VendorManagementModal";
 
 export const AgencyProvisioningOverview = observer(() => {
-  const { adminPanelStore } = useStore();
+  const { adminPanelStore, api } = useStore();
   const {
     loading,
     agencies,
@@ -62,6 +64,7 @@ export const AgencyProvisioningOverview = observer(() => {
   } = adminPanelStore;
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isVendorsModalOpen, setIsVendorsModalOpen] = useState(false);
   const [searchInput, setSearchInput] = useState<string>("");
   const [showAgenciesWithLiveDashboards, setShowAgenciesWithLiveDashboards] =
     useState(false);
@@ -175,6 +178,13 @@ export const AgencyProvisioningOverview = observer(() => {
   return (
     <>
       <ScrollToTop />
+
+      {isVendorsModalOpen && (
+        <VendorManagementModal
+          closeModal={() => setIsVendorsModalOpen(false)}
+        />
+      )}
+
       {isModalOpen && (
         <>
           <Modal>
@@ -285,8 +295,16 @@ export const AgencyProvisioningOverview = observer(() => {
           </Styled.InputLabelWrapper>
         </Styled.InputLabelContainer>
 
-        {/* Create Agency Button */}
         <Styled.ButtonWrapper>
+          {/* Manage Vendors Button */}
+          {api.environment !== Environment.PRODUCTION && (
+            <Button
+              label="Manage Vendors"
+              onClick={() => setIsVendorsModalOpen(true)}
+              buttonColor="blue"
+            />
+          )}
+          {/* Create Agency Button */}
           <Button
             label="Create Agency"
             onClick={openModal}
