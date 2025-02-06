@@ -49,6 +49,7 @@ import {
   InteractiveSearchList,
   InteractiveSearchListAction,
   InteractiveSearchListActions,
+  MetricsReportingAgency,
   ProvisioningProps,
   SaveConfirmation,
   SaveConfirmationType,
@@ -87,6 +88,8 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       csgAndRecidivizUsers,
       csgAndRecidivizDefaultRole,
       teamMemberListLoading,
+      reportingAgencyMetadata,
+      reportingAgenciesUpdates,
       updateAgencyName,
       updateAgencyDescription,
       updateAgencyURL,
@@ -101,6 +104,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       saveAgencyProvisioningUpdates,
       saveAgencyName,
       copySuperagencyMetricSettingsToChildAgencies,
+      saveReportingAgencies,
     } = adminPanelStore;
     const scrollableContainerRef = useRef<HTMLDivElement>(null);
 
@@ -175,6 +179,17 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
           setCurrentSettingType(AgencyProvisioningSettings.TEAM_MEMBERS_ROLES),
         selected:
           currentSettingType === AgencyProvisioningSettings.TEAM_MEMBERS_ROLES,
+      },
+      {
+        key: "metrics-reporting-agency",
+        label: AgencyProvisioningSettings.METRICS_REPORTING_AGENCY,
+        onClick: () =>
+          setCurrentSettingType(
+            AgencyProvisioningSettings.METRICS_REPORTING_AGENCY
+          ),
+        selected:
+          currentSettingType ===
+          AgencyProvisioningSettings.METRICS_REPORTING_AGENCY,
       },
     ];
 
@@ -337,6 +352,14 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
           userStore.email,
           Array.from(selectedMetricsKeys),
           Array.from(selectedChildAgencyIDsToCopy).map((id) => String(id))
+        );
+      }
+
+      /** Save Reporting Agencies Updates */
+      if (reportingAgenciesUpdates && selectedIDToEdit) {
+        saveReportingAgencies(
+          String(selectedIDToEdit),
+          reportingAgenciesUpdates
         );
       }
 
@@ -549,6 +572,10 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
     const hasChildAgenciesCopyUpdates = selectedChildAgencyIDsToCopy.size > 0;
     const hasMetricsCopyUpdates = selectedMetricsKeys.size > 0;
     /**
+     * An update has been made when there are new Metrics Reporting Agencies selected
+     */
+    const hasReportingAgenciesUpdates = reportingAgenciesUpdates.length > 0;
+    /**
      * Saving is disabled if saving is in progress OR an existing agency has made no updates to either the name, state,
      * county, systems, dashboard enabled checkbox, superagency checkbox and child agencies, child agency's superagency
      * selection, and team member additions/deletions/role updates, or a newly created agency has no input for both name and state.
@@ -566,7 +593,8 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       hasIsSuperagencyUpdate ||
       hasChildAgencyUpdates ||
       hasSuperagencyUpdate ||
-      hasTeamMemberOrRoleUpdates;
+      hasTeamMemberOrRoleUpdates ||
+      hasReportingAgenciesUpdates;
     const hasRequiredCreateAgencyFields =
       hasNameUpdate && hasStateUpdate && hasSystems;
 
@@ -659,8 +687,8 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       ["id", "name", "email"]
     );
 
-    /** Shows mini loader while fetching agency's team members */
-    if (teamMemberListLoading) {
+    /** Shows mini loader while fetching agency's team members & reporting agencies */
+    if (teamMemberListLoading && !reportingAgencyMetadata) {
       return (
         <Styled.ModalContainer>
           <Styled.MiniLoaderCenteredContainer>
@@ -1631,6 +1659,12 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                         })}
                     </Styled.TeamMembersContainer>
                   </>
+                )}
+
+                {/* Metrics Reporting Agency */}
+                {currentSettingType ===
+                  AgencyProvisioningSettings.METRICS_REPORTING_AGENCY && (
+                  <MetricsReportingAgency selectedIDToEdit={selectedIDToEdit} />
                 )}
               </Styled.Form>
             </Styled.ScrollableContainer>

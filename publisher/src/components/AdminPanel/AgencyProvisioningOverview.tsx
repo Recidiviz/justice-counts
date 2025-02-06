@@ -60,6 +60,7 @@ export const AgencyProvisioningOverview = observer(() => {
     updateTeamMembers,
     resetAgencyProvisioningUpdates,
     resetUserProvisioningUpdates,
+    resetReportingAgenciesUpdates,
     deleteAgency,
   } = adminPanelStore;
 
@@ -120,6 +121,7 @@ export const AgencyProvisioningOverview = observer(() => {
     if (!activeSecondaryModal) {
       setSelectedAgencyID(undefined);
       resetAgencyProvisioningUpdates();
+      resetReportingAgenciesUpdates();
       setUserId(undefined);
       setIsModalOpen(false);
     } else {
@@ -323,6 +325,7 @@ export const AgencyProvisioningOverview = observer(() => {
                 onClick={() => {
                   // Fetch the team associations for the agency.
                   adminPanelStore.fetchAgencyTeam(String(agency.id));
+                  adminPanelStore.fetchReportingAgency(String(agency.id));
                   editAgency(agency.id);
                 }}
               >
