@@ -120,7 +120,7 @@ class AdminPanelStore {
     this.agencyProvisioningUpdates = initialEmptyAgencyProvisioningUpdates;
     this.userAgenciesLoading = false;
     this.teamMemberListLoading = false;
-    this.reportingAgencyMetadataLoading = true;
+    this.reportingAgencyMetadataLoading = false;
   }
 
   get users(): UserWithAgenciesByID[] {
@@ -381,6 +381,8 @@ class AdminPanelStore {
 
   async fetchReportingAgency(agencyID: string) {
     try {
+      this.reportingAgencyMetadataLoading = true;
+
       const response = (await this.api.request({
         path: `admin/agency/${agencyID}/reporting-agency`,
         method: "GET",

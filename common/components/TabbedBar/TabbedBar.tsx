@@ -28,17 +28,20 @@ type TabbedBarProps = {
 export function TabbedBar({ options, size }: TabbedBarProps) {
   return (
     <Styled.TabsContainer>
-      {options.map(({ key, label, onClick, selected, enabled, indicator }) => (
-        <Styled.Tab
-          key={key}
-          onClick={onClick}
-          selected={selected}
-          enabled={enabled}
-          size={size}
-        >
-          {label} {indicator}
-        </Styled.Tab>
-      ))}
+      {options.map(
+        ({ key, label, onClick, selected, enabled, indicator, hide }) =>
+          !hide ? (
+            <Styled.Tab
+              key={key}
+              onClick={onClick}
+              selected={selected}
+              enabled={enabled}
+              size={size}
+            >
+              {label} {indicator}
+            </Styled.Tab>
+          ) : null
+      )}
     </Styled.TabsContainer>
   );
 }

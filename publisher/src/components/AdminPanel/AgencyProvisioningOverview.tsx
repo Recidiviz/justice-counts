@@ -325,6 +325,7 @@ export const AgencyProvisioningOverview = observer(() => {
                 onClick={() => {
                   // Fetch the team associations for the agency.
                   adminPanelStore.fetchAgencyTeam(String(agency.id));
+                  // Fetch the metrics reporting agency metadata
                   adminPanelStore.fetchReportingAgency(String(agency.id));
                   editAgency(agency.id);
                 }}

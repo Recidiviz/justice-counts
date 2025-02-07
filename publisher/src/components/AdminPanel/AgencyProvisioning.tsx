@@ -190,6 +190,8 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
         selected:
           currentSettingType ===
           AgencyProvisioningSettings.METRICS_REPORTING_AGENCY,
+        /** Hide metrics reporting agency tab when creating a new agency */
+        hide: !selectedIDToEdit,
       },
     ];
 
