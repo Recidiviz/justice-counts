@@ -60,6 +60,7 @@ beforeEach(() => {
   adminPanelStore.loading = false;
   adminPanelStore.userAgenciesLoading = false;
   adminPanelStore.teamMemberListLoading = false;
+  adminPanelStore.reportingAgencyMetadataLoading = false;
 });
 
 test("AdminPanel renders with the expected elements in the default User Provisioning view", async () => {
