@@ -15,7 +15,11 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { CustomDropdownToggle } from "@justice-counts/common/components/Dropdown";
+import {
+  CustomDropdownMenuItem,
+  CustomDropdownToggle,
+  CustomDropdownToggleLabel,
+} from "@justice-counts/common/components/Dropdown";
 import {
   HEADER_BAR_HEIGHT,
   palette,
@@ -1001,5 +1005,14 @@ export const ReportingAgencyDropdownWrapper = styled.div`
 
   & ${CustomDropdownToggle} {
     height: 32px;
+  }
+  & ${CustomDropdownToggleLabel} {
+    display: block;
+    text-overflow: ellipsis;
+    text-align: left;
+    overflow: hidden;
+  }
+  & ${CustomDropdownMenuItem} {
+    white-space: unset;
   }
 `;

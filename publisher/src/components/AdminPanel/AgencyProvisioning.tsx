@@ -688,7 +688,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
     );
 
     /** Shows mini loader while fetching agency's team members & reporting agencies */
-    if (teamMemberListLoading && !reportingAgencyMetadata) {
+    if (teamMemberListLoading || !reportingAgencyMetadata) {
       return (
         <Styled.ModalContainer>
           <Styled.MiniLoaderCenteredContainer>

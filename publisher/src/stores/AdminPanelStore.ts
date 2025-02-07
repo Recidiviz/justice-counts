@@ -376,45 +376,6 @@ class AdminPanelStore {
     }
   }
 
-  async addOrEditVendor(name: string, url: string, id?: number) {
-    try {
-      const response = (await this.api.request({
-        path: `admin/vendors`,
-        method: "PUT",
-        body: { id: id ?? null, name, url },
-      })) as Response;
-      const vendorResponse = (await response.json()) as Vendor[];
-
-      if (response.status !== 200) {
-        throw new Error(
-          `There was an issue ${id ? "editing" : "adding"} vendor.`
-        );
-      } else {
-        await this.fetchVendors();
-      }
-
-      return vendorResponse;
-    } catch (error) {
-      if (error instanceof Error) return new Error(error.message);
-    }
-  }
-
-  async deleteVendor(vendorID: number) {
-    try {
-      const response = (await this.api.request({
-        path: `admin/vendors/${vendorID}`,
-        method: "DELETE",
-      })) as Response;
-
-      await this.fetchVendors();
-
-      return response;
-    } catch (error) {
-      if (error instanceof Error)
-        return new Error(`There was an issue deleting vendor ID ${vendorID}.`);
-    }
-  }
-
   async fetchReportingAgency(agencyID: string) {
     try {
       const response = (await this.api.request({
@@ -433,65 +394,6 @@ class AdminPanelStore {
     } catch (error) {
       if (error instanceof Error) return new Error(error.message);
     }
-  }
-
-  async saveReportingAgencies(
-    agencyID: string,
-    reportingAgencies: ReportingAgency[]
-  ) {
-    try {
-      const response = (await this.api.request({
-        path: `admin/agency/${agencyID}/reporting-agency`,
-        method: "PUT",
-        body: { reporting_agencies: reportingAgencies },
-      })) as Response;
-      const agenciesResponse = (await response.json()) as Response;
-
-      if (response.status !== 200) {
-        throw new Error(`There was an issue saving reporting agencies.`);
-      }
-
-      return agenciesResponse;
-    } catch (error) {
-      if (error instanceof Error) return new Error(error.message);
-    }
-  }
-
-  updateReportingAgencies = (
-    metricKey: string,
-    reportingAgencyId: number | null,
-    reportingAgencyName: string | null,
-    isSelfReported: boolean | null
-  ) => {
-    const updatedEntry = {
-      metric_key: metricKey,
-      reporting_agency_id: reportingAgencyId,
-      reporting_agency_name: reportingAgencyName,
-      is_self_reported: isSelfReported,
-    };
-
-    const existingIndex = this.reportingAgenciesUpdates.findIndex(
-      (item) => item.metric_key === metricKey
-    );
-
-    if (existingIndex !== -1) {
-      // Update the existing object
-      this.reportingAgenciesUpdates[existingIndex] = updatedEntry;
-    } else {
-      // Add a new object to the array
-      this.reportingAgenciesUpdates.push(updatedEntry);
-    }
-
-    /** Return an object in the desired backend data structure */
-    return {
-      metric_key: metricKey,
-      reporting_agency_id: reportingAgencyId,
-      is_self_reported: isSelfReported,
-    };
-  };
-
-  resetReportingAgenciesUpdates() {
-    this.reportingAgenciesUpdates = [];
   }
 
   async fetchUsersAndAgencies() {
@@ -751,6 +653,108 @@ class AdminPanelStore {
         return new Error(
           "There was an issue saving agency provisioning updates."
         );
+    }
+  }
+
+  /** Metrics Reporting Agency */
+
+  async saveReportingAgencies(
+    agencyID: string,
+    reportingAgencies: ReportingAgency[]
+  ) {
+    try {
+      const response = (await this.api.request({
+        path: `admin/agency/${agencyID}/reporting-agency`,
+        method: "PUT",
+        body: { reporting_agencies: reportingAgencies },
+      })) as Response;
+      const agenciesResponse = (await response.json()) as Response;
+
+      if (response.status !== 200) {
+        throw new Error(`There was an issue saving reporting agencies.`);
+      }
+
+      return agenciesResponse;
+    } catch (error) {
+      if (error instanceof Error) return new Error(error.message);
+    }
+  }
+
+  updateReportingAgencies = (
+    metricKey: string,
+    reportingAgencyId: number | null,
+    reportingAgencyName: string | null,
+    isSelfReported: boolean | null
+  ) => {
+    const updatedEntry = {
+      metric_key: metricKey,
+      reporting_agency_id: reportingAgencyId,
+      reporting_agency_name: reportingAgencyName,
+      is_self_reported: isSelfReported,
+    };
+
+    const existingIndex = this.reportingAgenciesUpdates.findIndex(
+      (item) => item.metric_key === metricKey
+    );
+
+    if (existingIndex !== -1) {
+      // Update the existing object
+      this.reportingAgenciesUpdates[existingIndex] = updatedEntry;
+    } else {
+      // Add a new object to the array
+      this.reportingAgenciesUpdates.push(updatedEntry);
+    }
+
+    /** Return an object in the desired backend data structure */
+    return {
+      metric_key: metricKey,
+      reporting_agency_id: reportingAgencyId,
+      is_self_reported: isSelfReported,
+    };
+  };
+
+  resetReportingAgenciesUpdates() {
+    this.reportingAgenciesUpdates = [];
+  }
+
+  /** Vendors Management */
+
+  async addOrEditVendor(name: string, url: string, id?: number) {
+    try {
+      const response = (await this.api.request({
+        path: `admin/vendors`,
+        method: "PUT",
+        body: { id: id ?? null, name, url },
+      })) as Response;
+      const vendorResponse = (await response.json()) as Vendor[];
+
+      if (response.status !== 200) {
+        throw new Error(
+          `There was an issue ${id ? "editing" : "adding"} vendor.`
+        );
+      } else {
+        await this.fetchVendors();
+      }
+
+      return vendorResponse;
+    } catch (error) {
+      if (error instanceof Error) return new Error(error.message);
+    }
+  }
+
+  async deleteVendor(vendorID: number) {
+    try {
+      const response = (await this.api.request({
+        path: `admin/vendors/${vendorID}`,
+        method: "DELETE",
+      })) as Response;
+
+      await this.fetchVendors();
+
+      return response;
+    } catch (error) {
+      if (error instanceof Error)
+        return new Error(`There was an issue deleting vendor ID ${vendorID}.`);
     }
   }
 

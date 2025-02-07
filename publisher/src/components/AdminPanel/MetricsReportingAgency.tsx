@@ -59,14 +59,15 @@ export const MetricsReportingAgency: React.FC<MetricsReportingAgencyProps> =
               )}
               <Styled.ReportingAgencyMetricsContainer>
                 {metrics.map((metric) => {
-                  const currentAgency =
+                  const initialReportingAgency =
                     reportingAgencyMetadata.reporting_agencies[system].find(
                       (agency) => agency.metric_key === metric.key
                     );
-                  const updatedAgency = reportingAgenciesUpdates.find(
+                  const updatedReportingAgency = reportingAgenciesUpdates.find(
                     (agency) => agency.metric_key === metric.key
                   );
-                  const selectedAgency = updatedAgency || currentAgency;
+                  const selecteReportingdAgency =
+                    updatedReportingAgency || initialReportingAgency;
 
                   const dropdownOptions = [
                     {
@@ -80,7 +81,7 @@ export const MetricsReportingAgency: React.FC<MetricsReportingAgencyProps> =
                           true
                         ),
                       highlight:
-                        selectedAgency?.reporting_agency_id ===
+                        selecteReportingdAgency?.reporting_agency_id ===
                         Number(selectedIDToEdit),
                     },
                     ...reportingAgencyMetadata.reporting_agency_options.map(
@@ -95,7 +96,7 @@ export const MetricsReportingAgency: React.FC<MetricsReportingAgencyProps> =
                             false
                           ),
                         highlight:
-                          selectedAgency?.reporting_agency_id ===
+                          selecteReportingdAgency?.reporting_agency_id ===
                           option.reporting_agency_id,
                       })
                     ),
@@ -104,18 +105,20 @@ export const MetricsReportingAgency: React.FC<MetricsReportingAgencyProps> =
                       label: "None",
                       onClick: () =>
                         updateReportingAgencies(metric.key, null, null, null),
-                      highlight: selectedAgency?.reporting_agency_id === null,
+                      highlight:
+                        selecteReportingdAgency?.reporting_agency_id === null,
                     },
                   ];
 
                   const hasReportingAgency = Boolean(
-                    selectedAgency?.reporting_agency_id
+                    selecteReportingdAgency?.reporting_agency_id
                   );
 
                   const reportingAgencyName =
-                    hasReportingAgency && !selectedAgency?.reporting_agency_name
+                    hasReportingAgency &&
+                    selecteReportingdAgency?.is_self_reported
                       ? "Current Agency"
-                      : selectedAgency?.reporting_agency_name;
+                      : selecteReportingdAgency?.reporting_agency_name;
 
                   return (
                     <Styled.ReportingAgencyMetricWrapper key={metric.key}>
