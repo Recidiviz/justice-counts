@@ -104,6 +104,8 @@ class AdminPanelStore {
 
   teamMemberListLoading: boolean;
 
+  reportingAgencyMetadataLoading: boolean;
+
   constructor(api: API) {
     makeAutoObservable(this, {}, { autoBind: true });
     this.api = api;
@@ -118,6 +120,7 @@ class AdminPanelStore {
     this.agencyProvisioningUpdates = initialEmptyAgencyProvisioningUpdates;
     this.userAgenciesLoading = false;
     this.teamMemberListLoading = false;
+    this.reportingAgencyMetadataLoading = true;
   }
 
   get users(): UserWithAgenciesByID[] {
@@ -390,6 +393,7 @@ class AdminPanelStore {
 
       runInAction(() => {
         this.reportingAgencyMetadata = data;
+        this.reportingAgencyMetadataLoading = false;
       });
     } catch (error) {
       if (error instanceof Error) return new Error(error.message);

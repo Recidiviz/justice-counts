@@ -88,8 +88,8 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       csgAndRecidivizUsers,
       csgAndRecidivizDefaultRole,
       teamMemberListLoading,
-      reportingAgencyMetadata,
       reportingAgenciesUpdates,
+      reportingAgencyMetadataLoading,
       updateAgencyName,
       updateAgencyDescription,
       updateAgencyURL,
@@ -688,7 +688,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
     );
 
     /** Shows mini loader while fetching agency's team members & reporting agencies */
-    if (teamMemberListLoading || !reportingAgencyMetadata) {
+    if (teamMemberListLoading || reportingAgencyMetadataLoading) {
       return (
         <Styled.ModalContainer>
           <Styled.MiniLoaderCenteredContainer>
