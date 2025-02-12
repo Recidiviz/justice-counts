@@ -381,8 +381,6 @@ class AdminPanelStore {
 
   async fetchReportingAgency(agencyID: string) {
     try {
-      this.reportingAgencyMetadataLoading = true;
-
       const response = (await this.api.request({
         path: `admin/agency/${agencyID}/reporting-agency`,
         method: "GET",
@@ -394,10 +392,14 @@ class AdminPanelStore {
       }
 
       runInAction(() => {
+        this.reportingAgencyMetadataLoading = true;
         this.reportingAgencyMetadata = data;
         this.reportingAgencyMetadataLoading = false;
       });
     } catch (error) {
+      runInAction(() => {
+        this.reportingAgencyMetadata = undefined;
+      });
       if (error instanceof Error) return new Error(error.message);
     }
   }

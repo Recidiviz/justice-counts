@@ -66,7 +66,7 @@ export const MetricsReportingAgency: React.FC<MetricsReportingAgencyProps> =
                   const updatedReportingAgency = reportingAgenciesUpdates.find(
                     (agency) => agency.metric_key === metric.key
                   );
-                  const selecteReportingdAgency =
+                  const selectedReportingAgency =
                     updatedReportingAgency || initialReportingAgency;
 
                   const dropdownOptions = [
@@ -81,7 +81,7 @@ export const MetricsReportingAgency: React.FC<MetricsReportingAgencyProps> =
                           true
                         ),
                       highlight:
-                        selecteReportingdAgency?.reporting_agency_id ===
+                        selectedReportingAgency?.reporting_agency_id ===
                         Number(selectedIDToEdit),
                     },
                     ...reportingAgencyMetadata.reporting_agency_options.map(
@@ -96,7 +96,7 @@ export const MetricsReportingAgency: React.FC<MetricsReportingAgencyProps> =
                             false
                           ),
                         highlight:
-                          selecteReportingdAgency?.reporting_agency_id ===
+                          selectedReportingAgency?.reporting_agency_id ===
                           option.reporting_agency_id,
                       })
                     ),
@@ -106,19 +106,19 @@ export const MetricsReportingAgency: React.FC<MetricsReportingAgencyProps> =
                       onClick: () =>
                         updateReportingAgencies(metric.key, null, null, null),
                       highlight:
-                        selecteReportingdAgency?.reporting_agency_id === null,
+                        selectedReportingAgency?.reporting_agency_id === null,
                     },
                   ];
 
                   const hasReportingAgency = Boolean(
-                    selecteReportingdAgency?.reporting_agency_id
+                    selectedReportingAgency?.reporting_agency_id
                   );
 
                   const reportingAgencyName =
                     hasReportingAgency &&
-                    selecteReportingdAgency?.is_self_reported
+                    selectedReportingAgency?.is_self_reported
                       ? "Current Agency"
-                      : selecteReportingdAgency?.reporting_agency_name;
+                      : selectedReportingAgency?.reporting_agency_name;
 
                   return (
                     <Styled.ReportingAgencyMetricWrapper key={metric.key}>
@@ -128,7 +128,7 @@ export const MetricsReportingAgency: React.FC<MetricsReportingAgencyProps> =
                       <Styled.ReportingAgencyDropdownWrapper>
                         <DropdownContainer>
                           <Dropdown
-                            label={reportingAgencyName ?? "Please select..."}
+                            label={reportingAgencyName ?? "None"}
                             options={dropdownOptions}
                             hover="background"
                             caretPosition="right"

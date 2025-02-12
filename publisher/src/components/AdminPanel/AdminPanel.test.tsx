@@ -60,7 +60,6 @@ beforeEach(() => {
   adminPanelStore.loading = false;
   adminPanelStore.userAgenciesLoading = false;
   adminPanelStore.teamMemberListLoading = false;
-  adminPanelStore.reportingAgencyMetadataLoading = false;
 });
 
 test("AdminPanel renders with the expected elements in the default User Provisioning view", async () => {
@@ -695,7 +694,6 @@ test("Clicking on an existing agency card opens the edit agency modal", async ()
 
   await waitFor(() => {
     adminPanelStore.teamMemberListLoading = false;
-    adminPanelStore.reportingAgencyMetadataLoading = false;
   });
 
   const editAgencyModalTitle = screen.getByText("Edit Agency Information");
@@ -771,7 +769,6 @@ test("Team members tab renders with add/remove buttons and users who are connect
 
   await waitFor(() => {
     adminPanelStore.teamMemberListLoading = false;
-    adminPanelStore.reportingAgencyMetadataLoading = false;
   });
 
   const teamMemberRolesTab = screen.getByText("Team Members & Roles");
@@ -808,7 +805,6 @@ test("Adding a user adds a card to the list of team members", async () => {
 
   await waitFor(() => {
     adminPanelStore.teamMemberListLoading = false;
-    adminPanelStore.reportingAgencyMetadataLoading = false;
   });
 
   const teamMemberRolesTab = screen.getByText("Team Members & Roles");
@@ -858,7 +854,6 @@ test("Deleting a user deletes a card to the list of team members", async () => {
 
   await waitFor(() => {
     adminPanelStore.teamMemberListLoading = false;
-    adminPanelStore.reportingAgencyMetadataLoading = false;
   });
 
   const teamMemberRolesTab = screen.getByText("Team Members & Roles");
@@ -915,7 +910,6 @@ test("Loading spinner works properly in Agency Provisioning", async () => {
 
   await waitFor(() => {
     adminPanelStore.teamMemberListLoading = false;
-    adminPanelStore.reportingAgencyMetadataLoading = false;
   });
 
   const teamMemberRolesTab = screen.getByText("Team Members & Roles");
