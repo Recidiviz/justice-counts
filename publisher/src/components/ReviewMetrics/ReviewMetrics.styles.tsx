@@ -37,14 +37,14 @@ export const Container = styled(DataUploadContainer)`
 export const ReviewMetricsWrapper = styled.div<{ hasNoDatapoints: boolean }>`
   ${({ hasNoDatapoints }) => hasNoDatapoints && `height: 100%;`}
   max-width: 100%;
-  padding: 40px 0 128px 500px;
+  padding: 48px 0 128px 500px;
   display: flex;
   flex-direction: row;
   gap: 88px;
   overflow-x: hidden;
 
   @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
-    padding: 40px 24px 128px 24px;
+    padding: 48px 24px 128px 24px;
     display: flex;
     flex-direction: column;
     gap: 80px;
@@ -69,8 +69,8 @@ export const Summary = styled.div<{ isFooterVisible?: boolean }>`
       : `calc(100vh - ${REVIEW_SUMMARY_DESKTOP_TOP_PADDING + 8}px)`};
   transition: max-height 0.5s ease-in-out;
 
-  padding-left: 24px;
-  width: 380px;
+  padding: 8px 24px;
+  width: 420px;
   display: flex;
   flex-direction: column;
   background-color: ${palette.solid.white};
@@ -89,12 +89,14 @@ export const Heading = styled.div`
   position: sticky;
   top: 0;
   flex-direction: column;
-  ${typography.sizeCSS.headline};
-  background-color: ${palette.solid.white};
+  ${typography.sizeCSS.title};
+  transition: 0.3s ease;
 
   span {
-    margin-top: 20px;
-    ${typography.sizeCSS.medium};
+    margin-top: 16px;
+    margin-bottom: 8px;
+    letter-spacing: 0;
+    ${typography.sizeCSS.normal};
 
     a {
       color: ${palette.solid.blue};
@@ -116,17 +118,26 @@ export const HeadingGradient = styled.div`
   position: sticky;
   top: 0;
   left: 0;
-  width: 484px;
+  width: 420px;
   background: linear-gradient(
     180deg,
-    rgba(255, 255, 255, 1) 50%,
-    rgba(255, 255, 255, 0.4009978991596639) 100%
+    rgba(255, 255, 255, 1) 0%,
+    transparent 100%
   );
-  min-height: 30px;
+  min-height: 32px;
 
   @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
     min-height: 20px;
   }
+`;
+
+export const BottomGradient = styled(HeadingGradient)`
+  bottom: 0;
+  background: linear-gradient(
+    360deg,
+    rgba(255, 255, 255, 1) 0%,
+    transparent 100%
+  );
 `;
 
 export const SummarySectionsContainer = styled.div`
@@ -144,7 +155,7 @@ export const SummarySection = styled.div`
   display: flex;
   flex-direction: column;
 
-  &:not(:last-child) {
+  &:not(:nth-last-child(2)) {
     border-bottom: 1px solid ${palette.highlight.grey3};
     padding-bottom: 30px;
 
@@ -165,8 +176,8 @@ export const SummarySection = styled.div`
 export const SummarySectionTitle = styled.div<{
   color: "blue" | "orange" | "grey";
 }>`
-  ${typography.sizeCSS.title};
-  margin-bottom: 12px;
+  ${typography.sizeCSS.medium};
+  margin-bottom: 16px;
   display: flex;
   flex-direction: row;
   gap: 8px;
@@ -204,6 +215,7 @@ export const SummarySectionLine = styled.div`
   flex-direction: row;
   align-items: center;
   gap: 8px;
+  margin-bottom: 8px;
 `;
 
 export const MetricStatusIcon = styled.img`
@@ -235,12 +247,6 @@ export const SectionContainer = styled.div<{ isMultiAgencyUpload?: boolean }>`
   min-width: 700px;
   overflow-x: auto;
 
-  &:not(:first-child) {
-    ${({ isMultiAgencyUpload }) =>
-      !isMultiAgencyUpload &&
-      `border-top: 1px solid ${palette.highlight.grey3}`};
-  }
-
   &:first-child {
     margin-top: 0;
     padding-top: 0;
@@ -252,14 +258,14 @@ export const NoDatapointsMessage = styled.div`
 `;
 
 export const AgencyName = styled.div`
-  ${typography.sizeCSS.title}
+  ${typography.sizeCSS.medium}
   width: 100%;
-  margin-bottom: 13px;
+  margin-bottom: 16px;
   color: ${palette.solid.darkgrey};
 
   &:not(:first-child) {
     margin-top: 40px;
-    padding-top: 8px;
+    padding-top: 40px;
     border-top: 1px solid ${palette.highlight.grey3};
   }
 `;
