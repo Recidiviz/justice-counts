@@ -17,6 +17,7 @@
 
 /* eslint-disable camelcase */
 
+import successIcon from "@justice-counts/common/assets/status-check-icon.png";
 import errorIcon from "@justice-counts/common/assets/status-error-icon.png";
 import { Button } from "@justice-counts/common/components/Button";
 import { DatapointsTableView } from "@justice-counts/common/components/DataViz/DatapointsTableView";
@@ -29,7 +30,6 @@ import React, { Fragment, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { printReportTitle } from "../../utils";
-import checkIcon from "../assets/check-icon.svg";
 import {
   REPORT_CAPITALIZED,
   REPORTS_CAPITALIZED,
@@ -39,6 +39,7 @@ import { useHeaderBadge } from "../Header/hooks";
 import { ButtonWithMiniLoaderContainer, MiniLoaderWrapper } from "../Reports";
 import {
   AgencyName,
+  BottomGradient,
   EmptyIcon,
   Heading,
   HeadingGradient,
@@ -82,8 +83,9 @@ export const ReviewMetrics: React.FC<ReviewMetricsProps> = ({
     useState(true);
   const [isOverwritesSectionExpanded, setIsOverwritesSectionExpanded] =
     useState(true);
-  const [isRecordsSectionExpanded, setIsRecordsSectionExpanded] = useState(() =>
-    records ? records.length <= 10 : false
+  // eslint-disable-next-line prettier/prettier
+  const [isRecordsSectionExpanded, setIsRecordsSectionExpanded] = useState(
+    () => (records ? records.length <= 10 : false)
   );
   const hasNoDatapoints =
     metrics.filter((metric) => metric.datapoints)?.length === 0;
@@ -190,7 +192,7 @@ export const ReviewMetrics: React.FC<ReviewMetricsProps> = ({
                        * make it to the review page are successfully saved metrics with inputs and
                        * without errors - thus, earning a check icon.
                        */}
-                      <MetricStatusIcon src={checkIcon} alt="" />
+                      <MetricStatusIcon src={successIcon} alt="" />
                       {metric}
                     </SummarySectionLine>
                   ))}
@@ -313,7 +315,7 @@ export const ReviewMetrics: React.FC<ReviewMetricsProps> = ({
                         }) => (
                           <SummarySectionLine key={key}>
                             {!metricHasError && metricHasValidInput && (
-                              <MetricStatusIcon src={checkIcon} alt="" />
+                              <MetricStatusIcon src={successIcon} alt="" />
                             )}
                             {metricHasError && (
                               <MetricStatusIcon src={errorIcon} alt="" />
@@ -392,6 +394,7 @@ export const ReviewMetrics: React.FC<ReviewMetricsProps> = ({
               )}
             </SummarySection>
           )}
+          <BottomGradient />
         </SummarySectionsContainer>
       </Summary>
 
