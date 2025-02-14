@@ -100,14 +100,6 @@ export const MetricsReportingAgency: React.FC<MetricsReportingAgencyProps> =
                           option.reporting_agency_id,
                       })
                     ),
-                    {
-                      key: "select-none",
-                      label: "None",
-                      onClick: () =>
-                        updateReportingAgencies(metric.key, null, null, null),
-                      highlight:
-                        selectedReportingAgency?.reporting_agency_id === null,
-                    },
                   ];
 
                   const hasReportingAgency = Boolean(

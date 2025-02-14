@@ -381,6 +381,10 @@ class AdminPanelStore {
 
   async fetchReportingAgency(agencyID: string) {
     try {
+      runInAction(() => {
+        this.reportingAgencyMetadataLoading = true;
+      });
+
       const response = (await this.api.request({
         path: `admin/agency/${agencyID}/reporting-agency`,
         method: "GET",
@@ -392,14 +396,10 @@ class AdminPanelStore {
       }
 
       runInAction(() => {
-        this.reportingAgencyMetadataLoading = true;
         this.reportingAgencyMetadata = data;
         this.reportingAgencyMetadataLoading = false;
       });
     } catch (error) {
-      runInAction(() => {
-        this.reportingAgencyMetadata = undefined;
-      });
       if (error instanceof Error) return new Error(error.message);
     }
   }
@@ -690,9 +690,9 @@ class AdminPanelStore {
 
   updateReportingAgencies = (
     metricKey: string,
-    reportingAgencyId: number | null,
-    reportingAgencyName: string | null,
-    isSelfReported: boolean | null
+    reportingAgencyId: number,
+    reportingAgencyName: string,
+    isSelfReported: boolean
   ) => {
     const updatedEntry = {
       metric_key: metricKey,
