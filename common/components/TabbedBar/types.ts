@@ -24,6 +24,7 @@ export type TabOption = {
   selected: boolean;
   enabled?: boolean;
   indicator?: React.ReactNode;
+  hide?: boolean;
 };
 
 export type TabbedBarSize = "medium" | "large";

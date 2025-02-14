@@ -23,3 +23,4 @@ export * from "./InteractiveSearchList";
 export * from "./AdminPanel";
 export * from "./types";
 export * from "./SaveConfirmation";
+export * from "./MetricsReportingAgency";

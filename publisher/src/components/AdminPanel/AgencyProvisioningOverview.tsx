@@ -34,7 +34,6 @@ import {
   AgencyKey,
   AgencyProvisioning,
   AgencyWithTeamByID,
-  Environment,
   Setting,
   SettingType,
   UserProvisioning,
@@ -43,7 +42,7 @@ import * as Styled from "./AdminPanel.styles";
 import { VendorManagementModal } from "./VendorManagementModal";
 
 export const AgencyProvisioningOverview = observer(() => {
-  const { adminPanelStore, api } = useStore();
+  const { adminPanelStore } = useStore();
   const {
     loading,
     agencies,
@@ -60,6 +59,7 @@ export const AgencyProvisioningOverview = observer(() => {
     updateTeamMembers,
     resetAgencyProvisioningUpdates,
     resetUserProvisioningUpdates,
+    resetReportingAgenciesUpdates,
     deleteAgency,
   } = adminPanelStore;
 
@@ -120,6 +120,7 @@ export const AgencyProvisioningOverview = observer(() => {
     if (!activeSecondaryModal) {
       setSelectedAgencyID(undefined);
       resetAgencyProvisioningUpdates();
+      resetReportingAgenciesUpdates();
       setUserId(undefined);
       setIsModalOpen(false);
     } else {
@@ -297,13 +298,11 @@ export const AgencyProvisioningOverview = observer(() => {
 
         <Styled.ButtonWrapper>
           {/* Manage Vendors Button */}
-          {api.environment !== Environment.PRODUCTION && (
-            <Button
-              label="Manage Vendors"
-              onClick={() => setIsVendorsModalOpen(true)}
-              buttonColor="blue"
-            />
-          )}
+          <Button
+            label="Manage Vendors"
+            onClick={() => setIsVendorsModalOpen(true)}
+            buttonColor="blue"
+          />
           {/* Create Agency Button */}
           <Button
             label="Create Agency"
@@ -323,6 +322,8 @@ export const AgencyProvisioningOverview = observer(() => {
                 onClick={() => {
                   // Fetch the team associations for the agency.
                   adminPanelStore.fetchAgencyTeam(String(agency.id));
+                  // Fetch the metrics reporting agency metadata
+                  adminPanelStore.fetchReportingAgency(String(agency.id));
                   editAgency(agency.id);
                 }}
               >

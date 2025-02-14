@@ -16,6 +16,11 @@
 // =============================================================================
 
 import {
+  CustomDropdownMenuItem,
+  CustomDropdownToggle,
+  CustomDropdownToggleLabel,
+} from "@justice-counts/common/components/Dropdown";
+import {
   HEADER_BAR_HEIGHT,
   palette,
   typography,
@@ -959,4 +964,55 @@ export const VendorsButtonsContainer = styled.div`
   align-items: center;
   z-index: 2;
   margin-top: 24px;
+`;
+
+/* Metrics Reporting Agency styles */
+
+export const ReportingAgencyWrapper = styled.div`
+  font-weight: 400;
+  font-size: 14px;
+`;
+
+export const ReportingAgencyTitle = styled.div<{
+  noMargin?: boolean;
+  capitalize?: boolean;
+}>`
+  ${typography.sizeCSS.normal};
+  color: ${palette.highlight.grey8};
+  font-weight: 400;
+  margin-bottom: ${({ noMargin }) => (noMargin ? 0 : 22)}px;
+  text-transform: ${({ capitalize }) => (capitalize ? "capitalize" : "unset")};
+`;
+
+export const ReportingAgencyMetricsContainer = styled.div`
+  margin-top: 5px;
+  margin-bottom: 22px;
+`;
+
+export const ReportingAgencyMetricWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 7px;
+  gap: 24px;
+`;
+
+export const ReportingAgencyMetricName = styled.div`
+  width: 160px;
+`;
+
+export const ReportingAgencyDropdownWrapper = styled.div`
+  width: 240px;
+
+  & ${CustomDropdownToggle} {
+    height: 32px;
+  }
+  & ${CustomDropdownToggleLabel} {
+    display: block;
+    text-overflow: ellipsis;
+    text-align: left;
+    overflow: hidden;
+  }
+  & ${CustomDropdownMenuItem} {
+    white-space: unset;
+  }
 `;

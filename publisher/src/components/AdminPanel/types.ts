@@ -117,9 +117,31 @@ export type AgencyMetricResponse = {
   metrics: AgencyMetric[];
 };
 
+export type ReportingAgency = {
+  is_self_reported: boolean | null;
+  metric_key: string;
+  reporting_agency_id: number | null;
+  reporting_agency_name?: string | null;
+};
+
+export type ReportingAgencyCategory = "AGENCY" | "CSG" | "VENDOR";
+
+export type ReportingAgencyOption = {
+  category: ReportingAgencyCategory;
+  reporting_agency_id: number;
+  reporting_agency_name: string;
+};
+
+export type ReportingAgencyMetadata = {
+  metrics: Record<string, { key: string; name: string }[]>;
+  reporting_agencies: Record<string, ReportingAgency[]>;
+  reporting_agency_options: ReportingAgencyOption[];
+};
+
 export const AgencyProvisioningSettings = {
   AGENCY_INFORMATION: "Agency Information",
   TEAM_MEMBERS_ROLES: "Team Members & Roles",
+  METRICS_REPORTING_AGENCY: "Metrics Reporting Agency",
 } as const;
 
 export type AgencyProvisioningSetting =
