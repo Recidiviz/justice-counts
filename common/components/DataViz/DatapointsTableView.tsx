@@ -16,6 +16,7 @@
 // =============================================================================
 
 import React, { useCallback, useState } from "react";
+import { useInView } from "react-intersection-observer";
 
 import {
   DataVizAggregateName,
@@ -30,6 +31,7 @@ import {
   DatapointsTableDetailsCell,
   DatapointsTableDetailsContainer,
   DatapointsTableDetailsContainerOverlay,
+  DatapointsTableDetailsContainerOverlayLeftGradient,
   DatapointsTableDetailsContainerOverlayRightGradient,
   DatapointsTableDetailScrollContainer,
   DatapointsTableDetailsDivider,
@@ -83,6 +85,8 @@ export const DatapointsTableView: React.FC<{
   metricFrequency,
   useMultiAgencyStyles,
 }) => {
+  const leftShadow = useInView();
+  const rightShadow = useInView();
   const [hoveredRowKey, setHoveredRowKey] = useState<string | null>(null);
   const [hoveredColKey, setHoveredColKey] = useState<number | null>(null);
 
@@ -219,6 +223,11 @@ export const DatapointsTableView: React.FC<{
                       onMouseLeave={() => setHoveredColKey(null)}
                       isColHovered={index === hoveredColKey}
                     >
+                      {/* Shadow's anchors */}
+                      {index === 0 && <div ref={leftShadow.ref} />}
+                      {index === startDates.length - 1 && (
+                        <div ref={rightShadow.ref} />
+                      )}
                       <span>{formatDateShortMonthYear(date)}</span>
                     </DatapointsTableDetailsRowHeader>
                   ))}
@@ -298,7 +307,12 @@ export const DatapointsTableView: React.FC<{
             </DatapointsTableDetailsTable>
           </DatapointsTableDetailScrollContainer>
           <DatapointsTableDetailsContainerOverlay>
-            <DatapointsTableDetailsContainerOverlayRightGradient />
+            <DatapointsTableDetailsContainerOverlayLeftGradient
+              isShowing={!leftShadow.inView}
+            />
+            <DatapointsTableDetailsContainerOverlayRightGradient
+              isShowing={!rightShadow.inView}
+            />
           </DatapointsTableDetailsContainerOverlay>
         </DatapointsTableDetailsContainer>
       </DatapointsTableContainer>

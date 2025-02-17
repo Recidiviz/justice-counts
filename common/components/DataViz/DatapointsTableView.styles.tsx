@@ -74,13 +74,13 @@ export const DatapointsTableNamesCell = styled.td<{
   useDataPageStyles?: boolean;
 }>`
   padding-top: ${({ isTotalRow, useDataPageStyles }) =>
-    isTotalRow && useDataPageStyles ? "42px" : "4px"};
-  padding-bottom: ${({ isTotalRow }) => (isTotalRow ? "29px" : "4px")};
+    isTotalRow && useDataPageStyles ? "42px" : "12px"};
+  padding-bottom: ${({ isTotalRow }) => (isTotalRow ? "29px" : "12px")};
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-size: 18px;
-  font-weight: 500;
+  font-size: 14px;
+  font-weight: 400;
   height: 32px;
 
   &:hover {
@@ -90,18 +90,13 @@ export const DatapointsTableNamesCell = styled.td<{
 export const DatapointsMetricNameCell = styled(DatapointsTableNamesCell)<{
   useMultiAgencyStyles?: boolean;
 }>`
-  ${({ useMultiAgencyStyles }) =>
-    useMultiAgencyStyles
-      ? typography.sizeCSS.medium
-      : typography.sizeCSS.title};
-  color: ${({ useMultiAgencyStyles }) =>
-    useMultiAgencyStyles ? palette.solid.blue : palette.solid.darkgrey};
+  ${typography.sizeCSS.medium};
+  color: ${palette.solid.blue};
   line-height: 38px;
   padding: 0 0 31px 0;
 
   &:hover {
-    color: ${({ useMultiAgencyStyles }) =>
-      useMultiAgencyStyles ? palette.solid.blue : palette.solid.darkgrey};
+    color: ${palette.solid.blue};
   }
 `;
 export const DatapointsTableNamesDivider = styled.td`
@@ -111,6 +106,8 @@ export const DatapointsTableNamesDivider = styled.td`
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
   color: ${palette.highlight.grey8};
 `;
 export const DatapointsTableDetailsContainer = styled.div<{
@@ -130,26 +127,34 @@ export const DatapointsTableDetailsContainerOverlay = styled.div`
   height: 100%;
   pointer-events: none;
 `;
-export const DatapointsTableDetailsContainerOverlayLeftGradient = styled.div`
+export const DatapointsTableDetailsContainerOverlayLeftGradient = styled.div<{
+  isShowing: boolean;
+}>`
   background: linear-gradient(
     0.25turn,
     rgb(255, 255, 255, 1),
     rgb(255, 255, 255, 0)
   );
-  width: 15px;
+  width: 130px;
   height: 100%;
+  opacity: ${({ isShowing }) => (isShowing ? 1 : 0)};
+  transition: opacity 300ms;
 `;
-export const DatapointsTableDetailsContainerOverlayRightGradient = styled.div`
+export const DatapointsTableDetailsContainerOverlayRightGradient = styled.div<{
+  isShowing: boolean;
+}>`
   background: linear-gradient(
     0.25turn,
     rgb(255, 255, 255, 0),
     rgb(255, 255, 255, 1)
   );
-  width: 32px;
+  width: 130px;
   height: 100%;
   position: absolute;
   top: 0;
   right: 0;
+  opacity: ${({ isShowing }) => (isShowing ? 1 : 0)};
+  transition: opacity 300ms;
 `;
 export const DatapointsTableDetailsTable = styled.table`
   border-collapse: collapse;
@@ -180,7 +185,7 @@ export const DatapointsTableDetailsRowHeader = styled.th<{
       return isColHovered ? palette.solid.blue : palette.solid.offwhite;
     }};
     padding: 5px 8px;
-    font-weight: 700;
+    font-weight: 500;
   }
 `;
 export const DatapointsTableDetailsCell = styled.td<{
@@ -189,11 +194,12 @@ export const DatapointsTableDetailsCell = styled.td<{
   isTotalRow?: boolean;
 }>`
   padding: ${({ isTotalRow }) =>
-    isTotalRow ? "4px 32px 29px 15px" : "4px 32px 4px 15px"};
-  font-size: 18px;
+    isTotalRow ? "12px 32px 29px 15px" : "12px 32px 12px 15px"};
+  font-size: 14px;
   height: 32px;
   text-align: end;
   white-space: nowrap;
+  font-weight: 400;
 
   color: ${({ isColumnHovered }) => isColumnHovered && palette.solid.darkgrey};
   color: ${({ isRowHovered }) => isRowHovered && palette.solid.darkgrey};

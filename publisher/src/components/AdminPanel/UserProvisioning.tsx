@@ -234,7 +234,6 @@ export const UserProvisioning: React.FC<ProvisioningProps> = observer(
       ]);
 
       const shouldRefetch = hasAgencyUpdates;
-      // eslint-disable-next-line prettier/prettier
       const response =
         await adminPanelStore.saveUserProvisioningUpdates(shouldRefetch);
 
