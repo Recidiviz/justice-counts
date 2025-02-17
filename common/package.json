@@ -28,13 +28,6 @@
     "styled-components": "^5.3.11",
     "typescript": "^5.7.3"
   },
-  "eslintConfig": {
-    "extends": [
-      "@recidiviz/eslint-config",
-      "react-app/jest",
-      "plugin:storybook/recommended"
-    ]
-  },
   "scripts": {
     "lint": "tsc && eslint '**/*.{ts,tsx}' --max-warnings 0 -c ../.eslintrc.js",
     "test": "jest",

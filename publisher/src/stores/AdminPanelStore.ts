@@ -695,7 +695,6 @@ class AdminPanelStore {
       | User
       | UserWithAgenciesByID
       | AgencyWithTeamByID
-      // eslint-disable-next-line prettier/prettier
       | AgencyTeamMember,
   >(list: T[], order: "ascending" | "descending" = "ascending"): T[] {
     return list.sort((a, b) => {
@@ -741,7 +740,6 @@ class AdminPanelStore {
       | Agency
       | AgencyWithTeamByID
       | UserWithAgenciesByID
-      // eslint-disable-next-line prettier/prettier
       | AgencyTeamMember,
   >(obj: Record<string, T[]>) {
     return AdminPanelStore.sortListByName(

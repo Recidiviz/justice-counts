@@ -83,7 +83,6 @@ export const ReviewMetrics: React.FC<ReviewMetricsProps> = ({
     useState(true);
   const [isOverwritesSectionExpanded, setIsOverwritesSectionExpanded] =
     useState(true);
-  // eslint-disable-next-line prettier/prettier
   const [isRecordsSectionExpanded, setIsRecordsSectionExpanded] = useState(
     () => (records ? records.length <= 10 : false)
   );

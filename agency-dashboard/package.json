@@ -26,12 +26,6 @@
     "eject": "react-scripts eject",
     "lint": "tsc && eslint '**/*.{ts,tsx}' --max-warnings 0 -c ../.eslintrc.js"
   },
-  "eslintConfig": {
-    "extends": [
-      "@recidiviz/eslint-config",
-      "react-app/jest"
-    ]
-  },
   "browserslist": {
     "production": [
       ">0.2%",
