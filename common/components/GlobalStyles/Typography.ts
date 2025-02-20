@@ -45,12 +45,12 @@ export const typography = {
     medium: `
         font-size: ${rem("18px")};
         line-height: ${rem("24px")};
-        font-weight: 500;
+        font-weight: 400;
     `,
     normal: `
         font-size: ${rem("14px")};
         line-height: ${rem("22px")};
-        font-weight: 500;
+        font-weight: 400;
     `,
     small: `
         font-size: ${rem("12px")};
