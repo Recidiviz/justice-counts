@@ -16,6 +16,7 @@
 // =============================================================================
 
 import {
+  FOOTER_HEIGHT_WITH_MARGIN,
   HEADER_BAR_HEIGHT,
   MIN_DESKTOP_WIDTH,
   MIN_TABLET_WIDTH,
@@ -23,16 +24,17 @@ import {
   PANEL_RIGHT_TOP_BUTTONS_CONTAINER_HEIGHT,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { DropdownContainer } from "@justice-counts/publisher/src/components/Reports/CreateReport.styled";
 import { Dropdown, DropdownMenuItem } from "@recidiviz/design-system";
 import React from "react";
 // eslint-disable-next-line no-restricted-imports
 import styled from "styled-components";
 
-import { CustomDropdown } from "../Dropdown";
+import { CustomDropdown, CustomDropdownToggle } from "../Dropdown";
 
-const FOOTER_CONTAINER_HEIGHT = 52;
 const DATAPOINTS_VIEW_CONTAINER_TOP_OFFSET =
-  HEADER_BAR_HEIGHT + PANEL_RIGHT_TOP_BUTTONS_CONTAINER_HEIGHT;
+  HEADER_BAR_HEIGHT + PANEL_RIGHT_TOP_BUTTONS_CONTAINER_HEIGHT + 1;
 
 export const MetricHeaderWrapper = styled.div<{ isColumn?: boolean }>`
   display: flex;
@@ -40,7 +42,7 @@ export const MetricHeaderWrapper = styled.div<{ isColumn?: boolean }>`
   flex-wrap: wrap;
   justify-content: space-between;
   gap: 16px;
-  margin: 9px 0;
+  padding-top: 24px;
   white-space: nowrap;
 
   @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
@@ -107,7 +109,7 @@ export const DatapointsViewContainer = styled.div<{
   ${({ maxHeightViewport }) =>
     maxHeightViewport &&
     `max-height: calc(100vh - ${
-      DATAPOINTS_VIEW_CONTAINER_TOP_OFFSET + FOOTER_CONTAINER_HEIGHT
+      DATAPOINTS_VIEW_CONTAINER_TOP_OFFSET + FOOTER_HEIGHT_WITH_MARGIN
     }px)`}
 `;
 
@@ -121,20 +123,18 @@ export const DatapointsViewHeaderWrapper = styled.div`
   }
 `;
 
-export const DatapointsViewControlsContainer = styled.div`
+export const DatapointsViewControlsContainer = styled(DropdownContainer)`
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
+  gap: 8px;
   width: 100%;
-  height: 42px;
-  border: 1px solid ${palette.highlight.grey9};
 
   & ${CustomDropdown} {
-    border-right: 1px solid ${palette.highlight.grey9};
-    padding: 0 8px;
-
-    &:last-child {
-      border-right: none;
-    }
+    max-width: 280px;
+  }
+  & ${CustomDropdownToggle} {
+    height: 32px;
   }
 `;
 
@@ -157,16 +157,6 @@ const MetricInsightContainer = styled.div`
   &:last-child {
     margin-right: 0;
   }
-
-  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH - 1}px) {
-    text-align: left;
-    margin-bottom: 16px;
-
-    &:last-child {
-      text-align: left;
-      margin-left: 0;
-    }
-  }
 `;
 
 const MetricInsightTitle = styled.div`
@@ -174,7 +164,7 @@ const MetricInsightTitle = styled.div`
 `;
 
 const MetricInsightValue = styled.div`
-  ${typography.sizeCSS.title}
+  ${typography.sizeCSS.large}
   line-height: 32px;
   margin-bottom: 4px;
 `;
@@ -199,7 +189,7 @@ export const DatapointsViewControlsRow = styled.div`
   flex-direction: row;
   align-items: center;
   gap: 8px;
-  margin-top: 32px;
+  padding: 24px 0;
 
   @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     display: none;
@@ -211,8 +201,7 @@ export const MobileFiltersRow = styled.div`
 
   @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     display: flex;
-    border-top: 1px solid ${palette.highlight.grey9};
-    padding-top: 8px;
+    padding: 16px 0;
   }
 `;
 
@@ -274,7 +263,9 @@ export const ExtendedDropdown = styled(Dropdown)`
 `;
 
 export const ChartNote = styled.div`
-  ${typography.sizeCSS.normal}
-  padding: 16px 0 32px;
-  border-top: 1px solid rgba(23, 28, 43, 0.6);
+  ${typography.sizeCSS.small}
+  font-weight: 500;
+  padding: 16px 36px 32px;
+  margin: 0 -36px;
+  border-top: 1px solid ${palette.solid.lightgrey4};
 `;

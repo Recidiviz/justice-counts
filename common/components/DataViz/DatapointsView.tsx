@@ -17,7 +17,6 @@
 
 import { ReactComponent as GridIcon } from "@justice-counts/common/assets/grid-icon.svg";
 import BarChart from "@justice-counts/common/components/DataViz/BarChart";
-import { DatapointsTitle } from "@justice-counts/common/components/DataViz/DatapointsTitle";
 import {
   ChartNote,
   DatapointsViewContainer,
@@ -319,6 +318,7 @@ export const DatapointsView = forwardRef<never, DatapointsViewProps>(
             (key) => key !== "6 Months Ago"
           )
         : Object.keys(DataVizTimeRangesMap);
+
       const timeRangesDropdownOptions: DropdownOption[] = timeRanges.map(
         (range) => ({
           key: range,
@@ -367,14 +367,18 @@ export const DatapointsView = forwardRef<never, DatapointsViewProps>(
             label={timeRange}
             options={timeRangesDropdownOptions}
             size="small"
+            hover="background"
             caretPosition="right"
+            fullWidth
           />
           {disaggregationOptions.length > 1 && (
             <Dropdown
               label={disaggregationName}
               options={disaggregationDropdownOptions}
               size="small"
+              hover="background"
               caretPosition="right"
+              fullWidth
             />
           )}
           {disaggregationName !== noDisaggregationOption && (
@@ -382,7 +386,9 @@ export const DatapointsView = forwardRef<never, DatapointsViewProps>(
               label={countOrPercentageView}
               options={countOrPercentageDropdownOptions}
               size="small"
+              hover="background"
               caretPosition="right"
+              fullWidth
             />
           )}
           {!isMonthlyOnly && (
@@ -392,7 +398,9 @@ export const DatapointsView = forwardRef<never, DatapointsViewProps>(
               )} Reporting Frequency`}
               options={frequencyDropdownOptions}
               size="small"
+              hover="background"
               caretPosition="right"
+              fullWidth
             />
           )}
         </DatapointsViewControlsContainer>
@@ -416,18 +424,12 @@ export const DatapointsView = forwardRef<never, DatapointsViewProps>(
     return (
       <DatapointsViewContainer maxHeightViewport={maxHeightViewport}>
         <DatapointsViewHeaderWrapper>
-          {showTitle && (
+          {showTitle && selectedData.length > 0 && (
             <MetricHeaderWrapper isColumn={windowWidth <= MIN_DESKTOP_WIDTH}>
-              <DatapointsTitle
-                metricName={metricName}
-                metricFrequency={metricFrequency}
+              <MetricInsights
+                datapoints={filteredAggregateData}
+                enableHideByWidth
               />
-              {selectedData.length > 0 && (
-                <MetricInsights
-                  datapoints={filteredAggregateData}
-                  enableHideByWidth
-                />
-              )}
             </MetricHeaderWrapper>
           )}
         </DatapointsViewHeaderWrapper>

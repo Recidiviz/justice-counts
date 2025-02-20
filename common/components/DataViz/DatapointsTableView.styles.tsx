@@ -25,25 +25,15 @@ import {
   typography,
 } from "../GlobalStyles";
 
-export const DatapointsTableViewTitleWrapper = styled.div`
-  padding: 5px 0 14px 0;
-  border-bottom: 1px solid ${palette.highlight.grey9};
-  position: sticky;
-  top: ${PANEL_RIGHT_TOP_BUTTONS_CONTAINER_HEIGHT + HEADER_BAR_HEIGHT}px;
-  background-color: ${palette.solid.white};
-  z-index: 2;
-`;
 export const DatapointsTableContainer = styled.div<{
   useDataPageStyles?: boolean;
 }>`
-  margin-top: ${({ useDataPageStyles }) => (useDataPageStyles ? "32px" : "0")};
+  margin: ${({ useDataPageStyles }) => (useDataPageStyles ? "32px 0" : "0")};
   width: 100%;
   display: flex;
   flex-direction: row;
   position: sticky;
-  top: ${PANEL_RIGHT_TOP_BUTTONS_CONTAINER_HEIGHT + HEADER_BAR_HEIGHT + 100}px;
-  padding: ${({ useDataPageStyles }) =>
-    useDataPageStyles ? "0 15px 0 15px" : "0"};
+  top: ${PANEL_RIGHT_TOP_BUTTONS_CONTAINER_HEIGHT + HEADER_BAR_HEIGHT + 33}px;
 
   &:hover {
     & > * {

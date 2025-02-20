@@ -16,11 +16,12 @@
 // =============================================================================
 
 import { ReactComponent as DownloadChartIcon } from "@justice-counts/common/assets/download-icon.svg";
-import { ReactComponent as GoToMetricConfig } from "@justice-counts/common/assets/gear-settings-icon.svg";
+import { ReactComponent as GoToMetricConfig } from "@justice-counts/common/assets/gear-settings-icon-blue.svg";
 import {
   Badge,
   reportFrequencyBadgeColors,
 } from "@justice-counts/common/components/Badge";
+import { DatapointsTitle } from "@justice-counts/common/components/DataViz/DatapointsTitle";
 import { generateSavingFileName } from "@justice-counts/common/components/DataViz/utils";
 import {
   Dropdown,
@@ -279,11 +280,13 @@ export const MetricsDataChart: React.FC = observer(() => {
                 "(combined)"
               ) ? (
                 <>
-                  {systemName.replace("(combined)", "")}
-                  <span>combined</span>
+                  <Styled.SystemName>
+                    {systemName.replace("(combined)", "")}
+                  </Styled.SystemName>
+                  <Styled.SystemSubname>combined</Styled.SystemSubname>
                 </>
               ) : (
-                systemName
+                <Styled.SystemName>{systemName}</Styled.SystemName>
               );
 
               return (
@@ -291,9 +294,7 @@ export const MetricsDataChart: React.FC = observer(() => {
                   {currEnabledMetrics.length > 0 ? (
                     <>
                       <Styled.SystemNameContainer isSystemActive>
-                        <Styled.SystemName>
-                          {systemNameOrSystemNameWithSpan}
-                        </Styled.SystemName>
+                        {systemNameOrSystemNameWithSpan}
                       </Styled.SystemNameContainer>
                       <Styled.MetricsItemsContainer
                         isSystemActive={
@@ -318,12 +319,14 @@ export const MetricsDataChart: React.FC = observer(() => {
                       </Styled.MetricsItemsContainer>
                     </>
                   ) : (
-                    <Styled.SystemNameContainer isSystemActive>
-                      <Styled.SystemName>
-                        {metrics[0].system.display_name}{" "}
-                        <span>No enabled metrics</span>
-                      </Styled.SystemName>
-                    </Styled.SystemNameContainer>
+                    <>
+                      <Styled.SystemNameContainer isSystemActive>
+                        <Styled.SystemName>
+                          {metrics[0].system.display_name}
+                        </Styled.SystemName>
+                      </Styled.SystemNameContainer>
+                      <Styled.Empty>No enabled metrics</Styled.Empty>
+                    </>
                   )}
                 </React.Fragment>
               );
@@ -401,59 +404,65 @@ export const MetricsDataChart: React.FC = observer(() => {
               </Styled.DisclaimerText>
             </Styled.MobileDisclaimerContainer>
           </Styled.MobileDatapointsControls>
-          <Styled.PanelRightTopButtonsContainer>
-            {dataView === ChartView.Chart &&
-              !!datapointsStore.datapointsByMetric[currentMetric.key] && (
+          <Styled.PanelRightHeader>
+            <DatapointsTitle
+              metricName={metricName}
+              metricFrequency={metricFrequency}
+            />
+            <Styled.PanelRightTopButtonsContainer>
+              {dataView === ChartView.Chart &&
+                !!datapointsStore.datapointsByMetric[currentMetric.key] && (
+                  <Styled.PanelRightTopButton
+                    onClick={() => setDataView(ChartView.Table)}
+                  >
+                    <SwitchToDataTableIcon />
+                    Switch to Data Table
+                  </Styled.PanelRightTopButton>
+                )}
+              {dataView === ChartView.Table && (
                 <Styled.PanelRightTopButton
-                  onClick={() => setDataView(ChartView.Table)}
+                  onClick={() => setDataView(ChartView.Chart)}
                 >
-                  <SwitchToDataTableIcon />
-                  Switch to Data Table
+                  <SwitchToChartIcon />
+                  Switch to Chart
                 </Styled.PanelRightTopButton>
               )}
-            {dataView === ChartView.Table && (
               <Styled.PanelRightTopButton
-                onClick={() => setDataView(ChartView.Chart)}
+                onClick={() => {
+                  navigate({
+                    pathname: "../metric-config",
+                    search: `?${createSearchParams(
+                      supervisionSubsystemRedirectSearchParams
+                    )}`,
+                  });
+                }}
               >
-                <SwitchToChartIcon />
-                Switch to Chart
+                <GoToMetricConfig style={{ stroke: "none" }} />
+                Go to Metric Settings
               </Styled.PanelRightTopButton>
-            )}
-            <Styled.PanelRightTopButton
-              onClick={() => {
-                navigate({
-                  pathname: "../metric-config",
-                  search: `?${createSearchParams(
-                    supervisionSubsystemRedirectSearchParams
-                  )}`,
-                });
-              }}
-            >
-              <GoToMetricConfig />
-              Go to Metric Settings
-            </Styled.PanelRightTopButton>
-            <Styled.PanelRightTopButton
-              onClick={() =>
-                handleChartDownload(currentSystem, currentMetric.key)
-              }
-            >
-              <DownloadChartIcon />
-              Download Graph
-            </Styled.PanelRightTopButton>
-            <Styled.PanelRightTopButton
-              onClick={() =>
-                downloadMetricData(
-                  currentMetric,
-                  agencyId,
-                  false,
-                  currentAgency?.name
-                )
-              }
-            >
-              <DownloadChartIcon />
-              Download Data
-            </Styled.PanelRightTopButton>
-          </Styled.PanelRightTopButtonsContainer>
+              <Styled.PanelRightTopButton
+                onClick={() =>
+                  handleChartDownload(currentSystem, currentMetric.key)
+                }
+              >
+                <DownloadChartIcon />
+                Download Graph
+              </Styled.PanelRightTopButton>
+              <Styled.PanelRightTopButton
+                onClick={() =>
+                  downloadMetricData(
+                    currentMetric,
+                    agencyId,
+                    false,
+                    currentAgency?.name
+                  )
+                }
+              >
+                <DownloadChartIcon />
+                Download Data
+              </Styled.PanelRightTopButton>
+            </Styled.PanelRightTopButtonsContainer>
+          </Styled.PanelRightHeader>
           <ConnectedDatapointsView
             metric={currentMetric.key}
             metricName={metricName}
@@ -462,21 +471,6 @@ export const MetricsDataChart: React.FC = observer(() => {
             dataView={dataView}
             ref={ref}
           />
-          {windowWidth <= MIN_DESKTOP_WIDTH && (
-            <Styled.PanelRightTopButton
-              onClick={() => {
-                navigate({
-                  pathname: "../metric-config",
-                  search: `?${createSearchParams(
-                    supervisionSubsystemRedirectSearchParams
-                  )}`,
-                });
-              }}
-            >
-              <GoToMetricConfig />
-              Go to Metric Settings
-            </Styled.PanelRightTopButton>
-          )}
         </Styled.PanelContainerRight>
       </Styled.MetricsViewPanel>
     </Styled.MetricsViewContainer>

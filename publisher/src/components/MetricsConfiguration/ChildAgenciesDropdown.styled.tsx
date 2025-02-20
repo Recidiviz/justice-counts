@@ -29,13 +29,15 @@ import {
 import styled from "styled-components/macro";
 
 export const DropdownWrapper = styled.div`
-  padding-bottom: 10px;
+  width: 100%;
+  padding-bottom: 16px; 
+
   & ${CustomDropdown} {
-    width: 100%;
     max-width: 420px;
     min-width: 350px;
-    border: 1px solid ${palette.highlight.grey2};
+    border: 1px solid ${palette.highlight.grey4};
     padding: 0 12px;
+    border-radius: 3px;
 
     @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
       max-width: unset;
@@ -43,11 +45,11 @@ export const DropdownWrapper = styled.div`
   }
   & ${CustomDropdownMenu} {
     box-shadow: none;
-    border: 1px solid ${palette.highlight.grey2};
+    border: 1px solid ${palette.highlight.grey4};
   }
   & ${CustomInputWrapper} {
     padding: 12px 16px;
-    border-bottom: 1px solid ${palette.highlight.grey2};
+    border-bottom: 1px solid ${palette.highlight.grey4};
   }
   & ${CustomInput} {
     border: 0;
