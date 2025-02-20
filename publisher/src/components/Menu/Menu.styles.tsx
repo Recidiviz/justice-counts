@@ -14,10 +14,20 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
-import { CustomDropdown } from "@justice-counts/common/components/Dropdown";
+import {
+  CustomDropdown,
+  CustomDropdownMenu,
+  CustomDropdownMenuItem,
+  CustomDropdownToggle,
+  CustomDropdownToggleLabel,
+  CustomInput,
+  CustomInputWrapper,
+  OptionLabelWrapper,
+} from "@justice-counts/common/components/Dropdown";
 import {
   HEADER_BAR_HEIGHT,
   MIN_DESKTOP_WIDTH,
+  MIN_MOBILE_WIDTH,
   MIN_TABLET_WIDTH,
   palette,
   PANEL_LEFT_CONTAINER_MAX_WIDTH,
@@ -149,32 +159,49 @@ export const AgencyDropdownHeaderBadgeWrapper = styled.div`
 export const AgencyDropdownWrapper = styled.div`
   background: ${palette.solid.darkgrey};
   height: ${HEADER_BAR_HEIGHT}px;
-  min-width: ${PANEL_LEFT_CONTAINER_MAX_WIDTH - HEADER_BAR_HEIGHT}px;
+  width: ${PANEL_LEFT_CONTAINER_MAX_WIDTH - HEADER_BAR_HEIGHT}px;
 
-  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
-    min-width: unset;
+  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
+    width: 270px;
+  }
+  @media only screen and (max-width: ${MIN_MOBILE_WIDTH}px) {
+    width: 170px;
   }
 
-  & > div {
-    border-bottom: 0;
-  }
-
-  button {
+  & ${CustomDropdownToggle} {
     height: ${HEADER_BAR_HEIGHT}px;
+    color: ${palette.solid.white};
     width: 100%;
     padding: 16px;
-  }
 
-  button div {
-    color: ${palette.solid.white};
+    img {
+      filter: brightness(0) invert(1);
+    }
   }
-
-  button img {
-    filter: brightness(0) invert(1);
+  & ${CustomDropdownToggleLabel} {
+    display: block;
+    text-overflow: ellipsis;
+    text-align: left;
+    overflow: hidden;
   }
-
-  button + div {
+  & ${CustomDropdownMenu} {
+    max-height: 330px;
     border-radius: 0;
+  }
+  & ${CustomDropdownMenuItem} {
+    border-radius: 0;
+  }
+  & ${OptionLabelWrapper} {
+    padding-left: 0;
+  }
+  & ${CustomInputWrapper} {
+    padding: 12px 16px;
+    border-bottom: 1px solid ${palette.highlight.grey2};
+  }
+  & ${CustomInput} {
+    border: 0;
+    outline: 0;
+    background: transparent;
   }
 `;
 

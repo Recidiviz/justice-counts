@@ -323,6 +323,8 @@ export const PanelRightHeader = styled.div`
     border-top: 1px solid ${palette.solid.lightgrey4};
     position: initial;
     z-index: 0;
+    margin: 0 -24px;
+    padding: 12px 24px;
   }
 `;
 

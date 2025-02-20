@@ -268,4 +268,9 @@ export const ChartNote = styled.div`
   padding: 16px 36px 32px;
   margin: 0 -36px;
   border-top: 1px solid ${palette.solid.lightgrey4};
+
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
+    margin: 0 -24px;
+    padding: 16px 24px;
+  }
 `;

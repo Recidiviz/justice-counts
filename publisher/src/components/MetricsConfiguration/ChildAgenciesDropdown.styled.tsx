@@ -30,11 +30,11 @@ import styled from "styled-components/macro";
 
 export const DropdownWrapper = styled.div`
   width: 100%;
-  padding-bottom: 16px; 
+  padding-bottom: 16px;
 
   & ${CustomDropdown} {
-    max-width: 420px;
-    min-width: 350px;
+    max-width: 400px;
+    min-width: 300px;
     border: 1px solid ${palette.highlight.grey4};
     padding: 0 12px;
     border-radius: 3px;
@@ -59,5 +59,6 @@ export const DropdownWrapper = styled.div`
   & ${CustomDropdownMenuItem} {
     padding: 10px 16px;
     border-bottom: 0;
+    white-space: unset;
   }
 `;

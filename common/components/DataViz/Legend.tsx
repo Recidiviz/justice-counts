@@ -19,7 +19,7 @@ import React from "react";
 // eslint-disable-next-line no-restricted-imports
 import styled from "styled-components";
 
-import { palette } from "../GlobalStyles";
+import { MIN_DESKTOP_WIDTH, palette } from "../GlobalStyles";
 
 const LegendContainer = styled.div`
   display: flex;
@@ -29,6 +29,11 @@ const LegendContainer = styled.div`
   border-top: 1px solid ${palette.solid.lightgrey4};
   padding: 16px 36px;
   margin: 0 -36px;
+
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
+    margin: 0 -24px;
+    padding: 16px 24px;
+  }
 `;
 
 const LegendItem = styled.div`
