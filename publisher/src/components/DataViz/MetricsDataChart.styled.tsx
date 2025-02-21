@@ -96,16 +96,16 @@ export const SystemsContainer = styled.div`
   overflow-x: hidden;
 
   &:not(:first-child) {
-    border-top: 1px solid ${palette.solid.lightgrey4};
+    border-top: 1px solid ${palette.highlight.grey2};
   }
 `;
 
 export const SystemNameContainer = styled.div<{ isSystemActive: boolean }>`
   color: ${palette.solid.darkgrey};
-  border-bottom: 1px solid ${palette.solid.lightgrey4};
+  border-bottom: 1px solid ${palette.highlight.grey2};
 
   &:not(:nth-child(3)) {
-    border-top: 1px solid ${palette.solid.lightgrey4};
+    border-top: 1px solid ${palette.highlight.grey2};
   }
 
   &:hover {
@@ -131,7 +131,7 @@ export const SystemSubname = styled.div`
   color: ${palette.highlight.grey9};
   text-transform: uppercase;
   padding: 8px 16px;
-  border-top: 1px solid ${palette.solid.lightgrey4};
+  border-top: 1px solid ${palette.highlight.grey2};
 `;
 
 export const Empty = styled.div`
@@ -211,7 +211,7 @@ export const PanelContainerRight = styled.div`
   position: relative;
   flex-direction: column;
   padding: 0 36px;
-  border-left: 1px solid ${palette.solid.lightgrey4};
+  border-left: 1px solid ${palette.highlight.grey2};
 
   @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     width: 100%;
@@ -260,8 +260,8 @@ export const MetricsViewDropdownContainerFixed = styled.div<{
   min-height: 56px;
   height: 56px;
   background-color: ${palette.solid.white};
-  border-top: 1px solid ${palette.solid.lightgrey4};
-  border-bottom: 1px solid ${palette.solid.lightgrey4};
+  border-top: 1px solid ${palette.highlight.grey2};
+  border-bottom: 1px solid ${palette.highlight.grey2};
 
   @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     display: flex;
@@ -316,11 +316,11 @@ export const PanelRightHeader = styled.div`
   position: sticky;
   top: ${HEADER_BAR_HEIGHT}px;
   background-color: ${palette.solid.white};
-  border-bottom: 1px solid ${palette.solid.lightgrey4};
+  border-bottom: 1px solid ${palette.highlight.grey2};
   z-index: 2;
 
   @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
-    border-top: 1px solid ${palette.solid.lightgrey4};
+    border-top: 1px solid ${palette.highlight.grey2};
     position: initial;
     z-index: 0;
     margin: 0 -24px;
