@@ -16,6 +16,7 @@
 // =============================================================================
 
 import {
+  FOOTER_HEIGHT_WITHOUT_MARGIN,
   HEADER_BAR_HEIGHT,
   MIN_DESKTOP_WIDTH,
   MIN_TABLET_WIDTH,
@@ -25,7 +26,6 @@ import {
 import styled from "styled-components/macro";
 
 import { rem } from "../../utils";
-import { FOOTER_HEIGHT_WITHOUT_MARGIN } from "../Footer";
 import { OpacityGradient } from "../Forms";
 
 export const DataUploadContainer = styled.div`

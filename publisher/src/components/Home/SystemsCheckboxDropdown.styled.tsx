@@ -29,6 +29,7 @@ import { DropdownWrapper } from "../MetricsConfiguration/ChildAgenciesDropdown.s
 export const CheckboxDropdownWrapper = styled(DropdownWrapper)`
   padding: 0;
   height: 100%;
+  min-width: 350px;
 
   & ${CustomDropdown} {
     border-radius: ${rem(spacing.xs)};

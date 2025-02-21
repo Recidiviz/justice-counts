@@ -197,18 +197,17 @@ const Menu: React.FC = () => {
               </Styled.SingleAgencyHeader>
             ) : (
               <Styled.AgencyDropdownWrapper>
-                <Styled.MenuItem>
-                  <Dropdown
-                    label={agencyDisplayName}
-                    options={agencyDropdownOptions}
-                    size="small"
-                    hover="label"
-                    alignment="left"
-                    caretPosition="right"
-                    highlightIcon={<Styled.TargetIcon />}
-                    typeaheadSearch={{ placeholder: "Search for Agency" }}
-                  />
-                </Styled.MenuItem>
+                <Dropdown
+                  label={agencyDisplayName}
+                  options={agencyDropdownOptions}
+                  size="small"
+                  hover="label"
+                  alignment="left"
+                  caretPosition="right"
+                  highlightIcon={<Styled.TargetIcon />}
+                  typeaheadSearch={{ placeholder: "Search for Agency" }}
+                  customClearSearchButton="Clear"
+                />
               </Styled.AgencyDropdownWrapper>
             )}
           </>

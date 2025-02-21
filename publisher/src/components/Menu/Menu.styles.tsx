@@ -14,11 +14,23 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
-import { CustomDropdown } from "@justice-counts/common/components/Dropdown";
+import {
+  CustomDropdown,
+  CustomDropdownMenu,
+  CustomDropdownMenuItem,
+  CustomDropdownToggle,
+  CustomDropdownToggleLabel,
+  CustomInput,
+  CustomInputWrapper,
+  OptionLabelWrapper,
+} from "@justice-counts/common/components/Dropdown";
 import {
   HEADER_BAR_HEIGHT,
+  MIN_DESKTOP_WIDTH,
+  MIN_MOBILE_WIDTH,
   MIN_TABLET_WIDTH,
   palette,
+  PANEL_LEFT_CONTAINER_MAX_WIDTH,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
 import styled from "styled-components/macro";
@@ -38,12 +50,12 @@ export const MenuItemsWrapper = styled.div`
   align-items: center;
   gap: 56px;
 
-  @media only screen and (max-width: ${MIN_TABLET_WIDTH + 180}px) {
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     gap: 20px;
     height: ${HEADER_BAR_HEIGHT}px;
   }
 
-  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
+  @media only screen and (max-width: ${MIN_TABLET_WIDTH + 140}px) {
     width: 100%;
     height: ${HEADER_BAR_HEIGHT}px;
     display: flex;
@@ -61,7 +73,7 @@ export const MenuItemsWrapper = styled.div`
 export const MenuItemsProfileWrapper = styled.div`
   display: flex;
   align-items: center;
-  gap: 56px;
+  gap: 48px;
 
   @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
     width: 100%;
@@ -76,12 +88,11 @@ export const MenuItem = styled.div<{
   dropdownPadding?: boolean;
   isHoverDisabled?: boolean;
 }>`
-  ${typography.sizeCSS.medium}
-  height: ${HEADER_BAR_HEIGHT}px;
+  ${typography.sizeCSS.normal}
   display: flex;
   align-items: center;
-  border-bottom: 3px solid
-    ${({ active }) => (active ? palette.solid.blue : "transparent")};
+  border-bottom: 1px solid
+    ${({ active }) => (active ? palette.solid.darkgrey : "transparent")};
   transition: 0.2s ease;
   color: ${({ highlight, active }) => {
     if (highlight) return palette.solid.red;
@@ -106,15 +117,7 @@ export const MenuItem = styled.div<{
     cursor: ${({ isHoverDisabled }) =>
       isHoverDisabled ? "default" : "pointer"};
     color: ${({ isHoverDisabled }) =>
-      isHoverDisabled ? palette.solid.darkgrey : palette.solid.blue};
-  }
-
-  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
-    height: 100%;
-    padding: 0;
-    border-top: 3px solid
-      ${({ active }) => (active ? palette.solid.blue : "transparent")};
-    border-bottom: none;
+      isHoverDisabled ? palette.solid.darkgrey : palette.solid.darkgrey};
   }
 `;
 
@@ -156,27 +159,49 @@ export const AgencyDropdownHeaderBadgeWrapper = styled.div`
 export const AgencyDropdownWrapper = styled.div`
   background: ${palette.solid.darkgrey};
   height: ${HEADER_BAR_HEIGHT}px;
+  width: ${PANEL_LEFT_CONTAINER_MAX_WIDTH - HEADER_BAR_HEIGHT}px;
 
-  & > div {
-    border-bottom: 0;
+  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
+    width: 270px;
+  }
+  @media only screen and (max-width: ${MIN_MOBILE_WIDTH}px) {
+    width: 170px;
   }
 
-  button {
+  & ${CustomDropdownToggle} {
     height: ${HEADER_BAR_HEIGHT}px;
+    color: ${palette.solid.white};
     width: 100%;
     padding: 16px;
-  }
 
-  button div {
-    color: ${palette.solid.white};
+    img {
+      filter: brightness(0) invert(1);
+    }
   }
-
-  button img {
-    filter: brightness(0) invert(1);
+  & ${CustomDropdownToggleLabel} {
+    display: block;
+    text-overflow: ellipsis;
+    text-align: left;
+    overflow: hidden;
   }
-
-  button + div {
+  & ${CustomDropdownMenu} {
+    max-height: 330px;
     border-radius: 0;
+  }
+  & ${CustomDropdownMenuItem} {
+    border-radius: 0;
+  }
+  & ${OptionLabelWrapper} {
+    padding-left: 0;
+  }
+  & ${CustomInputWrapper} {
+    padding: 12px 16px;
+    border-bottom: 1px solid ${palette.highlight.grey2};
+  }
+  & ${CustomInput} {
+    border: 0;
+    outline: 0;
+    background: transparent;
   }
 `;
 
@@ -193,18 +218,7 @@ export const SingleAgencyHeader = styled.div`
   padding: 16px;
 `;
 
-export const ProfileDropdownContainer = styled.div`
-  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
-    height: ${HEADER_BAR_HEIGHT}px;
-    width: calc(100% - 1px);
-    min-width: ${HEADER_BAR_HEIGHT}px;
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    background: ${palette.solid.darkgrey};
-    padding-right: 16px;
-  }
-`;
+export const ProfileDropdownContainer = styled.div``;
 
 export const ProfileDropdownWrapper = styled.div`
   ${typography.sizeCSS.small}
@@ -253,12 +267,6 @@ export const ProfileDropdownWrapper = styled.div`
 
   &:hover {
     cursor: pointer;
-  }
-
-  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
-    &::before {
-      background: ${palette.solid.darkgrey};
-    }
   }
 `;
 

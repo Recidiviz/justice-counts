@@ -29,13 +29,14 @@ import {
 import styled from "styled-components/macro";
 
 export const DropdownWrapper = styled.div`
-  padding-bottom: 10px;
+  padding-bottom: 16px;
+
   & ${CustomDropdown} {
-    width: 100%;
-    max-width: 420px;
-    min-width: 350px;
+    max-width: 400px;
+    min-width: 300px;
     border: 1px solid ${palette.highlight.grey2};
     padding: 0 12px;
+    border-radius: 3px;
 
     @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
       max-width: unset;
@@ -57,5 +58,6 @@ export const DropdownWrapper = styled.div`
   & ${CustomDropdownMenuItem} {
     padding: 10px 16px;
     border-bottom: 0;
+    white-space: unset;
   }
 `;

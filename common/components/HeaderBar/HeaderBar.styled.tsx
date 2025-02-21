@@ -20,7 +20,6 @@ import styled from "styled-components";
 import {
   HEADER_BAR_HEIGHT,
   MIN_DESKTOP_WIDTH,
-  MIN_TABLET_WIDTH,
   palette,
   typography,
 } from "../GlobalStyles";
@@ -29,7 +28,6 @@ import { HeaderBarBackground } from "./types";
 export const HeaderBar = styled.div<{
   background?: HeaderBarBackground;
   hasBottomBorder?: boolean;
-  noPaddingInSmallScreenWidth?: boolean;
 }>`
   width: 100%;
   height: ${HEADER_BAR_HEIGHT}px;
@@ -50,14 +48,6 @@ export const HeaderBar = styled.div<{
 
   border-bottom: ${({ hasBottomBorder }) =>
     hasBottomBorder ? `1px solid ${palette.highlight.grey3}` : "none"};
-
-  ${({ noPaddingInSmallScreenWidth }) =>
-    noPaddingInSmallScreenWidth &&
-    `
-      @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
-        padding: 0;
-      }
-  `}
 `;
 
 export const LogoContainer = styled.div`
@@ -68,7 +58,6 @@ export const LogoContainer = styled.div`
   justify-content: start;
   align-items: center;
   transition: 0.3s ease;
-  gap: 0.5px;
 
   &:hover {
     cursor: pointer;

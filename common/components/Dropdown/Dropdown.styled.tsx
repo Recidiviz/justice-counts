@@ -173,10 +173,9 @@ export const CustomDropdownMenuItem = styled(DropdownMenuItem)<{
   ${({ disabled }) => disabled && `opacity: 0.5; pointer-events: none;`}
   ${({ groupTitle }) =>
     groupTitle &&
-    `pointer-events: none;
+    `${typography.caption}
+    pointer-events: none;
     color: ${palette.highlight.grey6} !important;
-    font-size: 11px;
-    letter-spacing: 1.5px;
     padding: 10px 16px 5px !important;
     &:not(:nth-child(2)) {
       border-top: 1px solid ${palette.highlight.grey2};

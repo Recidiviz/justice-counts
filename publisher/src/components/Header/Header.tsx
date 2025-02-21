@@ -37,7 +37,6 @@ const Header = observer(() => {
     <HeaderBar
       onLogoClick={onLogoClick}
       hasBottomBorder
-      noPaddingInSmallScreenWidth
     >
       <Menu />
     </HeaderBar>
