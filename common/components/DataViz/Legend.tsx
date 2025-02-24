@@ -19,15 +19,21 @@ import React from "react";
 // eslint-disable-next-line no-restricted-imports
 import styled from "styled-components";
 
-import { palette } from "../GlobalStyles";
+import { MIN_DESKTOP_WIDTH, palette } from "../GlobalStyles";
 
 const LegendContainer = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
   flex-wrap: wrap;
-  border-top: 1px solid rgba(23, 28, 43, 0.6);
-  padding: 16px 0;
+  border-top: 1px solid ${palette.solid.lightgrey4};
+  padding: 16px 36px;
+  margin: 0 -36px;
+
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
+    margin: 0 -24px;
+    padding: 16px 24px;
+  }
 `;
 
 const LegendItem = styled.div`

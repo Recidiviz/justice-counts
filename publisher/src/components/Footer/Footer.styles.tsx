@@ -18,17 +18,16 @@
 import {
   MIN_TABLET_WIDTH,
   palette,
+  PANEL_RIGHT_TOP_BUTTONS_CONTAINER_HEIGHT,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
 import styled from "styled-components/macro";
-
-export const FOOTER_HEIGHT_WITHOUT_MARGIN = 64;
-export const FOOTER_HEIGHT_WITH_MARGIN = FOOTER_HEIGHT_WITHOUT_MARGIN + 60;
 
 export const FooterWrapper = styled.footer<{ isPageDataUpload?: boolean }>`
   padding: 14px 24px;
   z-index: ${({ isPageDataUpload }) => (isPageDataUpload ? "5" : "0")};
   width: 100%;
+  min-height: ${PANEL_RIGHT_TOP_BUTTONS_CONTAINER_HEIGHT + 1}px;
   background-color: ${palette.solid.darkgrey};
 
   a {

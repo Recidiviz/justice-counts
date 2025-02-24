@@ -17,6 +17,7 @@
 
 import checkIconWhite from "@justice-counts/common/assets/status-check-white-icon.png";
 import {
+  HEADER_BAR_HEIGHT,
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
@@ -25,15 +26,16 @@ import React from "react";
 import styled from "styled-components";
 
 export const MobileModalContainer = styled.div`
-  z-index: 3;
+  height: calc(100% - ${HEADER_BAR_HEIGHT * 2}px);
   position: fixed;
-  top: 0;
+  top: ${HEADER_BAR_HEIGHT}px;
   right: 0;
   bottom: 0;
   left: 0;
   background: ${palette.solid.blue};
   color: ${palette.solid.white};
   overflow-y: auto;
+  z-index: 5;
 `;
 
 export const MobileModalInnerContainer = styled.div`

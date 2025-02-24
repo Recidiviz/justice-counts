@@ -19,12 +19,13 @@ import {
   HEADER_BAR_HEIGHT,
   MIN_DESKTOP_WIDTH,
   palette,
+  PANEL_LEFT_CONTAINER_MAX_WIDTH,
   PANEL_RIGHT_TOP_BUTTONS_CONTAINER_HEIGHT,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
 import styled from "styled-components/macro";
 
-const INNER_PANEL_LEFT_CONTAINER_MAX_WIDTH = 314;
+import { DropdownWrapper } from "../MetricsConfiguration/ChildAgenciesDropdown.styled";
 
 export const NoEnabledMetricsMessage = styled.div`
   min-height: 100%;
@@ -33,6 +34,7 @@ export const NoEnabledMetricsMessage = styled.div`
 
 export const MetricsViewContainer = styled.div`
   width: 100%;
+  min-height: calc(100vh - ${HEADER_BAR_HEIGHT}px);
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -60,24 +62,26 @@ export const DisclaimerContainer = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  padding-top: 15px;
-  padding-bottom: 37px;
-  width: ${INNER_PANEL_LEFT_CONTAINER_MAX_WIDTH}px;
+  padding: 16px 16px 36px;
+  width: ${PANEL_LEFT_CONTAINER_MAX_WIDTH}px;
   min-height: 200px;
 `;
 
 export const PanelContainerLeft = styled.div`
-  width: 25%;
-  min-width: calc(314px + 24px + 95px);
+  width: ${PANEL_LEFT_CONTAINER_MAX_WIDTH}px;
+  min-width: ${PANEL_LEFT_CONTAINER_MAX_WIDTH}px;
   height: 100%;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 46px 24px 0;
 
   & > ${DisclaimerContainer} {
     margin-top: auto;
+  }
+
+  & > ${DropdownWrapper} {
+    padding: 11px;
   }
 
   @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
@@ -88,64 +92,80 @@ export const PanelContainerLeft = styled.div`
 export const SystemsContainer = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 10px;
   overflow-y: auto;
   overflow-x: hidden;
+
+  &:not(:first-child) {
+    border-top: 1px solid ${palette.highlight.grey2};
+  }
 `;
 
 export const SystemNameContainer = styled.div<{ isSystemActive: boolean }>`
-  ${typography.sizeCSS.title}
-  width: ${INNER_PANEL_LEFT_CONTAINER_MAX_WIDTH}px;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  border-bottom: 2px solid ${palette.solid.darkgrey};
-  padding-bottom: 8px;
   color: ${palette.solid.darkgrey};
+  border-bottom: 1px solid ${palette.highlight.grey2};
+
+  &:not(:nth-child(3)) {
+    border-top: 1px solid ${palette.highlight.grey2};
+  }
 
   &:hover {
     cursor: ${({ isSystemActive }) => (isSystemActive ? "auto" : "pointer")};
   }
 `;
 
-export const SystemName = styled.span`
+export const SystemName = styled.div`
+  ${typography.sizeCSS.large}
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: ${PANEL_RIGHT_TOP_BUTTONS_CONTAINER_HEIGHT}px;
   white-space: nowrap;
   text-transform: capitalize;
+  padding: 16px;
+`;
 
-  span {
-    display: block;
-    ${typography.sizeCSS.normal}
-    color: ${palette.highlight.grey9};
-  }
+export const SystemSubname = styled.div`
+  ${typography.caption}
+  display: block;
+  ${typography.sizeCSS.normal}
+  color: ${palette.highlight.grey9};
+  text-transform: uppercase;
+  padding: 8px 16px;
+  border-top: 1px solid ${palette.highlight.grey2};
+`;
+
+export const Empty = styled.div`
+  ${typography.sizeCSS.normal}
+  color: ${palette.highlight.grey7};
+  padding: 8px 16px;
 `;
 
 export const MetricsItemsContainer = styled.div<{ isSystemActive: boolean }>`
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  padding: 13px 0;
+  gap: 8px;
+  padding: 8px 16px;
 
   ${({ isSystemActive }) => !isSystemActive && "display: none"}
 `;
 
 export const MetricItem = styled.div<{ selected?: boolean }>`
-  ${typography.sizeCSS.large}
+  ${typography.sizeCSS.normal}
   width: fit-content;
-  padding-bottom: 4px;
-  max-width: ${INNER_PANEL_LEFT_CONTAINER_MAX_WIDTH}px;
+  max-width: ${PANEL_LEFT_CONTAINER_MAX_WIDTH}px;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
   color: ${({ selected }) =>
-    selected ? palette.solid.darkgrey : palette.highlight.grey7};
-  border-bottom: 2px solid
+    selected ? palette.solid.blue : palette.solid.darkgrey};
+  border-bottom: 1px solid
     ${({ selected }) => (selected ? palette.solid.blue : `transparent`)};
   transition: color 0.2s ease;
 
   &:hover {
     max-width: fit-content;
     cursor: pointer;
-    color: ${({ selected }) => !selected && palette.solid.darkgrey};
+    color: ${({ selected }) => !selected && palette.solid.blue};
   }
 `;
 
@@ -184,13 +204,14 @@ export const DisclaimerLink = styled.span`
 `;
 
 export const PanelContainerRight = styled.div`
-  width: 75%;
+  width: 100%;
   min-width: 730px;
   min-height: 100%;
   display: flex;
   position: relative;
   flex-direction: column;
-  padding-right: 24px;
+  padding: 0 36px;
+  border-left: 1px solid ${palette.highlight.grey2};
 
   @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     width: 100%;
@@ -217,16 +238,14 @@ export const CurrentMetricsSystem = styled.div<{
 
   @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     display: block;
-    width: calc(100% - 48px);
+    width: 100%;
     ${typography.sizeCSS.medium};
     text-transform: capitalize;
     padding-bottom: 12px;
-    padding-top: 24px;
     top: ${({ isSuperagency }) =>
       isSuperagency
         ? `${HEADER_BAR_HEIGHT + 76}px;`
         : `${HEADER_BAR_HEIGHT}px`};
-    z-index: 2;
     background-color: ${palette.solid.white};
   }
 `;
@@ -237,13 +256,12 @@ export const MetricsViewDropdownContainerFixed = styled.div<{
   display: none;
   position: fixed;
   top: ${HEADER_BAR_HEIGHT + 24 + 36}px;
-  width: calc(100% - 48px);
+  width: 100%;
   min-height: 56px;
   height: 56px;
-  z-index: 2;
   background-color: ${palette.solid.white};
-  border-top: 1px solid ${palette.highlight.grey9};
-  border-bottom: 1px solid ${palette.highlight.grey9};
+  border-top: 1px solid ${palette.highlight.grey2};
+  border-bottom: 1px solid ${palette.highlight.grey2};
 
   @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     display: flex;
@@ -282,26 +300,38 @@ export const MetricsViewDropdownLabel = styled.div`
 
 export const MobileDisclaimerContainer = styled(DisclaimerContainer)`
   width: 100%;
-  height: auto;
+  min-height: auto;
   justify-content: flex-start;
-  padding-bottom: 24px;
-  padding-top: 16px;
+  padding: 16px 0 24px;
+`;
+
+export const PanelRightHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  min-height: ${PANEL_RIGHT_TOP_BUTTONS_CONTAINER_HEIGHT + 1}px;
+  padding: 12px 36px;
+  margin: 0 -36px;
+  position: sticky;
+  top: ${HEADER_BAR_HEIGHT}px;
+  background-color: ${palette.solid.white};
+  border-bottom: 1px solid ${palette.highlight.grey2};
+  z-index: 2;
+
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
+    border-top: 1px solid ${palette.highlight.grey2};
+    position: initial;
+    z-index: 0;
+    margin: 0 -24px;
+    padding: 12px 24px;
+  }
 `;
 
 export const PanelRightTopButtonsContainer = styled.div`
   display: flex;
-  flex-direction: row;
+  flex-wrap: wrap;
   gap: 16px;
-  height: ${PANEL_RIGHT_TOP_BUTTONS_CONTAINER_HEIGHT}px;
-  padding: 24px 0 4px 0;
-  position: sticky;
-  top: ${HEADER_BAR_HEIGHT}px;
-  background-color: ${palette.solid.white};
-  z-index: 2;
-
-  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
-    display: none;
-  }
 `;
 
 export const PanelRightTopButton = styled.div`
@@ -310,6 +340,12 @@ export const PanelRightTopButton = styled.div`
   align-items: center;
   gap: 4px;
   cursor: pointer;
+  color: ${palette.solid.blue};
+
+  svg,
+  path {
+    stroke: ${palette.solid.blue};
+  }
 
   &:hover {
     opacity: 0.5;
@@ -328,10 +364,10 @@ export const ScrollShadow = styled.div<{
   );
   pointer-events: none;
   position: fixed;
+  left: 0;
   opacity: ${({ show }) => (show ? 1 : 0)};
   transition: all 200ms ease;
   ${({ side }) => side}: ${({ offset }) => offset || 0}px;
-  width: ${INNER_PANEL_LEFT_CONTAINER_MAX_WIDTH}px;
+  width: ${PANEL_LEFT_CONTAINER_MAX_WIDTH}px;
   height: 200px;
-  z-index: 101;
 `;

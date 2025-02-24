@@ -57,12 +57,14 @@ export const MetricTitle = styled.div<{
   flex-direction: row;
   gap: 18px;
   align-items: center;
-  ${typography.sizeCSS.title};
+  ${typography.sizeCSS.large};
+  line-height: unset;
 
   ${({ titleWidth }) =>
     titleWidth > 700 &&
     css`
+      max-width: 400px;
       transform: translateX(100%);
-      animation: 10s ${leftAutoscroll(titleWidth - 700 + 30)} linear infinite;
+      animation: 30s ${leftAutoscroll(titleWidth - 700 + 30)} linear infinite;
     `}
 `;
