@@ -88,9 +88,7 @@ abstract class DatapointsStore {
           frequency: dp.frequency,
           dataVizMissingData: 0,
         });
-        // the res object could be overwritten based on the datapoint order since the logic is grouping by start_date
-        // and this check essentially skips all null datapoints and writes correct data
-      } else if (dp.value || dp.value === 0) {
+      } else if (dp.value !== null || dp.value !== undefined) {
         if (
           !res[dp.metric_definition_key].disaggregations[
             dp.disaggregation_display_name
@@ -101,41 +99,41 @@ abstract class DatapointsStore {
           ] = {};
         }
 
+        /**
+         The res object can be overwritten depending on the order of datapoints,
+         when grouping by a single key (e.g., start_date), since start_date
+         can be the same for different frequencies, so we must include frequency 
+         as part of the grouped key to prevent data from being overridden.
+        */
+        const groupedKey = `${dp.start_date}_${dp.frequency}`;
+
         const dimensionName = Object.keys(UnitedRaceEthnicityKeys).includes(
           dp.dimension_display_name
         )
           ? UnitedRaceEthnicityKeys[dp.dimension_display_name]
           : dp.dimension_display_name;
 
-        const hasDimensionName =
+        const existingEntry =
           res[dp.metric_definition_key].disaggregations[
             dp.disaggregation_display_name
-          ][dp.start_date] &&
-          Object.keys(
-            res[dp.metric_definition_key].disaggregations[
-              dp.disaggregation_display_name
-            ][dp.start_date]
-          ).includes(dimensionName);
+          ][groupedKey];
+
+        const hasDimensionName =
+          existingEntry && Object.keys(existingEntry).includes(dimensionName);
 
         let dimensionValue: string | number | null;
 
         if (hasDimensionName) {
           dimensionValue =
-            Number(
-              res[dp.metric_definition_key].disaggregations[
-                dp.disaggregation_display_name
-              ][dp.start_date][dimensionName] ?? 0
-            ) + (sanitizedValue ?? 0);
+            Number(existingEntry[dimensionName] ?? 0) + (sanitizedValue ?? 0);
         } else {
           dimensionValue = sanitizedValue;
         }
 
         res[dp.metric_definition_key].disaggregations[
           dp.disaggregation_display_name
-        ][dp.start_date] = {
-          ...res[dp.metric_definition_key].disaggregations[
-            dp.disaggregation_display_name
-          ][dp.start_date],
+        ][groupedKey] = {
+          ...existingEntry,
           start_date: dp.start_date,
           end_date: dp.end_date,
           [dimensionName]: dimensionValue,
