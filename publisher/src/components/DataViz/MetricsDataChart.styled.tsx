@@ -370,5 +370,4 @@ export const ScrollShadow = styled.div<{
   ${({ side }) => side}: ${({ offset }) => offset || 0}px;
   width: ${PANEL_LEFT_CONTAINER_MAX_WIDTH}px;
   height: 200px;
-  z-index: 101;
 `;

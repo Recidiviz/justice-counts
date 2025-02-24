@@ -331,7 +331,7 @@ export const MetricsDataChart: React.FC = observer(() => {
                 </React.Fragment>
               );
             })}
-            <div ref={bottomShadow.ref} />
+
             <Styled.ScrollShadow show={!bottomShadow.inView} side="bottom" />
           </Styled.SystemsContainer>
           <Styled.DisclaimerContainer>
@@ -356,6 +356,7 @@ export const MetricsDataChart: React.FC = observer(() => {
                 Learn More
               </a>
             </Styled.DisclaimerText>
+            <div ref={bottomShadow.ref} />
           </Styled.DisclaimerContainer>
         </Styled.PanelContainerLeft>
 
