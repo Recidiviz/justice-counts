@@ -47,7 +47,7 @@ export const HeaderBar = styled.div<{
   }};
 
   border-bottom: ${({ hasBottomBorder }) =>
-    hasBottomBorder ? `1px solid ${palette.highlight.grey3}` : "none"};
+    hasBottomBorder ? `1px solid ${palette.highlight.grey2}` : "none"};
 `;
 
 export const LogoContainer = styled.div`

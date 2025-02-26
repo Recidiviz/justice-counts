@@ -28,7 +28,6 @@ import {
   DragDropIconWrapper,
   GeneralInstructions,
   Instructions,
-  InstructionsTopOverlay,
   SystemsInstructions,
   UploadButtonInput,
   UploadButtonLabel,
@@ -168,7 +167,6 @@ export const UploadFile: React.FC<UploadFileProps> = ({
   return (
     <UploadFileContainer>
       <Instructions>
-        <InstructionsTopOverlay />
         {/* General Instructions */}
         <GeneralInstructions
           agencyId={agencyId}
