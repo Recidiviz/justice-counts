@@ -33,7 +33,6 @@ import { useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
 import { formatSystemName } from "../../utils";
-import downloadIcon from "../assets/download-icon.png";
 import { SYSTEM_CAPITALIZED } from "../Global/constants";
 import { ContainedLoader } from "../Loading";
 import { ResourceTypes, UnauthorizedDeleteActionModal } from "../Modals";
@@ -42,7 +41,6 @@ import { UploadedFile, UploadedFileStatus } from ".";
 import {
   ActionsContainer,
   DateUploaded,
-  DownloadIcon,
   ExtendedLabelCell,
   ExtendedLabelRow,
   ExtendedRow,
@@ -175,14 +173,15 @@ export const UploadedFileRow: React.FC<{
         >
           {/* Filename */}
           <UploadedFilesCell>
-            {rowHovered && id && <DownloadIcon src={downloadIcon} alt="" />}
             <span>{name}</span>
-            <Badge
-              color={badgeColor}
-              loading={isDownloading || badgeText === "Uploading"}
-            >
-              {isDownloading ? "Downloading" : badgeText}
+            <Badge color={badgeColor} loading={badgeText === "Uploading"}>
+              {badgeText}
             </Badge>
+            {rowHovered && id && (
+              <Badge color="GREEN" loading={isDownloading}>
+                {isDownloading ? "Downloading" : "Download"}
+              </Badge>
+            )}
           </UploadedFilesCell>
 
           {/* Date Uploaded */}
@@ -203,6 +202,11 @@ export const UploadedFileRow: React.FC<{
             <span>{dateIngested}</span>
           </UploadedFilesCell>
 
+          {/* System */}
+          <UploadedFilesCell capitalize>
+            <span>{system}</span>
+          </UploadedFilesCell>
+
           {rowHovered && id && (
             <ActionsContainer onClick={(e) => e.stopPropagation()}>
               {!isReadOnly && (
@@ -215,16 +219,11 @@ export const UploadedFileRow: React.FC<{
                       setIsDeleteConfirmationModalOpen(true);
                     }
                   }}
-                  labelColor="red"
+                  buttonColor="red"
                 />
               )}
             </ActionsContainer>
           )}
-
-          <UploadedFilesCell capitalize>
-            {/* System */}
-            <span>{system}</span>
-          </UploadedFilesCell>
         </ExtendedRow>
       </>
     );
