@@ -24,6 +24,7 @@ import {
   ReportFrequency,
 } from "../../types";
 import { replaceSymbolsWithDash } from "../../utils";
+import { Badge, reportFrequencyBadgeColors } from "../Badge";
 import {
   DatapointsMetricNameCell,
   DatapointsTableBottomBorder,
@@ -46,6 +47,7 @@ import {
   DatapointsTableNamesRow,
   DatapointsTableNamesTable,
   DatapointsTableNamesTableBody,
+  Legend,
   OrangeText,
   StrikethroughText,
 } from "./DatapointsTableView.styles";
@@ -69,6 +71,45 @@ type DatapointValueCellProps = {
   onMouseEnterSetHoveredCol: () => void;
   onMouseLeaveUnsetHoveredCol: () => void;
 };
+
+const getFrequencyIndicator = (date: string, frequency: ReportFrequency) => {
+  const month = new Date(date).getUTCMonth() + 1;
+
+  if (frequency === "MONTHLY") {
+    return "M";
+  }
+
+  switch (month) {
+    case 1:
+      return "CY";
+    case 7:
+      return "FY";
+    default:
+      return "CMY";
+  }
+};
+
+export const FrequencyIndicatorsLegend: React.FC = () => (
+  <Legend>
+    Recording Frequency Indicators:
+    <Badge color="GREEN" noMargin>
+      M
+    </Badge>
+    - Monthly,
+    <Badge color="ORANGE" noMargin>
+      CY
+    </Badge>
+    - Calendar Year,
+    <Badge color="ORANGE" noMargin>
+      FY
+    </Badge>
+    - Fiscal Year,
+    <Badge color="ORANGE" noMargin>
+      CMY
+    </Badge>
+    - Custom Year
+  </Legend>
+);
 
 export const DatapointsTableView: React.FC<{
   datapoints: RawDatapoint[];
@@ -96,26 +137,39 @@ export const DatapointsTableView: React.FC<{
 
   if (!datapoints) return null;
 
-  const startDates = Array.from(
-    new Set(datapoints.map((dp) => dp.start_date))
-  ).sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
+  // Start dates with respected frequency for each datapoint (grouped date-frequency keys)
+  const startDatesWithFrequency = Array.from(
+    new Set(datapoints.map((dp) => `${dp.start_date}_${dp.frequency}`))
+  ).sort((a, b) => {
+    const [dateA, freqA] = a.split("_");
+    const [dateB, freqB] = b.split("_");
+    return (
+      new Date(dateA).getTime() - new Date(dateB).getTime() ||
+      freqA.localeCompare(freqB)
+    );
+  });
 
-  // Create array of aggregate values, each value indexed with their corresponding date column
+  // Create array of aggregate values, each value indexed with their corresponding date-frequency column
   const aggregateRowData: AggregationRowData = new Array(
-    startDates.length
+    startDatesWithFrequency.length
   ).fill(undefined);
 
   // Create map of disaggregations and dimensions, each dimension containing array of values,
-  // each value indexed with their corresponding date column
+  // each value indexed with their corresponding date-frequency column
   const disaggregationRowData: DisaggregationRowData = {};
 
-  // create a mapping from start date to the column index the start date is located in for fast lookup
-  const startDatesIndexLookup = startDates.reduce((map, current, idx) => {
-    map[current] = idx; /* eslint-disable-line no-param-reassign */
-    return map;
-  }, {} as { [key: string]: number });
+  // create a mapping from date-frequency to the column index the date-frequency is located in for fast lookup
+  const startDatesIndexLookup = startDatesWithFrequency.reduce(
+    (map, current, idx) => {
+      map[current] = idx; /* eslint-disable-line no-param-reassign */
+      return map;
+    },
+    {} as { [key: string]: number }
+  );
 
   datapoints.forEach((dp) => {
+    const dateFrequencyKey = `${dp.start_date}_${dp.frequency}`;
+
     if (dp.disaggregation_display_name && dp.dimension_display_name) {
       if (!disaggregationRowData[dp.disaggregation_display_name]) {
         disaggregationRowData[dp.disaggregation_display_name] = {};
@@ -127,182 +181,200 @@ export const DatapointsTableView: React.FC<{
       ) {
         disaggregationRowData[dp.disaggregation_display_name][
           dp.dimension_display_name
-        ] = new Array(startDates.length).fill(undefined);
+        ] = new Array(startDatesWithFrequency.length).fill(undefined);
       }
       if (
         !disaggregationRowData[dp.disaggregation_display_name][
           dp.dimension_display_name
-        ][startDatesIndexLookup[dp.start_date]]
+        ][startDatesIndexLookup[dateFrequencyKey]]
       ) {
         disaggregationRowData[dp.disaggregation_display_name][
           dp.dimension_display_name
-        ][startDatesIndexLookup[dp.start_date]] = dp;
+        ][startDatesIndexLookup[dateFrequencyKey]] = dp;
       }
-    } else if (!aggregateRowData[startDatesIndexLookup[dp.start_date]]) {
-      aggregateRowData[startDatesIndexLookup[dp.start_date]] = dp;
+    } else if (!aggregateRowData[startDatesIndexLookup[dateFrequencyKey]]) {
+      aggregateRowData[startDatesIndexLookup[dateFrequencyKey]] = dp;
     }
   });
 
   return (
-    <DatapointsTableContainer useDataPageStyles={useDataPageStyles}>
-      <DatapointsTableNamesContainer useDataPageStyles={useDataPageStyles}>
-        <DatapointsTableNamesTable>
-          <DatapointsTableNamesTableBody>
-            {!useDataPageStyles && (
-              <DatapointsTableNamesRow>
-                <DatapointsMetricNameCell
-                  id={replaceSymbolsWithDash(metricName)}
-                  title={metricName}
-                  useMultiAgencyStyles={useMultiAgencyStyles}
-                >
-                  {metricName}
-                </DatapointsMetricNameCell>
-              </DatapointsTableNamesRow>
-            )}
-            <DatapointsTableNamesRow>
-              <DatapointsTableNamesCell
-                isTotalRow
-                useDataPageStyles={useDataPageStyles}
-                onMouseEnter={() => setHoveredRowKey("Total")}
-                onMouseLeave={() => setHoveredRowKey(null)}
-              >
-                {DataVizAggregateName}
-              </DatapointsTableNamesCell>
-            </DatapointsTableNamesRow>
-            {Object.entries(disaggregationRowData).map(
-              ([disaggregation, dimension], index, array) => (
-                <React.Fragment key={disaggregation}>
-                  <DatapointsTableNamesRow>
-                    <DatapointsTableNamesDivider>
-                      {disaggregation}
-                    </DatapointsTableNamesDivider>
-                  </DatapointsTableNamesRow>
-                  {Object.keys(dimension)
-                    .sort(sortDatapointDimensions)
-                    .map((dimensionName) => (
-                      <DatapointsTableNamesRow key={dimensionName}>
-                        <DatapointsTableNamesCell
-                          id={replaceSymbolsWithDash(dimensionName)}
-                          onMouseEnter={() => setHoveredRowKey(dimensionName)}
-                          onMouseLeave={() => setHoveredRowKey(null)}
-                        >
-                          {dimensionName}
-                        </DatapointsTableNamesCell>
-                      </DatapointsTableNamesRow>
-                    ))}
-                  {index + 1 < array.length && <DatapointsTableBottomBorder />}
-                </React.Fragment>
-              )
-            )}
-          </DatapointsTableNamesTableBody>
-        </DatapointsTableNamesTable>
-      </DatapointsTableNamesContainer>
-      <DatapointsTableDetailsContainer useDataPageStyles={useDataPageStyles}>
-        <DatapointsTableDetailScrollContainer>
-          <DatapointsTableDetailsTable cellPadding="16px">
-            <DatapointsTableDetailsRowHead>
-              <DatapointsTableDetailsRow>
-                {startDates.map((date, index) => (
-                  <DatapointsTableDetailsRowHeader
-                    key={date}
-                    useDataPageStyles={useDataPageStyles}
-                    onMouseEnter={() => setHoveredColKey(index)}
-                    onMouseLeave={() => setHoveredColKey(null)}
-                    isColHovered={index === hoveredColKey}
+    <>
+      {useDataPageStyles && <FrequencyIndicatorsLegend />}
+      <DatapointsTableContainer useDataPageStyles={useDataPageStyles}>
+        <DatapointsTableNamesContainer useDataPageStyles={useDataPageStyles}>
+          <DatapointsTableNamesTable>
+            <DatapointsTableNamesTableBody>
+              {!useDataPageStyles && (
+                <DatapointsTableNamesRow>
+                  <DatapointsMetricNameCell
+                    id={replaceSymbolsWithDash(metricName)}
+                    title={metricName}
+                    useMultiAgencyStyles={useMultiAgencyStyles}
                   >
-                    {/* Shadow's anchors */}
-                    {index === 0 && <div ref={leftShadow.ref} />}
-                    {index === startDates.length - 1 && (
-                      <div ref={rightShadow.ref} />
-                    )}
-                    <span>{formatDateShortMonthYear(date)}</span>
-                  </DatapointsTableDetailsRowHeader>
-                ))}
-              </DatapointsTableDetailsRow>
-            </DatapointsTableDetailsRowHead>
-            <DatapointsTableDetailsRowBody>
-              <DatapointsTableDetailsRow>
-                {aggregateRowData.map((dp, index) =>
-                  // row data could be null, so no distinct key given in that case
-                  dp === undefined
-                    ? renderDatapointsValue({
-                        key: index,
-                        value: null,
-                        oldValue: null,
-                        isRowHovered: hoveredRowKey === "Total",
-                        isColHovered: index === hoveredColKey,
-                        isTotalRow: true,
-                        onMouseEnterSetHoveredCol: () =>
-                          setHoveredColumn(index),
-                        onMouseLeaveUnsetHoveredCol: unsetHoveredColumn,
-                      })
-                    : renderDatapointsValue({
-                        key: index,
-                        value: dp.value,
-                        oldValue: dp.old_value,
-                        isRowHovered: hoveredRowKey === "Total",
-                        isColHovered: index === hoveredColKey,
-                        isTotalRow: true,
-                        onMouseEnterSetHoveredCol: () =>
-                          setHoveredColumn(index),
-                        onMouseLeaveUnsetHoveredCol: unsetHoveredColumn,
-                      })
-                )}
-              </DatapointsTableDetailsRow>
+                    {metricName}
+                  </DatapointsMetricNameCell>
+                </DatapointsTableNamesRow>
+              )}
+              <DatapointsTableNamesRow>
+                <DatapointsTableNamesCell
+                  isTotalRow
+                  useDataPageStyles={useDataPageStyles}
+                  onMouseEnter={() => setHoveredRowKey("Total")}
+                  onMouseLeave={() => setHoveredRowKey(null)}
+                >
+                  {DataVizAggregateName}
+                </DatapointsTableNamesCell>
+              </DatapointsTableNamesRow>
               {Object.entries(disaggregationRowData).map(
-                ([disaggregation, dimension], outerIndex, array) => (
+                ([disaggregation, dimension], index, array) => (
                   <React.Fragment key={disaggregation}>
-                    <DatapointsTableDetailsDivider />
-                    {Object.entries(dimension)
-                      .sort(([a], [b]) => sortDatapointDimensions(a, b))
-                      .map(([key, dps]) => (
-                        <DatapointsTableDetailsRow key={key}>
-                          {dps.map((dp, index) =>
-                            dp === undefined
-                              ? renderDatapointsValue({
-                                  key: index,
-                                  value: null,
-                                  oldValue: null,
-                                  isRowHovered: key === hoveredRowKey,
-                                  isColHovered: index === hoveredColKey,
-                                  onMouseEnterSetHoveredCol: () =>
-                                    setHoveredColumn(index),
-                                  onMouseLeaveUnsetHoveredCol:
-                                    unsetHoveredColumn,
-                                })
-                              : renderDatapointsValue({
-                                  key: index,
-                                  value: dp.value,
-                                  oldValue: dp.old_value,
-                                  isRowHovered: key === hoveredRowKey,
-                                  isColHovered: index === hoveredColKey,
-                                  onMouseEnterSetHoveredCol: () =>
-                                    setHoveredColumn(index),
-                                  onMouseLeaveUnsetHoveredCol:
-                                    unsetHoveredColumn,
-                                })
-                          )}
-                        </DatapointsTableDetailsRow>
+                    <DatapointsTableNamesRow>
+                      <DatapointsTableNamesDivider>
+                        {disaggregation}
+                      </DatapointsTableNamesDivider>
+                    </DatapointsTableNamesRow>
+                    {Object.keys(dimension)
+                      .sort(sortDatapointDimensions)
+                      .map((dimensionName) => (
+                        <DatapointsTableNamesRow key={dimensionName}>
+                          <DatapointsTableNamesCell
+                            id={replaceSymbolsWithDash(dimensionName)}
+                            onMouseEnter={() => setHoveredRowKey(dimensionName)}
+                            onMouseLeave={() => setHoveredRowKey(null)}
+                          >
+                            {dimensionName}
+                          </DatapointsTableNamesCell>
+                        </DatapointsTableNamesRow>
                       ))}
-                    {outerIndex + 1 < array.length && (
+                    {index + 1 < array.length && (
                       <DatapointsTableBottomBorder />
                     )}
                   </React.Fragment>
                 )
               )}
-            </DatapointsTableDetailsRowBody>
-          </DatapointsTableDetailsTable>
-        </DatapointsTableDetailScrollContainer>
-        <DatapointsTableDetailsContainerOverlay>
-          <DatapointsTableDetailsContainerOverlayLeftGradient
-            isShowing={!leftShadow.inView}
-          />
-          <DatapointsTableDetailsContainerOverlayRightGradient
-            isShowing={!rightShadow.inView}
-          />
-        </DatapointsTableDetailsContainerOverlay>
-      </DatapointsTableDetailsContainer>
-    </DatapointsTableContainer>
+            </DatapointsTableNamesTableBody>
+          </DatapointsTableNamesTable>
+        </DatapointsTableNamesContainer>
+        <DatapointsTableDetailsContainer useDataPageStyles={useDataPageStyles}>
+          <DatapointsTableDetailScrollContainer>
+            <DatapointsTableDetailsTable cellPadding="16px">
+              <DatapointsTableDetailsRowHead>
+                <DatapointsTableDetailsRow>
+                  {startDatesWithFrequency.map((dateFrequencyKey, index) => {
+                    const [date, frequency] = dateFrequencyKey.split("_") as [
+                      string,
+                      ReportFrequency
+                    ];
+
+                    return (
+                      <DatapointsTableDetailsRowHeader
+                        key={dateFrequencyKey}
+                        useDataPageStyles={useDataPageStyles}
+                        onMouseEnter={() => setHoveredColKey(index)}
+                        onMouseLeave={() => setHoveredColKey(null)}
+                        isColHovered={index === hoveredColKey}
+                      >
+                        {/* Shadow's anchors */}
+                        {index === 0 && <div ref={leftShadow.ref} />}
+                        {index === startDatesWithFrequency.length - 1 && (
+                          <div ref={rightShadow.ref} />
+                        )}
+
+                        <span>
+                          {formatDateShortMonthYear(date)}
+                          <Badge color={reportFrequencyBadgeColors[frequency]}>
+                            {getFrequencyIndicator(date, frequency)}
+                          </Badge>
+                        </span>
+                      </DatapointsTableDetailsRowHeader>
+                    );
+                  })}
+                </DatapointsTableDetailsRow>
+              </DatapointsTableDetailsRowHead>
+              <DatapointsTableDetailsRowBody>
+                <DatapointsTableDetailsRow>
+                  {aggregateRowData.map((dp, index) =>
+                    // row data could be null, so no distinct key given in that case
+                    dp === undefined
+                      ? renderDatapointsValue({
+                          key: index,
+                          value: null,
+                          oldValue: null,
+                          isRowHovered: hoveredRowKey === "Total",
+                          isColHovered: index === hoveredColKey,
+                          isTotalRow: true,
+                          onMouseEnterSetHoveredCol: () =>
+                            setHoveredColumn(index),
+                          onMouseLeaveUnsetHoveredCol: unsetHoveredColumn,
+                        })
+                      : renderDatapointsValue({
+                          key: index,
+                          value: dp.value,
+                          oldValue: dp.old_value,
+                          isRowHovered: hoveredRowKey === "Total",
+                          isColHovered: index === hoveredColKey,
+                          isTotalRow: true,
+                          onMouseEnterSetHoveredCol: () =>
+                            setHoveredColumn(index),
+                          onMouseLeaveUnsetHoveredCol: unsetHoveredColumn,
+                        })
+                  )}
+                </DatapointsTableDetailsRow>
+                {Object.entries(disaggregationRowData).map(
+                  ([disaggregation, dimension], outerIndex, array) => (
+                    <React.Fragment key={disaggregation}>
+                      <DatapointsTableDetailsDivider />
+                      {Object.entries(dimension)
+                        .sort(([a], [b]) => sortDatapointDimensions(a, b))
+                        .map(([key, dps]) => (
+                          <DatapointsTableDetailsRow key={key}>
+                            {dps.map((dp, index) =>
+                              dp === undefined
+                                ? renderDatapointsValue({
+                                    key: index,
+                                    value: null,
+                                    oldValue: null,
+                                    isRowHovered: key === hoveredRowKey,
+                                    isColHovered: index === hoveredColKey,
+                                    onMouseEnterSetHoveredCol: () =>
+                                      setHoveredColumn(index),
+                                    onMouseLeaveUnsetHoveredCol:
+                                      unsetHoveredColumn,
+                                  })
+                                : renderDatapointsValue({
+                                    key: index,
+                                    value: dp.value,
+                                    oldValue: dp.old_value,
+                                    isRowHovered: key === hoveredRowKey,
+                                    isColHovered: index === hoveredColKey,
+                                    onMouseEnterSetHoveredCol: () =>
+                                      setHoveredColumn(index),
+                                    onMouseLeaveUnsetHoveredCol:
+                                      unsetHoveredColumn,
+                                  })
+                            )}
+                          </DatapointsTableDetailsRow>
+                        ))}
+                      {outerIndex + 1 < array.length && (
+                        <DatapointsTableBottomBorder />
+                      )}
+                    </React.Fragment>
+                  )
+                )}
+              </DatapointsTableDetailsRowBody>
+            </DatapointsTableDetailsTable>
+          </DatapointsTableDetailScrollContainer>
+          <DatapointsTableDetailsContainerOverlay>
+            <DatapointsTableDetailsContainerOverlayLeftGradient
+              isShowing={!leftShadow.inView}
+            />
+            <DatapointsTableDetailsContainerOverlayRightGradient
+              isShowing={!rightShadow.inView}
+            />
+          </DatapointsTableDetailsContainerOverlay>
+        </DatapointsTableDetailsContainer>
+      </DatapointsTableContainer>
+    </>
   );
 };
 

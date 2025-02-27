@@ -65,7 +65,7 @@ export const DatapointsTableNamesCell = styled.td<{
 }>`
   padding-top: ${({ isTotalRow, useDataPageStyles }) =>
     isTotalRow && useDataPageStyles ? "42px" : "12px"};
-  padding-bottom: ${({ isTotalRow }) => (isTotalRow ? "29px" : "12px")};
+  padding-bottom: ${({ isTotalRow }) => (isTotalRow ? "30px" : "12px")};
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -83,7 +83,7 @@ export const DatapointsMetricNameCell = styled(DatapointsTableNamesCell)<{
   ${typography.sizeCSS.medium};
   color: ${palette.solid.blue};
   line-height: 38px;
-  padding: 0 0 31px 0;
+  padding: 0 0 32px 0;
 
   &:hover {
     color: ${palette.solid.blue};
@@ -158,10 +158,7 @@ export const DatapointsTableDetailsRowHeader = styled.th<{
   isColHovered?: boolean;
 }>`
   ${typography.sizeCSS.normal}
-  padding-left: 15px;
-  padding-right: 32px;
-  padding-bottom: 38px;
-  padding-top: 8px;
+  padding: 8px 32px 30px 15px;
   text-align: center;
 
   color: ${({ useDataPageStyles, isColHovered }) => {
@@ -170,11 +167,13 @@ export const DatapointsTableDetailsRowHeader = styled.th<{
   }};
 
   span {
+    display: flex;
+    justify-content: end;
     background-color: ${({ useDataPageStyles, isColHovered }) => {
       if (useDataPageStyles) return palette.solid.white;
       return isColHovered ? palette.solid.blue : palette.solid.offwhite;
     }};
-    padding: 5px 8px;
+    padding: ${({ useDataPageStyles }) => (useDataPageStyles ? 0 : "5px 8px")};
     font-weight: 500;
   }
 `;
@@ -184,7 +183,7 @@ export const DatapointsTableDetailsCell = styled.td<{
   isTotalRow?: boolean;
 }>`
   padding: ${({ isTotalRow }) =>
-    isTotalRow ? "12px 32px 29px 15px" : "12px 32px 12px 15px"};
+    isTotalRow ? "12px 32px 30px 15px" : "12px 32px 12px 15px"};
   font-size: 14px;
   height: 32px;
   text-align: end;
@@ -203,4 +202,15 @@ export const OrangeText = styled.span`
 
 export const StrikethroughText = styled.span`
   text-decoration: line-through;
+`;
+
+export const Legend = styled.div`
+  ${typography.sizeCSS.small}
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 5px;
+  padding: 16px 36px;
+  margin: 0 -36px;
+  border-bottom: 1px solid ${palette.highlight.grey2};
 `;
