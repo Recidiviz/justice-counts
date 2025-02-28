@@ -158,8 +158,8 @@ export type AgencyProvisioningUpdates = {
   is_superagency: boolean | null;
   child_agency_ids: number[];
   team: AgencyTeamUpdates[];
-  agency_description: string;
-  agency_url: string;
+  agency_description: string | null;
+  agency_url: string | null;
 };
 
 export type AgencyTeamUpdates = {
