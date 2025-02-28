@@ -326,7 +326,9 @@ export const GeneralInstructions: React.FC<
                       <div>{systemNamePage}</div>
                       <span>Download</span>
                     </DownloadTemplateSystem>
-                    {templateKeyToLoadingStatus[`${system}_MULTI`] === true && (
+                    {templateKeyToLoadingStatus[
+                      `${system}_${isSinglePageTemplate ? "SINGLE" : "MULTI"}`
+                    ] === true && (
                       <MiniLoaderWrapper>
                         <MiniLoader />
                       </MiniLoaderWrapper>

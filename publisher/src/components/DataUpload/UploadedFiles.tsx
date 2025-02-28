@@ -177,7 +177,7 @@ export const UploadedFileRow: React.FC<{
             <Badge color={badgeColor} loading={badgeText === "Uploading"}>
               {badgeText}
             </Badge>
-            {rowHovered && id && (
+            {((rowHovered && id) || isDownloading) && (
               <Badge color="GREEN" loading={isDownloading}>
                 {isDownloading ? "Downloading" : "Download"}
               </Badge>
