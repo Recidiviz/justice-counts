@@ -16,7 +16,6 @@
 // =============================================================================
 
 import {
-  HEADER_BAR_HEIGHT,
   MIN_DESKTOP_WIDTH,
   MIN_TABLET_WIDTH,
   palette,
@@ -24,29 +23,19 @@ import {
 } from "@justice-counts/common/components/GlobalStyles";
 import styled from "styled-components/macro";
 
-import { AccountSettingsTitle } from "../AgencySettings/AccountSettings.styles";
 import { LabelRow, Row, Table } from "../Reports";
 
-const STICKY_RESPONSIVE_UPLOADED_FILES_TITLE_HEIGHT = 48;
+export const UploadedFilesTitle = styled.h1`
+  ${typography.sizeCSS.title};
+  border-bottom: 1px solid ${palette.highlight.grey2};
+  padding-bottom: 14px;
 
-export const UploadedFilesTitle = styled(AccountSettingsTitle)`
   &::before {
     content: "Uploaded Files";
   }
 
   @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
-    width: 80%;
     ${typography.sizeCSS.medium};
-    border-bottom: 1px solid ${palette.highlight.grey9};
-    position: fixed;
-    top: ${HEADER_BAR_HEIGHT}px;
-    padding: 24px 0;
-    z-index: 2;
-    background-color: ${palette.solid.white};
-
-    &::before {
-      content: "Uploaded Files";
-    }
   }
 `;
 
@@ -57,9 +46,8 @@ export const ActionsContainer = styled.div`
   justify-content: flex-end;
   align-items: center;
   gap: 10px;
-  background-color: ${palette.solid.offwhite};
   position: absolute;
-  right: 0;
+  right: 8px;
   z-index: 2;
 `;
 
@@ -67,8 +55,6 @@ export const ExtendedRow = styled(Row)`
   color: ${({ selected }) => selected && palette.highlight.grey9};
   position: relative;
   transition: unset;
-  padding-left: 0;
-  padding-right: 8px;
   justify-content: center;
 `;
 
@@ -77,22 +63,16 @@ export const ExtendedLabelRow = styled(LabelRow)`
   top: 0;
   background: ${palette.solid.white};
   z-index: 1;
-  padding-left: 0;
-  padding-right: 8px;
-
-  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
-    padding-bottom: 8px;
-  }
 `;
 
 export const UploadedFilesCell = styled.div<{ capitalize?: boolean }>`
+  ${typography.sizeCSS.normal};
   min-width: 200px;
   display: flex;
   flex: 1 1 250px;
   justify-content: start;
   align-items: center;
   position: relative;
-  font-size: 1.2rem;
   text-transform: ${({ capitalize }) => capitalize && "capitalize"};
   padding-right: 40px;
   white-space: nowrap;
@@ -111,12 +91,6 @@ export const UploadedFilesCell = styled.div<{ capitalize?: boolean }>`
     flex: 1 2 200px;
   }
 
-  &:last-child {
-    flex: 1.5 2 100px;
-    min-width: 100px;
-    padding-right: unset;
-  }
-
   @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     &:nth-child(3) {
       display: none;
@@ -124,7 +98,6 @@ export const UploadedFilesCell = styled.div<{ capitalize?: boolean }>`
   }
 
   @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
-    ${typography.sizeCSS.normal};
     &:nth-child(4) {
       display: none;
     }
@@ -135,8 +108,10 @@ export const UploadedFilesCell = styled.div<{ capitalize?: boolean }>`
 `;
 
 export const ExtendedLabelCell = styled(UploadedFilesCell)`
-  ${typography.sizeCSS.normal}
-  color: ${palette.highlight.grey9};
+  ${typography.caption}
+  text-transform: uppercase;
+  font-size: 12px;
+  color: ${palette.highlight.grey8};
 `;
 
 export const UploadedContainer = styled.span`
@@ -156,23 +131,13 @@ export const UploadedFilesTable = styled(Table)`
   width: unset;
   padding: unset;
   margin: unset;
-  padding-bottom: 100px;
-
-  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
-    padding-top: ${STICKY_RESPONSIVE_UPLOADED_FILES_TITLE_HEIGHT}px;
-  }
 `;
 
 export const UploadedFilesWrapper = styled.div`
-  width: 80%;
-  margin-top: 52px;
+  width: 100%;
+  padding: 48px 24px;
   position: relative;
   overflow-y: auto;
-`;
-
-export const DownloadIcon = styled.img`
-  width: 20px;
-  margin-right: 5px;
 `;
 
 export const DateUploaded = styled.span`

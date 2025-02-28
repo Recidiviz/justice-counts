@@ -31,18 +31,6 @@ export const AccountSettingsWrapper = styled.div`
   }
 `;
 
-export const AccountSettingsTitle = styled.h1`
-  border-bottom: 1px solid ${palette.highlight.grey9};
-  ${typography.sizeCSS.title};
-  margin-top: 4px;
-  padding-bottom: 14px;
-
-  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
-    ${typography.sizeCSS.medium};
-    margin: 0;
-    padding: 0 0 24px 0;
-  }
-`;
 export const AccountSettingsInputsWrapper = styled.div`
   display: flex;
   flex-direction: row;

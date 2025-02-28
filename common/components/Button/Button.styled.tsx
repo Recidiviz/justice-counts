@@ -95,8 +95,8 @@ export const Button = styled.div<{
         return `color: ${palette.solid.darkblue}`;
       }
     }};
-    ${({ buttonColor, noHover, agencySettingsConfigs }) => {
-      if (buttonColor) return "opacity: 0.8;";
+    ${({ labelColor, buttonColor, noHover, agencySettingsConfigs }) => {
+      if (buttonColor || labelColor) return "opacity: 0.8;";
       if (agencySettingsConfigs) return "opacity: unset";
       return !noHover && `background-color: ${palette.solid.lightgrey2};`;
     }}

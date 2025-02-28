@@ -16,10 +16,7 @@
 // =============================================================================
 
 import { Button } from "@justice-counts/common/components/Button";
-import { MIN_DESKTOP_WIDTH } from "@justice-counts/common/components/GlobalStyles";
-import { HeaderBar } from "@justice-counts/common/components/HeaderBar";
 import { showToast } from "@justice-counts/common/components/Toast";
-import { useWindowWidth } from "@justice-counts/common/hooks";
 import {
   AgencySystem,
   AgencyTeamMemberRole,
@@ -31,10 +28,9 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
-import { REPORTS_LOWERCASE } from "../Global/constants";
-import { useHeaderBadge } from "../Header/hooks";
 import { Loader } from "../Loading";
 import {
+  CancelButtonContainer,
   DataUploadContainer,
   DataUploadLoading,
   LoadingHeader,
@@ -84,8 +80,6 @@ export const systemToTemplateSpreadsheetFileName: { [system: string]: string } =
 export const DataUpload: React.FC = observer(() => {
   const { agencyId } = useParams() as { agencyId: string };
   const navigate = useNavigate();
-  const headerBadge = useHeaderBadge();
-  const windowWidth = useWindowWidth();
   const { userStore, reportStore } = useStore();
 
   const currentAgency = userStore.getAgency(agencyId);
@@ -120,14 +114,6 @@ export const DataUpload: React.FC = observer(() => {
     updatedReports: [],
     unchangedReports: [],
   });
-
-  const headerBackground = () => {
-    if (!errorsWarningsMetrics && windowWidth > MIN_DESKTOP_WIDTH)
-      return "transparent";
-    if (!errorsWarningsMetrics && windowWidth <= MIN_DESKTOP_WIDTH)
-      return "blue";
-    return undefined;
-  };
 
   const handleFileUpload = async (
     file: File,
@@ -285,17 +271,12 @@ export const DataUpload: React.FC = observer(() => {
 
   return (
     <DataUploadContainer>
-      <HeaderBar
-        onLogoClick={() => navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}`)}
-        background={headerBackground()}
-        hasBottomBorder={!!errorsWarningsMetrics}
-        badge={headerBadge}
-      >
+      <CancelButtonContainer>
         <Button
           label={selectedFile || errorsWarningsMetrics ? "Close" : "Cancel"}
           onClick={() => navigate("../data-entry")}
           buttonColor={
-            selectedFile || errorsWarningsMetrics ? "red" : undefined
+            selectedFile || errorsWarningsMetrics ? "red" : "blue"
           }
           borderColor={
             selectedFile || errorsWarningsMetrics ? undefined : "white"
@@ -304,7 +285,7 @@ export const DataUpload: React.FC = observer(() => {
             selectedFile || errorsWarningsMetrics ? undefined : "white"
           }
         />
-      </HeaderBar>
+      </CancelButtonContainer>
       {renderCurrentUploadStep()}
     </DataUploadContainer>
   );
