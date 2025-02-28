@@ -69,8 +69,8 @@ const initialEmptyAgencyProvisioningUpdates = {
   is_superagency: null,
   child_agency_ids: [],
   team: [],
-  agency_description: "",
-  agency_url: "",
+  agency_description: null,
+  agency_url: null,
 };
 
 class AdminPanelStore {
@@ -565,11 +565,11 @@ class AdminPanelStore {
     this.agencyProvisioningUpdates.name = name;
   }
 
-  updateAgencyDescription(description: string) {
+  updateAgencyDescription(description: string | null) {
     this.agencyProvisioningUpdates.agency_description = description;
   }
 
-  updateAgencyURL(url: string) {
+  updateAgencyURL(url: string | null) {
     this.agencyProvisioningUpdates.agency_url = url;
   }
 
