@@ -6,7 +6,7 @@
   "author": "Recidiviz <team@recidiviz.org>",
   "license": "GNU General Public License v3",
   "dependencies": {
-    "@auth0/auth0-react": "^2.2.4",
+    "@auth0/auth0-react": "^2.3.0",
     "@justice-counts/common": "*",
     "@recidiviz/design-system": "^5.8.0",
     "@sentry/react": "^8.53.0",
