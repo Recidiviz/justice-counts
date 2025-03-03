@@ -131,7 +131,7 @@ export const DatapointsViewControlsContainer = styled(DropdownContainer)`
   width: 100%;
 
   & ${CustomDropdown} {
-    max-width: 280px;
+    max-width: 300px;
   }
   & ${CustomDropdownToggle} {
     height: 32px;

@@ -55,7 +55,7 @@ export const typography = {
     small: `
         font-size: ${rem("12px")};
         line-height: ${rem("16px")};
-        font-weight: 600;
+        font-weight: 500;
     `,
   },
   body: `
