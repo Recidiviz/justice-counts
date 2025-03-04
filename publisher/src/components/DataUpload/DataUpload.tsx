@@ -62,6 +62,7 @@ export type UploadedFile = {
   };
   system: AgencySystem;
   status: UploadedFileStatus | null;
+  num_new_datapoints: number | null;
 };
 
 export const systemToTemplateSpreadsheetFileName: { [system: string]: string } =
@@ -275,9 +276,7 @@ export const DataUpload: React.FC = observer(() => {
         <Button
           label={selectedFile || errorsWarningsMetrics ? "Close" : "Cancel"}
           onClick={() => navigate("../data-entry")}
-          buttonColor={
-            selectedFile || errorsWarningsMetrics ? "red" : "blue"
-          }
+          buttonColor={selectedFile || errorsWarningsMetrics ? "red" : "blue"}
           borderColor={
             selectedFile || errorsWarningsMetrics ? undefined : "white"
           }
