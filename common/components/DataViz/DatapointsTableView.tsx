@@ -197,6 +197,23 @@ export const DatapointsTableView: React.FC<{
     }
   });
 
+  const getRenderDatapointValueProps = (
+    dp: RawDatapoint | undefined,
+    index: number,
+    key?: string
+  ) =>
+    // row data could be null, so no distinct key given in that case
+    renderDatapointsValue({
+      key: index,
+      value: dp === undefined ? null : dp.value,
+      oldValue: dp === undefined ? null : dp.old_value,
+      isRowHovered: key ? hoveredRowKey === key : hoveredRowKey === "Total",
+      isColHovered: index === hoveredColKey,
+      isTotalRow: Boolean(key),
+      onMouseEnterSetHoveredCol: () => setHoveredColumn(index),
+      onMouseLeaveUnsetHoveredCol: unsetHoveredColumn,
+    });
+
   return (
     <>
       {useDataPageStyles && <FrequencyIndicatorsLegend />}
@@ -294,30 +311,7 @@ export const DatapointsTableView: React.FC<{
               <DatapointsTableDetailsRowBody>
                 <DatapointsTableDetailsRow>
                   {aggregateRowData.map((dp, index) =>
-                    // row data could be null, so no distinct key given in that case
-                    dp === undefined
-                      ? renderDatapointsValue({
-                          key: index,
-                          value: null,
-                          oldValue: null,
-                          isRowHovered: hoveredRowKey === "Total",
-                          isColHovered: index === hoveredColKey,
-                          isTotalRow: true,
-                          onMouseEnterSetHoveredCol: () =>
-                            setHoveredColumn(index),
-                          onMouseLeaveUnsetHoveredCol: unsetHoveredColumn,
-                        })
-                      : renderDatapointsValue({
-                          key: index,
-                          value: dp.value,
-                          oldValue: dp.old_value,
-                          isRowHovered: hoveredRowKey === "Total",
-                          isColHovered: index === hoveredColKey,
-                          isTotalRow: true,
-                          onMouseEnterSetHoveredCol: () =>
-                            setHoveredColumn(index),
-                          onMouseLeaveUnsetHoveredCol: unsetHoveredColumn,
-                        })
+                    getRenderDatapointValueProps(dp, index)
                   )}
                 </DatapointsTableDetailsRow>
                 {Object.entries(disaggregationRowData).map(
@@ -329,29 +323,7 @@ export const DatapointsTableView: React.FC<{
                         .map(([key, dps]) => (
                           <DatapointsTableDetailsRow key={key}>
                             {dps.map((dp, index) =>
-                              dp === undefined
-                                ? renderDatapointsValue({
-                                    key: index,
-                                    value: null,
-                                    oldValue: null,
-                                    isRowHovered: key === hoveredRowKey,
-                                    isColHovered: index === hoveredColKey,
-                                    onMouseEnterSetHoveredCol: () =>
-                                      setHoveredColumn(index),
-                                    onMouseLeaveUnsetHoveredCol:
-                                      unsetHoveredColumn,
-                                  })
-                                : renderDatapointsValue({
-                                    key: index,
-                                    value: dp.value,
-                                    oldValue: dp.old_value,
-                                    isRowHovered: key === hoveredRowKey,
-                                    isColHovered: index === hoveredColKey,
-                                    onMouseEnterSetHoveredCol: () =>
-                                      setHoveredColumn(index),
-                                    onMouseLeaveUnsetHoveredCol:
-                                      unsetHoveredColumn,
-                                  })
+                              getRenderDatapointValueProps(dp, index, key)
                             )}
                           </DatapointsTableDetailsRow>
                         ))}
