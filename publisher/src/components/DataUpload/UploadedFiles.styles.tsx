@@ -95,10 +95,13 @@ export const UploadedFilesCell = styled.div<{ capitalize?: boolean }>`
     &:nth-child(3) {
       display: none;
     }
+    &:nth-child(4) {
+      display: none;
+    }
   }
 
   @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
-    &:nth-child(4) {
+    &:nth-child(5) {
       display: none;
     }
     &:nth-child(2) {

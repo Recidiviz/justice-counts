@@ -66,6 +66,7 @@ export const UploadedFileRow: React.FC<{
     system?: AgencySystem;
     uploadedByName: string;
     uploadedByRole: AgencyTeamMemberRole;
+    sharedDatapointsCount: number | string;
   };
   deleteUploadedFile: (spreadsheetID: number) => void;
   updateUploadedFileStatus: (
@@ -135,6 +136,7 @@ export const UploadedFileRow: React.FC<{
       system,
       uploadedByName,
       uploadedByRole,
+      sharedDatapointsCount,
     } = fileRowDetails;
 
     useEffect(
@@ -202,6 +204,11 @@ export const UploadedFileRow: React.FC<{
             <span>{dateIngested}</span>
           </UploadedFilesCell>
 
+          {/* Datapoints Shared */}
+          <UploadedFilesCell>
+            <span>{sharedDatapointsCount}</span>
+          </UploadedFilesCell>
+
           {/* System */}
           <UploadedFilesCell capitalize>
             <span>{system}</span>
@@ -238,6 +245,7 @@ export const UploadedFiles: React.FC = observer(() => {
     "Filename",
     "Uploaded",
     "Processed",
+    "Datapoints Shared",
     SYSTEM_CAPITALIZED,
   ];
 
@@ -289,6 +297,7 @@ export const UploadedFiles: React.FC = observer(() => {
       }) as AgencySystem,
       uploadedByName: file.uploaded_by_v2.name,
       uploadedByRole: file.uploaded_by_v2.role,
+      sharedDatapointsCount: file.num_new_datapoints ?? "--",
     };
   };
 
