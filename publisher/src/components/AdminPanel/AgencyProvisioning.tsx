@@ -27,13 +27,11 @@ import {
   AgencySystem,
   AgencySystems,
   AgencyTeamMemberRole,
-  SupervisionSubsystems,
 } from "@justice-counts/common/types";
 import {
   isCSGOrRecidivizUserByEmail,
   removeSnakeCase,
   toggleAddRemoveSetItem,
-  validateAgencyURL,
 } from "@justice-counts/common/utils";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useRef, useState } from "react";
@@ -44,8 +42,6 @@ import { ButtonWithMiniLoaderContainer, MiniLoaderWrapper } from "../Reports";
 import {
   AgencyProvisioningSetting,
   AgencyProvisioningSettings,
-  FipsCountyCodeKey,
-  FipsCountyCodes,
   InteractiveSearchList,
   InteractiveSearchListAction,
   InteractiveSearchListActions,
@@ -58,12 +54,11 @@ import {
   SelectionInputBoxType,
   SelectionInputBoxTypes,
   Setting,
-  StateCodeKey,
-  StateCodesToStateNames,
   userRoles,
   UserRoleUpdates,
 } from ".";
 import * as Styled from "./AdminPanel.styles";
+import AgencyGeneralInformation from "./AgencyProvisioningComponents/AgencyGeneralInformation";
 
 export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
   ({
@@ -80,22 +75,15 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       agencies,
       agenciesByID,
       metrics,
-      systems,
       agencyProvisioningUpdates,
-      searchableCounties,
-      searchableSystems,
       searchableMetrics,
       csgAndRecidivizUsers,
       csgAndRecidivizDefaultRole,
       teamMemberListLoading,
       reportingAgenciesUpdates,
       reportingAgencyMetadataLoading,
-      updateAgencyName,
       updateAgencyDescription,
       updateAgencyURL,
-      updateStateCode,
-      updateCountyCode,
-      updateIsDashboardEnabled,
       updateIsSuperagency,
       updateSuperagencyID,
       updateSystems,
@@ -160,7 +148,6 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       isCopySuperagencyMetricSettingsSelected,
       setIsCopySuperagencyMetricSettingsSelected,
     ] = useState(false);
-    const [URLValidationError, setURLValidationError] = useState<string>();
 
     /** Setting Tabs (Agency Information/Team Members) */
     const settingOptions: TabOption[] = [
@@ -199,16 +186,6 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
     const selectedAgency = selectedIDToEdit
       ? agenciesByID[selectedIDToEdit][0]
       : undefined;
-
-    const [nameValue, setNameValue] = useState<string>(
-      selectedAgency?.name ?? ""
-    );
-    const [URLValue, setURLValue] = useState<string>(
-      selectedAgency?.agency_url ?? ""
-    );
-    const [descriptionValue, setDescriptionValue] = useState<string>(
-      selectedAgency?.agency_description ?? ""
-    );
 
     /** Available agencies ("available" meaning excluding the current agency) to select from */
     const agencyIDs = agencies.map((agency) => +agency.id);
@@ -295,16 +272,6 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       ];
     };
 
-    const validateAndUpdateURL = (url: string) => {
-      const isValidURL = validateAgencyURL(url);
-      setURLValue(url);
-
-      if (url === "" || isValidURL) {
-        return setURLValidationError(undefined);
-      }
-      setURLValidationError("Invalid URL");
-    };
-
     const saveUpdates = async () => {
       setIsSaveInProgress(true);
 
@@ -312,10 +279,10 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       saveAgencyName(agencyProvisioningUpdates.name);
 
       // Update final agency description
-      updateAgencyDescription(descriptionValue);
+      updateAgencyDescription(agencyProvisioningUpdates.agency_description);
 
       // Update final agency URL
-      updateAgencyURL(URLValue);
+      updateAgencyURL(agencyProvisioningUpdates.agency_url);
 
       /** Update final list of systems, child agencies, and team members */
       updateSystems(Array.from(selectedSystems));
@@ -463,8 +430,10 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
      * New agency: an update has been made when the agency has a value for `agencyProvisioningUpdates.agency_description`
      */
     const hasDescriptionUpdate = selectedAgency
-      ? descriptionValue !== (selectedAgency.agency_description || "")
-      : Boolean(agencyProvisioningUpdates.agency_description);
+      ? agencyProvisioningUpdates.agency_description !== null &&
+        agencyProvisioningUpdates.agency_description !==
+          selectedAgency.agency_description
+      : agencyProvisioningUpdates.agency_description !== null;
 
     /**
      * Existing agency: an update has been made when the agency has a value for `agencyProvisioningUpdates.agency_url`
@@ -472,8 +441,9 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
      * New agency: an update has been made when the agency has a value for `agencyProvisioningUpdates.agency_url`
      */
     const hasURLUpdate = selectedAgency
-      ? URLValue !== (selectedAgency.agency_url || "")
-      : Boolean(agencyProvisioningUpdates.agency_url);
+      ? agencyProvisioningUpdates.agency_url !== null &&
+        agencyProvisioningUpdates.agency_url !== selectedAgency.agency_url
+      : agencyProvisioningUpdates.agency_url !== null;
 
     /**
      * Existing agency: an update has been made when the agency has a value for `agencyProvisioningUpdates.name`
@@ -603,7 +573,6 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
     const isSaveDisabled = isCopySuperagencyMetricSettingsSelected
       ? !hasCopySuperagencyMetricSettingsUpdates
       : isSaveInProgress ||
-        Boolean(URLValidationError) ||
         !hasSystems ||
         (selectedAgency
           ? !hasAgencyInfoUpdates
@@ -735,265 +704,11 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                 {currentSettingType ===
                   AgencyProvisioningSettings.AGENCY_INFORMATION && (
                   <>
-                    {/* Agency Name Input */}
-                    <Styled.InputLabelWrapper required>
-                      <input
-                        id="agency-name"
-                        name="agency-name"
-                        type="text"
-                        value={nameValue}
-                        onChange={(e) => {
-                          setNameValue(e.target.value);
-                          updateAgencyName(e.target.value);
-                        }}
-                      />
-                      <label htmlFor="agency-name">Name</label>
-                    </Styled.InputLabelWrapper>
-
-                    {/* Agency State Input */}
-                    {showSelectionBox === SelectionInputBoxTypes.STATE && (
-                      <InteractiveSearchList
-                        list={AdminPanelStore.searchableStates}
-                        boxActionType={InteractiveSearchListActions.ADD}
-                        selections={
-                          agencyProvisioningUpdates.state_code
-                            ? new Set([agencyProvisioningUpdates.state_code])
-                            : new Set()
-                        }
-                        buttons={interactiveSearchListCloseButton}
-                        updateSelections={({ id }) => {
-                          updateStateCode(
-                            agencyProvisioningUpdates.state_code ===
-                              (id as StateCodeKey)
-                              ? selectedAgency?.state_code || null
-                              : (id as StateCodeKey)
-                          );
-                          /** Reset the county code input */
-                          updateCountyCode(null);
-                        }}
-                        searchByKeys={["name"]}
-                        metadata={{
-                          listBoxLabel: "Select a state",
-                          searchBoxLabel: "Search states",
-                        }}
-                        isActiveBox={
-                          showSelectionBox === SelectionInputBoxTypes.STATE
-                        }
-                      />
-                    )}
-                    <Styled.InputLabelWrapper required>
-                      <input
-                        id="state"
-                        name="state"
-                        type="button"
-                        value={
-                          (agencyProvisioningUpdates.state_code &&
-                            StateCodesToStateNames[
-                              agencyProvisioningUpdates.state_code
-                            ]) ||
-                          ""
-                        }
-                        onClick={() => {
-                          setShowSelectionBox(SelectionInputBoxTypes.STATE);
-                        }}
-                      />
-                      <label htmlFor="state">State</label>
-                    </Styled.InputLabelWrapper>
-
-                    {/* Agency County Input */}
-                    {showSelectionBox === SelectionInputBoxTypes.COUNTY && (
-                      <InteractiveSearchList
-                        list={searchableCounties}
-                        boxActionType={InteractiveSearchListActions.ADD}
-                        selections={
-                          agencyProvisioningUpdates.fips_county_code
-                            ? new Set([
-                                agencyProvisioningUpdates.fips_county_code,
-                              ])
-                            : new Set()
-                        }
-                        buttons={interactiveSearchListCloseButton}
-                        updateSelections={({ id }) => {
-                          updateCountyCode(
-                            agencyProvisioningUpdates.fips_county_code === id
-                              ? null
-                              : (id as FipsCountyCodeKey)
-                          );
-                        }}
-                        searchByKeys={["name"]}
-                        metadata={{
-                          listBoxLabel: "Select a county",
-                          searchBoxLabel: "Search counties",
-                        }}
-                        isActiveBox={
-                          showSelectionBox === SelectionInputBoxTypes.COUNTY
-                        }
-                      />
-                    )}
-                    <Styled.InputLabelWrapper>
-                      <input
-                        id="county"
-                        name="county"
-                        type="button"
-                        disabled={!agencyProvisioningUpdates.state_code}
-                        value={
-                          (agencyProvisioningUpdates.fips_county_code &&
-                            FipsCountyCodes[
-                              agencyProvisioningUpdates.fips_county_code
-                            ]) ||
-                          ""
-                        }
-                        onClick={() => {
-                          setShowSelectionBox(SelectionInputBoxTypes.COUNTY);
-                        }}
-                      />
-                      <label htmlFor="state">County</label>
-                    </Styled.InputLabelWrapper>
-
-                    {/* Agency Systems Input */}
-                    {showSelectionBox === SelectionInputBoxTypes.SYSTEMS && (
-                      <InteractiveSearchList
-                        list={searchableSystems}
-                        boxActionType={InteractiveSearchListActions.ADD}
-                        selections={selectedSystems}
-                        buttons={getInteractiveSearchListSelectDeselectCloseButtons(
-                          setSelectedSystems,
-                          // If Superagency is checked, include the Superagency sector when user selects all
-                          agencyProvisioningUpdates.is_superagency
-                            ? new Set([...systems, AgencySystems.SUPERAGENCY])
-                            : new Set(systems),
-                          undefined,
-                          // If Superagency is checked, still include the Superagency sector when user deselects all
-                          agencyProvisioningUpdates.is_superagency
-                            ? new Set([AgencySystems.SUPERAGENCY])
-                            : undefined
-                        )}
-                        updateSelections={({ id }) => {
-                          setSelectedSystems((prev) => {
-                            const currentSystems = prev;
-                            /**
-                             * Special handling for Supervision & subpopulation sectors:
-                             *  - If the user selects a supervision subpopulation and they have not explicitly selected the Supervision
-                             *    sector, auto-add the Supervision sector.
-                             *  - If the user de-selects the Supervision sector, then auto-de-select all selected supervision subpopulation
-                             *    sectors
-                             */
-                            if (
-                              SupervisionSubsystems.includes(
-                                id as AgencySystem
-                              ) &&
-                              !currentSystems.has(AgencySystems.SUPERVISION)
-                            ) {
-                              currentSystems.add(AgencySystems.SUPERVISION);
-                            }
-                            if (
-                              id === AgencySystems.SUPERVISION &&
-                              currentSystems.has(AgencySystems.SUPERVISION)
-                            ) {
-                              SupervisionSubsystems.forEach((subsystem) =>
-                                currentSystems.delete(subsystem)
-                              );
-                            }
-
-                            return toggleAddRemoveSetItem(
-                              currentSystems,
-                              id as AgencySystems
-                            );
-                          });
-                        }}
-                        searchByKeys={["name"]}
-                        metadata={{
-                          listBoxLabel: "Select sector(s)",
-                          searchBoxLabel: "Search sectors",
-                        }}
-                        isActiveBox={
-                          showSelectionBox === SelectionInputBoxTypes.SYSTEMS
-                        }
-                      />
-                    )}
-                    <Styled.InputLabelWrapper required>
-                      <Styled.ChipContainer
-                        onClick={() =>
-                          setShowSelectionBox(SelectionInputBoxTypes.SYSTEMS)
-                        }
-                        fitContentHeight
-                        hoverable
-                      >
-                        {selectedSystems.size === 0 ? (
-                          <Styled.EmptyListMessage>
-                            No sectors selected
-                          </Styled.EmptyListMessage>
-                        ) : (
-                          Array.from(selectedSystems).map((system) => (
-                            <Styled.Chip key={system}>
-                              {removeSnakeCase(system.toLocaleLowerCase())}
-                            </Styled.Chip>
-                          ))
-                        )}
-                      </Styled.ChipContainer>
-                      <Styled.ChipContainerLabel>
-                        Sectors
-                      </Styled.ChipContainerLabel>
-                    </Styled.InputLabelWrapper>
-
-                    {/* Agency Description Input */}
-                    <Styled.InputLabelWrapper>
-                      <input
-                        id="agency-description"
-                        name="agency-description"
-                        type="text"
-                        maxLength={750}
-                        value={descriptionValue}
-                        onChange={(e) => {
-                          setDescriptionValue(e.target.value);
-                          updateAgencyDescription(e.target.value);
-                        }}
-                      />
-                      <label htmlFor="agency-description">
-                        Agency Description
-                      </label>
-                    </Styled.InputLabelWrapper>
-
-                    {/* Agency URL Input */}
-                    <Styled.InputLabelWrapper
-                      hasError={Boolean(URLValidationError)}
-                    >
-                      <input
-                        id="agency-url"
-                        name="agency-url"
-                        type="text"
-                        value={URLValue}
-                        onChange={(e) =>
-                          validateAndUpdateURL(e.target.value.trimStart())
-                        }
-                      />
-                      <Styled.LabelWrapper>
-                        <label htmlFor="agency-url">Agency URL</label>
-                        {URLValidationError && (
-                          <Styled.ErrorLabel>
-                            {URLValidationError}
-                          </Styled.ErrorLabel>
-                        )}
-                      </Styled.LabelWrapper>
-                    </Styled.InputLabelWrapper>
-
-                    {/* Dashboard Enabled Checkbox */}
-                    <Styled.InputLabelWrapper flexRow>
-                      <input
-                        id="dashboard"
-                        name="dashboard"
-                        type="checkbox"
-                        onChange={() =>
-                          updateIsDashboardEnabled(
-                            !agencyProvisioningUpdates.is_dashboard_enabled
-                          )
-                        }
-                        checked={Boolean(
-                          agencyProvisioningUpdates.is_dashboard_enabled
-                        )}
-                      />
-                      <label htmlFor="dashboard">Dashboard enabled</label>
-                    </Styled.InputLabelWrapper>
+                    <AgencyGeneralInformation
+                      selectedAgency={selectedAgency}
+                      selectedSystems={selectedSystems}
+                      setSelectedSystems={setSelectedSystems}
+                    />
 
                     {/* Superagency/Child Agency Checkbox & Search Box */}
                     <Styled.InputLabelWrapper flexRow inputWidth={100}>
