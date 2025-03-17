@@ -53,6 +53,7 @@ export const AgencyProvisioningOverview = observer(() => {
     updateCountyCode,
     updateSystems,
     updateIsDashboardEnabled,
+    updateIsSteppingUpAgency,
     updateIsSuperagency,
     updateSuperagencyID,
     updateChildAgencyIDs,
@@ -141,6 +142,7 @@ export const AgencyProvisioningOverview = observer(() => {
     updateCountyCode(selectedAgency.fips_county_code);
     updateSystems(selectedAgency.systems);
     updateIsDashboardEnabled(selectedAgency.is_dashboard_enabled);
+    updateIsSteppingUpAgency(selectedAgency.is_stepping_up_agency);
     updateIsSuperagency(selectedAgency.is_superagency);
     updateSuperagencyID(selectedAgency.super_agency_id);
     updateChildAgencyIDs(selectedAgency.child_agency_ids);
