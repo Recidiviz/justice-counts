@@ -81,6 +81,7 @@ export type Agency = {
   is_superagency: boolean | null;
   child_agency_ids: number[];
   is_dashboard_enabled: boolean | null;
+  is_stepping_up_agency: boolean | null;
   created_at: string | null;
   agency_description?: string;
   agency_url?: string;
@@ -154,6 +155,7 @@ export type AgencyProvisioningUpdates = {
   fips_county_code: FipsCountyCodeKey | null;
   systems: AgencySystem[];
   is_dashboard_enabled: boolean | null;
+  is_stepping_up_agency: boolean | null;
   super_agency_id: number | null; // If this is set, then the agency is a child agency belonging to the superagency w/ this ID
   is_superagency: boolean | null;
   child_agency_ids: number[];

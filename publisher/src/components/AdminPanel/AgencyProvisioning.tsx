@@ -96,6 +96,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       updateStateCode,
       updateCountyCode,
       updateIsDashboardEnabled,
+      updateIsSteppingUpAgency,
       updateIsSuperagency,
       updateSuperagencyID,
       updateSystems,
@@ -534,6 +535,13 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       Boolean(agencyProvisioningUpdates.is_dashboard_enabled) !==
       Boolean(selectedAgency?.is_dashboard_enabled);
     /**
+     * An update has been made when the agency's `is_stepping_up_agency` boolean flag does not match the agency's
+     * boolean flag for that property before the modal was open.
+     */
+    const hasSteppingUpAgencyUpdate =
+      Boolean(agencyProvisioningUpdates.is_stepping_up_agency) !==
+      Boolean(selectedAgency?.is_stepping_up_agency);
+    /**
      * An update has been made when the agency's `is_superagency` boolean flag does not match the agency's boolean
      * flag for that property before the modal was open.
      */
@@ -592,6 +600,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       hasCountyUpdates ||
       hasSystemUpdates ||
       hasDashboardEnabledStatusUpdate ||
+      hasSteppingUpAgencyUpdate ||
       hasIsSuperagencyUpdate ||
       hasChildAgencyUpdates ||
       hasSuperagencyUpdate ||
@@ -977,8 +986,8 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                       </Styled.LabelWrapper>
                     </Styled.InputLabelWrapper>
 
-                    {/* Dashboard Enabled Checkbox */}
-                    <Styled.InputLabelWrapper flexRow>
+                    <Styled.InputLabelWrapper flexRow inputWidth={300}>
+                      {/* Dashboard Enabled Checkbox */}
                       <input
                         id="dashboard"
                         name="dashboard"
@@ -993,6 +1002,24 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                         )}
                       />
                       <label htmlFor="dashboard">Dashboard enabled</label>
+
+                      {/* Stepping Up Agency Checkbox */}
+                      <input
+                        id="stepping-up-agency"
+                        name="stepping-up-agency"
+                        type="checkbox"
+                        onChange={() =>
+                          updateIsSteppingUpAgency(
+                            !agencyProvisioningUpdates.is_stepping_up_agency
+                          )
+                        }
+                        checked={Boolean(
+                          agencyProvisioningUpdates.is_stepping_up_agency
+                        )}
+                      />
+                      <label htmlFor="stepping-up-agency">
+                        Stepping Up Agency
+                      </label>
                     </Styled.InputLabelWrapper>
 
                     {/* Superagency/Child Agency Checkbox & Search Box */}

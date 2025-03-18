@@ -323,6 +323,7 @@ test("Adding an agency adds agency to user's agency list", async () => {
           fips_county_code: null,
           id: 22,
           is_dashboard_enabled: false,
+          is_stepping_up_agency: null,
           is_superagency: false,
           name: "Department of X",
           settings: [],
@@ -338,6 +339,7 @@ test("Adding an agency adds agency to user's agency list", async () => {
           fips_county_code: null,
           id: 152,
           is_dashboard_enabled: false,
+          is_stepping_up_agency: null,
           is_superagency: null,
           name: "Department of Y",
           settings: [],
@@ -353,6 +355,7 @@ test("Adding an agency adds agency to user's agency list", async () => {
           fips_county_code: null,
           id: 161,
           is_dashboard_enabled: false,
+          is_stepping_up_agency: null,
           is_superagency: null,
           name: "Department of Z",
           settings: [],
@@ -648,6 +651,7 @@ test("Clicking the `Create Agency` button opens the create agency modal", () => 
   const systemsInput = screen.getByText("Sectors");
   const noSystemsSelectedMessage = screen.getByText("No sectors selected");
   const dashboardEnabledInput = screen.getByText("Dashboard enabled");
+  const steppingUpAgencyInput = screen.getByText("Stepping Up Agency");
   const superagencyInput = screen.getAllByText("Superagency")[0];
   const childAgencyInput = screen.getAllByText("Child Agency")[0];
   const cancelButton = screen.getByText("Cancel");
@@ -663,6 +667,7 @@ test("Clicking the `Create Agency` button opens the create agency modal", () => 
   expect(systemsInput).toBeInTheDocument();
   expect(noSystemsSelectedMessage).toBeInTheDocument();
   expect(dashboardEnabledInput).toBeInTheDocument();
+  expect(steppingUpAgencyInput).toBeInTheDocument();
   expect(superagencyInput).toBeInTheDocument();
   expect(childAgencyInput).toBeInTheDocument();
   expect(cancelButton).toBeInTheDocument();
@@ -711,6 +716,7 @@ test("Clicking on an existing agency card opens the edit agency modal", async ()
     "No child agencies selected"
   );
   const dashboardEnabledInput = screen.getByText("Dashboard enabled");
+  const steppingUpAgencyInput = screen.getByText("Stepping Up Agency");
   const superagencyInput: HTMLInputElement =
     screen.getByLabelText("Superagency");
   const childAgencyInput: HTMLInputElement =
@@ -731,6 +737,7 @@ test("Clicking on an existing agency card opens the edit agency modal", async ()
   expect(lawEnforcementSystem).toBeInTheDocument();
   expect(noSystemsSelectedMessage).toBeNull();
   expect(dashboardEnabledInput).toBeInTheDocument();
+  expect(steppingUpAgencyInput).toBeInTheDocument();
   expect(superagencyInput).toBeInTheDocument();
   expect(superagencyInput.checked).toEqual(true);
   expect(noChildAgenciesSelectedMessage).toBeNull();
