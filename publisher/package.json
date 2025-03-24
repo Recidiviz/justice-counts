@@ -9,7 +9,7 @@
     "@auth0/auth0-react": "^2.2.4",
     "@justice-counts/common": "*",
     "@recidiviz/design-system": "^5.8.0",
-    "@sentry/react": "^8.53.0",
+    "@sentry/react": "^9.8.0",
     "@tanstack/match-sorter-utils": "^8.19.4",
     "@tanstack/react-table": "^8.20.6",
     "@types/file-saver": "^2.0.7",
