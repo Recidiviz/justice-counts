@@ -146,7 +146,7 @@ export const VendorManagementModal: React.FC<VendorManagementModalProps> =
                   }
                 />
                 <Styled.LabelWrapper>
-                  <label htmlFor="agency-url">Enter vendor URL</label>
+                  <label htmlFor="vendor-url">Enter vendor URL</label>
                   {urlValidationError && (
                     <Styled.ErrorLabel>{urlValidationError}</Styled.ErrorLabel>
                   )}
