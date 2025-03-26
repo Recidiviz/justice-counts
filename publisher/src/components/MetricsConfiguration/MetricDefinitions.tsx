@@ -104,9 +104,12 @@ function MetricDefinitions() {
     if (!metricDefinitionSettings[activeSystemMetricKey]) return true;
     const metricSettings = Object.values(
       metricDefinitionSettings[activeSystemMetricKey]
-    ).reduce((acc, metricSetting) => {
-      return { ...acc, ...metricSetting.settings };
-    }, {} as { [settingKey: string]: Partial<MetricConfigurationSettings> });
+    ).reduce(
+      (acc, metricSetting) => {
+        return { ...acc, ...metricSetting.settings };
+      },
+      {} as { [settingKey: string]: Partial<MetricConfigurationSettings> }
+    );
     /** Top-level metric context key will always be "INCLUDES_EXCLUDES_DESCRIPTION" */
     const hasContextValue = Boolean(
       contexts[activeSystemMetricKey].INCLUDES_EXCLUDES_DESCRIPTION.value
@@ -219,6 +222,9 @@ function MetricDefinitions() {
               currentEnabledDimensions.length === 0 ||
               disaggregationKey === RACE_ETHNICITY_DISAGGREGATION_KEY
             )
+              return null;
+
+            if (!dimensionDefinitionSettings[activeSystemMetricKey])
               return null;
 
             return (

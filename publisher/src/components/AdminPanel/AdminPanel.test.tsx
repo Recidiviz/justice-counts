@@ -25,12 +25,16 @@ import { BrowserRouter } from "react-router-dom";
 import { rootStore, StoreProvider } from "../../stores";
 import {
   mockAgenciesResponse,
+  mockReportingAgencyMetadata,
   mockUsersResponse,
+  mockVendorsResponse,
 } from "../../stores/AdminPanelStore.test";
 import { AdminPanel } from "./AdminPanel";
 
 const { adminPanelStore } = rootStore;
+
 const mockAgencyID = "10";
+
 const usersByID = groupBy(
   mockUsersResponse.users.map((user) => ({
     ...user,
@@ -48,6 +52,7 @@ const agenciesByID = groupBy(
   })),
   (agency) => agency.id
 );
+const sortedVendors = mockVendorsResponse.slice().sort((a, b) => b.id - a.id);
 
 jest.mock("react-router-dom", () => ({
   ...jest.requireActual("react-router-dom"),
@@ -190,6 +195,37 @@ test("Clicking the `Create User` button opens the create user modal", () => {
   expect(saveButton).toBeInTheDocument();
 });
 
+test("Clicking the `Create New Agency` button opens the create agency secondary modal", async () => {
+  runInAction(() => {
+    adminPanelStore.usersByID = usersByID;
+  });
+
+  render(
+    <BrowserRouter>
+      <StoreProvider>
+        <AdminPanel />
+      </StoreProvider>
+    </BrowserRouter>
+  );
+
+  const createUserButton = screen.getByText("Create User");
+  fireEvent.click(createUserButton);
+
+  const createNewAgencyButton = screen.getByText("Create New Agency");
+  fireEvent.click(createNewAgencyButton);
+
+  const agencyInformationTab = await screen.findByText("Agency Information");
+  const stateInput = screen.getByText("State");
+  const countyInput = screen.getByText("County");
+  const agencyDescriptionInput = screen.getByText("County");
+
+  expect(agencyInformationTab).toBeInTheDocument();
+  expect(stateInput).toBeInTheDocument();
+  expect(countyInput).toBeInTheDocument();
+  expect(agencyDescriptionInput).toBeInTheDocument();
+  expect(screen.queryByText("Metrics Reporting Agency")).not.toBeInTheDocument();
+});
+
 test("Clicking on an existing user card opens the edit user modal", async () => {
   runInAction(() => {
     adminPanelStore.usersByID = usersByID;
@@ -323,6 +359,7 @@ test("Adding an agency adds agency to user's agency list", async () => {
           fips_county_code: null,
           id: 22,
           is_dashboard_enabled: false,
+          is_stepping_up_agency: null,
           is_superagency: false,
           name: "Department of X",
           settings: [],
@@ -338,6 +375,7 @@ test("Adding an agency adds agency to user's agency list", async () => {
           fips_county_code: null,
           id: 152,
           is_dashboard_enabled: false,
+          is_stepping_up_agency: null,
           is_superagency: null,
           name: "Department of Y",
           settings: [],
@@ -353,6 +391,7 @@ test("Adding an agency adds agency to user's agency list", async () => {
           fips_county_code: null,
           id: 161,
           is_dashboard_enabled: false,
+          is_stepping_up_agency: null,
           is_superagency: null,
           name: "Department of Z",
           settings: [],
@@ -648,6 +687,7 @@ test("Clicking the `Create Agency` button opens the create agency modal", () => 
   const systemsInput = screen.getByText("Sectors");
   const noSystemsSelectedMessage = screen.getByText("No sectors selected");
   const dashboardEnabledInput = screen.getByText("Dashboard enabled");
+  const steppingUpAgencyInput = screen.getByText("Stepping Up Agency");
   const superagencyInput = screen.getAllByText("Superagency")[0];
   const childAgencyInput = screen.getAllByText("Child Agency")[0];
   const cancelButton = screen.getByText("Cancel");
@@ -663,6 +703,7 @@ test("Clicking the `Create Agency` button opens the create agency modal", () => 
   expect(systemsInput).toBeInTheDocument();
   expect(noSystemsSelectedMessage).toBeInTheDocument();
   expect(dashboardEnabledInput).toBeInTheDocument();
+  expect(steppingUpAgencyInput).toBeInTheDocument();
   expect(superagencyInput).toBeInTheDocument();
   expect(childAgencyInput).toBeInTheDocument();
   expect(cancelButton).toBeInTheDocument();
@@ -711,6 +752,7 @@ test("Clicking on an existing agency card opens the edit agency modal", async ()
     "No child agencies selected"
   );
   const dashboardEnabledInput = screen.getByText("Dashboard enabled");
+  const steppingUpAgencyInput = screen.getByText("Stepping Up Agency");
   const superagencyInput: HTMLInputElement =
     screen.getByLabelText("Superagency");
   const childAgencyInput: HTMLInputElement =
@@ -731,6 +773,7 @@ test("Clicking on an existing agency card opens the edit agency modal", async ()
   expect(lawEnforcementSystem).toBeInTheDocument();
   expect(noSystemsSelectedMessage).toBeNull();
   expect(dashboardEnabledInput).toBeInTheDocument();
+  expect(steppingUpAgencyInput).toBeInTheDocument();
   expect(superagencyInput).toBeInTheDocument();
   expect(superagencyInput.checked).toEqual(true);
   expect(noChildAgenciesSelectedMessage).toBeNull();
@@ -889,6 +932,46 @@ test("Deleting a user deletes a card to the list of team members", async () => {
   expect(existingTeamMember1Role).toBeDisabled();
 });
 
+test("Clicking the `Create User` button in Team Members & Roles tab opens the create user secondary modal", async () => {
+  runInAction(() => {
+    adminPanelStore.usersByID = usersByID;
+    adminPanelStore.agenciesByID = agenciesByID;
+  });
+
+  render(
+    <BrowserRouter>
+      <StoreProvider>
+        <AdminPanel />
+      </StoreProvider>
+    </BrowserRouter>
+  );
+
+  const agencyProvisioningTab = screen.getByText("Agency Provisioning");
+  fireEvent.click(agencyProvisioningTab);
+
+  const agency1Card = screen.getByText("Super Agency");
+  fireEvent.click(agency1Card);
+
+  await waitFor(() => {
+    adminPanelStore.teamMemberListLoading = false;
+    adminPanelStore.reportingAgencyMetadataLoading = false;
+  });
+
+  const teamMemberRolesTab = screen.getByText("Team Members & Roles");
+  fireEvent.click(teamMemberRolesTab);
+
+  const createUserButton = screen.getByText("Create User");
+  fireEvent.click(createUserButton);
+
+  const createNewUserModalTitle = await screen.findByText("Create New User");
+  const nameInput = screen.getByText("Name");
+  const emailInput = screen.getByText("Email");
+
+  expect(createNewUserModalTitle).toBeInTheDocument();
+  expect(nameInput).toBeInTheDocument();
+  expect(emailInput).toBeInTheDocument();
+});
+
 test("Loading spinner works properly in Agency Provisioning", async () => {
   runInAction(() => {
     adminPanelStore.usersByID = usersByID;
@@ -955,4 +1038,190 @@ test("Loading spinner works properly in User Provisioning", async () => {
    */
   const userEmail = screen.getAllByText("user1@email.org")[1];
   expect(userEmail).toBeInTheDocument();
+});
+
+test("Metrics Reporting Agency tab renders with metrics and vendors", async () => {
+  runInAction(() => {
+    adminPanelStore.usersByID = usersByID;
+    adminPanelStore.agenciesByID = agenciesByID;
+    adminPanelStore.reportingAgencyMetadata = mockReportingAgencyMetadata;
+  });
+
+  render(
+    <BrowserRouter>
+      <StoreProvider>
+        <AdminPanel />
+      </StoreProvider>
+    </BrowserRouter>
+  );
+
+  const agencyProvisioningTab = screen.getByText("Agency Provisioning");
+  fireEvent.click(agencyProvisioningTab);
+
+  const agency1Card = screen.getByText("Super Agency");
+  fireEvent.click(agency1Card);
+
+  await waitFor(() => {
+    adminPanelStore.teamMemberListLoading = false;
+    adminPanelStore.reportingAgencyMetadataLoading = false;
+  });
+
+  const reportingAgencyTab = screen.getByText("Metrics Reporting Agency");
+  fireEvent.click(reportingAgencyTab);
+
+  const descriptionText = screen.getByText(
+    "Assign a reporting agency for each metric."
+  );
+  const fundingMetric = screen.getByText("Funding");
+  const expensesMetric = screen.getByText("Expenses");
+  const mockVendorA = screen.getAllByText("Mock Vendor A")[0];
+  const mockVendorB = screen.getAllByText("Mock Vendor B")[0];
+
+  expect(descriptionText).toBeInTheDocument();
+  expect(fundingMetric).toBeInTheDocument();
+  expect(expensesMetric).toBeInTheDocument();
+  expect(mockVendorA).toBeInTheDocument();
+  expect(mockVendorB).toBeInTheDocument();
+});
+
+test("Clicking the `Manage Vendors` button opens the manage vendors modal", () => {
+  runInAction(() => {
+    adminPanelStore.vendors = sortedVendors;
+  });
+
+  render(
+    <BrowserRouter>
+      <StoreProvider>
+        <AdminPanel />
+      </StoreProvider>
+    </BrowserRouter>
+  );
+
+  const agencyProvisioningTab = screen.getByText("Agency Provisioning");
+  fireEvent.click(agencyProvisioningTab);
+
+  const manageVendorsButton = screen.getByText("Manage Vendors");
+  fireEvent.click(manageVendorsButton);
+
+  const manageVendorsModalTitle = screen.getByText("Vendors");
+  const nameInput = screen.getByText("Enter vendor name");
+  const urlInput = screen.getByText("Enter vendor URL");
+  const mockVendorA = screen.getByText("Mock Vendor A (mva.com)");
+  const mockVendorB = screen.getByText("Mock Vendor B (mvb.com)");
+
+  const addButton = screen.getByText("Add");
+  const clearButton = screen.getByText("Clear");
+  const closeButton = screen.getByText("Close");
+
+  expect(manageVendorsModalTitle).toBeInTheDocument();
+  expect(nameInput).toBeInTheDocument();
+  expect(urlInput).toBeInTheDocument();
+  expect(mockVendorA).toBeInTheDocument();
+  expect(mockVendorB).toBeInTheDocument();
+  expect(addButton).toBeInTheDocument();
+  expect(clearButton).toBeInTheDocument();
+  expect(closeButton).toBeInTheDocument();
+  expect(getComputedStyle(addButton).backgroundColor).toBe(
+    palette.highlight.grey1
+  );
+  expect(getComputedStyle(clearButton).backgroundColor).toBe(
+    palette.highlight.grey1
+  ); // Indicating the buttons are disabled
+});
+
+test("Adding vendors properly", async () => {
+  runInAction(() => {
+    adminPanelStore.vendors = sortedVendors;
+  });
+
+  render(
+    <BrowserRouter>
+      <StoreProvider>
+        <AdminPanel />
+      </StoreProvider>
+    </BrowserRouter>
+  );
+
+  const mockVendorC = { name: "Mock Vendor C", url: "mvc.com", id: 4321 };
+
+  const agencyProvisioningTab = screen.getByText("Agency Provisioning");
+  fireEvent.click(agencyProvisioningTab);
+
+  const manageVendorsButton = screen.getByText("Manage Vendors");
+  fireEvent.click(manageVendorsButton);
+
+  const manageVendorsModalTitle = screen.getByText("Vendors");
+  const nameInput = screen.getByLabelText("Enter vendor name");
+  const urlInput = screen.getByLabelText("Enter vendor URL");
+
+  fireEvent.change(nameInput, { target: { value: mockVendorC.name } });
+  fireEvent.change(urlInput, { target: { value: mockVendorC.url } });
+
+  const addButton = screen.getByText("Add");
+  const clearButton = screen.getByText("Clear");
+
+  expect(addButton).toBeInTheDocument();
+  expect(clearButton).toBeInTheDocument();
+  expect(getComputedStyle(addButton).backgroundColor).toBe("rgb(0, 115, 229)");
+  expect(getComputedStyle(clearButton).backgroundColor).toBe(
+    "rgb(0, 115, 229)"
+  );
+
+  act(() => {
+    runInAction(() => {
+      fireEvent.click(addButton);
+      adminPanelStore.vendors = [...sortedVendors, ...[mockVendorC]];
+    });
+  });
+
+  const vendorC = await screen.findByText("Mock Vendor C (mvc.com)");
+
+  expect(manageVendorsModalTitle).toBeInTheDocument();
+  expect(nameInput).toBeInTheDocument();
+  expect(urlInput).toBeInTheDocument();
+  expect(vendorC).toBeInTheDocument();
+  expect(getComputedStyle(addButton).backgroundColor).toBe(
+    palette.highlight.grey1
+  );
+  expect(getComputedStyle(clearButton).backgroundColor).toBe(
+    palette.highlight.grey1
+  ); // Indicating the buttons are disabled
+});
+
+test("Removing vendors properly", async () => {
+  runInAction(() => {
+    adminPanelStore.vendors = sortedVendors;
+  });
+
+  render(
+    <BrowserRouter>
+      <StoreProvider>
+        <AdminPanel />
+      </StoreProvider>
+    </BrowserRouter>
+  );
+
+  const agencyProvisioningTab = screen.getByText("Agency Provisioning");
+  fireEvent.click(agencyProvisioningTab);
+
+  const manageVendorsButton = screen.getByText("Manage Vendors");
+  fireEvent.click(manageVendorsButton);
+
+  const manageVendorsModalTitle = screen.getByText("Vendors");
+  const mockVendorA = screen.getByText("Mock Vendor A (mva.com)");
+  expect(mockVendorA).toBeInTheDocument();
+
+  fireEvent.mouseOver(mockVendorA);
+  const removeButton = screen.getByText("Remove");
+  expect(removeButton).toBeInTheDocument();
+
+  act(() => {
+    runInAction(() => {
+      fireEvent.click(removeButton);
+      adminPanelStore.vendors = sortedVendors.slice(1);
+    });
+  });
+
+  expect(manageVendorsModalTitle).toBeInTheDocument();
+  expect(mockVendorA).not.toBeInTheDocument();
 });

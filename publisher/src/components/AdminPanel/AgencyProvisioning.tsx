@@ -504,6 +504,13 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       Boolean(agencyProvisioningUpdates.is_dashboard_enabled) !==
       Boolean(selectedAgency?.is_dashboard_enabled);
     /**
+     * An update has been made when the agency's `is_stepping_up_agency` boolean flag does not match the agency's
+     * boolean flag for that property before the modal was open.
+     */
+    const hasSteppingUpAgencyUpdate =
+      Boolean(agencyProvisioningUpdates.is_stepping_up_agency) !==
+      Boolean(selectedAgency?.is_stepping_up_agency);
+    /**
      * An update has been made when the agency's `is_superagency` boolean flag does not match the agency's boolean
      * flag for that property before the modal was open.
      */
@@ -562,6 +569,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       hasCountyUpdates ||
       hasSystemUpdates ||
       hasDashboardEnabledStatusUpdate ||
+      hasSteppingUpAgencyUpdate ||
       hasIsSuperagencyUpdate ||
       hasChildAgencyUpdates ||
       hasSuperagencyUpdate ||

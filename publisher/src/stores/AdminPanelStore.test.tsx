@@ -15,7 +15,12 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { AgencyResponse, UserResponse } from "../components/AdminPanel";
+import {
+  AgencyResponse,
+  ReportingAgencyMetadata,
+  UserResponse,
+  Vendor,
+} from "../components/AdminPanel";
 import { groupBy } from "../utils";
 import { rootStore } from ".";
 import AdminPanelStore from "./AdminPanelStore";
@@ -43,6 +48,7 @@ export const mockUsersResponse = {
           fips_county_code: null,
           id: 152,
           is_dashboard_enabled: false,
+          is_stepping_up_agency: null,
           is_superagency: null,
           name: "Department of Y",
           settings: [],
@@ -66,6 +72,7 @@ export const mockUsersResponse = {
           fips_county_code: null,
           id: 22,
           is_dashboard_enabled: false,
+          is_stepping_up_agency: null,
           is_superagency: false,
           name: "Department of X",
           settings: [],
@@ -81,6 +88,7 @@ export const mockUsersResponse = {
           fips_county_code: null,
           id: 152,
           is_dashboard_enabled: false,
+          is_stepping_up_agency: null,
           is_superagency: null,
           name: "Department of Y",
           settings: [],
@@ -96,6 +104,7 @@ export const mockUsersResponse = {
           fips_county_code: null,
           id: 161,
           is_dashboard_enabled: false,
+          is_stepping_up_agency: null,
           is_superagency: null,
           name: "Department of Z",
           settings: [],
@@ -119,6 +128,7 @@ export const mockUsersResponse = {
           fips_county_code: null,
           id: 22,
           is_dashboard_enabled: false,
+          is_stepping_up_agency: null,
           is_superagency: false,
           name: "Department of X",
           settings: [],
@@ -134,6 +144,7 @@ export const mockUsersResponse = {
           fips_county_code: null,
           id: 152,
           is_dashboard_enabled: false,
+          is_stepping_up_agency: null,
           is_superagency: null,
           name: "Department of Y",
           settings: [],
@@ -156,6 +167,7 @@ export const mockAgenciesResponse = {
       fips_county_code: null,
       id: 1011,
       is_dashboard_enabled: true,
+      is_stepping_up_agency: null,
       is_superagency: true,
       name: "Super Agency",
       settings: [],
@@ -180,6 +192,7 @@ export const mockAgenciesResponse = {
       fips_county_code: null,
       id: 131,
       is_dashboard_enabled: true,
+      is_stepping_up_agency: null,
       is_superagency: null,
       name: "Z Agency",
       settings: [],
@@ -204,6 +217,7 @@ export const mockAgenciesResponse = {
       fips_county_code: null,
       id: 11,
       is_dashboard_enabled: null,
+      is_stepping_up_agency: null,
       is_superagency: null,
       name: "M Child Agency",
       settings: [],
@@ -245,6 +259,62 @@ export const mockAgenciesResponse = {
   ],
 } as AgencyResponse;
 
+export const mockReportingAgencyMetadata = {
+  metrics: {
+    LAW_ENFORCEMENT: [
+      {
+        key: "LAW_ENFORCEMENT_FUNDING",
+        name: "Funding",
+      },
+      {
+        key: "LAW_ENFORCEMENT_EXPENSES",
+        name: "Expenses",
+      },
+    ],
+  },
+  reporting_agencies: {
+    LAW_ENFORCEMENT: [
+      {
+        is_self_reported: null,
+        metric_key: "LAW_ENFORCEMENT_FUNDING",
+        reporting_agency_id: 11111,
+        reporting_agency_name: "Mock Vendor A",
+      },
+      {
+        is_self_reported: null,
+        metric_key: "LAW_ENFORCEMENT_EXPENSES",
+        reporting_agency_id: 1234,
+        reporting_agency_name: "Mock Vendor B",
+      },
+    ],
+  },
+  reporting_agency_options: [
+    {
+      category: "VENDOR",
+      reporting_agency_id: 11111,
+      reporting_agency_name: "Mock Vendor A",
+    },
+    {
+      category: "VENDOR",
+      reporting_agency_id: 1234,
+      reporting_agency_name: "Mock Vendor B",
+    },
+  ],
+} as ReportingAgencyMetadata;
+
+export const mockVendorsResponse = [
+  {
+    id: 11111,
+    name: "Mock Vendor A",
+    url: "mva.com",
+  },
+  {
+    id: 1234,
+    name: "Mock Vendor B",
+    url: "mvb.com",
+  },
+] as Vendor[];
+
 test("fetchUsers gets a list of users and stores them in the AdminPanelStore", async () => {
   global.fetch = jest.fn().mockResolvedValue({
     status: 200,
@@ -282,6 +352,21 @@ test("fetchAgencies gets a list of agencies and stores them in the AdminPanelSto
   expect(adminPanelStore.agencies[0].name).toBe("M Child Agency");
   expect(adminPanelStore.agencies[1].name).toBe("Super Agency");
   expect(adminPanelStore.agencies[2].name).toBe("Z Agency");
+});
+
+test("fetchVendors gets a list of vendors and stores them in the AdminPanelStore", async () => {
+  global.fetch = jest.fn().mockResolvedValue({
+    status: 200,
+    json: async () => mockVendorsResponse,
+  });
+
+  await adminPanelStore.fetchVendors();
+
+  expect(fetch).toBeCalledTimes(1);
+  expect(adminPanelStore.vendors.length).toBe(mockVendorsResponse.length);
+
+  expect(adminPanelStore.vendors[0].name).toBe("Mock Vendor A");
+  expect(adminPanelStore.vendors[1].name).toBe("Mock Vendor B");
 });
 
 test("sortListByName sorts a list of agencies by name in default ascending order", () => {

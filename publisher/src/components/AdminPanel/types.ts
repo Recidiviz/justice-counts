@@ -81,6 +81,7 @@ export type Agency = {
   is_superagency: boolean | null;
   child_agency_ids: number[];
   is_dashboard_enabled: boolean | null;
+  is_stepping_up_agency: boolean | null;
   created_at: string | null;
   agency_description?: string;
   agency_url?: string;
@@ -154,6 +155,7 @@ export type AgencyProvisioningUpdates = {
   fips_county_code: FipsCountyCodeKey | null;
   systems: AgencySystem[];
   is_dashboard_enabled: boolean | null;
+  is_stepping_up_agency: boolean | null;
   super_agency_id: number | null; // If this is set, then the agency is a child agency belonging to the superagency w/ this ID
   is_superagency: boolean | null;
   child_agency_ids: number[];
@@ -274,6 +276,7 @@ export const StateCodesToStateNames = {
   us_ak: "Alaska",
   us_al: "Alabama",
   us_ar: "Arkansas",
+  us_as: "American Samoa",
   us_az: "Arizona",
   us_ca: "California",
   us_co: "Colorado",
@@ -282,6 +285,7 @@ export const StateCodesToStateNames = {
   us_de: "Delaware",
   us_fl: "Florida",
   us_ga: "Georgia",
+  us_gu: "Guam",
   us_hi: "Hawaii",
   us_in: "Indiana",
   us_id: "Idaho",
@@ -296,6 +300,7 @@ export const StateCodesToStateNames = {
   us_mi: "Michigan",
   us_mn: "Minnesota",
   us_mo: "Missouri",
+  us_mp: "Northern Mariana Islands",
   us_ms: "Mississippi",
   us_mt: "Montana",
   us_nc: "North Carolina",
@@ -318,6 +323,7 @@ export const StateCodesToStateNames = {
   us_tx: "Texas",
   us_ut: "Utah",
   us_va: "Virginia",
+  us_vi: "U.S. Virgin Islands",
   us_vt: "Vermont",
   us_wa: "Washington",
   us_wi: "Wisconsin",

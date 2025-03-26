@@ -65,6 +65,7 @@ const initialEmptyAgencyProvisioningUpdates = {
   fips_county_code: null,
   systems: [],
   is_dashboard_enabled: true,
+  is_stepping_up_agency: null,
   super_agency_id: null,
   is_superagency: null,
   child_agency_ids: [],
@@ -598,6 +599,10 @@ class AdminPanelStore {
 
   updateIsDashboardEnabled(isDashboardEnabled: boolean | null) {
     this.agencyProvisioningUpdates.is_dashboard_enabled = isDashboardEnabled;
+  }
+
+  updateIsSteppingUpAgency(isSteppingUpAgency: boolean | null) {
+    this.agencyProvisioningUpdates.is_stepping_up_agency = isSteppingUpAgency;
   }
 
   updateIsSuperagency(isSuperagency: boolean | null) {
