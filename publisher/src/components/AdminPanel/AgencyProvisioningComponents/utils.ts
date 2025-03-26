@@ -15,12 +15,19 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import {
+  AgencySystem,
+  AgencySystems,
+  SupervisionSubsystems,
+} from "@justice-counts/common/types";
+import { toggleAddRemoveSetItem } from "@justice-counts/common/utils";
+
 import { SearchableListItem } from "../types";
 
 export const getInteractiveSearchListSelectDeselectCloseButtons = <T>(
   setState: React.Dispatch<React.SetStateAction<Set<T>>>,
   selectAllSet: Set<T>,
-  closeButton: { label: string; onClick: () => void }[],
+  closeCallback: () => void,
   selectAllCallback?: () => void,
   deselectAllSetOverride?: Set<T>
 ) => {
@@ -42,6 +49,43 @@ export const getInteractiveSearchListSelectDeselectCloseButtons = <T>(
       label: "Deselect All",
       onClick: () => setState(deselectAllSetOverride || new Set()),
     },
-    ...closeButton,
+    {
+      label: "Close",
+      onClick: () => closeCallback(),
+    },
   ];
+};
+
+export const updateSystemsSelections = (
+  id: string | number,
+  setSelectedSystems: React.Dispatch<React.SetStateAction<Set<AgencySystem>>>
+) => {
+  setSelectedSystems((prev) => {
+    const currentSystems = new Set(prev);
+
+    /**
+     * Special handling for Supervision & subpopulation sectors:
+     *  - If the user selects a supervision subpopulation and they have not explicitly selected the Supervision
+     *    sector, auto-add the Supervision sector.
+     *  - If the user de-selects the Supervision sector, then auto-de-select all selected supervision subpopulation
+     *    sectors
+     */
+    if (
+      SupervisionSubsystems.includes(id as AgencySystems) &&
+      !currentSystems.has(AgencySystems.SUPERVISION)
+    ) {
+      currentSystems.add(AgencySystems.SUPERVISION);
+    }
+
+    if (
+      id === AgencySystems.SUPERVISION &&
+      currentSystems.has(AgencySystems.SUPERVISION)
+    ) {
+      SupervisionSubsystems.forEach((subsystem) =>
+        currentSystems.delete(subsystem)
+      );
+    }
+
+    return toggleAddRemoveSetItem(currentSystems, id as AgencySystems);
+  });
 };

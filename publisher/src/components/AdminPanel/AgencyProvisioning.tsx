@@ -24,7 +24,6 @@ import {
   TabOption,
 } from "@justice-counts/common/components/TabbedBar";
 import {
-  AgencySystem,
   AgencySystems,
   AgencyTeamMemberRole,
 } from "@justice-counts/common/types";
@@ -58,7 +57,17 @@ import {
   UserRoleUpdates,
 } from ".";
 import * as Styled from "./AdminPanel.styles";
-import AgencyGeneralInformation from "./AgencyProvisioningComponents/AgencyGeneralInformation";
+import {
+  AgencyCountyInput,
+  AgencyDescriptionInput,
+  AgencyNameInput,
+  AgencyStateInput,
+  AgencySystemsInput,
+  AgencyURLInput,
+  DashboardEnabledCheckbox,
+  SteppingUpAgencyCheckbox,
+} from "./AgencyProvisioningComponents";
+import { useAgencyProvisioning } from "./AgencyProvisioningContext";
 
 export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
   ({
@@ -94,6 +103,10 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       copySuperagencyMetricSettingsToChildAgencies,
       saveReportingAgencies,
     } = adminPanelStore;
+
+    const { selectedAgency, selectedSystems, setSelectedSystems } =
+      useAgencyProvisioning();
+
     const scrollableContainerRef = useRef<HTMLDivElement>(null);
 
     const [isSaveInProgress, setIsSaveInProgress] = useState<boolean>(false);
@@ -128,11 +141,6 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
           ? new Set(agencyProvisioningUpdates.child_agency_ids)
           : new Set()
       );
-    const [selectedSystems, setSelectedSystems] = useState<Set<AgencySystem>>(
-      agencyProvisioningUpdates.systems
-        ? new Set(agencyProvisioningUpdates.systems)
-        : new Set()
-    );
     const [selectedMetricsKeys, setSelectedMetricsKeys] = useState<Set<string>>(
       new Set()
     );
@@ -181,11 +189,6 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
         hide: !selectedIDToEdit,
       },
     ];
-
-    /** Selected agency to edit */
-    const selectedAgency = selectedIDToEdit
-      ? agenciesByID[selectedIDToEdit][0]
-      : undefined;
 
     /** Available agencies ("available" meaning excluding the current agency) to select from */
     const agencyIDs = agencies.map((agency) => +agency.id);
@@ -712,11 +715,31 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                 {currentSettingType ===
                   AgencyProvisioningSettings.AGENCY_INFORMATION && (
                   <>
-                    <AgencyGeneralInformation
-                      selectedAgency={selectedAgency}
-                      selectedSystems={selectedSystems}
-                      setSelectedSystems={setSelectedSystems}
-                    />
+                    {/* Agency Name Input */}
+                    <AgencyNameInput />
+
+                    {/* Agency State Input */}
+                    <AgencyStateInput />
+
+                    {/* Agency County Input */}
+                    <AgencyCountyInput />
+
+                    {/* Agency Systems Input */}
+                    <AgencySystemsInput />
+
+                    {/* Agency Description Input */}
+                    <AgencyDescriptionInput />
+
+                    {/* Agency URL Input */}
+                    <AgencyURLInput />
+
+                    <Styled.InputLabelWrapper flexRow inputWidth={300} noBottomSpacing>
+                      {/* Dashboard Enabled Checkbox */}
+                      <DashboardEnabledCheckbox />
+
+                      {/* Stepping Up Agency Checkbox */}
+                      <SteppingUpAgencyCheckbox />
+                    </Styled.InputLabelWrapper>
 
                     {/* Superagency/Child Agency Checkbox & Search Box */}
                     <Styled.InputLabelWrapper flexRow inputWidth={100}>
