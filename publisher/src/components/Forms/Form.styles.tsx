@@ -346,3 +346,8 @@ export const EthnicityHeader = styled.div`
   width: 100%;
   margin-bottom: 16px;
 `;
+
+export const EmptyWrapper = styled.div`
+  height: 100%;
+  font-weight: 400;
+`;
