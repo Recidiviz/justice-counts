@@ -196,7 +196,7 @@ const DataEntryForm: React.FC<{
     .flat()
     .map((metric) => metric.display_name);
   const showMetricSectionTitles = Object.keys(metricsBySystem).length > 1;
-  const hasEnabledMetrics= Object.entries(metricsBySystem).length > 0;
+  const hasEnabledMetrics = Object.entries(metricsBySystem).length > 0;
 
   const isReadOnly = userStore.isUserReadOnly(agencyId);
 
@@ -379,16 +379,15 @@ const DataEntryForm: React.FC<{
 
             {!hasEnabledMetrics && (
               <EmptyWrapper>
-                There are no enabled metrics set to the recording frequency of
-                this record. If you wish to enter data in this record, please go
-                to{" "}
+                No metrics are currently enabled for the recording frequency of
+                this record. To enter data for this record, please go to{" "}
                 <DisabledMetricsInfoLink
                   onClick={() => navigate(`/agency/${agencyId}/metric-config`)}
                 >
                   Metric Settings
                 </DisabledMetricsInfoLink>{" "}
-                and readjust the recording frequencies of the metrics you wish
-                to enter data for to match the frequency of this record.
+                and adjust the recording frequency of the relevant metrics to
+                match this {`record's`} frequency.
               </EmptyWrapper>
             )}
 

@@ -186,7 +186,6 @@ export const DisabledMetricsInfoWrapper = styled.div`
 
 export const DisabledMetricsInfoLink = styled.span`
   color: ${palette.solid.blue};
-  opacity: 0.5;
   cursor: pointer;
 `;
 
