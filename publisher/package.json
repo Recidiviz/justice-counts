@@ -109,8 +109,5 @@
       "^d3-(.*)$": "d3-$1/dist/d3-$1"
     }
   },
-  "config-overrides-path": "../config-overrides.js",
-  "engines": {
-    "node": ">=16.0.0 <17.0.0"
-  }
+  "config-overrides-path": "../config-overrides.js"
 }
