@@ -186,7 +186,6 @@ export const DisabledMetricsInfoWrapper = styled.div`
 
 export const DisabledMetricsInfoLink = styled.span`
   color: ${palette.solid.blue};
-  opacity: 0.5;
   cursor: pointer;
 `;
 
@@ -345,4 +344,9 @@ export const OpacityGradient = styled.div`
 export const EthnicityHeader = styled.div`
   width: 100%;
   margin-bottom: 16px;
+`;
+
+export const EmptyWrapper = styled.div`
+  height: 100%;
+  font-weight: 400;
 `;

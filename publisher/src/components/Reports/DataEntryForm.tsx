@@ -41,6 +41,7 @@ import {
   DataEntryFormTitleWrapper,
   DisabledMetricsInfoLink,
   DisabledMetricsInfoWrapper,
+  EmptyWrapper,
   Form,
   FormFieldSet,
   FormWrapper,
@@ -195,6 +196,7 @@ const DataEntryForm: React.FC<{
     .flat()
     .map((metric) => metric.display_name);
   const showMetricSectionTitles = Object.keys(metricsBySystem).length > 1;
+  const hasEnabledMetrics = Object.entries(metricsBySystem).length > 0;
 
   const isReadOnly = userStore.isUserReadOnly(agencyId);
 
@@ -259,7 +261,6 @@ const DataEntryForm: React.FC<{
           )}
         </TopBarButtonsContainer>
       </HeaderBar>
-
       <FormWrapper>
         <Form
           onChange={(e) => {
@@ -375,6 +376,21 @@ const DataEntryForm: React.FC<{
                 );
               }
             )}
+
+            {!hasEnabledMetrics && (
+              <EmptyWrapper>
+                No metrics are currently enabled for the recording frequency of
+                this record. To enter data for this record, please go to{" "}
+                <DisabledMetricsInfoLink
+                  onClick={() => navigate(`/agency/${agencyId}/metric-config`)}
+                >
+                  Metric Settings
+                </DisabledMetricsInfoLink>{" "}
+                and adjust the recording frequency of the relevant metrics to
+                match this {`record's`} frequency.
+              </EmptyWrapper>
+            )}
+
             {isSuperagency && reportMetrics.length === 0 && (
               <DisabledMetricsInfoWrapper>
                 There are no metrics that match this {`record's`} frequency (
