@@ -21,7 +21,7 @@ import React from "react";
 import { useStore } from "../../../stores";
 import * as Styled from "../AdminPanel.styles";
 
-const SteppingUpAgencyCheckbox: React.FC = observer(() => {
+export const SteppingUpAgencyCheckbox: React.FC = observer(() => {
   const { adminPanelStore } = useStore();
   const { agencyProvisioningUpdates, updateIsSteppingUpAgency } =
     adminPanelStore;
@@ -43,5 +43,3 @@ const SteppingUpAgencyCheckbox: React.FC = observer(() => {
     </Styled.InputLabelWrapper>
   );
 });
-
-export default SteppingUpAgencyCheckbox;

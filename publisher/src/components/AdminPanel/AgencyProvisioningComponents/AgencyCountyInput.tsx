@@ -29,7 +29,7 @@ import {
 import * as Styled from "../AdminPanel.styles";
 import { useAgencyProvisioning } from "../AgencyProvisioningContext";
 
-const AgencyCountyInput: React.FC = observer(() => {
+export const AgencyCountyInput: React.FC = observer(() => {
   const { adminPanelStore } = useStore();
   const { agencyProvisioningUpdates, searchableCounties, updateCountyCode } =
     adminPanelStore;
@@ -90,5 +90,3 @@ const AgencyCountyInput: React.FC = observer(() => {
     </>
   );
 });
-
-export default AgencyCountyInput;

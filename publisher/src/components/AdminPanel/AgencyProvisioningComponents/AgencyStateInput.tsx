@@ -30,7 +30,7 @@ import {
 import * as Styled from "../AdminPanel.styles";
 import { useAgencyProvisioning } from "../AgencyProvisioningContext";
 
-const AgencyStateInput: React.FC = observer(() => {
+export const AgencyStateInput: React.FC = observer(() => {
   const { adminPanelStore } = useStore();
   const { agencyProvisioningUpdates, updateStateCode, updateCountyCode } =
     adminPanelStore;
@@ -93,5 +93,3 @@ const AgencyStateInput: React.FC = observer(() => {
     </>
   );
 });
-
-export default AgencyStateInput;

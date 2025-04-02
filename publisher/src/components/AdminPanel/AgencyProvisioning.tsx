@@ -15,7 +15,6 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import alertIcon from "@justice-counts/common/assets/alert-icon.png";
 import { Button } from "@justice-counts/common/components/Button";
 import { Dropdown } from "@justice-counts/common/components/Dropdown";
 import { MiniLoader } from "@justice-counts/common/components/MiniLoader";
@@ -50,8 +49,6 @@ import {
   SaveConfirmationType,
   SaveConfirmationTypes,
   SearchableListItem,
-  SelectionInputBoxType,
-  SelectionInputBoxTypes,
   Setting,
   userRoles,
   UserRoleUpdates,
@@ -64,8 +61,13 @@ import {
   AgencyStateInput,
   AgencySystemsInput,
   AgencyURLInput,
+  ChildAgenciesList,
+  CopySuperagencyMetricSettings,
+  CopySuperagencyMetricSettingsCheckbox,
   DashboardEnabledCheckbox,
   SteppingUpAgencyCheckbox,
+  SuperagenciesList,
+  SuperagencyChildAgencyCheckbox,
 } from "./AgencyProvisioningComponents";
 import { useAgencyProvisioning } from "./AgencyProvisioningContext";
 
@@ -81,11 +83,8 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
     const { adminPanelStore, api, userStore } = useStore();
     const {
       users,
-      agencies,
-      agenciesByID,
       metrics,
       agencyProvisioningUpdates,
-      searchableMetrics,
       csgAndRecidivizUsers,
       csgAndRecidivizDefaultRole,
       teamMemberListLoading,
@@ -93,8 +92,6 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       reportingAgencyMetadataLoading,
       updateAgencyDescription,
       updateAgencyURL,
-      updateIsSuperagency,
-      updateSuperagencyID,
       updateSystems,
       updateChildAgencyIDs,
       updateTeamMembers,
@@ -104,8 +101,16 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       saveReportingAgencies,
     } = adminPanelStore;
 
-    const { selectedAgency, selectedSystems, setSelectedSystems } =
-      useAgencyProvisioning();
+    const {
+      selectedAgency,
+      selectedSystems,
+      selectedChildAgencyIDs,
+      selectedMetricsKeys,
+      selectedChildAgencyIDsToCopy,
+      isCopySuperagencyMetricSettingsSelected,
+      isChildAgencySelected,
+      setShowSelectionBox,
+    } = useAgencyProvisioning();
 
     const scrollableContainerRef = useRef<HTMLDivElement>(null);
 
@@ -122,28 +127,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       );
     const [addOrDeleteUserAction, setAddOrDeleteUserAction] =
       useState<InteractiveSearchListAction>();
-    const [showSelectionBox, setShowSelectionBox] =
-      useState<SelectionInputBoxType>();
 
-    const [isChildAgencySelected, setIsChildAgencySelected] = useState<boolean>(
-      Boolean(agencyProvisioningUpdates.super_agency_id) || false
-    );
-    const [selectedChildAgencyIDs, setSelectedChildAgencyIDs] = useState<
-      Set<number>
-    >(
-      agencyProvisioningUpdates.child_agency_ids
-        ? new Set(agencyProvisioningUpdates.child_agency_ids)
-        : new Set()
-    );
-    const [selectedChildAgencyIDsToCopy, setSelectedChildAgencyIDsToCopy] =
-      useState<Set<number>>(
-        agencyProvisioningUpdates.child_agency_ids
-          ? new Set(agencyProvisioningUpdates.child_agency_ids)
-          : new Set()
-      );
-    const [selectedMetricsKeys, setSelectedMetricsKeys] = useState<Set<string>>(
-      new Set()
-    );
     const [selectedTeamMembersToAdd, setSelectedTeamMembersToAdd] = useState<
       Set<number>
     >(new Set());
@@ -152,10 +136,6 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
     const [teamMemberRoleUpdates, setTeamMemberRoleUpdates] = useState<
       UserRoleUpdates | Record<number, never>
     >({});
-    const [
-      isCopySuperagencyMetricSettingsSelected,
-      setIsCopySuperagencyMetricSettingsSelected,
-    ] = useState(false);
 
     /** Setting Tabs (Agency Information/Team Members) */
     const settingOptions: TabOption[] = [
@@ -190,24 +170,16 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       },
     ];
 
-    /** Available agencies ("available" meaning excluding the current agency) to select from */
-    const agencyIDs = agencies.map((agency) => +agency.id);
-    const availableAgencies = agencies.filter(
-      (agency) => agency.id !== selectedAgency?.id
-    );
+    const hasSystems =
+      selectedSystems.size > 0 &&
+      // Exclude Superagency system from consideration.
+      !(
+        selectedSystems.size === 1 &&
+        selectedSystems.has(AgencySystems.SUPERAGENCY)
+      );
 
-    /** A list of superagencies and child agencies to select from */
-    const childAgencies = availableAgencies
-      .filter((agency) => !agency.is_superagency)
-      .map((agency) => ({
-        ...agency,
-        sectors: agency.systems.map((system) =>
-          removeSnakeCase(system.toLocaleLowerCase())
-        ),
-      }));
-    const superagencies = availableAgencies.filter(
-      (agency) => agency.is_superagency
-    );
+    const hasChildAgencies = selectedChildAgencyIDs.size > 0;
+    const hasChildAgencyMetrics = metrics.length > 0;
 
     /** A list of current team members and other team members not connected to the current agency to select from */
     const availableTeamMembers = users.filter(
@@ -388,38 +360,6 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       return "";
     };
 
-    const scrollToBottom = () =>
-      setTimeout(
-        () =>
-          scrollableContainerRef.current?.scrollTo(
-            0,
-            scrollableContainerRef.current.scrollHeight
-          ),
-        0
-      );
-
-    /**
-     * Special handling for checking/unchecking an agency as a superagency. When an agency is checked as a superagency,
-     * the "Superagency" system should be added to the agency. When an agency is no longer checked as a superagency,
-     * the "Superagency" system should be removed from the agency.
-     */
-    const toggleSuperagencyStatusAndSystems = () => {
-      const updatedSystemsSet = new Set(selectedSystems);
-      // If "Superagency" is currently checked, uncheck it and remove the "Superagency" system
-      if (agencyProvisioningUpdates.is_superagency) {
-        updatedSystemsSet.delete(AgencySystems.SUPERAGENCY);
-        setSelectedSystems(updatedSystemsSet);
-        updateIsSuperagency(false);
-        return;
-      }
-      // If "Superagency" is not currently checked, check it and add the "Superagency" system
-      updatedSystemsSet.add(AgencySystems.SUPERAGENCY);
-      setSelectedSystems(updatedSystemsSet);
-      updateIsSuperagency(true);
-      setIsChildAgencySelected(false);
-      updateSuperagencyID(null);
-    };
-
     /**
      * Check whether user has made updates to various fields to determine whether or not the 'Save' button is enabled/disabled
      *
@@ -491,14 +431,6 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
         agencyProvisioningUpdates.systems.filter((system) =>
           selectedSystems.has(system)
         ).length === 0);
-
-    const hasSystems =
-      selectedSystems.size > 0 &&
-      // Exclude Superagency system from consideration.
-      !(
-        selectedSystems.size === 1 &&
-        selectedSystems.has(AgencySystems.SUPERAGENCY)
-      );
     /**
      * An update has been made when the agency's `is_dashboard_enabled` boolean flag does not match the agency's
      * boolean flag for that property before the modal was open.
@@ -532,7 +464,6 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
         agencyProvisioningUpdates.child_agency_ids.filter((id) =>
           selectedChildAgencyIDs.has(id)
         ).length === 0);
-    const hasChildAgencies = selectedChildAgencyIDs.size > 0;
     /**
      * An update has been made when the agency's `super_agency_id` does not match the agency's superagency id before
      * the modal was open.
@@ -649,17 +580,6 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       }
     }, [users, secondaryCreatedId, csgAndRecidivizDefaultRole]);
 
-    /** Here we are making the auto-selecting all metrics by default */
-    useEffect(() => {
-      setSelectedMetricsKeys(
-        new Set(searchableMetrics.map((metric) => String(metric.id)))
-      );
-    }, [searchableMetrics]);
-    const selectedChildAgencies = childAgencies.filter((agency) =>
-      selectedChildAgencyIDs.has(Number(agency.id))
-    );
-    const hasChildAgencyMetrics = metrics.length > 0;
-
     /** Team members search bar logic */
     const [teamMembersSearchInput, setTeamMembersSearchInput] =
       useState<string>("");
@@ -733,7 +653,11 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                     {/* Agency URL Input */}
                     <AgencyURLInput />
 
-                    <Styled.InputLabelWrapper flexRow inputWidth={300} noBottomSpacing>
+                    <Styled.InputLabelWrapper
+                      flexRow
+                      inputWidth={300}
+                      noBottomSpacing
+                    >
                       {/* Dashboard Enabled Checkbox */}
                       <DashboardEnabledCheckbox />
 
@@ -741,356 +665,37 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                       <SteppingUpAgencyCheckbox />
                     </Styled.InputLabelWrapper>
 
-                    {/* Superagency/Child Agency Checkbox & Search Box */}
-                    <Styled.InputLabelWrapper flexRow inputWidth={100}>
-                      <input
-                        id="superagency"
-                        name="superagency"
-                        type="checkbox"
-                        onChange={() => {
-                          toggleSuperagencyStatusAndSystems();
-                          setShowSelectionBox(undefined);
-                          // Reset child agency selections
-                          updateSuperagencyID(null);
-                          setSelectedChildAgencyIDs(new Set());
-                          setIsChildAgencySelected(false);
-                        }}
-                        checked={Boolean(
-                          agencyProvisioningUpdates.is_superagency
-                        )}
-                      />
-                      <label htmlFor="superagency">Superagency</label>
+                    {/* Superagency/Child Agency Checkbox */}
+                    <SuperagencyChildAgencyCheckbox />
 
-                      <input
-                        id="child-agency"
-                        name="child-agency"
-                        type="checkbox"
-                        onChange={() => {
-                          setIsChildAgencySelected((prev) => !prev);
-                          setSelectedChildAgencyIDs(new Set());
-                          setShowSelectionBox(undefined);
-                          if (agencyProvisioningUpdates.is_superagency) {
-                            // Uncheck Superagency checkbox and remove Superagency system
-                            toggleSuperagencyStatusAndSystems();
-                          }
-                          if (isChildAgencySelected) {
-                            // Reset selected superagency ID when unchecked
-                            updateSuperagencyID(null);
-                          }
-                        }}
-                        checked={isChildAgencySelected}
-                      />
-                      <label htmlFor="child-agency">Child Agency</label>
-                    </Styled.InputLabelWrapper>
-
-                    {/* Superagency/Child Agencies list */}
-
-                    {/* Superagency */}
+                    {/* Child Agencies List */}
                     {agencyProvisioningUpdates.is_superagency && (
-                      <>
-                        <Styled.InputLabelWrapper>
-                          {showSelectionBox ===
-                            SelectionInputBoxTypes.CHILD_AGENCIES && (
-                            <InteractiveSearchList
-                              list={childAgencies}
-                              boxActionType={InteractiveSearchListActions.ADD}
-                              selections={selectedChildAgencyIDs}
-                              buttons={getInteractiveSearchListSelectDeselectCloseButtons(
-                                setSelectedChildAgencyIDs,
-                                new Set(
-                                  agencyIDs.filter(
-                                    (id) => id !== selectedAgency?.id
-                                  )
-                                )
-                              )}
-                              updateSelections={({ id }) => {
-                                setSelectedChildAgencyIDs((prev) =>
-                                  toggleAddRemoveSetItem(prev, +id)
-                                );
-                              }}
-                              searchByKeys={["name"]}
-                              metadata={{
-                                listBoxLabel: "Select child agencies",
-                                searchBoxLabel: "Search agencies",
-                              }}
-                              isActiveBox={
-                                showSelectionBox ===
-                                SelectionInputBoxTypes.CHILD_AGENCIES
-                              }
-                            />
-                          )}
-                          <Styled.ChipContainer
-                            onClick={() => {
-                              setShowSelectionBox(
-                                SelectionInputBoxTypes.CHILD_AGENCIES
-                              );
-                              scrollToBottom();
-                            }}
-                            fitContentHeight
-                            hoverable
-                          >
-                            {selectedChildAgencyIDs.size === 0 ? (
-                              <Styled.EmptyListMessage>
-                                No child agencies selected
-                              </Styled.EmptyListMessage>
-                            ) : (
-                              Array.from(selectedChildAgencyIDs).map(
-                                (agencyID) => (
-                                  <Styled.Chip key={agencyID}>
-                                    {agenciesByID[agencyID]?.[0].name}
-                                  </Styled.Chip>
-                                )
-                              )
-                            )}
-                          </Styled.ChipContainer>
-                          <Styled.ChipContainerLabel>
-                            Child agencies
-                          </Styled.ChipContainerLabel>
-                        </Styled.InputLabelWrapper>
-
-                        {hasSystems && hasChildAgencies && selectedIDToEdit && (
-                          <>
-                            <Styled.InputLabelWrapper flexRow wrapLabelText>
-                              <input
-                                id="copy-superagency-metric-settings"
-                                name="copy-superagency-metric-settings"
-                                type="checkbox"
-                                onChange={() => {
-                                  setIsCopySuperagencyMetricSettingsSelected(
-                                    (prev) => !prev
-                                  );
-                                }}
-                                checked={
-                                  isCopySuperagencyMetricSettingsSelected
-                                }
-                              />
-                              <label htmlFor="copy-superagency-metric-settings">
-                                Copy metric settings to child agencies
-                              </label>
-                            </Styled.InputLabelWrapper>
-                            {isCopySuperagencyMetricSettingsSelected &&
-                              hasChildAgencyMetrics && (
-                                <>
-                                  <Styled.WarningMessage>
-                                    <img src={alertIcon} alt="" width="24px" />
-                                    <p>
-                                      WARNING! This action cannot be undone.
-                                      This will OVERWRITE metric settings in
-                                      child agencies. After clicking{" "}
-                                      <strong>Save</strong>, the copying process
-                                      will begin and you will receive an email
-                                      confirmation once the metrics settings
-                                      have been copied over.
-                                    </p>
-                                  </Styled.WarningMessage>
-                                  <Styled.InputLabelWrapper>
-                                    {showSelectionBox ===
-                                      SelectionInputBoxTypes.COPY_CHILD_AGENCIES && (
-                                      <InteractiveSearchList
-                                        list={selectedChildAgencies}
-                                        boxActionType={
-                                          InteractiveSearchListActions.ADD
-                                        }
-                                        selections={
-                                          selectedChildAgencyIDsToCopy
-                                        }
-                                        buttons={getInteractiveSearchListSelectDeselectCloseButtons(
-                                          setSelectedChildAgencyIDsToCopy,
-                                          new Set(
-                                            selectedChildAgencies.map(
-                                              (agency) => +agency.id
-                                            )
-                                          )
-                                        )}
-                                        updateSelections={({ id }) => {
-                                          setSelectedChildAgencyIDsToCopy(
-                                            (prev) =>
-                                              toggleAddRemoveSetItem(prev, +id)
-                                          );
-                                        }}
-                                        searchByKeys={["name", "sectors"]}
-                                        metadata={{
-                                          listBoxLabel:
-                                            "Select child agencies to copy",
-                                          searchBoxLabel: "Search agencies",
-                                        }}
-                                        isActiveBox={
-                                          showSelectionBox ===
-                                          SelectionInputBoxTypes.COPY_CHILD_AGENCIES
-                                        }
-                                      />
-                                    )}
-                                    <Styled.ChipContainer
-                                      onClick={() => {
-                                        setShowSelectionBox(
-                                          SelectionInputBoxTypes.COPY_CHILD_AGENCIES
-                                        );
-                                      }}
-                                      fitContentHeight
-                                      hoverable
-                                    >
-                                      {selectedChildAgencyIDsToCopy.size ===
-                                      0 ? (
-                                        <Styled.EmptyListMessage>
-                                          No child agencies selected to copy
-                                        </Styled.EmptyListMessage>
-                                      ) : (
-                                        Array.from(
-                                          selectedChildAgencyIDsToCopy
-                                        ).map((agencyID) => (
-                                          <Styled.Chip key={agencyID}>
-                                            {agenciesByID[agencyID]?.[0].name}
-                                          </Styled.Chip>
-                                        ))
-                                      )}
-                                    </Styled.ChipContainer>
-                                    <Styled.ChipContainerLabel>
-                                      Child agencies to copy
-                                    </Styled.ChipContainerLabel>
-                                  </Styled.InputLabelWrapper>
-
-                                  <Styled.InputLabelWrapper>
-                                    {showSelectionBox ===
-                                      SelectionInputBoxTypes.COPY_AGENCY_METRICS && (
-                                      <InteractiveSearchList
-                                        list={searchableMetrics}
-                                        boxActionType={
-                                          InteractiveSearchListActions.ADD
-                                        }
-                                        selections={selectedMetricsKeys}
-                                        buttons={getInteractiveSearchListSelectDeselectCloseButtons(
-                                          setSelectedMetricsKeys,
-                                          new Set(
-                                            searchableMetrics.map((metric) =>
-                                              String(metric.id)
-                                            )
-                                          )
-                                        )}
-                                        updateSelections={({ id }) => {
-                                          setSelectedMetricsKeys((prev) =>
-                                            toggleAddRemoveSetItem(
-                                              prev,
-                                              String(id)
-                                            )
-                                          );
-                                        }}
-                                        searchByKeys={["name", "sectors"]}
-                                        metadata={{
-                                          listBoxLabel:
-                                            "Select metrics to copy",
-                                          searchBoxLabel: "Search metrics",
-                                        }}
-                                        isActiveBox={
-                                          showSelectionBox ===
-                                          SelectionInputBoxTypes.COPY_AGENCY_METRICS
-                                        }
-                                      />
-                                    )}
-                                    <Styled.ChipContainer
-                                      onClick={() => {
-                                        setShowSelectionBox(
-                                          SelectionInputBoxTypes.COPY_AGENCY_METRICS
-                                        );
-                                      }}
-                                      fitContentHeight
-                                      hoverable
-                                    >
-                                      {selectedMetricsKeys.size === 0 ? (
-                                        <Styled.EmptyListMessage>
-                                          No metrics selected to copy
-                                        </Styled.EmptyListMessage>
-                                      ) : (
-                                        Array.from(selectedMetricsKeys).map(
-                                          (metricKey) => (
-                                            <Styled.Chip key={metricKey}>
-                                              {
-                                                searchableMetrics.find(
-                                                  (metric) =>
-                                                    metric.id === metricKey
-                                                )?.name
-                                              }
-                                            </Styled.Chip>
-                                          )
-                                        )
-                                      )}
-                                    </Styled.ChipContainer>
-                                    <Styled.ChipContainerLabel>
-                                      Metrics to copy
-                                    </Styled.ChipContainerLabel>
-                                  </Styled.InputLabelWrapper>
-                                </>
-                              )}
-                          </>
-                        )}
-                      </>
+                      <ChildAgenciesList
+                        scrollableContainerRef={scrollableContainerRef}
+                      />
                     )}
 
-                    {/* Child agency */}
+                    {/* Superagencies List */}
                     {(isChildAgencySelected ||
                       agencyProvisioningUpdates.super_agency_id) && (
-                      <Styled.InputLabelWrapper>
-                        {showSelectionBox ===
-                          SelectionInputBoxTypes.SUPERAGENCY && (
-                          <InteractiveSearchList
-                            list={superagencies}
-                            boxActionType={InteractiveSearchListActions.ADD}
-                            selections={
-                              agencyProvisioningUpdates.super_agency_id
-                                ? new Set([
-                                    agencyProvisioningUpdates.super_agency_id,
-                                  ])
-                                : new Set()
-                            }
-                            buttons={interactiveSearchListCloseButton}
-                            updateSelections={({ id }) => {
-                              updateSuperagencyID(
-                                agencyProvisioningUpdates.super_agency_id ===
-                                  +id
-                                  ? null
-                                  : +id
-                              );
-                            }}
-                            searchByKeys={["name"]}
-                            metadata={{
-                              listBoxEmptyLabel:
-                                "There are no superagencies available to select from",
-                              listBoxLabel: "Select a superagency",
-                              searchBoxLabel: "Search agencies",
-                            }}
-                            isActiveBox={
-                              showSelectionBox ===
-                              SelectionInputBoxTypes.SUPERAGENCY
-                            }
-                          />
-                        )}
-                        <Styled.ChipContainer
-                          onClick={() => {
-                            setShowSelectionBox(
-                              SelectionInputBoxTypes.SUPERAGENCY
-                            );
-                            scrollToBottom();
-                          }}
-                          fitContentHeight
-                          hoverable
-                        >
-                          {!agencyProvisioningUpdates.super_agency_id ? (
-                            <Styled.EmptyListMessage>
-                              No superagency selected
-                            </Styled.EmptyListMessage>
-                          ) : (
-                            <Styled.Chip>
-                              {agencyProvisioningUpdates.super_agency_id &&
-                                agenciesByID[
-                                  agencyProvisioningUpdates.super_agency_id
-                                ]?.[0].name}
-                            </Styled.Chip>
-                          )}
-                        </Styled.ChipContainer>
-                        <Styled.ChipContainerLabel>
-                          Superagency
-                        </Styled.ChipContainerLabel>
-                      </Styled.InputLabelWrapper>
+                      <SuperagenciesList
+                        scrollableContainerRef={scrollableContainerRef}
+                      />
                     )}
+
+                    {/* Copy Superagency Metric Settings Checkbox */}
+                    {agencyProvisioningUpdates.is_superagency &&
+                      hasSystems &&
+                      hasChildAgencies &&
+                      selectedIDToEdit && (
+                        <CopySuperagencyMetricSettingsCheckbox />
+                      )}
+
+                    {/* Copy Superagency Metric Settings */}
+                    {isCopySuperagencyMetricSettingsSelected &&
+                      hasChildAgencyMetrics && (
+                        <CopySuperagencyMetricSettings />
+                      )}
                   </>
                 )}
 

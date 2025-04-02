@@ -21,7 +21,7 @@ import React from "react";
 import { useStore } from "../../../stores";
 import * as Styled from "../AdminPanel.styles";
 
-const DashboardEnabledCheckbox: React.FC = observer(() => {
+export const DashboardEnabledCheckbox: React.FC = observer(() => {
   const { adminPanelStore } = useStore();
   const { agencyProvisioningUpdates, updateIsDashboardEnabled } =
     adminPanelStore;
@@ -43,5 +43,3 @@ const DashboardEnabledCheckbox: React.FC = observer(() => {
     </Styled.InputLabelWrapper>
   );
 });
-
-export default DashboardEnabledCheckbox;

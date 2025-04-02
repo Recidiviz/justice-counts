@@ -33,7 +33,7 @@ import {
   updateSystemsSelections,
 } from "./utils";
 
-const AgencySystemsInput: React.FC = observer(() => {
+export const AgencySystemsInput: React.FC = observer(() => {
   const { adminPanelStore } = useStore();
   const { systems, agencyProvisioningUpdates, searchableSystems } =
     adminPanelStore;
@@ -99,5 +99,3 @@ const AgencySystemsInput: React.FC = observer(() => {
     </>
   );
 });
-
-export default AgencySystemsInput;

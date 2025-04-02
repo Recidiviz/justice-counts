@@ -16,35 +16,31 @@
 // =============================================================================
 
 import { observer } from "mobx-react-lite";
-import React, { useState } from "react";
+import React from "react";
 
-import { useStore } from "../../../stores";
 import * as Styled from "../AdminPanel.styles";
 import { useAgencyProvisioning } from "../AgencyProvisioningContext";
 
-export const AgencyNameInput: React.FC = observer(() => {
-  const { adminPanelStore } = useStore();
-  const { updateAgencyName } = adminPanelStore;
-
-  const { selectedAgency } = useAgencyProvisioning();
-
-  const [nameValue, setNameValue] = useState<string>(
-    selectedAgency?.name ?? ""
-  );
+export const CopySuperagencyMetricSettingsCheckbox: React.FC = observer(() => {
+  const {
+    isCopySuperagencyMetricSettingsSelected,
+    setIsCopySuperagencyMetricSettingsSelected,
+  } = useAgencyProvisioning();
 
   return (
-    <Styled.InputLabelWrapper required>
+    <Styled.InputLabelWrapper flexRow wrapLabelText>
       <input
-        id="agency-name"
-        name="agency-name"
-        type="text"
-        value={nameValue}
-        onChange={(e) => {
-          setNameValue(e.target.value);
-          updateAgencyName(e.target.value);
+        id="copy-superagency-metric-settings"
+        name="copy-superagency-metric-settings"
+        type="checkbox"
+        onChange={() => {
+          setIsCopySuperagencyMetricSettingsSelected((prev) => !prev);
         }}
+        checked={isCopySuperagencyMetricSettingsSelected}
       />
-      <label htmlFor="agency-name">Name</label>
+      <label htmlFor="copy-superagency-metric-settings">
+        Copy metric settings to child agencies
+      </label>
     </Styled.InputLabelWrapper>
   );
 });

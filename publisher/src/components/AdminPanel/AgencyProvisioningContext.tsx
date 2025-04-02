@@ -21,20 +21,24 @@ import React, { createContext, useContext, useMemo, useState } from "react";
 import { useStore } from "../../stores";
 import { AgencyWithTeamByID, SelectionInputBoxType } from "./types";
 
+type SetState<T> = React.Dispatch<React.SetStateAction<T>>;
+
 interface AgencyProvisioningContextProps {
   selectedAgency?: AgencyWithTeamByID;
   selectedSystems: Set<AgencySystem>;
-  setSelectedSystems: React.Dispatch<React.SetStateAction<Set<AgencySystem>>>;
+  setSelectedSystems: SetState<Set<AgencySystem>>;
   showSelectionBox?: SelectionInputBoxType;
-  setShowSelectionBox: React.Dispatch<
-    React.SetStateAction<SelectionInputBoxType | undefined>
-  >;
-  nameValue: string;
-  setNameValue: React.Dispatch<React.SetStateAction<string>>;
-  URLValue: string;
-  setURLValue: React.Dispatch<React.SetStateAction<string>>;
-  descriptionValue: string;
-  setDescriptionValue: React.Dispatch<React.SetStateAction<string>>;
+  setShowSelectionBox: SetState<SelectionInputBoxType | undefined>;
+  isChildAgencySelected: boolean;
+  setIsChildAgencySelected: SetState<boolean>;
+  selectedChildAgencyIDs: Set<number>;
+  setSelectedChildAgencyIDs: SetState<Set<number>>;
+  isCopySuperagencyMetricSettingsSelected: boolean;
+  setIsCopySuperagencyMetricSettingsSelected: SetState<boolean>;
+  selectedChildAgencyIDsToCopy: Set<number>;
+  setSelectedChildAgencyIDsToCopy: SetState<Set<number>>;
+  selectedMetricsKeys: Set<string>;
+  setSelectedMetricsKeys: SetState<Set<string>>;
 }
 
 const AgencyProvisioningContext = createContext<
@@ -67,37 +71,58 @@ export const AgencyProvisioningProvider: React.FC<ProviderProps> = ({
       : new Set()
   );
 
-  const [nameValue, setNameValue] = useState<string>(
-    selectedAgency?.name ?? ""
+  const [isChildAgencySelected, setIsChildAgencySelected] = useState<boolean>(
+    Boolean(agencyProvisioningUpdates.super_agency_id) || false
   );
-  const [URLValue, setURLValue] = useState<string>(
-    selectedAgency?.agency_url ?? ""
+  const [selectedChildAgencyIDs, setSelectedChildAgencyIDs] = useState<
+    Set<number>
+  >(
+    agencyProvisioningUpdates.child_agency_ids
+      ? new Set(agencyProvisioningUpdates.child_agency_ids)
+      : new Set()
   );
-  const [descriptionValue, setDescriptionValue] = useState<string>(
-    selectedAgency?.agency_description ?? ""
+
+  const [
+    isCopySuperagencyMetricSettingsSelected,
+    setIsCopySuperagencyMetricSettingsSelected,
+  ] = useState<boolean>(false);
+  const [selectedChildAgencyIDsToCopy, setSelectedChildAgencyIDsToCopy] =
+    useState<Set<number>>(
+      agencyProvisioningUpdates.child_agency_ids
+        ? new Set(agencyProvisioningUpdates.child_agency_ids)
+        : new Set()
+    );
+  const [selectedMetricsKeys, setSelectedMetricsKeys] = useState<Set<string>>(
+    new Set()
   );
 
   const providerValue = useMemo(
     () => ({
       selectedAgency,
-      selectedSystems,
       showSelectionBox,
-      nameValue,
-      URLValue,
-      descriptionValue,
-      setSelectedSystems,
+      selectedSystems,
+      isChildAgencySelected,
+      selectedChildAgencyIDs,
+      isCopySuperagencyMetricSettingsSelected,
+      selectedChildAgencyIDsToCopy,
+      selectedMetricsKeys,
       setShowSelectionBox,
-      setNameValue,
-      setURLValue,
-      setDescriptionValue,
+      setSelectedSystems,
+      setIsChildAgencySelected,
+      setSelectedChildAgencyIDs,
+      setIsCopySuperagencyMetricSettingsSelected,
+      setSelectedChildAgencyIDsToCopy,
+      setSelectedMetricsKeys,
     }),
     [
       selectedAgency,
-      selectedSystems,
       showSelectionBox,
-      nameValue,
-      URLValue,
-      descriptionValue,
+      selectedSystems,
+      isChildAgencySelected,
+      selectedChildAgencyIDs,
+      isCopySuperagencyMetricSettingsSelected,
+      selectedChildAgencyIDsToCopy,
+      selectedMetricsKeys,
     ]
   );
 

@@ -23,12 +23,15 @@ import { useStore } from "../../../stores";
 import * as Styled from "../AdminPanel.styles";
 import { useAgencyProvisioning } from "../AgencyProvisioningContext";
 
-const AgencyURLInput: React.FC = observer(() => {
+export const AgencyURLInput: React.FC = observer(() => {
   const { adminPanelStore } = useStore();
   const { updateAgencyURL } = adminPanelStore;
 
-  const { URLValue, setURLValue } = useAgencyProvisioning();
+  const { selectedAgency } = useAgencyProvisioning();
 
+  const [URLValue, setURLValue] = useState<string>(
+    selectedAgency?.agency_url ?? ""
+  );
   const [URLValidationError, setURLValidationError] = useState<string>();
 
   const validateAndUpdateURL = (url: string) => {
@@ -62,5 +65,3 @@ const AgencyURLInput: React.FC = observer(() => {
     </Styled.InputLabelWrapper>
   );
 });
-
-export default AgencyURLInput;

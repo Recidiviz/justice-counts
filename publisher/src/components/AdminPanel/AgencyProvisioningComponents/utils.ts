@@ -20,9 +20,12 @@ import {
   AgencySystems,
   SupervisionSubsystems,
 } from "@justice-counts/common/types";
-import { toggleAddRemoveSetItem } from "@justice-counts/common/utils";
+import {
+  removeSnakeCase,
+  toggleAddRemoveSetItem,
+} from "@justice-counts/common/utils";
 
-import { SearchableListItem } from "../types";
+import { AgencyWithTeamByID, SearchableListItem } from "../types";
 
 export const getInteractiveSearchListSelectDeselectCloseButtons = <T>(
   setState: React.Dispatch<React.SetStateAction<Set<T>>>,
@@ -88,4 +91,42 @@ export const updateSystemsSelections = (
 
     return toggleAddRemoveSetItem(currentSystems, id as AgencySystems);
   });
+};
+
+export const scrollToBottom = (
+  scrollableContainerRef: React.RefObject<HTMLDivElement>
+) =>
+  setTimeout(
+    () =>
+      scrollableContainerRef.current?.scrollTo(
+        0,
+        scrollableContainerRef.current.scrollHeight
+      ),
+    0
+  );
+
+export const getSuperagenciesChildAgencies = (
+  agencies: AgencyWithTeamByID[],
+  selectedAgency: AgencyWithTeamByID | undefined
+) => {
+  const availableAgencies = agencies.filter(
+    (agency) => agency.id !== selectedAgency?.id
+  );
+
+  /** A list of superagencies to select from */
+  const superagencies = availableAgencies.filter(
+    (agency) => agency.is_superagency
+  );
+
+  /** A list of child agencies to select from */
+  const childAgencies = availableAgencies
+    .filter((agency) => !agency.is_superagency)
+    .map((agency) => ({
+      ...agency,
+      sectors: agency.systems.map((system) =>
+        removeSnakeCase(system.toLocaleLowerCase())
+      ),
+    }));
+
+  return { superagencies, childAgencies };
 };

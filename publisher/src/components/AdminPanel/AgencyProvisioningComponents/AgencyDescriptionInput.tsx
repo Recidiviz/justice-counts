@@ -16,17 +16,21 @@
 // =============================================================================
 
 import { observer } from "mobx-react-lite";
-import React from "react";
+import React, { useState } from "react";
 
 import { useStore } from "../../../stores";
 import * as Styled from "../AdminPanel.styles";
 import { useAgencyProvisioning } from "../AgencyProvisioningContext";
 
-const AgencyDescriptionInput: React.FC = observer(() => {
+export const AgencyDescriptionInput: React.FC = observer(() => {
   const { adminPanelStore } = useStore();
   const { updateAgencyDescription } = adminPanelStore;
 
-  const { descriptionValue, setDescriptionValue } = useAgencyProvisioning();
+  const { selectedAgency } = useAgencyProvisioning();
+
+  const [descriptionValue, setDescriptionValue] = useState<string>(
+    selectedAgency?.agency_description ?? ""
+  );
 
   return (
     <Styled.InputLabelWrapper>
@@ -45,5 +49,3 @@ const AgencyDescriptionInput: React.FC = observer(() => {
     </Styled.InputLabelWrapper>
   );
 });
-
-export default AgencyDescriptionInput;
