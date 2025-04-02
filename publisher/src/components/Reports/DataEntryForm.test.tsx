@@ -62,7 +62,7 @@ test("display error when report fails to load", async () => {
   });
 
   const errorText = await screen.findByText(
-    /Error: No auth client initialized./i
+    "Something went wrong while loading Publisher."
   );
   expect(errorText).toBeInTheDocument();
   expect.hasAssertions();
