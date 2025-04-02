@@ -26,6 +26,7 @@ import { useStore } from "../../stores";
 import { PageWrapper } from "../Forms";
 import { REPORT_LOWERCASE, REPORTS_LOWERCASE } from "../Global/constants";
 import { Loading } from "../Loading";
+import { LoadingError } from "../Loading/LoadingError";
 import {
   createPublishSuccessModalButtons,
   PublishReviewPropsFromDatapoints,
@@ -128,7 +129,7 @@ const BulkActionReview = () => {
     );
 
   if (loadingError) {
-    return <div>Error: {loadingError}</div>;
+    return <LoadingError />;
   }
 
   // review component props

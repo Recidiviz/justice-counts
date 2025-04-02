@@ -22,6 +22,7 @@ import { useParams } from "react-router-dom";
 import { useStore } from "../../stores";
 import { PageWrapper } from "../Forms";
 import { Loading } from "../Loading/Loading";
+import { LoadingError } from "../Loading/LoadingError";
 import { SpreadsheetReview } from "./SpreadsheetReview";
 
 function ShareSpreadsheet() {
@@ -55,7 +56,7 @@ function ShareSpreadsheet() {
   }
 
   if (loadingError || !reportStore.spreadsheetReviewData[spreadsheetId]) {
-    return <PageWrapper>Error: {loadingError}</PageWrapper>;
+    return <LoadingError />;
   }
 
   const spreadsheetReviewData =

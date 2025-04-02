@@ -31,6 +31,7 @@ import { useStore } from "../../stores";
 import { PageWrapper } from "../Forms";
 import { useHeaderBadge } from "../Header/hooks";
 import { Loading } from "../Loading";
+import { LoadingError } from "../Loading/LoadingError";
 import { DataUploadContainer } from ".";
 import ShareSpreadsheet from "./ShareSpreadsheet";
 import { ErrorsWarningsMetrics } from "./types";
@@ -112,7 +113,7 @@ function ShareUploadErrorWarnings() {
     );
   }
   if (loadingError || !reportStore.spreadsheetReviewData[spreadsheetId]) {
-    return <PageWrapper>Error: {loadingError}</PageWrapper>;
+    return <LoadingError />;
   }
   const headerBackground = () => {
     if (!errorsWarningsMetrics && windowWidth > MIN_DESKTOP_WIDTH)
