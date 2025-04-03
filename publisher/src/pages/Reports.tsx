@@ -47,6 +47,7 @@ import {
   REPORTS_LOWERCASE,
 } from "../components/Global/constants";
 import { Loading } from "../components/Loading";
+import { LoadingError } from "../components/Loading/LoadingError";
 import {
   ResourceTypes,
   UnauthorizedDeleteActionModal,
@@ -310,7 +311,7 @@ const Reports: React.FC = () => {
       return <Loading />;
     }
     if (loadingError) {
-      return <Row>{`Error: ${loadingError}`}</Row>;
+      return <LoadingError />;
     }
 
     const reportStatusBadgeColors: BadgeColorMapping = {
