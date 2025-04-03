@@ -28,6 +28,7 @@ import { printReportTitle } from "../../utils";
 import { PageWrapper } from "../Forms";
 import { REPORT_LOWERCASE } from "../Global/constants";
 import { Loading } from "../Loading";
+import { LoadingError } from "../Loading/LoadingError";
 import DataEntryForm from "./DataEntryForm";
 import PublishDataPanel from "./PublishDataPanel";
 import {
@@ -126,7 +127,7 @@ const ReportDataEntry = () => {
   }
 
   if (loadingError || !reportStore.reportOverviews[reportID]) {
-    return <PageWrapper>Error: {loadingError}</PageWrapper>;
+    return <LoadingError />;
   }
 
   if (reportStore.reportOverviews[reportID].agency_id !== Number(agencyId)) {

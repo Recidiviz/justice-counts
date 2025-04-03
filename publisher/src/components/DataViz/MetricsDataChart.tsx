@@ -56,6 +56,7 @@ import { ReactComponent as SwitchToDataTableIcon } from "../assets/switch-to-dat
 import { AppGuideKeys, GuideKeys } from "../HelpCenter/types";
 import { createURLToGuide } from "../HelpCenter/utils";
 import { Loading } from "../Loading";
+import { LoadingError } from "../Loading/LoadingError";
 import { ChildAgenciesDropdown } from "../MetricsConfiguration/ChildAgenciesDropdown";
 import ConnectedDatapointsView from "./ConnectedDatapointsView";
 import * as Styled from "./MetricsDataChart.styled";
@@ -249,7 +250,7 @@ export const MetricsDataChart: React.FC = observer(() => {
     return <Loading />;
   }
   if (loadingError) {
-    return <div>Error: {loadingError}</div>;
+    return <LoadingError />;
   }
 
   return (
