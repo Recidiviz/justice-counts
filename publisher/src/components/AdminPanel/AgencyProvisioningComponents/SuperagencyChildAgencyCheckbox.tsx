@@ -63,42 +63,45 @@ export const SuperagencyChildAgencyCheckbox: React.FC = observer(() => {
     updateSuperagencyID(null);
   };
 
+  const handleSuperagencyChange = () => {
+    toggleSuperagencyStatusAndSystems();
+    setShowSelectionBox(undefined);
+    // Reset child agency selections
+    updateSuperagencyID(null);
+    setSelectedChildAgencyIDs(new Set());
+    setIsChildAgencySelected(false);
+    setIsCopySuperagencyMetricSettingsSelected(false);
+  };
+
+  const handleChildAgencyChange = () => {
+    setIsChildAgencySelected((prev) => !prev);
+    setSelectedChildAgencyIDs(new Set());
+    setShowSelectionBox(undefined);
+    if (agencyProvisioningUpdates.is_superagency) {
+      // Uncheck Superagency checkbox and remove Superagency system
+      toggleSuperagencyStatusAndSystems();
+    }
+    if (isChildAgencySelected) {
+      // Reset selected superagency ID when unchecked
+      updateSuperagencyID(null);
+    }
+  };
+
   return (
     <Styled.InputLabelWrapper flexRow inputWidth={100}>
       <input
         id="superagency"
         name="superagency"
         type="checkbox"
-        onChange={() => {
-          toggleSuperagencyStatusAndSystems();
-          setShowSelectionBox(undefined);
-          // Reset child agency selections
-          updateSuperagencyID(null);
-          setSelectedChildAgencyIDs(new Set());
-          setIsChildAgencySelected(false);
-          setIsCopySuperagencyMetricSettingsSelected(false);
-        }}
+        onChange={handleSuperagencyChange}
         checked={Boolean(agencyProvisioningUpdates.is_superagency)}
       />
       <label htmlFor="superagency">Superagency</label>
-
       <input
         id="child-agency"
         name="child-agency"
         type="checkbox"
-        onChange={() => {
-          setIsChildAgencySelected((prev) => !prev);
-          setSelectedChildAgencyIDs(new Set());
-          setShowSelectionBox(undefined);
-          if (agencyProvisioningUpdates.is_superagency) {
-            // Uncheck Superagency checkbox and remove Superagency system
-            toggleSuperagencyStatusAndSystems();
-          }
-          if (isChildAgencySelected) {
-            // Reset selected superagency ID when unchecked
-            updateSuperagencyID(null);
-          }
-        }}
+        onChange={handleChildAgencyChange}
         checked={isChildAgencySelected}
       />
       <label htmlFor="child-agency">Child Agency</label>

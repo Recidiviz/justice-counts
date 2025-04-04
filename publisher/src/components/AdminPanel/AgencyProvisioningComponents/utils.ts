@@ -38,13 +38,11 @@ export const getInteractiveSearchListSelectDeselectCloseButtons = <T>(
     {
       label: "Select All",
       onClick: (filteredList: SearchableListItem[] | undefined) => {
-        setState(selectAllSet);
-        if (filteredList) {
-          const filteredSet = new Set(
-            filteredList.map((obj) => obj.id)
-          ) as Set<T>;
-          setState(filteredSet);
-        }
+        const newSelection = filteredList
+          ? (new Set(filteredList.map((obj) => obj.id)) as Set<T>)
+          : selectAllSet;
+        setState(newSelection);
+
         if (selectAllCallback) selectAllCallback();
       },
     },

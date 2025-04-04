@@ -16,7 +16,7 @@
 // =============================================================================
 
 import { observer } from "mobx-react-lite";
-import React from "react";
+import React, { useCallback } from "react";
 
 import { useStore } from "../../../stores";
 import {
@@ -43,6 +43,18 @@ export const AgencyCountyInput: React.FC = observer(() => {
     },
   ];
 
+  const handleUpdateSelections = useCallback(
+    ({ id }: { id: string | number }) => {
+      const updatedStateCode =
+        agencyProvisioningUpdates.fips_county_code === id
+          ? null
+          : (id as FipsCountyCodeKey);
+
+      updateCountyCode(updatedStateCode);
+    },
+    [agencyProvisioningUpdates.fips_county_code, updateCountyCode]
+  );
+
   return (
     <>
       {showSelectionBox === SelectionInputBoxTypes.COUNTY && (
@@ -55,13 +67,7 @@ export const AgencyCountyInput: React.FC = observer(() => {
               : new Set()
           }
           buttons={interactiveSearchListCloseButton}
-          updateSelections={({ id }) => {
-            updateCountyCode(
-              agencyProvisioningUpdates.fips_county_code === id
-                ? null
-                : (id as FipsCountyCodeKey)
-            );
-          }}
+          updateSelections={handleUpdateSelections}
           searchByKeys={["name"]}
           metadata={{
             listBoxLabel: "Select a county",

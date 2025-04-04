@@ -45,6 +45,25 @@ export const AgencySystemsInput: React.FC = observer(() => {
     setSelectedSystems,
   } = useAgencyProvisioning();
 
+  // If Superagency is checked, include the Superagency sector when user selects all
+  const selectAllSet = agencyProvisioningUpdates.is_superagency
+    ? new Set([...systems, AgencySystems.SUPERAGENCY])
+    : new Set(systems);
+
+  // If Superagency is checked, still include the Superagency sector when user deselects all
+  const deselectAllSetOverride = agencyProvisioningUpdates.is_superagency
+    ? new Set([AgencySystems.SUPERAGENCY])
+    : undefined;
+
+  const interactiveSearchListButtons =
+    getInteractiveSearchListSelectDeselectCloseButtons(
+      setSelectedSystems,
+      selectAllSet,
+      () => setShowSelectionBox(undefined),
+      undefined,
+      deselectAllSetOverride
+    );
+
   return (
     <>
       {showSelectionBox === SelectionInputBoxTypes.SYSTEMS && (
@@ -52,19 +71,7 @@ export const AgencySystemsInput: React.FC = observer(() => {
           list={searchableSystems}
           boxActionType={InteractiveSearchListActions.ADD}
           selections={selectedSystems}
-          buttons={getInteractiveSearchListSelectDeselectCloseButtons(
-            setSelectedSystems,
-            // If Superagency is checked, include the Superagency sector when user selects all
-            agencyProvisioningUpdates.is_superagency
-              ? new Set([...systems, AgencySystems.SUPERAGENCY])
-              : new Set(systems),
-            () => setShowSelectionBox(undefined),
-            undefined,
-            // If Superagency is checked, still include the Superagency sector when user deselects all
-            agencyProvisioningUpdates.is_superagency
-              ? new Set([AgencySystems.SUPERAGENCY])
-              : undefined
-          )}
+          buttons={interactiveSearchListButtons}
           updateSelections={({ id }) =>
             updateSystemsSelections(id, setSelectedSystems)
           }

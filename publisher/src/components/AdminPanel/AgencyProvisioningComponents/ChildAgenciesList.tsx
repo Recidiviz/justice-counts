@@ -17,7 +17,7 @@
 
 import { toggleAddRemoveSetItem } from "@justice-counts/common/utils";
 import { observer } from "mobx-react-lite";
-import React from "react";
+import React, { useCallback } from "react";
 
 import { useStore } from "../../../stores";
 import * as Styled from "../AdminPanel.styles";
@@ -51,6 +51,16 @@ export const ChildAgenciesList: React.FC<SuperagenciesChildAgenciesListProps> =
       selectedAgency
     );
 
+    const handleUpdateSelections = useCallback(
+      ({ id }: { id: string | number }) => {
+        setSelectedChildAgencyIDs((prev) => toggleAddRemoveSetItem(prev, +id));
+        setSelectedChildAgencyIDsToCopy((prev) =>
+          toggleAddRemoveSetItem(prev, +id)
+        );
+      },
+      [setSelectedChildAgencyIDs, setSelectedChildAgencyIDsToCopy]
+    );
+
     return (
       <Styled.InputLabelWrapper>
         {showSelectionBox === SelectionInputBoxTypes.CHILD_AGENCIES && (
@@ -63,15 +73,7 @@ export const ChildAgenciesList: React.FC<SuperagenciesChildAgenciesListProps> =
               new Set(agencyIDs.filter((id) => id !== selectedAgency?.id)),
               () => setShowSelectionBox(undefined)
             )}
-            updateSelections={({ id }) => {
-              setSelectedChildAgencyIDs((prev) =>
-                toggleAddRemoveSetItem(prev, +id)
-              );
-              // Question: when selecting new child agency from superagencies list should we also update selected child agencies to copy metrics into? I'd say we should.
-              setSelectedChildAgencyIDsToCopy((prev) =>
-                toggleAddRemoveSetItem(prev, +id)
-              );
-            }}
+            updateSelections={handleUpdateSelections}
             searchByKeys={["name"]}
             metadata={{
               listBoxLabel: "Select child agencies",

@@ -16,7 +16,7 @@
 // =============================================================================
 
 import { observer } from "mobx-react-lite";
-import React from "react";
+import React, { useCallback } from "react";
 
 import { useStore } from "../../../stores";
 import AdminPanelStore from "../../../stores/AdminPanelStore";
@@ -45,6 +45,24 @@ export const AgencyStateInput: React.FC = observer(() => {
     },
   ];
 
+  const handleUpdateSelections = useCallback(
+    ({ id }: { id: string | number }) => {
+      const updatedStateCode =
+        agencyProvisioningUpdates.state_code === (id as StateCodeKey)
+          ? selectedAgency?.state_code || null
+          : (id as StateCodeKey);
+
+      updateStateCode(updatedStateCode);
+      updateCountyCode(null); // Reset the county code input
+    },
+    [
+      agencyProvisioningUpdates.state_code,
+      selectedAgency?.state_code,
+      updateStateCode,
+      updateCountyCode,
+    ]
+  );
+
   return (
     <>
       {showSelectionBox === SelectionInputBoxTypes.STATE && (
@@ -57,15 +75,7 @@ export const AgencyStateInput: React.FC = observer(() => {
               : new Set()
           }
           buttons={interactiveSearchListCloseButton}
-          updateSelections={({ id }) => {
-            updateStateCode(
-              agencyProvisioningUpdates.state_code === (id as StateCodeKey)
-                ? selectedAgency?.state_code || null
-                : (id as StateCodeKey)
-            );
-            /** Reset the county code input */
-            updateCountyCode(null);
-          }}
+          updateSelections={handleUpdateSelections}
           searchByKeys={["name"]}
           metadata={{
             listBoxLabel: "Select a state",
