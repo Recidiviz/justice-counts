@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+/* Agency General Information */
 export { AgencyCountyInput } from "./AgencyCountyInput";
 export { AgencyDescriptionInput } from "./AgencyDescriptionInput";
 export { AgencyNameInput } from "./AgencyNameInput";
@@ -28,3 +29,12 @@ export { DashboardEnabledCheckbox } from "./DashboardEnabledCheckbox";
 export { SteppingUpAgencyCheckbox } from "./SteppingUpAgencyCheckbox";
 export { SuperagenciesList } from "./SuperagenciesList";
 export { SuperagencyChildAgencyCheckbox } from "./SuperagencyChildAgencyCheckbox";
+
+/* Team Members & Roles */
+export { AddNewTeamMembers } from "./AddNewTeamMembers";
+export { DeleteExistingTeamMembers } from "./DeleteExistingTeamMembers";
+export { TeamMembersList } from "./TeamMembersList";
+export { TeamMembersManagementButtons } from "./TeamMembersManagementButtons";
+
+/* Metrics Reporting Agency */
+export { MetricsReportingAgency } from "./MetricsReportingAgency";

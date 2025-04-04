@@ -128,3 +128,16 @@ export const getSuperagenciesChildAgencies = (
 
   return { superagencies, childAgencies };
 };
+
+export const getCurrentTeamMembers = (
+  selectedAgency: AgencyWithTeamByID | undefined
+) => {
+  return selectedAgency
+    ? [
+        ...Object.values(selectedAgency.team).flatMap(([member]) => ({
+          ...member,
+          id: member.user_account_id || member.auth0_user_id,
+        })),
+      ]
+    : [];
+};

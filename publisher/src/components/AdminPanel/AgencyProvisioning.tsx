@@ -16,7 +16,6 @@
 // =============================================================================
 
 import { Button } from "@justice-counts/common/components/Button";
-import { Dropdown } from "@justice-counts/common/components/Dropdown";
 import { MiniLoader } from "@justice-counts/common/components/MiniLoader";
 import {
   TabbedBar,
@@ -28,33 +27,25 @@ import {
 } from "@justice-counts/common/types";
 import {
   isCSGOrRecidivizUserByEmail,
-  removeSnakeCase,
-  toggleAddRemoveSetItem,
 } from "@justice-counts/common/utils";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useRef, useState } from "react";
 
 import { useStore } from "../../stores";
-import AdminPanelStore from "../../stores/AdminPanelStore";
 import { ButtonWithMiniLoaderContainer, MiniLoaderWrapper } from "../Reports";
 import {
   AgencyProvisioningSetting,
   AgencyProvisioningSettings,
-  InteractiveSearchList,
-  InteractiveSearchListAction,
-  InteractiveSearchListActions,
-  MetricsReportingAgency,
   ProvisioningProps,
   SaveConfirmation,
   SaveConfirmationType,
   SaveConfirmationTypes,
-  SearchableListItem,
   Setting,
-  userRoles,
   UserRoleUpdates,
 } from ".";
 import * as Styled from "./AdminPanel.styles";
 import {
+  AddNewTeamMembers,
   AgencyCountyInput,
   AgencyDescriptionInput,
   AgencyNameInput,
@@ -65,10 +56,15 @@ import {
   CopySuperagencyMetricSettings,
   CopySuperagencyMetricSettingsCheckbox,
   DashboardEnabledCheckbox,
+  DeleteExistingTeamMembers,
+  MetricsReportingAgency,
   SteppingUpAgencyCheckbox,
   SuperagenciesList,
   SuperagencyChildAgencyCheckbox,
+  TeamMembersList,
+  TeamMembersManagementButtons,
 } from "./AgencyProvisioningComponents";
+import { getCurrentTeamMembers } from "./AgencyProvisioningComponents/utils";
 import { useAgencyProvisioning } from "./AgencyProvisioningContext";
 
 export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
@@ -109,7 +105,11 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       selectedChildAgencyIDsToCopy,
       isCopySuperagencyMetricSettingsSelected,
       isChildAgencySelected,
-      setShowSelectionBox,
+      selectedTeamMembersToAdd,
+      selectedTeamMembersToDelete,
+      teamMemberRoleUpdates,
+      setSelectedTeamMembersToAdd,
+      setTeamMemberRoleUpdates,
     } = useAgencyProvisioning();
 
     const scrollableContainerRef = useRef<HTMLDivElement>(null);
@@ -125,17 +125,6 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       useState<AgencyProvisioningSetting>(
         AgencyProvisioningSettings.AGENCY_INFORMATION
       );
-    const [addOrDeleteUserAction, setAddOrDeleteUserAction] =
-      useState<InteractiveSearchListAction>();
-
-    const [selectedTeamMembersToAdd, setSelectedTeamMembersToAdd] = useState<
-      Set<number>
-    >(new Set());
-    const [selectedTeamMembersToDelete, setSelectedTeamMembersToDelete] =
-      useState<Set<number>>(new Set());
-    const [teamMemberRoleUpdates, setTeamMemberRoleUpdates] = useState<
-      UserRoleUpdates | Record<number, never>
-    >({});
 
     /** Setting Tabs (Agency Information/Team Members) */
     const settingOptions: TabOption[] = [
@@ -177,28 +166,10 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
         selectedSystems.size === 1 &&
         selectedSystems.has(AgencySystems.SUPERAGENCY)
       );
-
     const hasChildAgencies = selectedChildAgencyIDs.size > 0;
     const hasChildAgencyMetrics = metrics.length > 0;
 
-    /** A list of current team members and other team members not connected to the current agency to select from */
-    const availableTeamMembers = users.filter(
-      (user) => !selectedAgency?.team[user.id]
-    );
-    const currentTeamMembers = selectedAgency
-      ? [
-          ...Object.values(selectedAgency.team).flatMap(([member]) => ({
-            ...member,
-            id: member.user_account_id || member.auth0_user_id,
-          })),
-        ]
-      : [];
-
-    /** Whether or not we are performing an add/delete action on a list of users/team members */
-    const isAddUserAction =
-      addOrDeleteUserAction === InteractiveSearchListActions.ADD;
-    const isDeleteUserAction =
-      addOrDeleteUserAction === InteractiveSearchListActions.DELETE;
+    const currentTeamMembers = getCurrentTeamMembers(selectedAgency);
 
     /** Modal Buttons (Save/Cancel) */
     const modalButtons = [
@@ -208,44 +179,6 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
         onClick: () => saveUpdates(),
       },
     ];
-
-    /** Interactive search list buttons (Select All/Deselect All/Close) */
-    const interactiveSearchListCloseButton = [
-      {
-        label: "Close",
-        onClick: () => {
-          setShowSelectionBox(undefined);
-          if (addOrDeleteUserAction) setAddOrDeleteUserAction(undefined);
-        },
-      },
-    ];
-    const getInteractiveSearchListSelectDeselectCloseButtons = <T,>(
-      setState: React.Dispatch<React.SetStateAction<Set<T>>>,
-      selectAllSet: Set<T>,
-      selectAllCallback?: () => void,
-      deselectAllSetOverride?: Set<T>
-    ) => {
-      return [
-        {
-          label: "Select All",
-          onClick: (filteredList: SearchableListItem[] | undefined) => {
-            setState(selectAllSet);
-            if (filteredList) {
-              const filteredSet = new Set(
-                filteredList.map((obj) => obj.id)
-              ) as Set<T>;
-              setState(filteredSet);
-            }
-            if (selectAllCallback) selectAllCallback();
-          },
-        },
-        {
-          label: "Deselect All",
-          onClick: () => setState(deselectAllSetOverride || new Set()),
-        },
-        interactiveSearchListCloseButton[0],
-      ];
-    };
 
     const saveUpdates = async () => {
       setIsSaveInProgress(true);
@@ -558,6 +491,8 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       secondaryCreatedId,
       selectedIDToEdit,
       isCopySuperagencyMetricSettingsSelected,
+      setSelectedTeamMembersToAdd,
+      setTeamMemberRoleUpdates,
     ]);
 
     /** Here we are making the auto-adding if user was created via the secondary modal */
@@ -578,16 +513,13 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
           };
         });
       }
-    }, [users, secondaryCreatedId, csgAndRecidivizDefaultRole]);
-
-    /** Team members search bar logic */
-    const [teamMembersSearchInput, setTeamMembersSearchInput] =
-      useState<string>("");
-    const filteredTeamMembers = AdminPanelStore.searchList(
-      currentTeamMembers,
-      teamMembersSearchInput,
-      ["id", "name", "email"]
-    );
+    }, [
+      users,
+      secondaryCreatedId,
+      csgAndRecidivizDefaultRole,
+      setSelectedTeamMembersToAdd,
+      setTeamMemberRoleUpdates,
+    ]);
 
     /** Shows mini loader while fetching agency's team members & reporting agencies */
     if (teamMemberListLoading || reportingAgencyMetadataLoading) {
@@ -703,314 +635,21 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                 {currentSettingType ===
                   AgencyProvisioningSettings.TEAM_MEMBERS_ROLES && (
                   <>
-                    <Styled.InputLabelWrapper noBottomSpacing>
-                      {/* Add New Team Members */}
-                      {addOrDeleteUserAction ===
-                        InteractiveSearchListActions.ADD && (
-                        <InteractiveSearchList
-                          list={availableTeamMembers}
-                          boxActionType={InteractiveSearchListActions.ADD}
-                          selections={selectedTeamMembersToAdd}
-                          buttons={getInteractiveSearchListSelectDeselectCloseButtons(
-                            setSelectedTeamMembersToAdd,
-                            new Set(
-                              availableTeamMembers.map((member) => +member.id)
-                            ),
-                            () => {
-                              setTeamMemberRoleUpdates((prev) => {
-                                return {
-                                  ...prev,
-                                  ...availableTeamMembers.reduce(
-                                    (acc, member) => {
-                                      acc[+member.id] =
-                                        isCSGOrRecidivizUserByEmail(
-                                          member.email
-                                        )
-                                          ? csgAndRecidivizDefaultRole
-                                          : AgencyTeamMemberRole.AGENCY_ADMIN;
-                                      return acc;
-                                    },
-                                    {} as UserRoleUpdates
-                                  ),
-                                };
-                              });
-                            }
-                          )}
-                          updateSelections={({ id, email }) => {
-                            setSelectedTeamMembersToAdd((prev) =>
-                              toggleAddRemoveSetItem(prev, +id)
-                            );
-                            setTeamMemberRoleUpdates((prev) => {
-                              if (selectedTeamMembersToAdd.has(+id)) {
-                                const updatedTeamMemberRoles = prev;
-                                delete updatedTeamMemberRoles[+id];
-                                return updatedTeamMemberRoles;
-                              }
-                              return {
-                                ...prev,
-                                [id]: isCSGOrRecidivizUserByEmail(email)
-                                  ? csgAndRecidivizDefaultRole
-                                  : AgencyTeamMemberRole.AGENCY_ADMIN,
-                              };
-                            });
-                          }}
-                          searchByKeys={["name"]}
-                          metadata={{
-                            listBoxEmptyLabel:
-                              "All users have been added to this agency",
-                            listBoxLabel: "Select team members to add",
-                            searchBoxLabel: "Search team members",
-                          }}
-                          isActiveBox
-                        />
-                      )}
-
-                      {/* Delete Existing Team Members */}
-                      {addOrDeleteUserAction ===
-                        InteractiveSearchListActions.DELETE && (
-                        <InteractiveSearchList
-                          list={currentTeamMembers.sort((a, b) =>
-                            a.name.localeCompare(b.name)
-                          )}
-                          boxActionType={InteractiveSearchListActions.DELETE}
-                          selections={selectedTeamMembersToDelete}
-                          buttons={getInteractiveSearchListSelectDeselectCloseButtons(
-                            setSelectedTeamMembersToDelete,
-                            new Set(
-                              currentTeamMembers.map((member) => +member.id)
-                            )
-                          )}
-                          updateSelections={({ id }) => {
-                            setSelectedTeamMembersToDelete((prev) =>
-                              toggleAddRemoveSetItem(prev, +id)
-                            );
-                          }}
-                          searchByKeys={["name"]}
-                          metadata={{
-                            listBoxEmptyLabel:
-                              "No team members have been added and saved to this agency",
-                            listBoxLabel: "Select team members to delete",
-                            searchBoxLabel: "Search team members",
-                          }}
-                          isActiveBox
-                        />
-                      )}
-                    </Styled.InputLabelWrapper>
-
                     {/* Add/Remove/Create New User */}
                     {activeSecondaryModal !== Setting.AGENCIES && (
-                      <Styled.InputLabelWrapper>
-                        <Styled.FormActions noMargin>
-                          {/* Add Agencies Button */}
-                          <Styled.ActionButton
-                            buttonAction={InteractiveSearchListActions.ADD}
-                            selectedColor={isAddUserAction ? "green" : ""}
-                            onClick={() => {
-                              setAddOrDeleteUserAction((prev) =>
-                                prev === InteractiveSearchListActions.ADD
-                                  ? undefined
-                                  : InteractiveSearchListActions.ADD
-                              );
-                            }}
-                          >
-                            Add Users
-                          </Styled.ActionButton>
-
-                          {/* Remove Agencies Button (note: when creating a new user, the delete action button is not necessary) */}
-                          {selectedAgency && (
-                            <Styled.ActionButton
-                              buttonAction={InteractiveSearchListActions.DELETE}
-                              selectedColor={isDeleteUserAction ? "red" : ""}
-                              onClick={() => {
-                                setAddOrDeleteUserAction((prev) =>
-                                  prev === InteractiveSearchListActions.DELETE
-                                    ? undefined
-                                    : InteractiveSearchListActions.DELETE
-                                );
-                              }}
-                            >
-                              Delete Users
-                            </Styled.ActionButton>
-                          )}
-
-                          {/* Create New User Button */}
-                          <Styled.ActionButton onClick={openSecondaryModal}>
-                            Create User
-                          </Styled.ActionButton>
-                        </Styled.FormActions>
-                      </Styled.InputLabelWrapper>
+                      <TeamMembersManagementButtons
+                        openSecondaryModal={openSecondaryModal}
+                      />
                     )}
 
-                    {/* Search Team Members */}
-                    {selectedIDToEdit && (
-                      <Styled.InputLabelWrapper noBottomSpacing>
-                        <input
-                          id="search-team-members"
-                          name="search-team-members"
-                          type="text"
-                          value={teamMembersSearchInput}
-                          onChange={(e) =>
-                            setTeamMembersSearchInput(e.target.value)
-                          }
-                        />
-                        <Styled.LabelWrapper>
-                          <label htmlFor="search-team-members">
-                            Search by name, email or user ID
-                          </label>
-                          {teamMembersSearchInput && (
-                            <Styled.LabelButton
-                              onClick={() => {
-                                setTeamMembersSearchInput("");
-                              }}
-                            >
-                              Clear
-                            </Styled.LabelButton>
-                          )}
-                        </Styled.LabelWrapper>
-                        {!filteredTeamMembers.length && (
-                          <Styled.EmptySearchMessage>
-                            No current team members found. Please modify your
-                            search and try again.
-                          </Styled.EmptySearchMessage>
-                        )}
-                      </Styled.InputLabelWrapper>
-                    )}
+                    {/* Add/Delete Team Members */}
+                    <Styled.InputLabelWrapper noBottomSpacing>
+                      <AddNewTeamMembers />
+                      <DeleteExistingTeamMembers />
+                    </Styled.InputLabelWrapper>
 
-                    <Styled.TeamMembersContainer>
-                      {/* Newly Added Team Members */}
-                      {availableTeamMembers
-                        .filter((member) =>
-                          selectedTeamMembersToAdd.has(+member.id)
-                        )
-                        .map((member) => (
-                          <Styled.TeamMemberCard key={member.id} added>
-                            <Styled.ChipInnerRow>
-                              <div>
-                                <Styled.ChipName>{member.name}</Styled.ChipName>
-                                <Styled.ChipEmail>
-                                  {member.email}
-                                </Styled.ChipEmail>
-                              </div>
-                              <Styled.ChipRole>
-                                <Styled.InputLabelWrapper noBottomSpacing>
-                                  <Dropdown
-                                    label={
-                                      <input
-                                        name={`${member.auth0_user_id}-role`}
-                                        type="button"
-                                        value={
-                                          removeSnakeCase(
-                                            teamMemberRoleUpdates[+member.id] ||
-                                              ""
-                                          ) ||
-                                          removeSnakeCase(
-                                            AgencyTeamMemberRole.READ_ONLY
-                                          )
-                                        }
-                                      />
-                                    }
-                                    options={userRoles.map((role) => ({
-                                      key: role,
-                                      label: removeSnakeCase(
-                                        role.toLocaleLowerCase()
-                                      ),
-                                      onClick: () => {
-                                        setTeamMemberRoleUpdates((prev) => ({
-                                          ...prev,
-                                          [member.id]: role,
-                                        }));
-                                      },
-                                    }))}
-                                    fullWidth
-                                    lightBoxShadow
-                                  />
-                                  <label htmlFor="new-team-member">Role</label>
-                                </Styled.InputLabelWrapper>
-                              </Styled.ChipRole>
-                            </Styled.ChipInnerRow>
-                          </Styled.TeamMemberCard>
-                        ))}
-
-                      {/* Existing Team Members */}
-                      {filteredTeamMembers
-                        .sort((a, b) => a.name.localeCompare(b.name))
-                        .map((member) => {
-                          return (
-                            <Styled.TeamMemberCard
-                              key={member.id}
-                              deleted={selectedTeamMembersToDelete.has(
-                                +member.id
-                              )}
-                            >
-                              <Styled.ChipInnerRow>
-                                <Styled.TopCardRowWrapper>
-                                  <Styled.NameSubheaderWrapper>
-                                    <Styled.ChipName>
-                                      {member.name}
-                                    </Styled.ChipName>
-
-                                    <Styled.ChipEmail>
-                                      {member.email}
-                                    </Styled.ChipEmail>
-                                    <Styled.ChipInvitationStatus>
-                                      {member.invitation_status}
-                                    </Styled.ChipInvitationStatus>
-                                  </Styled.NameSubheaderWrapper>
-                                  <Styled.ID>
-                                    ID {member.user_account_id}
-                                  </Styled.ID>
-                                </Styled.TopCardRowWrapper>
-
-                                <Styled.ChipRole>
-                                  <Styled.InputLabelWrapper noBottomSpacing>
-                                    <Dropdown
-                                      label={
-                                        <input
-                                          name={`${member.auth0_user_id}-role`}
-                                          type="button"
-                                          value={
-                                            removeSnakeCase(
-                                              teamMemberRoleUpdates[
-                                                +member.id
-                                              ] || ""
-                                            ) ||
-                                            removeSnakeCase(member.role || "")
-                                          }
-                                          disabled={selectedTeamMembersToDelete.has(
-                                            +member.id
-                                          )}
-                                        />
-                                      }
-                                      options={userRoles.map((role) => ({
-                                        key: role,
-                                        label: removeSnakeCase(role),
-                                        onClick: () => {
-                                          setTeamMemberRoleUpdates((prev) => {
-                                            if (role === member.role) {
-                                              const prevUpdates = { ...prev };
-                                              delete prevUpdates[+member.id];
-                                              return prevUpdates;
-                                            }
-                                            return {
-                                              ...prev,
-                                              [member.id]: role,
-                                            };
-                                          });
-                                        },
-                                      }))}
-                                      fullWidth
-                                      lightBoxShadow
-                                    />
-                                    <label htmlFor="new-team-member">
-                                      Role
-                                    </label>
-                                  </Styled.InputLabelWrapper>
-                                </Styled.ChipRole>
-                              </Styled.ChipInnerRow>
-                            </Styled.TeamMemberCard>
-                          );
-                        })}
-                    </Styled.TeamMembersContainer>
+                    {/* Team Members List with Search */}
+                    <TeamMembersList selectedAgencyID={selectedIDToEdit} />
                   </>
                 )}
 

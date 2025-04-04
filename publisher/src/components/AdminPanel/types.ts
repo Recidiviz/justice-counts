@@ -203,6 +203,10 @@ export type UserRoleUpdates = {
   [id: number]: AgencyTeamMemberRole;
 };
 
+export type AgencyTeamMembers = Array<
+  AgencyTeamMember & { id: string | number }
+>;
+
 /** Search Feature Types */
 
 export const InteractiveSearchListActions = {

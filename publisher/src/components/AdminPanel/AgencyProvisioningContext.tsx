@@ -19,7 +19,12 @@ import { AgencySystem } from "@justice-counts/common/types";
 import React, { createContext, useContext, useMemo, useState } from "react";
 
 import { useStore } from "../../stores";
-import { AgencyWithTeamByID, SelectionInputBoxType } from "./types";
+import {
+  AgencyWithTeamByID,
+  InteractiveSearchListAction,
+  SelectionInputBoxType,
+  UserRoleUpdates,
+} from "./types";
 
 type SetState<T> = React.Dispatch<React.SetStateAction<T>>;
 
@@ -39,6 +44,14 @@ interface AgencyProvisioningContextProps {
   setSelectedChildAgencyIDsToCopy: SetState<Set<number>>;
   selectedMetricsKeys: Set<string>;
   setSelectedMetricsKeys: SetState<Set<string>>;
+  addOrDeleteUserAction?: InteractiveSearchListAction;
+  setAddOrDeleteUserAction: SetState<InteractiveSearchListAction | undefined>;
+  selectedTeamMembersToAdd: Set<number>;
+  setSelectedTeamMembersToAdd: SetState<Set<number>>;
+  selectedTeamMembersToDelete: Set<number>;
+  setSelectedTeamMembersToDelete: SetState<Set<number>>;
+  teamMemberRoleUpdates: UserRoleUpdates | Record<number, never>;
+  setTeamMemberRoleUpdates: SetState<UserRoleUpdates | Record<number, never>>;
 }
 
 const AgencyProvisioningContext = createContext<
@@ -96,6 +109,18 @@ export const AgencyProvisioningProvider: React.FC<ProviderProps> = ({
     new Set()
   );
 
+  const [addOrDeleteUserAction, setAddOrDeleteUserAction] =
+    useState<InteractiveSearchListAction>();
+
+  const [selectedTeamMembersToAdd, setSelectedTeamMembersToAdd] = useState<
+    Set<number>
+  >(new Set());
+  const [selectedTeamMembersToDelete, setSelectedTeamMembersToDelete] =
+    useState<Set<number>>(new Set());
+  const [teamMemberRoleUpdates, setTeamMemberRoleUpdates] = useState<
+    UserRoleUpdates | Record<number, never>
+  >({});
+
   const providerValue = useMemo(
     () => ({
       selectedAgency,
@@ -106,6 +131,10 @@ export const AgencyProvisioningProvider: React.FC<ProviderProps> = ({
       isCopySuperagencyMetricSettingsSelected,
       selectedChildAgencyIDsToCopy,
       selectedMetricsKeys,
+      addOrDeleteUserAction,
+      selectedTeamMembersToAdd,
+      selectedTeamMembersToDelete,
+      teamMemberRoleUpdates,
       setShowSelectionBox,
       setSelectedSystems,
       setIsChildAgencySelected,
@@ -113,6 +142,10 @@ export const AgencyProvisioningProvider: React.FC<ProviderProps> = ({
       setIsCopySuperagencyMetricSettingsSelected,
       setSelectedChildAgencyIDsToCopy,
       setSelectedMetricsKeys,
+      setAddOrDeleteUserAction,
+      setSelectedTeamMembersToAdd,
+      setSelectedTeamMembersToDelete,
+      setTeamMemberRoleUpdates,
     }),
     [
       selectedAgency,
@@ -123,6 +156,10 @@ export const AgencyProvisioningProvider: React.FC<ProviderProps> = ({
       isCopySuperagencyMetricSettingsSelected,
       selectedChildAgencyIDsToCopy,
       selectedMetricsKeys,
+      addOrDeleteUserAction,
+      selectedTeamMembersToAdd,
+      selectedTeamMembersToDelete,
+      teamMemberRoleUpdates,
     ]
   );
 
