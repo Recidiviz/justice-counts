@@ -39,6 +39,7 @@ import {
   UserProvisioning,
 } from ".";
 import * as Styled from "./AdminPanel.styles";
+import { AgencyProvisioningProvider } from "./AgencyProvisioningContext";
 import { VendorManagementModal } from "./VendorManagementModal";
 
 export const AgencyProvisioningOverview = observer(() => {
@@ -191,13 +192,15 @@ export const AgencyProvisioningOverview = observer(() => {
       {isModalOpen && (
         <>
           <Modal>
-            <AgencyProvisioning
-              closeModal={closeModal}
-              selectedIDToEdit={selectedAgencyID}
-              activeSecondaryModal={activeSecondaryModal}
-              openSecondaryModal={openSecondaryModal}
-              secondaryCreatedId={userId}
-            />
+            <AgencyProvisioningProvider selectedAgencyID={selectedAgencyID}>
+              <AgencyProvisioning
+                closeModal={closeModal}
+                selectedIDToEdit={selectedAgencyID}
+                activeSecondaryModal={activeSecondaryModal}
+                openSecondaryModal={openSecondaryModal}
+                secondaryCreatedId={userId}
+              />
+            </AgencyProvisioningProvider>
           </Modal>
 
           {/* Opens a secondary modal to create a new agency while in the middle of the create/edit user flow */}
