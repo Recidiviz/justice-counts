@@ -25,6 +25,9 @@ import {
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 
+import { useStore } from "../../stores";
+import AdminPanelStore from "../../stores/AdminPanelStore";
+import { ButtonWithMiniLoaderContainer, MiniLoaderWrapper } from "../Reports";
 import {
   InteractiveSearchList,
   InteractiveSearchListAction,
@@ -37,9 +40,6 @@ import {
   SearchableListItem,
   Setting,
 } from ".";
-import { useStore } from "../../stores";
-import AdminPanelStore from "../../stores/AdminPanelStore";
-import { ButtonWithMiniLoaderContainer, MiniLoaderWrapper } from "../Reports";
 import * as Styled from "./AdminPanel.styles";
 
 export const UserProvisioning: React.FC<ProvisioningProps> = observer(
