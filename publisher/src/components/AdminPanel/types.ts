@@ -279,8 +279,6 @@ export type InteractiveSearchListProps = {
 export type SetState<T> = React.Dispatch<React.SetStateAction<T>>;
 
 export interface SuperagencyChildAgencyContext {
-  selectedSystems: Set<AgencySystem>;
-  setSelectedSystems: SetState<Set<AgencySystem>>;
   isChildAgencySelected: boolean;
   setIsChildAgencySelected: SetState<boolean>;
   selectedChildAgencyIDs: Set<number>;

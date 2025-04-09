@@ -37,6 +37,8 @@ interface AgencyProvisioningContextProps
   selectedAgency?: AgencyWithTeamByID;
   showSelectionBox?: SelectionInputBoxType;
   setShowSelectionBox: SetState<SelectionInputBoxType | undefined>;
+  selectedSystems: Set<AgencySystem>;
+  setSelectedSystems: SetState<Set<AgencySystem>>;
 }
 
 const AgencyProvisioningContext = createContext<
