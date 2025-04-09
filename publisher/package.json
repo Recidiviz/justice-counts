@@ -6,10 +6,10 @@
   "author": "Recidiviz <team@recidiviz.org>",
   "license": "GNU General Public License v3",
   "dependencies": {
-    "@auth0/auth0-react": "^2.2.4",
+    "@auth0/auth0-react": "^2.3.0",
     "@justice-counts/common": "*",
     "@recidiviz/design-system": "^5.8.0",
-    "@sentry/react": "^8.53.0",
+    "@sentry/react": "^9.11.0",
     "@tanstack/match-sorter-utils": "^8.19.4",
     "@tanstack/react-table": "^8.20.6",
     "@types/file-saver": "^2.0.7",
@@ -85,7 +85,7 @@
     "customize-cra": "^1.0.0",
     "eslint": "^8.57.0",
     "eslint-config-airbnb": "^19.0.4",
-    "eslint-config-prettier": "^9.1.0",
+    "eslint-config-prettier": "^10.1.1",
     "eslint-config-react-app": "^7.0.0",
     "eslint-import-resolver-typescript": "^3.7.0",
     "eslint-plugin-header": "^3.1.1",
@@ -109,8 +109,5 @@
       "^d3-(.*)$": "d3-$1/dist/d3-$1"
     }
   },
-  "config-overrides-path": "../config-overrides.js",
-  "engines": {
-    "node": ">=16.0.0 <17.0.0"
-  }
+  "config-overrides-path": "../config-overrides.js"
 }
