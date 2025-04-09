@@ -473,9 +473,10 @@ export const UserProvisioning: React.FC<ProvisioningProps> = observer(
                     )}
 
                     {/* Create New Agency Button */}
-                    <Styled.ActionButton onClick={openSecondaryModal}>
+                    {/* TODO(#1728): Fix bug within this flow */}
+                    {/* <Styled.ActionButton onClick={openSecondaryModal}>
                       Create New Agency
-                    </Styled.ActionButton>
+                    </Styled.ActionButton> */}
                   </Styled.FormActions>
                 )}
               </Styled.Form>

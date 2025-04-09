@@ -195,7 +195,8 @@ test("Clicking the `Create User` button opens the create user modal", () => {
   expect(saveButton).toBeInTheDocument();
 });
 
-test("Clicking the `Create New Agency` button opens the create agency secondary modal", async () => {
+/* TODO(#1728): Undo skipping of this test once this issue is resolved */
+test.skip("Clicking the `Create New Agency` button opens the create agency secondary modal", async () => {
   runInAction(() => {
     adminPanelStore.usersByID = usersByID;
   });
@@ -223,7 +224,9 @@ test("Clicking the `Create New Agency` button opens the create agency secondary 
   expect(stateInput).toBeInTheDocument();
   expect(countyInput).toBeInTheDocument();
   expect(agencyDescriptionInput).toBeInTheDocument();
-  expect(screen.queryByText("Metrics Reporting Agency")).not.toBeInTheDocument();
+  expect(
+    screen.queryByText("Metrics Reporting Agency")
+  ).not.toBeInTheDocument();
 });
 
 test("Clicking on an existing user card opens the edit user modal", async () => {
