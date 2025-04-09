@@ -274,6 +274,39 @@ export type InteractiveSearchListProps = {
   isActiveBox?: boolean;
 };
 
+/** Agency Provisioning Context Types */
+
+export type SetState<T> = React.Dispatch<React.SetStateAction<T>>;
+
+export interface SuperagencyChildAgencyContext {
+  selectedSystems: Set<AgencySystem>;
+  setSelectedSystems: SetState<Set<AgencySystem>>;
+  isChildAgencySelected: boolean;
+  setIsChildAgencySelected: SetState<boolean>;
+  selectedChildAgencyIDs: Set<number>;
+  setSelectedChildAgencyIDs: SetState<Set<number>>;
+}
+
+export interface CopySuperagencyMetricSettingsContext {
+  isCopySuperagencyMetricSettingsSelected: boolean;
+  setIsCopySuperagencyMetricSettingsSelected: SetState<boolean>;
+  selectedChildAgencyIDsToCopy: Set<number>;
+  setSelectedChildAgencyIDsToCopy: SetState<Set<number>>;
+  selectedMetricsKeys: Set<string>;
+  setSelectedMetricsKeys: SetState<Set<string>>;
+}
+
+export interface TeamMembersContext {
+  addOrDeleteUserAction?: InteractiveSearchListAction;
+  setAddOrDeleteUserAction: SetState<InteractiveSearchListAction | undefined>;
+  selectedTeamMembersToAdd: Set<number>;
+  setSelectedTeamMembersToAdd: SetState<Set<number>>;
+  selectedTeamMembersToDelete: Set<number>;
+  setSelectedTeamMembersToDelete: SetState<Set<number>>;
+  teamMemberRoleUpdates: UserRoleUpdates | Record<number, never>;
+  setTeamMemberRoleUpdates: SetState<UserRoleUpdates | Record<number, never>>;
+}
+
 /** State and County Code Types */
 
 export const StateCodesToStateNames = {

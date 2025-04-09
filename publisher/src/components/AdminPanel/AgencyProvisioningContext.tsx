@@ -21,37 +21,22 @@ import React, { createContext, useContext, useMemo, useState } from "react";
 import { useStore } from "../../stores";
 import {
   AgencyWithTeamByID,
+  CopySuperagencyMetricSettingsContext,
   InteractiveSearchListAction,
   SelectionInputBoxType,
+  SetState,
+  SuperagencyChildAgencyContext,
+  TeamMembersContext,
   UserRoleUpdates,
 } from "./types";
 
-type SetState<T> = React.Dispatch<React.SetStateAction<T>>;
-
-interface AgencyProvisioningContextProps {
+interface AgencyProvisioningContextProps
+  extends SuperagencyChildAgencyContext,
+    CopySuperagencyMetricSettingsContext,
+    TeamMembersContext {
   selectedAgency?: AgencyWithTeamByID;
-  selectedSystems: Set<AgencySystem>;
-  setSelectedSystems: SetState<Set<AgencySystem>>;
   showSelectionBox?: SelectionInputBoxType;
   setShowSelectionBox: SetState<SelectionInputBoxType | undefined>;
-  isChildAgencySelected: boolean;
-  setIsChildAgencySelected: SetState<boolean>;
-  selectedChildAgencyIDs: Set<number>;
-  setSelectedChildAgencyIDs: SetState<Set<number>>;
-  isCopySuperagencyMetricSettingsSelected: boolean;
-  setIsCopySuperagencyMetricSettingsSelected: SetState<boolean>;
-  selectedChildAgencyIDsToCopy: Set<number>;
-  setSelectedChildAgencyIDsToCopy: SetState<Set<number>>;
-  selectedMetricsKeys: Set<string>;
-  setSelectedMetricsKeys: SetState<Set<string>>;
-  addOrDeleteUserAction?: InteractiveSearchListAction;
-  setAddOrDeleteUserAction: SetState<InteractiveSearchListAction | undefined>;
-  selectedTeamMembersToAdd: Set<number>;
-  setSelectedTeamMembersToAdd: SetState<Set<number>>;
-  selectedTeamMembersToDelete: Set<number>;
-  setSelectedTeamMembersToDelete: SetState<Set<number>>;
-  teamMemberRoleUpdates: UserRoleUpdates | Record<number, never>;
-  setTeamMemberRoleUpdates: SetState<UserRoleUpdates | Record<number, never>>;
 }
 
 const AgencyProvisioningContext = createContext<

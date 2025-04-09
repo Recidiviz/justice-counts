@@ -31,8 +31,8 @@ type TeamMembersListType = {
   selectedAgencyID: string | number | undefined;
 };
 
-export const TeamMembersList: React.FC<TeamMembersListType> =
-  observer(({ selectedAgencyID }) => {
+export const TeamMembersList: React.FC<TeamMembersListType> = observer(
+  ({ selectedAgencyID }) => {
     const { adminPanelStore } = useStore();
     const { users } = adminPanelStore;
 
@@ -62,52 +62,74 @@ export const TeamMembersList: React.FC<TeamMembersListType> =
           {/* Newly Added Team Members */}
           {availableTeamMembers
             .filter((member) => selectedTeamMembersToAdd.has(+member.id))
-            .map((member) => (
-              <Styled.TeamMemberCard key={member.id} added>
-                <Styled.ChipInnerRow>
-                  <div>
-                    <Styled.ChipName>{member.name}</Styled.ChipName>
-                    <Styled.ChipEmail>{member.email}</Styled.ChipEmail>
-                  </div>
-                  <Styled.ChipRole>
-                    <Styled.InputLabelWrapper noBottomSpacing>
-                      <Dropdown
-                        label={
-                          <input
-                            name={`${member.auth0_user_id}-role`}
-                            type="button"
-                            value={
-                              removeSnakeCase(
-                                teamMemberRoleUpdates[+member.id] || ""
-                              ) ||
-                              removeSnakeCase(AgencyTeamMemberRole.READ_ONLY)
-                            }
-                          />
-                        }
-                        options={userRoles.map((role) => ({
-                          key: role,
-                          label: removeSnakeCase(role.toLocaleLowerCase()),
-                          onClick: () => {
-                            setTeamMemberRoleUpdates((prev) => ({
-                              ...prev,
-                              [member.id]: role,
-                            }));
-                          },
-                        }))}
-                        fullWidth
-                        lightBoxShadow
-                      />
-                      <label htmlFor="new-team-member">Role</label>
-                    </Styled.InputLabelWrapper>
-                  </Styled.ChipRole>
-                </Styled.ChipInnerRow>
-              </Styled.TeamMemberCard>
-            ))}
+            .map((member) => {
+              const dropdownOptions = userRoles.map((role) => ({
+                key: role,
+                label: removeSnakeCase(role.toLocaleLowerCase()),
+                onClick: () => {
+                  setTeamMemberRoleUpdates((prev) => ({
+                    ...prev,
+                    [member.id]: role,
+                  }));
+                },
+              }));
+
+              return (
+                <Styled.TeamMemberCard key={member.id} added>
+                  <Styled.ChipInnerRow>
+                    <div>
+                      <Styled.ChipName>{member.name}</Styled.ChipName>
+                      <Styled.ChipEmail>{member.email}</Styled.ChipEmail>
+                    </div>
+                    <Styled.ChipRole>
+                      <Styled.InputLabelWrapper noBottomSpacing>
+                        <Dropdown
+                          label={
+                            <input
+                              name={`${member.auth0_user_id}-role`}
+                              type="button"
+                              value={
+                                removeSnakeCase(
+                                  teamMemberRoleUpdates[+member.id] || ""
+                                ) ||
+                                removeSnakeCase(AgencyTeamMemberRole.READ_ONLY)
+                              }
+                            />
+                          }
+                          options={dropdownOptions}
+                          fullWidth
+                          lightBoxShadow
+                        />
+                        <label htmlFor="new-team-member">Role</label>
+                      </Styled.InputLabelWrapper>
+                    </Styled.ChipRole>
+                  </Styled.ChipInnerRow>
+                </Styled.TeamMemberCard>
+              );
+            })}
 
           {/* Existing Team Members */}
           {filteredTeamMembers
             .sort((a, b) => a.name.localeCompare(b.name))
             .map((member) => {
+              const dropdownOptions = userRoles.map((role) => ({
+                key: role,
+                label: removeSnakeCase(role),
+                onClick: () => {
+                  setTeamMemberRoleUpdates((prev) => {
+                    if (role === member.role) {
+                      const prevUpdates = { ...prev };
+                      delete prevUpdates[+member.id];
+                      return prevUpdates;
+                    }
+                    return {
+                      ...prev,
+                      [member.id]: role,
+                    };
+                  });
+                },
+              }));
+
               return (
                 <Styled.TeamMemberCard
                   key={member.id}
@@ -143,23 +165,7 @@ export const TeamMembersList: React.FC<TeamMembersListType> =
                               )}
                             />
                           }
-                          options={userRoles.map((role) => ({
-                            key: role,
-                            label: removeSnakeCase(role),
-                            onClick: () => {
-                              setTeamMemberRoleUpdates((prev) => {
-                                if (role === member.role) {
-                                  const prevUpdates = { ...prev };
-                                  delete prevUpdates[+member.id];
-                                  return prevUpdates;
-                                }
-                                return {
-                                  ...prev,
-                                  [member.id]: role,
-                                };
-                              });
-                            },
-                          }))}
+                          options={dropdownOptions}
                           fullWidth
                           lightBoxShadow
                         />
@@ -173,4 +179,5 @@ export const TeamMembersList: React.FC<TeamMembersListType> =
         </Styled.TeamMembersContainer>
       </>
     );
-  });
+  }
+);
