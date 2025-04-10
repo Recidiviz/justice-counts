@@ -87,6 +87,7 @@ export type AgencySettingType =
   | "HOMEPAGE_URL"
   | "ZIPCODE"
   | "DATA_SHARING_TYPE"
+  | "STEPPING_UP"
   | "BIOLOGICAL_SEX_RACE_ETHNICITY_DATA_SOURCE"
   | "SECTOR_INCLUDES_EXCLUDES";
 
@@ -120,6 +121,7 @@ export interface UserAgency {
   is_superagency: boolean;
   is_dashboard_enabled: boolean;
   super_agency_id: number | null | undefined;
+  is_stepping_up_agency: boolean | null;
 }
 
 export type ChildAgency = {

@@ -33,6 +33,7 @@ import { AgencySettingsEmailNotifications } from "./AgencySettingsEmailNotificat
 import { AgencySettingsJurisdictions } from "./AgencySettingsJurisdictions";
 import { AgencySettingsSupervisions } from "./AgencySettingsSupervisions";
 import AgencySettingsUrl from "./AgencySettingsURL";
+import SteppingUpContextualInformation from "./SteppingUpContextualInformation";
 
 export enum ActiveSetting {
   Zipcode = "ZIPCODE",
@@ -42,6 +43,7 @@ export enum ActiveSetting {
   Jurisdictions = "JURISDICTIONS",
   DataSource = "BIOLOGICAL_SEX_RACE_ETHNICITY_DATA_SOURCE",
   Definition = "SECTOR_INCLUDES_EXCLUDES",
+  SteppingUp = "STEPPING_UP",
 }
 
 export type SettingProps = {
@@ -95,6 +97,9 @@ export const AgencySettings: React.FC = observer(() => {
           settingProps={generateSettingProps(ActiveSetting.Definition)}
         />
         <AgencySettingsEmailNotifications />
+        <SteppingUpContextualInformation
+          settingProps={generateSettingProps(ActiveSetting.SteppingUp)}
+        />
         {isAgencySupervision && (
           <AgencySettingsSupervisions
             settingProps={generateSettingProps(ActiveSetting.Supervisions)}

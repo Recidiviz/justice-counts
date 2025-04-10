@@ -58,6 +58,7 @@ beforeEach(() => {
         super_agency_id: null,
         systems: ["LAW_ENFORCEMENT"],
         team: [],
+        is_stepping_up_agency: null,
       } as UserAgency,
     };
     homeStore.hydrateReportStoreWithLatestRecords(
@@ -349,6 +350,7 @@ test("superagencies have table with child agencies", () => {
         super_agency_id: null,
         systems: ["LAW_ENFORCEMENT", "SUPERAGENCY"],
         team: [],
+        is_stepping_up_agency: null,
       } as UserAgency,
     };
   });
