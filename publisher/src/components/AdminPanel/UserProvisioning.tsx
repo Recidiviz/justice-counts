@@ -29,6 +29,7 @@ import { useStore } from "../../stores";
 import AdminPanelStore from "../../stores/AdminPanelStore";
 import { ButtonWithMiniLoaderContainer, MiniLoaderWrapper } from "../Reports";
 import {
+  Agency,
   InteractiveSearchList,
   InteractiveSearchListAction,
   InteractiveSearchListActions,
@@ -83,9 +84,25 @@ export const UserProvisioning: React.FC<ProvisioningProps> = observer(
     const selectedUser = selectedIDToEdit
       ? usersByID[selectedIDToEdit][0]
       : undefined;
-    const selectedUserAgenciesIDs = selectedUser
-      ? Object.keys(selectedUser?.agencies).map((id) => +id)
-      : [];
+
+    const [initialUserAgencies, setInitialUserAgencies] = useState<
+      Record<string, Agency[]>
+    >({});
+
+    useEffect(() => {
+      if (
+        selectedUser &&
+        Object.keys(selectedUser.agencies).length > 0 &&
+        Object.keys(initialUserAgencies).length === 0
+      ) {
+        setInitialUserAgencies(selectedUser.agencies);
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [selectedUser]);
+
+    const selectedUserAgenciesIDs = Object.keys(initialUserAgencies).map(
+      (id) => +id
+    );
     const selectedUserAgenciesIDsSet = new Set(selectedUserAgenciesIDs);
 
     /** Available agencies to add from */
@@ -104,9 +121,7 @@ export const UserProvisioning: React.FC<ProvisioningProps> = observer(
     }));
     const userAgenciesAddedAgencies = [
       ...addedAgenciesToDisplayInUserAgencies,
-      ...(selectedUser
-        ? AdminPanelStore.objectToSortedFlatMappedValues(selectedUser.agencies)
-        : []),
+      ...AdminPanelStore.objectToSortedFlatMappedValues(initialUserAgencies),
     ];
 
     /** Here we are making the auto-adding if agency was created via the secondary modal */
@@ -473,10 +488,9 @@ export const UserProvisioning: React.FC<ProvisioningProps> = observer(
                     )}
 
                     {/* Create New Agency Button */}
-                    {/* TODO(#1728): Fix bug within this flow */}
-                    {/* <Styled.ActionButton onClick={openSecondaryModal}>
+                    <Styled.ActionButton onClick={openSecondaryModal}>
                       Create New Agency
-                    </Styled.ActionButton> */}
+                    </Styled.ActionButton>
                   </Styled.FormActions>
                 )}
               </Styled.Form>
