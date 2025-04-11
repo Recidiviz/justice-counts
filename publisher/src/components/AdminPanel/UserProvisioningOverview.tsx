@@ -77,6 +77,7 @@ export const UserProvisioningOverview = observer(() => {
     if (!activeSecondaryModal) {
       resetUserProvisioningUpdates();
       setSelectedUserID(undefined);
+      setAgencyId(undefined);
       setIsModalOpen(false);
     } else {
       resetAgencyProvisioningUpdates();
