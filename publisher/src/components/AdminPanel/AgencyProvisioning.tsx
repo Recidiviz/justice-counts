@@ -25,9 +25,7 @@ import {
   AgencySystems,
   AgencyTeamMemberRole,
 } from "@justice-counts/common/types";
-import {
-  isCSGOrRecidivizUserByEmail,
-} from "@justice-counts/common/utils";
+import { isCSGOrRecidivizUserByEmail } from "@justice-counts/common/utils";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useRef, useState } from "react";
 
@@ -100,6 +98,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
     const {
       selectedAgency,
       selectedSystems,
+      URLValidationError,
       selectedChildAgencyIDs,
       selectedMetricsKeys,
       selectedChildAgencyIDsToCopy,
@@ -448,6 +447,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
     const isSaveDisabled = isCopySuperagencyMetricSettingsSelected
       ? !hasCopySuperagencyMetricSettingsUpdates
       : isSaveInProgress ||
+        Boolean(URLValidationError) ||
         !hasSystems ||
         (selectedAgency
           ? !hasAgencyInfoUpdates

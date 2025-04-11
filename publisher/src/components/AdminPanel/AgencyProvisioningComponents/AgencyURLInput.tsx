@@ -27,12 +27,12 @@ export const AgencyURLInput: React.FC = observer(() => {
   const { adminPanelStore } = useStore();
   const { updateAgencyURL } = adminPanelStore;
 
-  const { selectedAgency } = useAgencyProvisioning();
+  const { selectedAgency, URLValidationError, setURLValidationError } =
+    useAgencyProvisioning();
 
   const [URLValue, setURLValue] = useState<string>(
     selectedAgency?.agency_url ?? ""
   );
-  const [URLValidationError, setURLValidationError] = useState<string>();
 
   const validateAndUpdateURL = (url: string) => {
     const isValidURL = validateAgencyURL(url);
