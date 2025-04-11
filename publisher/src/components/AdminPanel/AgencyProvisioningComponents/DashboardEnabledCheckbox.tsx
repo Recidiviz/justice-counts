@@ -14,12 +14,32 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
-/* eslint-disable simple-import-sort/exports */
-export * from "./UserProvisioning";
-export * from "./UserProvisioningOverview";
-export * from "./AgencyProvisioning";
-export * from "./AgencyProvisioningOverview";
-export * from "./InteractiveSearchList";
-export * from "./AdminPanel";
-export * from "./types";
-export * from "./SaveConfirmation";
+
+import { observer } from "mobx-react-lite";
+import React from "react";
+
+import { useStore } from "../../../stores";
+import * as Styled from "../AdminPanel.styles";
+
+export const DashboardEnabledCheckbox: React.FC = observer(() => {
+  const { adminPanelStore } = useStore();
+  const { agencyProvisioningUpdates, updateIsDashboardEnabled } =
+    adminPanelStore;
+
+  return (
+    <Styled.InputLabelWrapper flexRow>
+      <input
+        id="dashboard"
+        name="dashboard"
+        type="checkbox"
+        onChange={() =>
+          updateIsDashboardEnabled(
+            !agencyProvisioningUpdates.is_dashboard_enabled
+          )
+        }
+        checked={Boolean(agencyProvisioningUpdates.is_dashboard_enabled)}
+      />
+      <label htmlFor="dashboard">Dashboard enabled</label>
+    </Styled.InputLabelWrapper>
+  );
+});
