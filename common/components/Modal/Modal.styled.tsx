@@ -44,10 +44,15 @@ export const OuterWrapper = styled.div<{
 const innerWrapperPadding = ({
   modalType,
   customPadding,
+  fixedTopBottom,
 }: {
   modalType?: ModalType;
   customPadding?: string;
+  fixedTopBottom?: boolean;
 }) => {
+  if (fixedTopBottom) {
+    return 0;
+  }
   if (customPadding !== undefined) {
     return customPadding;
   }
@@ -63,6 +68,7 @@ export const InnerWrapper = styled.div<{
   customPadding?: string;
   noBottomDiv?: boolean;
   maxHeight?: number;
+  fixedTopBottom?: boolean;
 }>`
   background-color: ${palette.solid.white};
   width: 100%;
@@ -80,6 +86,7 @@ export const InnerWrapper = styled.div<{
   }};
   ${({ maxHeight }) =>
     maxHeight && `max-height: ${maxHeight}px; overflow-y: auto;`};
+  ${({ fixedTopBottom }) => fixedTopBottom && `overflow-y: unset;`}
 `;
 
 export const Icon = styled.img`
@@ -116,6 +123,7 @@ export const AgencySettingsAndJurisdictionsTitle = styled.div`
 export const Description = styled.div<{
   centerText?: boolean;
   unsetTextAlignment?: boolean;
+  fixedTopBottom?: boolean;
 }>`
   display: flex;
   flex-direction: column;
@@ -129,11 +137,13 @@ export const Description = styled.div<{
   }};
   ${typography.sizeCSS.normal};
   font-weight: 400;
+  ${({ fixedTopBottom }) => fixedTopBottom && `overflow-y: auto;`}
 `;
 
 export const ButtonsContainer = styled.div<{
   modalType?: ModalType;
   centerButtons?: boolean;
+  fixedTopBottom?: boolean;
 }>`
   width: 100%;
   display: flex;
@@ -143,6 +153,9 @@ export const ButtonsContainer = styled.div<{
     if (modalType) return "justify-content: space-between; margin-top: 72px;";
     return "justify-content: end; gap: 16px; margin-top: 24px;";
   }}
+  ${({ fixedTopBottom }) =>
+    fixedTopBottom &&
+    `margin-top: 0px; padding: 16px 40px; border-top: 1px solid ${palette.highlight.grey5};`}
 
   & > div:last-child {
     justify-content: unset;
@@ -165,10 +178,14 @@ export const UnsavedChangesButtonsContainer = styled.div`
 
 export const ModalTitleWrapper = styled.div<{
   typographyBodyEmphasized?: boolean;
+  fixedTopBottom?: boolean;
 }>`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   ${({ typographyBodyEmphasized }) =>
     typographyBodyEmphasized ? `${typography.bodyEmphasized}` : ""};
+  ${({ fixedTopBottom }) =>
+    fixedTopBottom &&
+    `padding: 8px 40px; border-bottom: 1px solid ${palette.highlight.grey5};`}
 `;

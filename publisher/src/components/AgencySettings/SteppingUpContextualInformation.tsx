@@ -37,166 +37,16 @@ import {
   SteppingUpSubtitle,
 } from "./AgencySettings.styles";
 import { AgencySettingsEditModeModal } from "./AgencySettingsEditModeModal";
-
-const screeningTimingMapping = [
-  { key: "no_screening", label: "No screening administered" },
-  { key: "intake", label: "Screen everyone during intake" },
-  {
-    key: "different_point_in_time",
-    label: "Screen everyone at a different point in time",
-  },
-  { key: "ad-hoc", label: "Screen individuals on an ad-hoc basis" },
-];
-
-const toolsMapping = [
-  { key: "BJMHS", label: "Brief Jail Mental Health Screen (BJMHS)" },
-  {
-    key: "CMHS-M",
-    label: "Correctional Mental Health Screen for Men (CMHS-M)",
-  },
-  {
-    key: "CMHS-W",
-    label: "Correctional Mental Health Screen for Women (CMHS-W)",
-  },
-  {
-    key: "MENTAL_HEALTH_SCREENING_FORM_III",
-    label: "Mental Health Screening Form-III",
-  },
-  { key: "TCU", label: "Texas Christian University (TCU) Drug Screen 5" },
-  { key: "SSI", label: "Simple Screening Instrument (SSI)" },
-  {
-    key: "AUDIT",
-    label: "Alcohol Use Disorders Identification Test (AUDIT)",
-  },
-  {
-    key: "ASSIST",
-    label:
-      "Alcohol, Smoking, and Substance Involvement Screening Test (ASSIST)",
-  },
-  {
-    key: "MINI-Screen",
-    label: "Mini International Neuropsychiatric Interview-Screen (MINI-Screen)",
-  },
-  { key: "DAST-10", label: "Drug Abuse Screening Test (DAST-10)" },
-  { key: "COWS", label: "Clinical Opiate Withdrawal Scale (COWS)" },
-  {
-    key: "CIWA-Ar",
-    label:
-      "Clinical Institute Withdrawal Assessment of Alcohol Scale, Revised (CIWA-Ar)",
-  },
-  {
-    key: "CIWA-B",
-    label: "Clinical Institute Withdrawal Assessment-Benzodiazepines (CIWA-B)",
-  },
-  { key: "CAGE-AID", label: "CAGE-AID" },
-  {
-    key: "DEVELOPED_BY_PROVIDER",
-    label:
-      "Screening tool developed by contracted medical/behavioral health provider",
-  },
-  { key: "C-SSRS", label: "Columbia Suicide Severity Risk Scale (C-SSRS)" },
-  { key: "N/A", label: "Not Applicable" },
-  { key: "OTHER", label: "Other" },
-];
-
-const steppingUpSettingMapping = {
-  identifies_behavioral_needs: [
-    { key: "YES", label: "Yes" },
-    { key: "NO", label: "No" },
-  ],
-  screening_timing: {
-    mental_health: screeningTimingMapping,
-    substance_use: screeningTimingMapping,
-    other_behavioral_health: screeningTimingMapping,
-  },
-  tools: toolsMapping,
-};
-
-const emptySteppingUpSetting = {
-  identifies_behavioral_needs: null,
-  screening_timing: {
-    mental_health: {
-      no_screening: false,
-      intake: false,
-      different_point_in_time: false,
-      "ad-hoc": false,
-    },
-    substance_use: {
-      no_screening: false,
-      intake: false,
-      different_point_in_time: false,
-      "ad-hoc": false,
-    },
-    other_behavioral_health: {
-      no_screening: false,
-      intake: false,
-      different_point_in_time: false,
-      "ad-hoc": false,
-    },
-  },
-  tools: {
-    BJMHS: false,
-    "CMHS-M": false,
-    "CMHS-W": false,
-    MENTAL_HEALTH_SCREENING_FORM_III: false,
-    TCU: false,
-    SSI: false,
-    AUDIT: false,
-    ASSIST: false,
-    "MINI-Screen": false,
-    "DAST-10": false,
-    COWS: false,
-    "CIWA-Ar": false,
-    "CIWA-B": false,
-    "CAGE-AID": false,
-    DEVELOPED_BY_PROVIDER: false,
-    "C-SSRS": false,
-    "N/A": false,
-    OTHER: false,
-  },
-  other_description: "",
-};
-
-type SteppingUpSetting = {
-  identifies_behavioral_needs: boolean | null;
-  screening_timing: ScreeningTimingType;
-  tools: ToolsType;
-  other_description: string;
-};
-
-type ScreeningTimingType = {
-  mental_health: ScreeningTimingEntry;
-  substance_use: ScreeningTimingEntry;
-  other_behavioral_health: ScreeningTimingEntry;
-};
-
-type ScreeningTimingEntry = {
-  no_screening: boolean;
-  intake: boolean;
-  different_point_in_time: boolean;
-  "ad-hoc": boolean;
-};
-
-type ToolsType = {
-  BJMHS: boolean;
-  "CMHS-M": boolean;
-  "CMHS-W": boolean;
-  MENTAL_HEALTH_SCREENING_FORM_III: boolean;
-  TCU: boolean;
-  SSI: boolean;
-  AUDIT: boolean;
-  ASSIST: boolean;
-  "MINI-Screen": boolean;
-  "DAST-10": boolean;
-  COWS: boolean;
-  "CIWA-Ar": boolean;
-  "CIWA-B": boolean;
-  "CAGE-AID": boolean;
-  DEVELOPED_BY_PROVIDER: boolean;
-  "C-SSRS": boolean;
-  "N/A": boolean;
-  OTHER: boolean;
-};
+import {
+  emptySteppingUpSetting,
+  steppingUpSettingMapping,
+} from "./SteppingUpContext/steppingUpContext";
+import {
+  ScreeningTimingEntry,
+  ScreeningTimingType,
+  SteppingUpSettingType,
+  ToolsType,
+} from "./SteppingUpContext/types";
 
 const SteppingUpContextualInformation: React.FC<{
   settingProps: SettingProps;
@@ -219,7 +69,7 @@ const SteppingUpContextualInformation: React.FC<{
     return (
       (currentAgencySettings?.find(
         (setting) => setting.setting_type === "STEPPING_UP"
-      )?.value as SteppingUpSetting) || {}
+      )?.value as SteppingUpSettingType) || {}
     );
   }, [currentAgencySettings]);
 
@@ -268,6 +118,28 @@ const SteppingUpContextualInformation: React.FC<{
     currentAgency?.systems.includes(AgencySystems.JAILS) &&
     currentAgency?.is_stepping_up_agency;
 
+  const toolsCheckboxOptions = steppingUpSettingMapping.tools.map((mapObj) => {
+    const isOtherChecked = updatedSetting.tools.OTHER && mapObj.key === "OTHER";
+    const otherDescriptionParams = {
+      isEnabled: isOtherChecked,
+      placeholder:
+        "Please describe other tools your agency uses to identify behavioral health needs...",
+      value: updatedSetting.other_description,
+      onChange: (value: string) =>
+        setUpdatedSetting((prev) => ({
+          ...prev,
+          other_description: value,
+        })),
+    };
+
+    return {
+      key: mapObj.key,
+      label: mapObj.label,
+      checked: updatedSetting.tools[mapObj.key as keyof ToolsType],
+      otherDescription: otherDescriptionParams,
+    };
+  });
+
   if (!showSetting) return null;
 
   return (
@@ -280,6 +152,7 @@ const SteppingUpContextualInformation: React.FC<{
           handleCancelModalConfirm={handleCancelModalConfirm}
         >
           <Modal
+            fixedTopBottom
             title="Stepping Up Contextual Information"
             description={
               <DataSourceContainer>
@@ -365,28 +238,7 @@ const SteppingUpContextualInformation: React.FC<{
                   needs? (Select all that apply)
                 </SteppingUpQuestionWrapper>
                 <CheckboxOptions
-                  options={steppingUpSettingMapping.tools.map((mapObj) => {
-                    const otherDescriptionParams = {
-                      isEnabled:
-                        updatedSetting.tools.OTHER && mapObj.key === "OTHER",
-                      placeholder:
-                        "Please describe other tools your agency uses to identify behavioral health needs...",
-                      value: updatedSetting.other_description,
-                      onChange: (value: string) =>
-                        setUpdatedSetting((prev) => ({
-                          ...prev,
-                          other_description: value,
-                        })),
-                    };
-
-                    return {
-                      key: mapObj.key,
-                      label: mapObj.label,
-                      checked:
-                        updatedSetting.tools[mapObj.key as keyof ToolsType],
-                      otherDescription: otherDescriptionParams,
-                    };
-                  })}
+                  options={toolsCheckboxOptions}
                   onChange={({ key, checked }) =>
                     setUpdatedSetting((prev) => ({
                       ...prev,
@@ -394,6 +246,8 @@ const SteppingUpContextualInformation: React.FC<{
                         ...prev.tools,
                         [key]: !checked,
                       },
+                      ...(key === "OTHER" &&
+                        checked && { other_description: "" }),
                     }))
                   }
                 />
@@ -413,7 +267,6 @@ const SteppingUpContextualInformation: React.FC<{
             agencySettingsConfigs
             jurisdictionsSettingsConfigs
             agencySettingsAndJurisdictionsTitleConfigs
-            customPadding="4px 40px 24px 40px"
           />
         </AgencySettingsEditModeModal>
       )}

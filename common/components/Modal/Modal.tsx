@@ -44,6 +44,7 @@ type ModalProps = Partial<{
   agencySettingsAndJurisdictionsTitleConfigs?: boolean;
   noBottomDiv?: boolean;
   maxHeight?: number;
+  fixedTopBottom?: boolean;
 }>;
 
 export function Modal({
@@ -63,6 +64,7 @@ export function Modal({
   agencySettingsAndJurisdictionsTitleConfigs,
   noBottomDiv,
   maxHeight,
+  fixedTopBottom,
 }: ModalProps) {
   const primaryButtonColor = (): ButtonColor => {
     if (modalType === "alert") return "red";
@@ -87,11 +89,15 @@ export function Modal({
           customPadding={customPadding}
           noBottomDiv={noBottomDiv}
           maxHeight={maxHeight}
+          fixedTopBottom={fixedTopBottom}
         >
           {modalType === "success" && <Styled.Icon src={successIcon} alt="" />}
           {modalType === "warning" && <Styled.Icon src={warningIcon} alt="" />}
           {modalType === "alert" && <Styled.Icon src={alertIcon} alt="" />}
-          <Styled.ModalTitleWrapper typographyBodyEmphasized>
+          <Styled.ModalTitleWrapper
+            typographyBodyEmphasized
+            fixedTopBottom={fixedTopBottom}
+          >
             {agencySettingsAndJurisdictionsTitleConfigs && (
               <Styled.AgencySettingsAndJurisdictionsTitle>
                 {title}
@@ -108,11 +114,17 @@ export function Modal({
               />
             )}
           </Styled.ModalTitleWrapper>
-          <Styled.Description unsetTextAlignment={jurisdictionsSettingsConfigs}>
+          <Styled.Description
+            unsetTextAlignment={jurisdictionsSettingsConfigs}
+            fixedTopBottom={fixedTopBottom}
+          >
             {description}
           </Styled.Description>
           {!unsavedChangesConfigs && (
-            <Styled.ButtonsContainer modalType={modalType}>
+            <Styled.ButtonsContainer
+              modalType={modalType}
+              fixedTopBottom={fixedTopBottom}
+            >
               {buttons?.map((button, index) => (
                 <Button
                   key={button.label}

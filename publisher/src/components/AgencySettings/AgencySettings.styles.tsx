@@ -464,10 +464,6 @@ export const SteppingUpSubtitle = styled.div<{ small?: boolean }>`
 
 // Data Source
 export const DataSourceContainer = styled.div`
-  border-top: 1px solid ${palette.highlight.grey5};
-  border-bottom: 1px solid ${palette.highlight.grey5};
-  margin-left: -40px;
-  margin-right: -40px;
   padding: 16px 40px;
 `;
 export const DataSourceTitle = styled.div`
