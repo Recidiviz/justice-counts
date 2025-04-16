@@ -40,6 +40,7 @@ beforeEach(() => {
         super_agency_id: null,
         systems: ["LAW_ENFORCEMENT"],
         team: [],
+        is_stepping_up_agency: null,
       } as UserAgency,
     };
   });
