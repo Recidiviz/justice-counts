@@ -22,6 +22,7 @@ import { useStore } from "../../stores";
 import {
   AgencyWithTeamByID,
   CopySuperagencyMetricSettingsContext,
+  GeneralAgencyInformationContext,
   InteractiveSearchListAction,
   SelectionInputBoxType,
   SetState,
@@ -31,16 +32,13 @@ import {
 } from "./types";
 
 interface AgencyProvisioningContextProps
-  extends SuperagencyChildAgencyContext,
+  extends GeneralAgencyInformationContext,
+    SuperagencyChildAgencyContext,
     CopySuperagencyMetricSettingsContext,
     TeamMembersContext {
   selectedAgency?: AgencyWithTeamByID;
   showSelectionBox?: SelectionInputBoxType;
   setShowSelectionBox: SetState<SelectionInputBoxType | undefined>;
-  selectedSystems: Set<AgencySystem>;
-  setSelectedSystems: SetState<Set<AgencySystem>>;
-  URLValidationError?: string;
-  setURLValidationError: SetState<string | undefined>;
 }
 
 const AgencyProvisioningContext = createContext<
@@ -67,13 +65,24 @@ export const AgencyProvisioningProvider: React.FC<ProviderProps> = ({
   const [showSelectionBox, setShowSelectionBox] =
     useState<SelectionInputBoxType>();
 
+  /** General Agency Information */
   const [selectedSystems, setSelectedSystems] = useState<Set<AgencySystem>>(
     agencyProvisioningUpdates.systems
       ? new Set(agencyProvisioningUpdates.systems)
       : new Set()
   );
+  const [nameValue, setNameValue] = useState<string>(
+    selectedAgency?.name ?? ""
+  );
+  const [descriptionValue, setDescriptionValue] = useState<string>(
+    selectedAgency?.agency_description ?? ""
+  );
+  const [URLValue, setURLValue] = useState<string>(
+    selectedAgency?.agency_url ?? ""
+  );
   const [URLValidationError, setURLValidationError] = useState<string>();
 
+  /** Superagency/Child Agency */
   const [isChildAgencySelected, setIsChildAgencySelected] = useState<boolean>(
     Boolean(agencyProvisioningUpdates.super_agency_id) || false
   );
@@ -85,6 +94,7 @@ export const AgencyProvisioningProvider: React.FC<ProviderProps> = ({
       : new Set()
   );
 
+  /** Copy Superagency Metric Settings */
   const [
     isCopySuperagencyMetricSettingsSelected,
     setIsCopySuperagencyMetricSettingsSelected,
@@ -99,9 +109,9 @@ export const AgencyProvisioningProvider: React.FC<ProviderProps> = ({
     new Set()
   );
 
+  /** Team Members */
   const [addOrDeleteUserAction, setAddOrDeleteUserAction] =
     useState<InteractiveSearchListAction>();
-
   const [selectedTeamMembersToAdd, setSelectedTeamMembersToAdd] = useState<
     Set<number>
   >(new Set());
@@ -116,6 +126,9 @@ export const AgencyProvisioningProvider: React.FC<ProviderProps> = ({
       selectedAgency,
       showSelectionBox,
       selectedSystems,
+      nameValue,
+      descriptionValue,
+      URLValue,
       URLValidationError,
       isChildAgencySelected,
       selectedChildAgencyIDs,
@@ -128,6 +141,9 @@ export const AgencyProvisioningProvider: React.FC<ProviderProps> = ({
       teamMemberRoleUpdates,
       setShowSelectionBox,
       setSelectedSystems,
+      setNameValue,
+      setDescriptionValue,
+      setURLValue,
       setURLValidationError,
       setIsChildAgencySelected,
       setSelectedChildAgencyIDs,
@@ -143,6 +159,9 @@ export const AgencyProvisioningProvider: React.FC<ProviderProps> = ({
       selectedAgency,
       showSelectionBox,
       selectedSystems,
+      nameValue,
+      descriptionValue,
+      URLValue,
       URLValidationError,
       isChildAgencySelected,
       selectedChildAgencyIDs,

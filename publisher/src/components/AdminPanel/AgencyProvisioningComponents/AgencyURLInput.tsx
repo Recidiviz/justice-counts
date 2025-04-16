@@ -17,7 +17,7 @@
 
 import { validateAgencyURL } from "@justice-counts/common/utils";
 import { observer } from "mobx-react-lite";
-import React, { useState } from "react";
+import React from "react";
 
 import { useStore } from "../../../stores";
 import * as Styled from "../AdminPanel.styles";
@@ -27,12 +27,8 @@ export const AgencyURLInput: React.FC = observer(() => {
   const { adminPanelStore } = useStore();
   const { updateAgencyURL } = adminPanelStore;
 
-  const { selectedAgency, URLValidationError, setURLValidationError } =
+  const { URLValue, setURLValue, URLValidationError, setURLValidationError } =
     useAgencyProvisioning();
-
-  const [URLValue, setURLValue] = useState<string>(
-    selectedAgency?.agency_url ?? ""
-  );
 
   const validateAndUpdateURL = (url: string) => {
     const isValidURL = validateAgencyURL(url);

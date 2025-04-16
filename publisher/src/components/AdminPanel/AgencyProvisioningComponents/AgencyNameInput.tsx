@@ -16,7 +16,7 @@
 // =============================================================================
 
 import { observer } from "mobx-react-lite";
-import React, { useState } from "react";
+import React from "react";
 
 import { useStore } from "../../../stores";
 import * as Styled from "../AdminPanel.styles";
@@ -26,11 +26,7 @@ export const AgencyNameInput: React.FC = observer(() => {
   const { adminPanelStore } = useStore();
   const { updateAgencyName } = adminPanelStore;
 
-  const { selectedAgency } = useAgencyProvisioning();
-
-  const [nameValue, setNameValue] = useState<string>(
-    selectedAgency?.name ?? ""
-  );
+  const { nameValue, setNameValue } = useAgencyProvisioning();
 
   return (
     <Styled.InputLabelWrapper required>
