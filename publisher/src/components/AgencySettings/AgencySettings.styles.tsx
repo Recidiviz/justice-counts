@@ -451,12 +451,19 @@ export const DefinitionDescriptionInputWrapper = styled.div`
   }
 `;
 
+// Stepping Up
+export const SteppingUpQuestionWrapper = styled.div`
+  font-weight: 600;
+  padding-bottom: 8px;
+`;
+export const SteppingUpSubtitle = styled.div<{ small?: boolean }>`
+  font-size: ${({ small }) => (small ? 12 : 14)}px;
+  color: ${palette.highlight.grey9};
+  padding-bottom: 12px;
+`;
+
 // Data Source
 export const DataSourceContainer = styled.div`
-  border-top: 1px solid ${palette.highlight.grey5};
-  border-bottom: 1px solid ${palette.highlight.grey5};
-  margin-left: -40px;
-  margin-right: -40px;
   padding: 16px 40px;
 `;
 export const DataSourceTitle = styled.div`
@@ -506,7 +513,9 @@ export const JurisdictionsSearchResultContainer = styled.div`
   top: 135px;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 0 1px rgba(23, 28, 43, 0.1), 0 4px 8px rgba(23, 28, 43, 0.04),
+  box-shadow:
+    0 0 1px rgba(23, 28, 43, 0.1),
+    0 4px 8px rgba(23, 28, 43, 0.04),
     0 8px 56px rgba(23, 28, 43, 0.1);
 `;
 

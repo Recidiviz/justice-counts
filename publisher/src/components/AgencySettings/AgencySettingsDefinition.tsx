@@ -258,6 +258,7 @@ const AgencySettingsDefinition: React.FC<{
           handleCancelModalConfirm={handleCancelModalConfirm}
         >
           <Modal
+            fixedTopBottom
             title={`${agencyTitle} Agency Definition`}
             description={
               <DataSourceContainer>
@@ -336,13 +337,12 @@ const AgencySettingsDefinition: React.FC<{
                 },
               },
             ]}
-            maxHeight={900}
+            maxHeight={777}
             modalBackground="opaque"
             onClickClose={handleCancelClick}
             agencySettingsConfigs
             jurisdictionsSettingsConfigs
             agencySettingsAndJurisdictionsTitleConfigs
-            customPadding="4px 40px 24px 40px"
           />
         </AgencySettingsEditModeModal>
       )}

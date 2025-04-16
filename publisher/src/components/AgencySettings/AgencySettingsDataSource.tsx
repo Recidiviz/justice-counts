@@ -311,6 +311,7 @@ const AgencySettingsDataSource: React.FC<{
           handleCancelModalConfirm={handleCancelModalConfirm}
         >
           <Modal
+            fixedTopBottom
             title="Biological Sex & Race and Ethnicity Data Source"
             description={
               <DataSourceContainer>
@@ -410,7 +411,6 @@ const AgencySettingsDataSource: React.FC<{
             agencySettingsConfigs
             jurisdictionsSettingsConfigs
             agencySettingsAndJurisdictionsTitleConfigs
-            customPadding="4px 40px 24px 40px"
           />
         </AgencySettingsEditModeModal>
       )}
