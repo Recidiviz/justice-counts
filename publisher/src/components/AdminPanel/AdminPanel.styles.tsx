@@ -1016,3 +1016,55 @@ export const ReportingAgencyDropdownWrapper = styled.div`
     white-space: unset;
   }
 `;
+
+/* Agency Breakdown Settings styles */
+
+export const Metric = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px 0;
+
+  &:not(:last-child) {
+    border-bottom: 1px solid ${palette.solid.lightgrey4};
+  }
+`;
+
+export const MetricTitle = styled.div`
+  margin-bottom: 4px;
+`;
+
+export const DimensionInputWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  & > div {
+    gap: unset;
+  }
+`;
+
+export const DimensionDotSeparator = styled.div`
+  margin-left: 8px;
+`;
+
+export const DimensionTitle = styled.div`
+  white-space: nowrap;
+`;
+
+export const AddButton = styled.div`
+  ${typography.sizeCSS.normal}
+  color: ${palette.solid.blue};
+  margin-top: 4px;
+
+  &:hover {
+    cursor: pointer;
+    color: ${palette.solid.darkblue};
+  }
+`;
+
+export const RemoveButton = styled.div`
+  ${typography.sizeCSS.normal}
+  color: ${palette.solid.red};
+  cursor: pointer;
+`;

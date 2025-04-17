@@ -64,6 +64,7 @@ import {
   UserRoleUpdates,
 } from ".";
 import * as Styled from "./AdminPanel.styles";
+import { BreakdownSettings } from "./BreakdownSettings";
 
 export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
   ({
@@ -90,6 +91,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       teamMemberListLoading,
       reportingAgenciesUpdates,
       reportingAgencyMetadataLoading,
+      breakdownSettingsUpdates,
       updateAgencyName,
       updateAgencyDescription,
       updateAgencyURL,
@@ -106,6 +108,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       saveAgencyName,
       copySuperagencyMetricSettingsToChildAgencies,
       saveReportingAgencies,
+      saveBreakdownSettings,
     } = adminPanelStore;
     const scrollableContainerRef = useRef<HTMLDivElement>(null);
 
@@ -192,6 +195,16 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
           currentSettingType ===
           AgencyProvisioningSettings.METRICS_REPORTING_AGENCY,
         /** Hide metrics reporting agency tab when creating a new agency */
+        hide: !selectedIDToEdit,
+      },
+      {
+        key: "breakdown-settings",
+        label: AgencyProvisioningSettings.BREAKDOWN_SETTINGS,
+        onClick: () =>
+          setCurrentSettingType(AgencyProvisioningSettings.BREAKDOWN_SETTINGS),
+        selected:
+          currentSettingType === AgencyProvisioningSettings.BREAKDOWN_SETTINGS,
+        /** Hide breakdown settings tab when creating a new agency */
         hide: !selectedIDToEdit,
       },
     ];
@@ -363,6 +376,14 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
         saveReportingAgencies(
           String(selectedIDToEdit),
           reportingAgenciesUpdates
+        );
+      }
+
+      /** Save Breakdown Settings Updates */
+      if (breakdownSettingsUpdates && selectedIDToEdit) {
+        saveBreakdownSettings(
+          String(selectedIDToEdit),
+          breakdownSettingsUpdates
         );
       }
 
@@ -586,6 +607,10 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
      */
     const hasReportingAgenciesUpdates = reportingAgenciesUpdates.length > 0;
     /**
+     * An update has been made when there are changes to the Breakdown Settings
+     */
+    const hasBreakdownSettingsUpdates = breakdownSettingsUpdates.length > 0;
+    /**
      * Saving is disabled if saving is in progress OR an existing agency has made no updates to either the name, state,
      * county, systems, dashboard enabled checkbox, superagency checkbox and child agencies, child agency's superagency
      * selection, and team member additions/deletions/role updates, or a newly created agency has no input for both name and state.
@@ -605,7 +630,8 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       hasChildAgencyUpdates ||
       hasSuperagencyUpdate ||
       hasTeamMemberOrRoleUpdates ||
-      hasReportingAgenciesUpdates;
+      hasReportingAgenciesUpdates ||
+      hasBreakdownSettingsUpdates;
     const hasRequiredCreateAgencyFields =
       hasNameUpdate && hasStateUpdate && hasSystems;
 
@@ -1694,6 +1720,12 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                 {currentSettingType ===
                   AgencyProvisioningSettings.METRICS_REPORTING_AGENCY && (
                   <MetricsReportingAgency selectedIDToEdit={selectedIDToEdit} />
+                )}
+
+                {/* Breakdown Settings */}
+                {currentSettingType ===
+                  AgencyProvisioningSettings.BREAKDOWN_SETTINGS && (
+                  <BreakdownSettings selectedIDToEdit={selectedIDToEdit} />
                 )}
               </Styled.Form>
             </Styled.ScrollableContainer>
