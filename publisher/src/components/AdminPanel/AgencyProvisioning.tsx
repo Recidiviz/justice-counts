@@ -15,55 +15,55 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import alertIcon from "@justice-counts/common/assets/alert-icon.png";
 import { Button } from "@justice-counts/common/components/Button";
-import { Dropdown } from "@justice-counts/common/components/Dropdown";
 import { MiniLoader } from "@justice-counts/common/components/MiniLoader";
 import {
   TabbedBar,
   TabOption,
 } from "@justice-counts/common/components/TabbedBar";
 import {
-  AgencySystem,
   AgencySystems,
   AgencyTeamMemberRole,
-  SupervisionSubsystems,
 } from "@justice-counts/common/types";
-import {
-  isCSGOrRecidivizUserByEmail,
-  removeSnakeCase,
-  toggleAddRemoveSetItem,
-  validateAgencyURL,
-} from "@justice-counts/common/utils";
+import { isCSGOrRecidivizUserByEmail } from "@justice-counts/common/utils";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useRef, useState } from "react";
 
 import { useStore } from "../../stores";
-import AdminPanelStore from "../../stores/AdminPanelStore";
 import { ButtonWithMiniLoaderContainer, MiniLoaderWrapper } from "../Reports";
 import {
   AgencyProvisioningSetting,
   AgencyProvisioningSettings,
-  FipsCountyCodeKey,
-  FipsCountyCodes,
-  InteractiveSearchList,
-  InteractiveSearchListAction,
-  InteractiveSearchListActions,
-  MetricsReportingAgency,
   ProvisioningProps,
   SaveConfirmation,
   SaveConfirmationType,
   SaveConfirmationTypes,
-  SearchableListItem,
-  SelectionInputBoxType,
-  SelectionInputBoxTypes,
   Setting,
-  StateCodeKey,
-  StateCodesToStateNames,
-  userRoles,
   UserRoleUpdates,
 } from ".";
 import * as Styled from "./AdminPanel.styles";
+import {
+  AddNewTeamMembers,
+  AgencyCountyInput,
+  AgencyDescriptionInput,
+  AgencyNameInput,
+  AgencyStateInput,
+  AgencySystemsInput,
+  AgencyURLInput,
+  ChildAgenciesList,
+  CopySuperagencyMetricSettings,
+  CopySuperagencyMetricSettingsCheckbox,
+  DashboardEnabledCheckbox,
+  DeleteExistingTeamMembers,
+  MetricsReportingAgency,
+  SteppingUpAgencyCheckbox,
+  SuperagenciesList,
+  SuperagencyChildAgencyCheckbox,
+  TeamMembersList,
+  TeamMembersManagementButtons,
+} from "./AgencyProvisioningComponents";
+import { getCurrentTeamMembers } from "./AgencyProvisioningComponents/utils";
+import { useAgencyProvisioning } from "./AgencyProvisioningContext";
 
 export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
   ({
@@ -77,28 +77,15 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
     const { adminPanelStore, api, userStore } = useStore();
     const {
       users,
-      agencies,
-      agenciesByID,
       metrics,
-      systems,
       agencyProvisioningUpdates,
-      searchableCounties,
-      searchableSystems,
-      searchableMetrics,
       csgAndRecidivizUsers,
       csgAndRecidivizDefaultRole,
       teamMemberListLoading,
       reportingAgenciesUpdates,
       reportingAgencyMetadataLoading,
-      updateAgencyName,
       updateAgencyDescription,
       updateAgencyURL,
-      updateStateCode,
-      updateCountyCode,
-      updateIsDashboardEnabled,
-      updateIsSteppingUpAgency,
-      updateIsSuperagency,
-      updateSuperagencyID,
       updateSystems,
       updateChildAgencyIDs,
       updateTeamMembers,
@@ -107,6 +94,23 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       copySuperagencyMetricSettingsToChildAgencies,
       saveReportingAgencies,
     } = adminPanelStore;
+
+    const {
+      selectedAgency,
+      selectedSystems,
+      URLValidationError,
+      selectedChildAgencyIDs,
+      selectedMetricsKeys,
+      selectedChildAgencyIDsToCopy,
+      isCopySuperagencyMetricSettingsSelected,
+      isChildAgencySelected,
+      selectedTeamMembersToAdd,
+      selectedTeamMembersToDelete,
+      teamMemberRoleUpdates,
+      setSelectedTeamMembersToAdd,
+      setTeamMemberRoleUpdates,
+    } = useAgencyProvisioning();
+
     const scrollableContainerRef = useRef<HTMLDivElement>(null);
 
     const [isSaveInProgress, setIsSaveInProgress] = useState<boolean>(false);
@@ -120,48 +124,6 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       useState<AgencyProvisioningSetting>(
         AgencyProvisioningSettings.AGENCY_INFORMATION
       );
-    const [addOrDeleteUserAction, setAddOrDeleteUserAction] =
-      useState<InteractiveSearchListAction>();
-    const [showSelectionBox, setShowSelectionBox] =
-      useState<SelectionInputBoxType>();
-
-    const [isChildAgencySelected, setIsChildAgencySelected] = useState<boolean>(
-      Boolean(agencyProvisioningUpdates.super_agency_id) || false
-    );
-    const [selectedChildAgencyIDs, setSelectedChildAgencyIDs] = useState<
-      Set<number>
-    >(
-      agencyProvisioningUpdates.child_agency_ids
-        ? new Set(agencyProvisioningUpdates.child_agency_ids)
-        : new Set()
-    );
-    const [selectedChildAgencyIDsToCopy, setSelectedChildAgencyIDsToCopy] =
-      useState<Set<number>>(
-        agencyProvisioningUpdates.child_agency_ids
-          ? new Set(agencyProvisioningUpdates.child_agency_ids)
-          : new Set()
-      );
-    const [selectedSystems, setSelectedSystems] = useState<Set<AgencySystem>>(
-      agencyProvisioningUpdates.systems
-        ? new Set(agencyProvisioningUpdates.systems)
-        : new Set()
-    );
-    const [selectedMetricsKeys, setSelectedMetricsKeys] = useState<Set<string>>(
-      new Set()
-    );
-    const [selectedTeamMembersToAdd, setSelectedTeamMembersToAdd] = useState<
-      Set<number>
-    >(new Set());
-    const [selectedTeamMembersToDelete, setSelectedTeamMembersToDelete] =
-      useState<Set<number>>(new Set());
-    const [teamMemberRoleUpdates, setTeamMemberRoleUpdates] = useState<
-      UserRoleUpdates | Record<number, never>
-    >({});
-    const [
-      isCopySuperagencyMetricSettingsSelected,
-      setIsCopySuperagencyMetricSettingsSelected,
-    ] = useState(false);
-    const [URLValidationError, setURLValidationError] = useState<string>();
 
     /** Setting Tabs (Agency Information/Team Members) */
     const settingOptions: TabOption[] = [
@@ -196,58 +158,17 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       },
     ];
 
-    /** Selected agency to edit */
-    const selectedAgency = selectedIDToEdit
-      ? agenciesByID[selectedIDToEdit][0]
-      : undefined;
+    const hasSystems =
+      selectedSystems.size > 0 &&
+      // Exclude Superagency system from consideration.
+      !(
+        selectedSystems.size === 1 &&
+        selectedSystems.has(AgencySystems.SUPERAGENCY)
+      );
+    const hasChildAgencies = selectedChildAgencyIDs.size > 0;
+    const hasChildAgencyMetrics = metrics.length > 0;
 
-    const [nameValue, setNameValue] = useState<string>(
-      selectedAgency?.name ?? ""
-    );
-    const [URLValue, setURLValue] = useState<string>(
-      selectedAgency?.agency_url ?? ""
-    );
-    const [descriptionValue, setDescriptionValue] = useState<string>(
-      selectedAgency?.agency_description ?? ""
-    );
-
-    /** Available agencies ("available" meaning excluding the current agency) to select from */
-    const agencyIDs = agencies.map((agency) => +agency.id);
-    const availableAgencies = agencies.filter(
-      (agency) => agency.id !== selectedAgency?.id
-    );
-
-    /** A list of superagencies and child agencies to select from */
-    const childAgencies = availableAgencies
-      .filter((agency) => !agency.is_superagency)
-      .map((agency) => ({
-        ...agency,
-        sectors: agency.systems.map((system) =>
-          removeSnakeCase(system.toLocaleLowerCase())
-        ),
-      }));
-    const superagencies = availableAgencies.filter(
-      (agency) => agency.is_superagency
-    );
-
-    /** A list of current team members and other team members not connected to the current agency to select from */
-    const availableTeamMembers = users.filter(
-      (user) => !selectedAgency?.team[user.id]
-    );
-    const currentTeamMembers = selectedAgency
-      ? [
-          ...Object.values(selectedAgency.team).flatMap(([member]) => ({
-            ...member,
-            id: member.user_account_id || member.auth0_user_id,
-          })),
-        ]
-      : [];
-
-    /** Whether or not we are performing an add/delete action on a list of users/team members */
-    const isAddUserAction =
-      addOrDeleteUserAction === InteractiveSearchListActions.ADD;
-    const isDeleteUserAction =
-      addOrDeleteUserAction === InteractiveSearchListActions.DELETE;
+    const currentTeamMembers = getCurrentTeamMembers(selectedAgency);
 
     /** Modal Buttons (Save/Cancel) */
     const modalButtons = [
@@ -258,54 +179,6 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       },
     ];
 
-    /** Interactive search list buttons (Select All/Deselect All/Close) */
-    const interactiveSearchListCloseButton = [
-      {
-        label: "Close",
-        onClick: () => {
-          setShowSelectionBox(undefined);
-          if (addOrDeleteUserAction) setAddOrDeleteUserAction(undefined);
-        },
-      },
-    ];
-    const getInteractiveSearchListSelectDeselectCloseButtons = <T,>(
-      setState: React.Dispatch<React.SetStateAction<Set<T>>>,
-      selectAllSet: Set<T>,
-      selectAllCallback?: () => void,
-      deselectAllSetOverride?: Set<T>
-    ) => {
-      return [
-        {
-          label: "Select All",
-          onClick: (filteredList: SearchableListItem[] | undefined) => {
-            setState(selectAllSet);
-            if (filteredList) {
-              const filteredSet = new Set(
-                filteredList.map((obj) => obj.id)
-              ) as Set<T>;
-              setState(filteredSet);
-            }
-            if (selectAllCallback) selectAllCallback();
-          },
-        },
-        {
-          label: "Deselect All",
-          onClick: () => setState(deselectAllSetOverride || new Set()),
-        },
-        interactiveSearchListCloseButton[0],
-      ];
-    };
-
-    const validateAndUpdateURL = (url: string) => {
-      const isValidURL = validateAgencyURL(url);
-      setURLValue(url);
-
-      if (url === "" || isValidURL) {
-        return setURLValidationError(undefined);
-      }
-      setURLValidationError("Invalid URL");
-    };
-
     const saveUpdates = async () => {
       setIsSaveInProgress(true);
 
@@ -313,10 +186,10 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       saveAgencyName(agencyProvisioningUpdates.name);
 
       // Update final agency description
-      updateAgencyDescription(descriptionValue);
+      updateAgencyDescription(agencyProvisioningUpdates.agency_description);
 
       // Update final agency URL
-      updateAgencyURL(URLValue);
+      updateAgencyURL(agencyProvisioningUpdates.agency_url);
 
       /** Update final list of systems, child agencies, and team members */
       updateSystems(Array.from(selectedSystems));
@@ -419,38 +292,6 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       return "";
     };
 
-    const scrollToBottom = () =>
-      setTimeout(
-        () =>
-          scrollableContainerRef.current?.scrollTo(
-            0,
-            scrollableContainerRef.current.scrollHeight
-          ),
-        0
-      );
-
-    /**
-     * Special handling for checking/unchecking an agency as a superagency. When an agency is checked as a superagency,
-     * the "Superagency" system should be added to the agency. When an agency is no longer checked as a superagency,
-     * the "Superagency" system should be removed from the agency.
-     */
-    const toggleSuperagencyStatusAndSystems = () => {
-      const updatedSystemsSet = new Set(selectedSystems);
-      // If "Superagency" is currently checked, uncheck it and remove the "Superagency" system
-      if (agencyProvisioningUpdates.is_superagency) {
-        updatedSystemsSet.delete(AgencySystems.SUPERAGENCY);
-        setSelectedSystems(updatedSystemsSet);
-        updateIsSuperagency(false);
-        return;
-      }
-      // If "Superagency" is not currently checked, check it and add the "Superagency" system
-      updatedSystemsSet.add(AgencySystems.SUPERAGENCY);
-      setSelectedSystems(updatedSystemsSet);
-      updateIsSuperagency(true);
-      setIsChildAgencySelected(false);
-      updateSuperagencyID(null);
-    };
-
     /**
      * Check whether user has made updates to various fields to determine whether or not the 'Save' button is enabled/disabled
      *
@@ -464,8 +305,10 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
      * New agency: an update has been made when the agency has a value for `agencyProvisioningUpdates.agency_description`
      */
     const hasDescriptionUpdate = selectedAgency
-      ? descriptionValue !== (selectedAgency.agency_description || "")
-      : Boolean(agencyProvisioningUpdates.agency_description);
+      ? agencyProvisioningUpdates.agency_description !== null &&
+        agencyProvisioningUpdates.agency_description !==
+          selectedAgency.agency_description
+      : agencyProvisioningUpdates.agency_description !== null;
 
     /**
      * Existing agency: an update has been made when the agency has a value for `agencyProvisioningUpdates.agency_url`
@@ -473,8 +316,9 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
      * New agency: an update has been made when the agency has a value for `agencyProvisioningUpdates.agency_url`
      */
     const hasURLUpdate = selectedAgency
-      ? URLValue !== (selectedAgency.agency_url || "")
-      : Boolean(agencyProvisioningUpdates.agency_url);
+      ? agencyProvisioningUpdates.agency_url !== null &&
+        agencyProvisioningUpdates.agency_url !== selectedAgency.agency_url
+      : agencyProvisioningUpdates.agency_url !== null;
 
     /**
      * Existing agency: an update has been made when the agency has a value for `agencyProvisioningUpdates.name`
@@ -519,14 +363,6 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
         agencyProvisioningUpdates.systems.filter((system) =>
           selectedSystems.has(system)
         ).length === 0);
-
-    const hasSystems =
-      selectedSystems.size > 0 &&
-      // Exclude Superagency system from consideration.
-      !(
-        selectedSystems.size === 1 &&
-        selectedSystems.has(AgencySystems.SUPERAGENCY)
-      );
     /**
      * An update has been made when the agency's `is_dashboard_enabled` boolean flag does not match the agency's
      * boolean flag for that property before the modal was open.
@@ -560,7 +396,6 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
         agencyProvisioningUpdates.child_agency_ids.filter((id) =>
           selectedChildAgencyIDs.has(id)
         ).length === 0);
-    const hasChildAgencies = selectedChildAgencyIDs.size > 0;
     /**
      * An update has been made when the agency's `super_agency_id` does not match the agency's superagency id before
      * the modal was open.
@@ -656,6 +491,8 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       secondaryCreatedId,
       selectedIDToEdit,
       isCopySuperagencyMetricSettingsSelected,
+      setSelectedTeamMembersToAdd,
+      setTeamMemberRoleUpdates,
     ]);
 
     /** Here we are making the auto-adding if user was created via the secondary modal */
@@ -676,27 +513,13 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
           };
         });
       }
-    }, [users, secondaryCreatedId, csgAndRecidivizDefaultRole]);
-
-    /** Here we are making the auto-selecting all metrics by default */
-    useEffect(() => {
-      setSelectedMetricsKeys(
-        new Set(searchableMetrics.map((metric) => String(metric.id)))
-      );
-    }, [searchableMetrics]);
-    const selectedChildAgencies = childAgencies.filter((agency) =>
-      selectedChildAgencyIDs.has(Number(agency.id))
-    );
-    const hasChildAgencyMetrics = metrics.length > 0;
-
-    /** Team members search bar logic */
-    const [teamMembersSearchInput, setTeamMembersSearchInput] =
-      useState<string>("");
-    const filteredTeamMembers = AdminPanelStore.searchList(
-      currentTeamMembers,
-      teamMembersSearchInput,
-      ["id", "name", "email"]
-    );
+    }, [
+      users,
+      secondaryCreatedId,
+      csgAndRecidivizDefaultRole,
+      setSelectedTeamMembersToAdd,
+      setTeamMemberRoleUpdates,
+    ]);
 
     /** Shows mini loader while fetching agency's team members & reporting agencies */
     if (teamMemberListLoading || reportingAgencyMetadataLoading) {
@@ -745,633 +568,66 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                   AgencyProvisioningSettings.AGENCY_INFORMATION && (
                   <>
                     {/* Agency Name Input */}
-                    <Styled.InputLabelWrapper required>
-                      <input
-                        id="agency-name"
-                        name="agency-name"
-                        type="text"
-                        value={nameValue}
-                        onChange={(e) => {
-                          setNameValue(e.target.value);
-                          updateAgencyName(e.target.value);
-                        }}
-                      />
-                      <label htmlFor="agency-name">Name</label>
-                    </Styled.InputLabelWrapper>
+                    <AgencyNameInput />
 
                     {/* Agency State Input */}
-                    {showSelectionBox === SelectionInputBoxTypes.STATE && (
-                      <InteractiveSearchList
-                        list={AdminPanelStore.searchableStates}
-                        boxActionType={InteractiveSearchListActions.ADD}
-                        selections={
-                          agencyProvisioningUpdates.state_code
-                            ? new Set([agencyProvisioningUpdates.state_code])
-                            : new Set()
-                        }
-                        buttons={interactiveSearchListCloseButton}
-                        updateSelections={({ id }) => {
-                          updateStateCode(
-                            agencyProvisioningUpdates.state_code ===
-                              (id as StateCodeKey)
-                              ? selectedAgency?.state_code || null
-                              : (id as StateCodeKey)
-                          );
-                          /** Reset the county code input */
-                          updateCountyCode(null);
-                        }}
-                        searchByKeys={["name"]}
-                        metadata={{
-                          listBoxLabel: "Select a state",
-                          searchBoxLabel: "Search states",
-                        }}
-                        isActiveBox={
-                          showSelectionBox === SelectionInputBoxTypes.STATE
-                        }
-                      />
-                    )}
-                    <Styled.InputLabelWrapper required>
-                      <input
-                        id="state"
-                        name="state"
-                        type="button"
-                        value={
-                          (agencyProvisioningUpdates.state_code &&
-                            StateCodesToStateNames[
-                              agencyProvisioningUpdates.state_code
-                            ]) ||
-                          ""
-                        }
-                        onClick={() => {
-                          setShowSelectionBox(SelectionInputBoxTypes.STATE);
-                        }}
-                      />
-                      <label htmlFor="state">State</label>
-                    </Styled.InputLabelWrapper>
+                    <AgencyStateInput />
 
                     {/* Agency County Input */}
-                    {showSelectionBox === SelectionInputBoxTypes.COUNTY && (
-                      <InteractiveSearchList
-                        list={searchableCounties}
-                        boxActionType={InteractiveSearchListActions.ADD}
-                        selections={
-                          agencyProvisioningUpdates.fips_county_code
-                            ? new Set([
-                                agencyProvisioningUpdates.fips_county_code,
-                              ])
-                            : new Set()
-                        }
-                        buttons={interactiveSearchListCloseButton}
-                        updateSelections={({ id }) => {
-                          updateCountyCode(
-                            agencyProvisioningUpdates.fips_county_code === id
-                              ? null
-                              : (id as FipsCountyCodeKey)
-                          );
-                        }}
-                        searchByKeys={["name"]}
-                        metadata={{
-                          listBoxLabel: "Select a county",
-                          searchBoxLabel: "Search counties",
-                        }}
-                        isActiveBox={
-                          showSelectionBox === SelectionInputBoxTypes.COUNTY
-                        }
-                      />
-                    )}
-                    <Styled.InputLabelWrapper>
-                      <input
-                        id="county"
-                        name="county"
-                        type="button"
-                        disabled={!agencyProvisioningUpdates.state_code}
-                        value={
-                          (agencyProvisioningUpdates.fips_county_code &&
-                            FipsCountyCodes[
-                              agencyProvisioningUpdates.fips_county_code
-                            ]) ||
-                          ""
-                        }
-                        onClick={() => {
-                          setShowSelectionBox(SelectionInputBoxTypes.COUNTY);
-                        }}
-                      />
-                      <label htmlFor="state">County</label>
-                    </Styled.InputLabelWrapper>
+                    <AgencyCountyInput />
 
                     {/* Agency Systems Input */}
-                    {showSelectionBox === SelectionInputBoxTypes.SYSTEMS && (
-                      <InteractiveSearchList
-                        list={searchableSystems}
-                        boxActionType={InteractiveSearchListActions.ADD}
-                        selections={selectedSystems}
-                        buttons={getInteractiveSearchListSelectDeselectCloseButtons(
-                          setSelectedSystems,
-                          // If Superagency is checked, include the Superagency sector when user selects all
-                          agencyProvisioningUpdates.is_superagency
-                            ? new Set([...systems, AgencySystems.SUPERAGENCY])
-                            : new Set(systems),
-                          undefined,
-                          // If Superagency is checked, still include the Superagency sector when user deselects all
-                          agencyProvisioningUpdates.is_superagency
-                            ? new Set([AgencySystems.SUPERAGENCY])
-                            : undefined
-                        )}
-                        updateSelections={({ id }) => {
-                          setSelectedSystems((prev) => {
-                            const currentSystems = prev;
-                            /**
-                             * Special handling for Supervision & subpopulation sectors:
-                             *  - If the user selects a supervision subpopulation and they have not explicitly selected the Supervision
-                             *    sector, auto-add the Supervision sector.
-                             *  - If the user de-selects the Supervision sector, then auto-de-select all selected supervision subpopulation
-                             *    sectors
-                             */
-                            if (
-                              SupervisionSubsystems.includes(
-                                id as AgencySystem
-                              ) &&
-                              !currentSystems.has(AgencySystems.SUPERVISION)
-                            ) {
-                              currentSystems.add(AgencySystems.SUPERVISION);
-                            }
-                            if (
-                              id === AgencySystems.SUPERVISION &&
-                              currentSystems.has(AgencySystems.SUPERVISION)
-                            ) {
-                              SupervisionSubsystems.forEach((subsystem) =>
-                                currentSystems.delete(subsystem)
-                              );
-                            }
-
-                            return toggleAddRemoveSetItem(
-                              currentSystems,
-                              id as AgencySystems
-                            );
-                          });
-                        }}
-                        searchByKeys={["name"]}
-                        metadata={{
-                          listBoxLabel: "Select sector(s)",
-                          searchBoxLabel: "Search sectors",
-                        }}
-                        isActiveBox={
-                          showSelectionBox === SelectionInputBoxTypes.SYSTEMS
-                        }
-                      />
-                    )}
-                    <Styled.InputLabelWrapper required>
-                      <Styled.ChipContainer
-                        onClick={() =>
-                          setShowSelectionBox(SelectionInputBoxTypes.SYSTEMS)
-                        }
-                        fitContentHeight
-                        hoverable
-                      >
-                        {selectedSystems.size === 0 ? (
-                          <Styled.EmptyListMessage>
-                            No sectors selected
-                          </Styled.EmptyListMessage>
-                        ) : (
-                          Array.from(selectedSystems).map((system) => (
-                            <Styled.Chip key={system}>
-                              {removeSnakeCase(system.toLocaleLowerCase())}
-                            </Styled.Chip>
-                          ))
-                        )}
-                      </Styled.ChipContainer>
-                      <Styled.ChipContainerLabel>
-                        Sectors
-                      </Styled.ChipContainerLabel>
-                    </Styled.InputLabelWrapper>
+                    <AgencySystemsInput />
 
                     {/* Agency Description Input */}
-                    <Styled.InputLabelWrapper>
-                      <input
-                        id="agency-description"
-                        name="agency-description"
-                        type="text"
-                        maxLength={750}
-                        value={descriptionValue}
-                        onChange={(e) => {
-                          setDescriptionValue(e.target.value);
-                          updateAgencyDescription(e.target.value);
-                        }}
-                      />
-                      <label htmlFor="agency-description">
-                        Agency Description
-                      </label>
-                    </Styled.InputLabelWrapper>
+                    <AgencyDescriptionInput />
 
                     {/* Agency URL Input */}
-                    <Styled.InputLabelWrapper
-                      hasError={Boolean(URLValidationError)}
-                    >
-                      <input
-                        id="agency-url"
-                        name="agency-url"
-                        type="text"
-                        value={URLValue}
-                        onChange={(e) =>
-                          validateAndUpdateURL(e.target.value.trimStart())
-                        }
-                      />
-                      <Styled.LabelWrapper>
-                        <label htmlFor="agency-url">Agency URL</label>
-                        {URLValidationError && (
-                          <Styled.ErrorLabel>
-                            {URLValidationError}
-                          </Styled.ErrorLabel>
-                        )}
-                      </Styled.LabelWrapper>
-                    </Styled.InputLabelWrapper>
+                    <AgencyURLInput />
 
-                    <Styled.InputLabelWrapper flexRow inputWidth={300}>
+                    <Styled.InputLabelWrapper
+                      flexRow
+                      inputWidth={300}
+                      noBottomSpacing
+                    >
                       {/* Dashboard Enabled Checkbox */}
-                      <input
-                        id="dashboard"
-                        name="dashboard"
-                        type="checkbox"
-                        onChange={() =>
-                          updateIsDashboardEnabled(
-                            !agencyProvisioningUpdates.is_dashboard_enabled
-                          )
-                        }
-                        checked={Boolean(
-                          agencyProvisioningUpdates.is_dashboard_enabled
-                        )}
-                      />
-                      <label htmlFor="dashboard">Dashboard enabled</label>
+                      <DashboardEnabledCheckbox />
 
                       {/* Stepping Up Agency Checkbox */}
-                      <input
-                        id="stepping-up-agency"
-                        name="stepping-up-agency"
-                        type="checkbox"
-                        onChange={() =>
-                          updateIsSteppingUpAgency(
-                            !agencyProvisioningUpdates.is_stepping_up_agency
-                          )
-                        }
-                        checked={Boolean(
-                          agencyProvisioningUpdates.is_stepping_up_agency
-                        )}
-                      />
-                      <label htmlFor="stepping-up-agency">
-                        Stepping Up Agency
-                      </label>
+                      <SteppingUpAgencyCheckbox />
                     </Styled.InputLabelWrapper>
 
-                    {/* Superagency/Child Agency Checkbox & Search Box */}
-                    <Styled.InputLabelWrapper flexRow inputWidth={100}>
-                      <input
-                        id="superagency"
-                        name="superagency"
-                        type="checkbox"
-                        onChange={() => {
-                          toggleSuperagencyStatusAndSystems();
-                          setShowSelectionBox(undefined);
-                          // Reset child agency selections
-                          updateSuperagencyID(null);
-                          setSelectedChildAgencyIDs(new Set());
-                          setIsChildAgencySelected(false);
-                        }}
-                        checked={Boolean(
-                          agencyProvisioningUpdates.is_superagency
-                        )}
-                      />
-                      <label htmlFor="superagency">Superagency</label>
+                    {/* Superagency/Child Agency Checkbox */}
+                    <SuperagencyChildAgencyCheckbox />
 
-                      <input
-                        id="child-agency"
-                        name="child-agency"
-                        type="checkbox"
-                        onChange={() => {
-                          setIsChildAgencySelected((prev) => !prev);
-                          setSelectedChildAgencyIDs(new Set());
-                          setShowSelectionBox(undefined);
-                          if (agencyProvisioningUpdates.is_superagency) {
-                            // Uncheck Superagency checkbox and remove Superagency system
-                            toggleSuperagencyStatusAndSystems();
-                          }
-                          if (isChildAgencySelected) {
-                            // Reset selected superagency ID when unchecked
-                            updateSuperagencyID(null);
-                          }
-                        }}
-                        checked={isChildAgencySelected}
-                      />
-                      <label htmlFor="child-agency">Child Agency</label>
-                    </Styled.InputLabelWrapper>
-
-                    {/* Superagency/Child Agencies list */}
-
-                    {/* Superagency */}
+                    {/* Child Agencies List */}
                     {agencyProvisioningUpdates.is_superagency && (
-                      <>
-                        <Styled.InputLabelWrapper>
-                          {showSelectionBox ===
-                            SelectionInputBoxTypes.CHILD_AGENCIES && (
-                            <InteractiveSearchList
-                              list={childAgencies}
-                              boxActionType={InteractiveSearchListActions.ADD}
-                              selections={selectedChildAgencyIDs}
-                              buttons={getInteractiveSearchListSelectDeselectCloseButtons(
-                                setSelectedChildAgencyIDs,
-                                new Set(
-                                  agencyIDs.filter(
-                                    (id) => id !== selectedAgency?.id
-                                  )
-                                )
-                              )}
-                              updateSelections={({ id }) => {
-                                setSelectedChildAgencyIDs((prev) =>
-                                  toggleAddRemoveSetItem(prev, +id)
-                                );
-                              }}
-                              searchByKeys={["name"]}
-                              metadata={{
-                                listBoxLabel: "Select child agencies",
-                                searchBoxLabel: "Search agencies",
-                              }}
-                              isActiveBox={
-                                showSelectionBox ===
-                                SelectionInputBoxTypes.CHILD_AGENCIES
-                              }
-                            />
-                          )}
-                          <Styled.ChipContainer
-                            onClick={() => {
-                              setShowSelectionBox(
-                                SelectionInputBoxTypes.CHILD_AGENCIES
-                              );
-                              scrollToBottom();
-                            }}
-                            fitContentHeight
-                            hoverable
-                          >
-                            {selectedChildAgencyIDs.size === 0 ? (
-                              <Styled.EmptyListMessage>
-                                No child agencies selected
-                              </Styled.EmptyListMessage>
-                            ) : (
-                              Array.from(selectedChildAgencyIDs).map(
-                                (agencyID) => (
-                                  <Styled.Chip key={agencyID}>
-                                    {agenciesByID[agencyID]?.[0].name}
-                                  </Styled.Chip>
-                                )
-                              )
-                            )}
-                          </Styled.ChipContainer>
-                          <Styled.ChipContainerLabel>
-                            Child agencies
-                          </Styled.ChipContainerLabel>
-                        </Styled.InputLabelWrapper>
-
-                        {hasSystems && hasChildAgencies && selectedIDToEdit && (
-                          <>
-                            <Styled.InputLabelWrapper flexRow wrapLabelText>
-                              <input
-                                id="copy-superagency-metric-settings"
-                                name="copy-superagency-metric-settings"
-                                type="checkbox"
-                                onChange={() => {
-                                  setIsCopySuperagencyMetricSettingsSelected(
-                                    (prev) => !prev
-                                  );
-                                }}
-                                checked={
-                                  isCopySuperagencyMetricSettingsSelected
-                                }
-                              />
-                              <label htmlFor="copy-superagency-metric-settings">
-                                Copy metric settings to child agencies
-                              </label>
-                            </Styled.InputLabelWrapper>
-                            {isCopySuperagencyMetricSettingsSelected &&
-                              hasChildAgencyMetrics && (
-                                <>
-                                  <Styled.WarningMessage>
-                                    <img src={alertIcon} alt="" width="24px" />
-                                    <p>
-                                      WARNING! This action cannot be undone.
-                                      This will OVERWRITE metric settings in
-                                      child agencies. After clicking{" "}
-                                      <strong>Save</strong>, the copying process
-                                      will begin and you will receive an email
-                                      confirmation once the metrics settings
-                                      have been copied over.
-                                    </p>
-                                  </Styled.WarningMessage>
-                                  <Styled.InputLabelWrapper>
-                                    {showSelectionBox ===
-                                      SelectionInputBoxTypes.COPY_CHILD_AGENCIES && (
-                                      <InteractiveSearchList
-                                        list={selectedChildAgencies}
-                                        boxActionType={
-                                          InteractiveSearchListActions.ADD
-                                        }
-                                        selections={
-                                          selectedChildAgencyIDsToCopy
-                                        }
-                                        buttons={getInteractiveSearchListSelectDeselectCloseButtons(
-                                          setSelectedChildAgencyIDsToCopy,
-                                          new Set(
-                                            selectedChildAgencies.map(
-                                              (agency) => +agency.id
-                                            )
-                                          )
-                                        )}
-                                        updateSelections={({ id }) => {
-                                          setSelectedChildAgencyIDsToCopy(
-                                            (prev) =>
-                                              toggleAddRemoveSetItem(prev, +id)
-                                          );
-                                        }}
-                                        searchByKeys={["name", "sectors"]}
-                                        metadata={{
-                                          listBoxLabel:
-                                            "Select child agencies to copy",
-                                          searchBoxLabel: "Search agencies",
-                                        }}
-                                        isActiveBox={
-                                          showSelectionBox ===
-                                          SelectionInputBoxTypes.COPY_CHILD_AGENCIES
-                                        }
-                                      />
-                                    )}
-                                    <Styled.ChipContainer
-                                      onClick={() => {
-                                        setShowSelectionBox(
-                                          SelectionInputBoxTypes.COPY_CHILD_AGENCIES
-                                        );
-                                      }}
-                                      fitContentHeight
-                                      hoverable
-                                    >
-                                      {selectedChildAgencyIDsToCopy.size ===
-                                      0 ? (
-                                        <Styled.EmptyListMessage>
-                                          No child agencies selected to copy
-                                        </Styled.EmptyListMessage>
-                                      ) : (
-                                        Array.from(
-                                          selectedChildAgencyIDsToCopy
-                                        ).map((agencyID) => (
-                                          <Styled.Chip key={agencyID}>
-                                            {agenciesByID[agencyID]?.[0].name}
-                                          </Styled.Chip>
-                                        ))
-                                      )}
-                                    </Styled.ChipContainer>
-                                    <Styled.ChipContainerLabel>
-                                      Child agencies to copy
-                                    </Styled.ChipContainerLabel>
-                                  </Styled.InputLabelWrapper>
-
-                                  <Styled.InputLabelWrapper>
-                                    {showSelectionBox ===
-                                      SelectionInputBoxTypes.COPY_AGENCY_METRICS && (
-                                      <InteractiveSearchList
-                                        list={searchableMetrics}
-                                        boxActionType={
-                                          InteractiveSearchListActions.ADD
-                                        }
-                                        selections={selectedMetricsKeys}
-                                        buttons={getInteractiveSearchListSelectDeselectCloseButtons(
-                                          setSelectedMetricsKeys,
-                                          new Set(
-                                            searchableMetrics.map((metric) =>
-                                              String(metric.id)
-                                            )
-                                          )
-                                        )}
-                                        updateSelections={({ id }) => {
-                                          setSelectedMetricsKeys((prev) =>
-                                            toggleAddRemoveSetItem(
-                                              prev,
-                                              String(id)
-                                            )
-                                          );
-                                        }}
-                                        searchByKeys={["name", "sectors"]}
-                                        metadata={{
-                                          listBoxLabel:
-                                            "Select metrics to copy",
-                                          searchBoxLabel: "Search metrics",
-                                        }}
-                                        isActiveBox={
-                                          showSelectionBox ===
-                                          SelectionInputBoxTypes.COPY_AGENCY_METRICS
-                                        }
-                                      />
-                                    )}
-                                    <Styled.ChipContainer
-                                      onClick={() => {
-                                        setShowSelectionBox(
-                                          SelectionInputBoxTypes.COPY_AGENCY_METRICS
-                                        );
-                                      }}
-                                      fitContentHeight
-                                      hoverable
-                                    >
-                                      {selectedMetricsKeys.size === 0 ? (
-                                        <Styled.EmptyListMessage>
-                                          No metrics selected to copy
-                                        </Styled.EmptyListMessage>
-                                      ) : (
-                                        Array.from(selectedMetricsKeys).map(
-                                          (metricKey) => (
-                                            <Styled.Chip key={metricKey}>
-                                              {
-                                                searchableMetrics.find(
-                                                  (metric) =>
-                                                    metric.id === metricKey
-                                                )?.name
-                                              }
-                                            </Styled.Chip>
-                                          )
-                                        )
-                                      )}
-                                    </Styled.ChipContainer>
-                                    <Styled.ChipContainerLabel>
-                                      Metrics to copy
-                                    </Styled.ChipContainerLabel>
-                                  </Styled.InputLabelWrapper>
-                                </>
-                              )}
-                          </>
-                        )}
-                      </>
+                      <ChildAgenciesList
+                        scrollableContainerRef={scrollableContainerRef}
+                      />
                     )}
 
-                    {/* Child agency */}
+                    {/* Superagencies List */}
                     {(isChildAgencySelected ||
                       agencyProvisioningUpdates.super_agency_id) && (
-                      <Styled.InputLabelWrapper>
-                        {showSelectionBox ===
-                          SelectionInputBoxTypes.SUPERAGENCY && (
-                          <InteractiveSearchList
-                            list={superagencies}
-                            boxActionType={InteractiveSearchListActions.ADD}
-                            selections={
-                              agencyProvisioningUpdates.super_agency_id
-                                ? new Set([
-                                    agencyProvisioningUpdates.super_agency_id,
-                                  ])
-                                : new Set()
-                            }
-                            buttons={interactiveSearchListCloseButton}
-                            updateSelections={({ id }) => {
-                              updateSuperagencyID(
-                                agencyProvisioningUpdates.super_agency_id ===
-                                  +id
-                                  ? null
-                                  : +id
-                              );
-                            }}
-                            searchByKeys={["name"]}
-                            metadata={{
-                              listBoxEmptyLabel:
-                                "There are no superagencies available to select from",
-                              listBoxLabel: "Select a superagency",
-                              searchBoxLabel: "Search agencies",
-                            }}
-                            isActiveBox={
-                              showSelectionBox ===
-                              SelectionInputBoxTypes.SUPERAGENCY
-                            }
-                          />
-                        )}
-                        <Styled.ChipContainer
-                          onClick={() => {
-                            setShowSelectionBox(
-                              SelectionInputBoxTypes.SUPERAGENCY
-                            );
-                            scrollToBottom();
-                          }}
-                          fitContentHeight
-                          hoverable
-                        >
-                          {!agencyProvisioningUpdates.super_agency_id ? (
-                            <Styled.EmptyListMessage>
-                              No superagency selected
-                            </Styled.EmptyListMessage>
-                          ) : (
-                            <Styled.Chip>
-                              {agencyProvisioningUpdates.super_agency_id &&
-                                agenciesByID[
-                                  agencyProvisioningUpdates.super_agency_id
-                                ]?.[0].name}
-                            </Styled.Chip>
-                          )}
-                        </Styled.ChipContainer>
-                        <Styled.ChipContainerLabel>
-                          Superagency
-                        </Styled.ChipContainerLabel>
-                      </Styled.InputLabelWrapper>
+                      <SuperagenciesList
+                        scrollableContainerRef={scrollableContainerRef}
+                      />
                     )}
+
+                    {/* Copy Superagency Metric Settings Checkbox */}
+                    {agencyProvisioningUpdates.is_superagency &&
+                      hasSystems &&
+                      hasChildAgencies &&
+                      selectedIDToEdit && (
+                        <CopySuperagencyMetricSettingsCheckbox />
+                      )}
+
+                    {/* Copy Superagency Metric Settings */}
+                    {isCopySuperagencyMetricSettingsSelected &&
+                      hasChildAgencyMetrics && (
+                        <CopySuperagencyMetricSettings />
+                      )}
                   </>
                 )}
 
@@ -1379,314 +635,21 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                 {currentSettingType ===
                   AgencyProvisioningSettings.TEAM_MEMBERS_ROLES && (
                   <>
-                    <Styled.InputLabelWrapper noBottomSpacing>
-                      {/* Add New Team Members */}
-                      {addOrDeleteUserAction ===
-                        InteractiveSearchListActions.ADD && (
-                        <InteractiveSearchList
-                          list={availableTeamMembers}
-                          boxActionType={InteractiveSearchListActions.ADD}
-                          selections={selectedTeamMembersToAdd}
-                          buttons={getInteractiveSearchListSelectDeselectCloseButtons(
-                            setSelectedTeamMembersToAdd,
-                            new Set(
-                              availableTeamMembers.map((member) => +member.id)
-                            ),
-                            () => {
-                              setTeamMemberRoleUpdates((prev) => {
-                                return {
-                                  ...prev,
-                                  ...availableTeamMembers.reduce(
-                                    (acc, member) => {
-                                      acc[+member.id] =
-                                        isCSGOrRecidivizUserByEmail(
-                                          member.email
-                                        )
-                                          ? csgAndRecidivizDefaultRole
-                                          : AgencyTeamMemberRole.AGENCY_ADMIN;
-                                      return acc;
-                                    },
-                                    {} as UserRoleUpdates
-                                  ),
-                                };
-                              });
-                            }
-                          )}
-                          updateSelections={({ id, email }) => {
-                            setSelectedTeamMembersToAdd((prev) =>
-                              toggleAddRemoveSetItem(prev, +id)
-                            );
-                            setTeamMemberRoleUpdates((prev) => {
-                              if (selectedTeamMembersToAdd.has(+id)) {
-                                const updatedTeamMemberRoles = prev;
-                                delete updatedTeamMemberRoles[+id];
-                                return updatedTeamMemberRoles;
-                              }
-                              return {
-                                ...prev,
-                                [id]: isCSGOrRecidivizUserByEmail(email)
-                                  ? csgAndRecidivizDefaultRole
-                                  : AgencyTeamMemberRole.AGENCY_ADMIN,
-                              };
-                            });
-                          }}
-                          searchByKeys={["name"]}
-                          metadata={{
-                            listBoxEmptyLabel:
-                              "All users have been added to this agency",
-                            listBoxLabel: "Select team members to add",
-                            searchBoxLabel: "Search team members",
-                          }}
-                          isActiveBox
-                        />
-                      )}
-
-                      {/* Delete Existing Team Members */}
-                      {addOrDeleteUserAction ===
-                        InteractiveSearchListActions.DELETE && (
-                        <InteractiveSearchList
-                          list={currentTeamMembers.sort((a, b) =>
-                            a.name.localeCompare(b.name)
-                          )}
-                          boxActionType={InteractiveSearchListActions.DELETE}
-                          selections={selectedTeamMembersToDelete}
-                          buttons={getInteractiveSearchListSelectDeselectCloseButtons(
-                            setSelectedTeamMembersToDelete,
-                            new Set(
-                              currentTeamMembers.map((member) => +member.id)
-                            )
-                          )}
-                          updateSelections={({ id }) => {
-                            setSelectedTeamMembersToDelete((prev) =>
-                              toggleAddRemoveSetItem(prev, +id)
-                            );
-                          }}
-                          searchByKeys={["name"]}
-                          metadata={{
-                            listBoxEmptyLabel:
-                              "No team members have been added and saved to this agency",
-                            listBoxLabel: "Select team members to delete",
-                            searchBoxLabel: "Search team members",
-                          }}
-                          isActiveBox
-                        />
-                      )}
-                    </Styled.InputLabelWrapper>
-
                     {/* Add/Remove/Create New User */}
                     {activeSecondaryModal !== Setting.AGENCIES && (
-                      <Styled.InputLabelWrapper>
-                        <Styled.FormActions noMargin>
-                          {/* Add Agencies Button */}
-                          <Styled.ActionButton
-                            buttonAction={InteractiveSearchListActions.ADD}
-                            selectedColor={isAddUserAction ? "green" : ""}
-                            onClick={() => {
-                              setAddOrDeleteUserAction((prev) =>
-                                prev === InteractiveSearchListActions.ADD
-                                  ? undefined
-                                  : InteractiveSearchListActions.ADD
-                              );
-                            }}
-                          >
-                            Add Users
-                          </Styled.ActionButton>
-
-                          {/* Remove Agencies Button (note: when creating a new user, the delete action button is not necessary) */}
-                          {selectedAgency && (
-                            <Styled.ActionButton
-                              buttonAction={InteractiveSearchListActions.DELETE}
-                              selectedColor={isDeleteUserAction ? "red" : ""}
-                              onClick={() => {
-                                setAddOrDeleteUserAction((prev) =>
-                                  prev === InteractiveSearchListActions.DELETE
-                                    ? undefined
-                                    : InteractiveSearchListActions.DELETE
-                                );
-                              }}
-                            >
-                              Delete Users
-                            </Styled.ActionButton>
-                          )}
-
-                          {/* Create New User Button */}
-                          <Styled.ActionButton onClick={openSecondaryModal}>
-                            Create User
-                          </Styled.ActionButton>
-                        </Styled.FormActions>
-                      </Styled.InputLabelWrapper>
+                      <TeamMembersManagementButtons
+                        openSecondaryModal={openSecondaryModal}
+                      />
                     )}
 
-                    {/* Search Team Members */}
-                    {selectedIDToEdit && (
-                      <Styled.InputLabelWrapper noBottomSpacing>
-                        <input
-                          id="search-team-members"
-                          name="search-team-members"
-                          type="text"
-                          value={teamMembersSearchInput}
-                          onChange={(e) =>
-                            setTeamMembersSearchInput(e.target.value)
-                          }
-                        />
-                        <Styled.LabelWrapper>
-                          <label htmlFor="search-team-members">
-                            Search by name, email or user ID
-                          </label>
-                          {teamMembersSearchInput && (
-                            <Styled.LabelButton
-                              onClick={() => {
-                                setTeamMembersSearchInput("");
-                              }}
-                            >
-                              Clear
-                            </Styled.LabelButton>
-                          )}
-                        </Styled.LabelWrapper>
-                        {!filteredTeamMembers.length && (
-                          <Styled.EmptySearchMessage>
-                            No current team members found. Please modify your
-                            search and try again.
-                          </Styled.EmptySearchMessage>
-                        )}
-                      </Styled.InputLabelWrapper>
-                    )}
+                    {/* Add/Delete Team Members */}
+                    <Styled.InputLabelWrapper noBottomSpacing>
+                      <AddNewTeamMembers />
+                      <DeleteExistingTeamMembers />
+                    </Styled.InputLabelWrapper>
 
-                    <Styled.TeamMembersContainer>
-                      {/* Newly Added Team Members */}
-                      {availableTeamMembers
-                        .filter((member) =>
-                          selectedTeamMembersToAdd.has(+member.id)
-                        )
-                        .map((member) => (
-                          <Styled.TeamMemberCard key={member.id} added>
-                            <Styled.ChipInnerRow>
-                              <div>
-                                <Styled.ChipName>{member.name}</Styled.ChipName>
-                                <Styled.ChipEmail>
-                                  {member.email}
-                                </Styled.ChipEmail>
-                              </div>
-                              <Styled.ChipRole>
-                                <Styled.InputLabelWrapper noBottomSpacing>
-                                  <Dropdown
-                                    label={
-                                      <input
-                                        name={`${member.auth0_user_id}-role`}
-                                        type="button"
-                                        value={
-                                          removeSnakeCase(
-                                            teamMemberRoleUpdates[+member.id] ||
-                                              ""
-                                          ) ||
-                                          removeSnakeCase(
-                                            AgencyTeamMemberRole.READ_ONLY
-                                          )
-                                        }
-                                      />
-                                    }
-                                    options={userRoles.map((role) => ({
-                                      key: role,
-                                      label: removeSnakeCase(
-                                        role.toLocaleLowerCase()
-                                      ),
-                                      onClick: () => {
-                                        setTeamMemberRoleUpdates((prev) => ({
-                                          ...prev,
-                                          [member.id]: role,
-                                        }));
-                                      },
-                                    }))}
-                                    fullWidth
-                                    lightBoxShadow
-                                  />
-                                  <label htmlFor="new-team-member">Role</label>
-                                </Styled.InputLabelWrapper>
-                              </Styled.ChipRole>
-                            </Styled.ChipInnerRow>
-                          </Styled.TeamMemberCard>
-                        ))}
-
-                      {/* Existing Team Members */}
-                      {filteredTeamMembers
-                        .sort((a, b) => a.name.localeCompare(b.name))
-                        .map((member) => {
-                          return (
-                            <Styled.TeamMemberCard
-                              key={member.id}
-                              deleted={selectedTeamMembersToDelete.has(
-                                +member.id
-                              )}
-                            >
-                              <Styled.ChipInnerRow>
-                                <Styled.TopCardRowWrapper>
-                                  <Styled.NameSubheaderWrapper>
-                                    <Styled.ChipName>
-                                      {member.name}
-                                    </Styled.ChipName>
-
-                                    <Styled.ChipEmail>
-                                      {member.email}
-                                    </Styled.ChipEmail>
-                                    <Styled.ChipInvitationStatus>
-                                      {member.invitation_status}
-                                    </Styled.ChipInvitationStatus>
-                                  </Styled.NameSubheaderWrapper>
-                                  <Styled.ID>
-                                    ID {member.user_account_id}
-                                  </Styled.ID>
-                                </Styled.TopCardRowWrapper>
-
-                                <Styled.ChipRole>
-                                  <Styled.InputLabelWrapper noBottomSpacing>
-                                    <Dropdown
-                                      label={
-                                        <input
-                                          name={`${member.auth0_user_id}-role`}
-                                          type="button"
-                                          value={
-                                            removeSnakeCase(
-                                              teamMemberRoleUpdates[
-                                                +member.id
-                                              ] || ""
-                                            ) ||
-                                            removeSnakeCase(member.role || "")
-                                          }
-                                          disabled={selectedTeamMembersToDelete.has(
-                                            +member.id
-                                          )}
-                                        />
-                                      }
-                                      options={userRoles.map((role) => ({
-                                        key: role,
-                                        label: removeSnakeCase(role),
-                                        onClick: () => {
-                                          setTeamMemberRoleUpdates((prev) => {
-                                            if (role === member.role) {
-                                              const prevUpdates = { ...prev };
-                                              delete prevUpdates[+member.id];
-                                              return prevUpdates;
-                                            }
-                                            return {
-                                              ...prev,
-                                              [member.id]: role,
-                                            };
-                                          });
-                                        },
-                                      }))}
-                                      fullWidth
-                                      lightBoxShadow
-                                    />
-                                    <label htmlFor="new-team-member">
-                                      Role
-                                    </label>
-                                  </Styled.InputLabelWrapper>
-                                </Styled.ChipRole>
-                              </Styled.ChipInnerRow>
-                            </Styled.TeamMemberCard>
-                          );
-                        })}
-                    </Styled.TeamMembersContainer>
+                    {/* Team Members List with Search */}
+                    <TeamMembersList selectedAgencyID={selectedIDToEdit} />
                   </>
                 )}
 

@@ -160,8 +160,8 @@ export type AgencyProvisioningUpdates = {
   is_superagency: boolean | null;
   child_agency_ids: number[];
   team: AgencyTeamUpdates[];
-  agency_description: string;
-  agency_url: string;
+  agency_description: string | null;
+  agency_url: string | null;
 };
 
 export type AgencyTeamUpdates = {
@@ -202,6 +202,10 @@ export type UserProvisioningUpdates = {
 export type UserRoleUpdates = {
   [id: number]: AgencyTeamMemberRole;
 };
+
+export type AgencyTeamMembers = Array<
+  AgencyTeamMember & { id: string | number }
+>;
 
 /** Search Feature Types */
 
@@ -269,6 +273,50 @@ export type InteractiveSearchListProps = {
   };
   isActiveBox?: boolean;
 };
+
+/** Agency Provisioning Context Types */
+
+export type SetState<T> = React.Dispatch<React.SetStateAction<T>>;
+
+export interface GeneralAgencyInformationContext {
+  selectedSystems: Set<AgencySystem>;
+  setSelectedSystems: SetState<Set<AgencySystem>>;
+  nameValue: string;
+  setNameValue: SetState<string>;
+  descriptionValue: string;
+  setDescriptionValue: SetState<string>;
+  URLValue: string;
+  setURLValue: SetState<string>;
+  URLValidationError?: string;
+  setURLValidationError: SetState<string | undefined>;
+}
+
+export interface SuperagencyChildAgencyContext {
+  isChildAgencySelected: boolean;
+  setIsChildAgencySelected: SetState<boolean>;
+  selectedChildAgencyIDs: Set<number>;
+  setSelectedChildAgencyIDs: SetState<Set<number>>;
+}
+
+export interface CopySuperagencyMetricSettingsContext {
+  isCopySuperagencyMetricSettingsSelected: boolean;
+  setIsCopySuperagencyMetricSettingsSelected: SetState<boolean>;
+  selectedChildAgencyIDsToCopy: Set<number>;
+  setSelectedChildAgencyIDsToCopy: SetState<Set<number>>;
+  selectedMetricsKeys: Set<string>;
+  setSelectedMetricsKeys: SetState<Set<string>>;
+}
+
+export interface TeamMembersContext {
+  addOrDeleteUserAction?: InteractiveSearchListAction;
+  setAddOrDeleteUserAction: SetState<InteractiveSearchListAction | undefined>;
+  selectedTeamMembersToAdd: Set<number>;
+  setSelectedTeamMembersToAdd: SetState<Set<number>>;
+  selectedTeamMembersToDelete: Set<number>;
+  setSelectedTeamMembersToDelete: SetState<Set<number>>;
+  teamMemberRoleUpdates: UserRoleUpdates | Record<number, never>;
+  setTeamMemberRoleUpdates: SetState<UserRoleUpdates | Record<number, never>>;
+}
 
 /** State and County Code Types */
 
