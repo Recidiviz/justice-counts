@@ -20,13 +20,23 @@ import styled from "styled-components";
 import { palette, typography } from "../GlobalStyles";
 import { TabbedBarSize } from "./types";
 
-export const TabsContainer = styled.div`
+export const Wrapper = styled.div<{ scrollable?: boolean }>`
+  width: 100%;
+  position: relative;
+`;
+
+export const TabsContainer = styled.div<{ scrollable?: boolean }>`
   width: 100%;
   display: flex;
   flex-direction: row;
   align-items: center;
   gap: 16px;
   border-bottom: 1px solid ${palette.solid.lightgrey4};
+
+  ${({ scrollable }) =>
+    scrollable &&
+    `overflow-x: auto;
+    white-space: nowrap;`}
 `;
 
 export const Tab = styled.div<{
@@ -60,4 +70,38 @@ export const Tab = styled.div<{
       return palette.solid.blue;
     }};
   }
+`;
+
+export const LeftGradient = styled.div<{
+  isShowing: boolean;
+}>`
+  background: linear-gradient(
+    0.25turn,
+    rgb(255, 255, 255, 1),
+    rgb(255, 255, 255, 0)
+  );
+  width: 42px;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: ${({ isShowing }) => (isShowing ? 1 : 0)};
+  transition: opacity 300ms;
+`;
+
+export const RightGradient = styled.div<{
+  isShowing: boolean;
+}>`
+  background: linear-gradient(
+    0.25turn,
+    rgb(255, 255, 255, 0),
+    rgb(255, 255, 255, 1)
+  );
+  width: 42px;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  right: 0;
+  opacity: ${({ isShowing }) => (isShowing ? 1 : 0)};
+  transition: opacity 300ms;
 `;

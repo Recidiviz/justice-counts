@@ -17,31 +17,43 @@
 
 import React from "react";
 
+import { useScrollShadows } from "../../hooks";
 import * as Styled from "./TabbedBar.styled";
 import { TabbedBarSize, TabOption } from "./types";
 
 type TabbedBarProps = {
   options: TabOption[];
   size?: TabbedBarSize;
+  scrollable?: boolean;
 };
 
-export function TabbedBar({ options, size }: TabbedBarProps) {
+export function TabbedBar({ options, size, scrollable }: TabbedBarProps) {
+  const {
+    ref: scrollContainerRef,
+    showLeftShadow,
+    showRightShadow,
+  } = useScrollShadows<HTMLDivElement>();
+
   return (
-    <Styled.TabsContainer>
-      {options.map(
-        ({ key, label, onClick, selected, enabled, indicator, hide }) =>
-          !hide ? (
-            <Styled.Tab
-              key={key}
-              onClick={onClick}
-              selected={selected}
-              enabled={enabled}
-              size={size}
-            >
-              {label} {indicator}
-            </Styled.Tab>
-          ) : null
-      )}
-    </Styled.TabsContainer>
+    <Styled.Wrapper>
+      {!!scrollable && <Styled.LeftGradient isShowing={showLeftShadow} />}
+      <Styled.TabsContainer ref={scrollContainerRef} scrollable={scrollable}>
+        {options.map(
+          ({ key, label, onClick, selected, enabled, indicator, hide }) =>
+            !hide ? (
+              <Styled.Tab
+                key={key}
+                onClick={onClick}
+                selected={selected}
+                enabled={enabled}
+                size={size}
+              >
+                {label} {indicator}
+              </Styled.Tab>
+            ) : null
+        )}
+      </Styled.TabsContainer>
+      {!!scrollable && <Styled.RightGradient isShowing={showRightShadow} />}
+    </Styled.Wrapper>
   );
 }

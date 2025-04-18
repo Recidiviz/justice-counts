@@ -32,6 +32,8 @@ import {
   AgencyResponse,
   AgencyTeamUpdates,
   AgencyWithTeamByID,
+  BreakdownSettings,
+  BreakdownSettingsUpdates,
   Environment,
   ErrorResponse,
   FipsCountyCodeKey,
@@ -93,6 +95,10 @@ class AdminPanelStore {
 
   reportingAgenciesUpdates: ReportingAgency[];
 
+  agencyBreakdownSettings: BreakdownSettings[];
+
+  breakdownSettingsUpdates: BreakdownSettingsUpdates[];
+
   userProvisioningUpdates: UserProvisioningUpdates;
 
   agencyProvisioningUpdates: AgencyProvisioningUpdates;
@@ -119,6 +125,8 @@ class AdminPanelStore {
     this.reportingAgenciesUpdates = [];
     this.userProvisioningUpdates = initialEmptyUserProvisioningUpdates;
     this.agencyProvisioningUpdates = initialEmptyAgencyProvisioningUpdates;
+    this.agencyBreakdownSettings = [];
+    this.breakdownSettingsUpdates = [];
     this.userAgenciesLoading = false;
     this.teamMemberListLoading = false;
     this.reportingAgencyMetadataLoading = false;
@@ -399,6 +407,28 @@ class AdminPanelStore {
       runInAction(() => {
         this.reportingAgencyMetadata = data;
         this.reportingAgencyMetadataLoading = false;
+      });
+    } catch (error) {
+      if (error instanceof Error) return new Error(error.message);
+    }
+  }
+
+  async fetchBreakdownSettings(agencyID: string) {
+    try {
+      const response = (await this.api.request({
+        path: `admin/agency/${agencyID}/metric-setting`,
+        method: "GET",
+      })) as Response;
+      const data = (await response.json()) as BreakdownSettings[];
+
+      if (response.status !== 200) {
+        throw new Error(
+          "There was an issue fetching agency breakdown settings."
+        );
+      }
+
+      runInAction(() => {
+        this.agencyBreakdownSettings = data;
       });
     } catch (error) {
       if (error instanceof Error) return new Error(error.message);
@@ -729,6 +759,81 @@ class AdminPanelStore {
   resetReportingAgenciesUpdates() {
     this.reportingAgenciesUpdates = [];
   }
+
+  /** Agency Breakdown Settings */
+
+  async saveBreakdownSettings(
+    agencyID: string,
+    updates: BreakdownSettingsUpdates[]
+  ) {
+    try {
+      const response = (await this.api.request({
+        path: `admin/agency/${agencyID}/metric-setting`,
+        method: "PUT",
+        body: { updates },
+      })) as Response;
+      const agenciesResponse = (await response.json()) as Response;
+
+      if (response.status !== 200) {
+        throw new Error(`There was an issue saving agency breakdown settings.`);
+      }
+
+      return agenciesResponse;
+    } catch (error) {
+      if (error instanceof Error) return new Error(error.message);
+    }
+  }
+
+  updateBreakdownSettings = (
+    breakdownSettings: BreakdownSettings[],
+    inputMap: Record<string, string[]>
+  ) => {
+    const updates: BreakdownSettingsUpdates[] = [];
+
+    breakdownSettings?.forEach((breakdown) =>
+      breakdown.metric_settings.forEach((setting) => {
+        const metricUpdates: BreakdownSettingsUpdates = {
+          metric_key: setting.metric_key,
+          breakdowns: [],
+        };
+
+        setting.disaggregations.forEach((disaggregation) => {
+          disaggregation.other_sub_dimensions.forEach((dimension) => {
+            const mapKey = `${setting.metric_key}_${dimension.dimension_name}`;
+            const initialInputs = dimension.other_options;
+            const currentInputs = inputMap[mapKey] || [];
+            const cleanedInputs = currentInputs.map((x) => x.trim());
+
+            const hasChanges =
+              cleanedInputs.length !== (initialInputs.length || 0) ||
+              cleanedInputs.some((val, index) => val !== initialInputs[index]);
+
+            if (hasChanges) {
+              metricUpdates.breakdowns.push({
+                dimension_id: disaggregation.dimension_id,
+                sub_dimensions: [
+                  {
+                    dimension_key: dimension.dimension_key,
+                    other_options: cleanedInputs.filter(Boolean), // if empty, it's intentional
+                  },
+                ],
+              });
+            }
+          });
+        });
+
+        if (metricUpdates.breakdowns.length > 0) {
+          updates.push(metricUpdates);
+        }
+      })
+    );
+
+    runInAction(() => {
+      this.breakdownSettingsUpdates = updates;
+    });
+
+    return updates;
+  };
 
   /** Vendors Management */
 
