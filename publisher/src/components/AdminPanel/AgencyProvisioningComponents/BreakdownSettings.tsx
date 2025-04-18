@@ -123,7 +123,7 @@ export const BreakdownSettings: React.FC<BreakdownSettingsProps> = observer(
               const currentInputs = inputMap[mapKey] || [];
 
               return (
-                <Styled.Metric key={setting.metric_key}>
+                <Styled.Metric key={mapKey}>
                   <Styled.MetricTitle>
                     {setting.metric_display_name}: {dimension.dimension_name}
                   </Styled.MetricTitle>
