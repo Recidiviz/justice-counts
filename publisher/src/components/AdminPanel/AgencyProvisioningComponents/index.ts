@@ -38,3 +38,6 @@ export { TeamMembersManagementButtons } from "./TeamMembersManagementButtons";
 
 /* Metrics Reporting Agency */
 export { MetricsReportingAgency } from "./MetricsReportingAgency";
+
+/* Breakdown Settings */
+export { BreakdownSettings } from "./BreakdownSettings";

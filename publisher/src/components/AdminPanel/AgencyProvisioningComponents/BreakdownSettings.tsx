@@ -22,8 +22,8 @@ import { startCase } from "lodash";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 
-import { useStore } from "../../stores";
-import * as Styled from "./AdminPanel.styles";
+import { useStore } from "../../../stores";
+import * as Styled from "../AdminPanel.styles";
 
 type BreakdownSettingsProps = {
   selectedIDToEdit?: string | number;

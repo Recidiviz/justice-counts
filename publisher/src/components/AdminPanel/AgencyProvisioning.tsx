@@ -50,6 +50,7 @@ import {
   AgencyStateInput,
   AgencySystemsInput,
   AgencyURLInput,
+  BreakdownSettings,
   ChildAgenciesList,
   CopySuperagencyMetricSettings,
   CopySuperagencyMetricSettingsCheckbox,
@@ -64,7 +65,6 @@ import {
 } from "./AgencyProvisioningComponents";
 import { getCurrentTeamMembers } from "./AgencyProvisioningComponents/utils";
 import { useAgencyProvisioning } from "./AgencyProvisioningContext";
-import { BreakdownSettings } from "./BreakdownSettings";
 
 export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
   ({
