@@ -35,6 +35,7 @@ import {
   UserWithAgenciesByID,
 } from ".";
 import * as Styled from "./AdminPanel.styles";
+import { AgencyProvisioningProvider } from "./AgencyProvisioningContext";
 
 export const UserProvisioningOverview = observer(() => {
   const { adminPanelStore } = useStore();
@@ -77,6 +78,7 @@ export const UserProvisioningOverview = observer(() => {
     if (!activeSecondaryModal) {
       resetUserProvisioningUpdates();
       setSelectedUserID(undefined);
+      setAgencyId(undefined);
       setIsModalOpen(false);
     } else {
       resetAgencyProvisioningUpdates();
@@ -143,11 +145,13 @@ export const UserProvisioningOverview = observer(() => {
           {activeSecondaryModal === Setting.AGENCIES && (
             <DelayedRender delay={250}>
               <Modal>
-                <AgencyProvisioning
-                  closeModal={closeModal}
-                  activeSecondaryModal={activeSecondaryModal}
-                  setSecondaryCreatedId={setSecondaryCreatedId}
-                />
+                <AgencyProvisioningProvider selectedAgencyID={agencyId}>
+                  <AgencyProvisioning
+                    closeModal={closeModal}
+                    activeSecondaryModal={activeSecondaryModal}
+                    setSecondaryCreatedId={setSecondaryCreatedId}
+                  />
+                </AgencyProvisioningProvider>
               </Modal>
             </DelayedRender>
           )}

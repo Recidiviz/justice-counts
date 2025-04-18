@@ -20,9 +20,9 @@ import { removeSnakeCase } from "@justice-counts/common/utils";
 import { observer } from "mobx-react-lite";
 import React from "react";
 
-import { useStore } from "../../stores";
-import { DropdownContainer } from "../Reports/CreateReport.styled";
-import * as Styled from "./AdminPanel.styles";
+import { useStore } from "../../../stores";
+import { DropdownContainer } from "../../Reports/CreateReport.styled";
+import * as Styled from "../AdminPanel.styles";
 
 type MetricsReportingAgencyProps = {
   selectedIDToEdit?: string | number;
