@@ -47,7 +47,7 @@ export const BreakdownSettings: React.FC<BreakdownSettingsProps> = observer(
         breakdown.metric_settings.forEach((setting) =>
           setting.disaggregations.forEach((disaggregation) =>
             disaggregation.other_sub_dimensions.forEach((dimension) => {
-              const mapKey = `${setting.metric_key}_${dimension.dimension_key}`;
+              const mapKey = `${setting.metric_key}_${dimension.dimension_name}`;
               initialInputMap[mapKey] = [...dimension.other_options];
             })
           )
@@ -119,7 +119,7 @@ export const BreakdownSettings: React.FC<BreakdownSettingsProps> = observer(
         {currentMetricSettings.map((setting) =>
           setting.disaggregations.map((disaggregation) =>
             disaggregation.other_sub_dimensions.map((dimension) => {
-              const mapKey = `${setting.metric_key}_${dimension.dimension_key}`;
+              const mapKey = `${setting.metric_key}_${dimension.dimension_name}`;
               const currentInputs = inputMap[mapKey] || [];
 
               return (

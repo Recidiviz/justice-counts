@@ -799,7 +799,7 @@ class AdminPanelStore {
 
         setting.disaggregations.forEach((disaggregation) => {
           disaggregation.other_sub_dimensions.forEach((dimension) => {
-            const mapKey = `${setting.metric_key}_${dimension.dimension_key}`;
+            const mapKey = `${setting.metric_key}_${dimension.dimension_name}`;
             const initialInputs = dimension.other_options;
             const currentInputs = inputMap[mapKey] || [];
             const cleanedInputs = currentInputs.map((x) => x.trim());
