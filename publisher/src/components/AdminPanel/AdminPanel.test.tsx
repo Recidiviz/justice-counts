@@ -195,8 +195,7 @@ test("Clicking the `Create User` button opens the create user modal", () => {
   expect(saveButton).toBeInTheDocument();
 });
 
-/* TODO(#1728): Undo skipping of this test once this issue is resolved */
-test.skip("Clicking the `Create New Agency` button opens the create agency secondary modal", async () => {
+test("Clicking the `Create New Agency` button opens the create agency secondary modal", async () => {
   runInAction(() => {
     adminPanelStore.usersByID = usersByID;
   });
@@ -428,7 +427,7 @@ test("Adding an agency adds agency to user's agency list", async () => {
     </BrowserRouter>
   );
 
-  const user1Card = screen.getByText("Anne Teak");
+  let user1Card = screen.getByText("Anne Teak");
   /** Click on Anne Teak's card from the `UserProvisioningOverview` */
   fireEvent.click(user1Card);
 
@@ -436,7 +435,7 @@ test("Adding an agency adds agency to user's agency list", async () => {
     adminPanelStore.userAgenciesLoading = false;
   });
 
-  const addAgenciesButton = screen.getByText("Add Agencies");
+  let addAgenciesButton = screen.getByText("Add Agencies");
 
   expect(screen.queryByText("User's agencies")).not.toBeNull();
   expect(screen.queryByText("Select agencies to delete")).toBeNull();
@@ -481,6 +480,20 @@ test("Adding an agency adds agency to user's agency list", async () => {
    * Confirm that the agency is now on the user's list of agencies, and the user
    * is connected to all available agencies.
    */
+
+  const cancelButton = screen.getByText("Cancel");
+  fireEvent.click(cancelButton);
+
+  user1Card = screen.getByText("Anne Teak");
+  fireEvent.click(user1Card);
+
+  await waitFor(() => {
+    adminPanelStore.userAgenciesLoading = false;
+  });
+
+  addAgenciesButton = screen.getByText("Add Agencies");
+  fireEvent.click(addAgenciesButton);
+
   agency3Chip = screen.getAllByText("Department of Z")[0];
   noAvailableAgenciesLabel = screen.getByText(
     "User is connected to all available agencies"
