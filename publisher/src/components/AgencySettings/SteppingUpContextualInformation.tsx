@@ -191,7 +191,7 @@ const SteppingUpContextualInformation: React.FC<{
 
                 {/* screening timing */}
                 <SteppingUpQuestionWrapper>
-                  When does your agency screen individuals with behavioral
+                  How does your agency screen individuals with behavioral
                   health needs? (Select all that apply)
                 </SteppingUpQuestionWrapper>
                 <SteppingUpSubtitle small>
@@ -234,7 +234,7 @@ const SteppingUpContextualInformation: React.FC<{
 
                 {/* tools */}
                 <SteppingUpQuestionWrapper>
-                  What tools does your agency use to identify behavioral health
+                  If you are using a tool to identify behavioral health needs, what tools does your agency use to identify behavioral health
                   needs? (Select all that apply)
                 </SteppingUpQuestionWrapper>
                 <CheckboxOptions
