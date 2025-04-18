@@ -1019,6 +1019,12 @@ export const ReportingAgencyDropdownWrapper = styled.div`
 
 /* Agency Breakdown Settings styles */
 
+export const BreakdownSettingsWrapper = styled.div`
+  max-width: 700px;
+  font-weight: 400;
+  font-size: 14px;
+`;
+
 export const Metric = styled.div`
   display: flex;
   flex-direction: column;

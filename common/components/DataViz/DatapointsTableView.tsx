@@ -16,8 +16,8 @@
 // =============================================================================
 
 import React, { useCallback, useState } from "react";
-import { useInView } from "react-intersection-observer";
 
+import { useScrollShadows } from "../../hooks";
 import {
   DataVizAggregateName,
   RawDatapoint,
@@ -124,8 +124,12 @@ export const DatapointsTableView: React.FC<{
   metricFrequency,
   useMultiAgencyStyles,
 }) => {
-  const leftShadow = useInView();
-  const rightShadow = useInView();
+  const {
+    ref: scrollContainerRef,
+    showLeftShadow,
+    showRightShadow,
+  } = useScrollShadows<HTMLDivElement>();
+
   const [hoveredRowKey, setHoveredRowKey] = useState<string | null>(null);
   const [hoveredColKey, setHoveredColKey] = useState<number | null>(null);
 
@@ -273,7 +277,7 @@ export const DatapointsTableView: React.FC<{
           </DatapointsTableNamesTable>
         </DatapointsTableNamesContainer>
         <DatapointsTableDetailsContainer useDataPageStyles={useDataPageStyles}>
-          <DatapointsTableDetailScrollContainer>
+          <DatapointsTableDetailScrollContainer ref={scrollContainerRef}>
             <DatapointsTableDetailsTable cellPadding="16px">
               <DatapointsTableDetailsRowHead>
                 <DatapointsTableDetailsRow>
@@ -291,12 +295,6 @@ export const DatapointsTableView: React.FC<{
                         onMouseLeave={() => setHoveredColKey(null)}
                         isColHovered={index === hoveredColKey}
                       >
-                        {/* Shadow's anchors */}
-                        {index === 0 && <div ref={leftShadow.ref} />}
-                        {index === startDatesWithFrequency.length - 1 && (
-                          <div ref={rightShadow.ref} />
-                        )}
-
                         <span>
                           {formatDateShortMonthYear(date)}
                           <Badge color={reportFrequencyBadgeColors[frequency]}>
@@ -338,10 +336,10 @@ export const DatapointsTableView: React.FC<{
           </DatapointsTableDetailScrollContainer>
           <DatapointsTableDetailsContainerOverlay>
             <DatapointsTableDetailsContainerOverlayLeftGradient
-              isShowing={!leftShadow.inView}
+              isShowing={showLeftShadow}
             />
             <DatapointsTableDetailsContainerOverlayRightGradient
-              isShowing={!rightShadow.inView}
+              isShowing={showRightShadow}
             />
           </DatapointsTableDetailsContainerOverlay>
         </DatapointsTableDetailsContainer>

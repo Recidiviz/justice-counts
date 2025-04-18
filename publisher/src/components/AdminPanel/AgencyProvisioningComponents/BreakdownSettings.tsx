@@ -106,7 +106,7 @@ export const BreakdownSettings: React.FC<BreakdownSettingsProps> = observer(
     if (!currentMetricSettings || !selectedIDToEdit) return null;
 
     return (
-      <Styled.ReportingAgencyWrapper>
+      <Styled.BreakdownSettingsWrapper>
         <Styled.ModalTitle noBottomMargin>
           Customize “Other” Breakdowns
         </Styled.ModalTitle>
@@ -114,7 +114,7 @@ export const BreakdownSettings: React.FC<BreakdownSettingsProps> = observer(
           Below is a list of metrics along with their “Other” breakdowns, where
           you can add, edit or remove additional sub-breakdowns (dimensions)
         </Styled.VendorsTitle>
-        <TabbedBar options={tabOptions} />
+        <TabbedBar options={tabOptions} scrollable />
 
         {currentMetricSettings.map((setting) =>
           setting.disaggregations.map((disaggregation) =>
@@ -160,7 +160,7 @@ export const BreakdownSettings: React.FC<BreakdownSettingsProps> = observer(
             })
           )
         )}
-      </Styled.ReportingAgencyWrapper>
+      </Styled.BreakdownSettingsWrapper>
     );
   }
 );

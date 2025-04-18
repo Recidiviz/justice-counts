@@ -585,7 +585,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
               )}
 
               {/* Toggle between Agency Information and Team Members & Roles */}
-              <TabbedBar options={settingOptions} />
+              <TabbedBar options={settingOptions} scrollable />
             </Styled.ModalHeader>
 
             <Styled.ScrollableContainer ref={scrollableContainerRef}>
