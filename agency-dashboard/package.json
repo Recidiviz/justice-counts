@@ -8,7 +8,7 @@
     "@types/bluebird": "^3.5.42",
     "bluebird": "^3.7.2",
     "file-saver": "^2.0.5",
-    "http-proxy-middleware": "^2.0.7",
+    "http-proxy-middleware": "^3.0.5",
     "mobx": "^6.13.6",
     "mobx-react-lite": "^4.1.0",
     "react": "^18.3.1",
