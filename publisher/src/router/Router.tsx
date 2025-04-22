@@ -30,6 +30,7 @@ import { REPORTS_LOWERCASE } from "../components/Global/constants";
 import Header from "../components/Header";
 import { Home } from "../components/Home";
 import { Loading } from "../components/Loading";
+import { LoadingError } from "../components/Loading/LoadingError";
 import { MetricsConfiguration } from "../components/MetricsConfiguration";
 import BulkActionReview from "../components/Reports/BulkActionReview";
 import CreateReport from "../components/Reports/CreateReport";
@@ -45,6 +46,7 @@ export const Router = observer(() => {
   const { userStore } = useStore();
 
   const isAgencyIdInUserAgencies = userStore.getAgency(agencyId);
+  const isAgencyProvisioned = userStore.dropdownAgenciesById[agencyId];
 
   useEffect(() => {
     // Track the user's visit to the agency page.
@@ -60,11 +62,11 @@ export const Router = observer(() => {
     loadAgencyData();
   }, [userStore, agencyId]);
 
-  if (!userStore.getAgency(agencyId))
+  if (!isAgencyIdInUserAgencies)
     return (
       <PageWrapper>
         <Header />
-        <Loading />
+        {!isAgencyProvisioned ? <LoadingError /> : <Loading />}
       </PageWrapper>
     );
 
