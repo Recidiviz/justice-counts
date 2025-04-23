@@ -28,6 +28,7 @@ import {
   MetricDisaggregationContext,
   MetricDisaggregationDimensions,
   MetricDisaggregations,
+  SubDimensions,
 } from "@justice-counts/common/types";
 import { makeAutoObservable, runInAction } from "mobx";
 
@@ -105,6 +106,7 @@ class MetricConfigStore {
           key?: string;
           race?: Races;
           ethnicity?: Ethnicities;
+          sub_dimensions?: SubDimensions;
           contexts?: MetricDimensionContext[];
           is_dimension_includes_excludes_configured?: ConfigurationStatus | null;
         };
@@ -303,6 +305,7 @@ class MetricConfigStore {
                       key: dimension.key,
                       enabled: dimension.enabled,
                       description: dimension.description,
+                      sub_dimensions: dimension.sub_dimensions,
                       is_dimension_includes_excludes_configured:
                         dimension.is_dimension_includes_excludes_configured,
                     };
@@ -443,6 +446,7 @@ class MetricConfigStore {
       | "ethnicity"
       | "description"
       | "is_dimension_includes_excludes_configured"
+      | "sub_dimensions"
     >
   ) => {
     const systemMetricKey = MetricConfigStore.getSystemMetricKey(
@@ -476,6 +480,9 @@ class MetricConfigStore {
     ].description = dimensionData.description;
     this.dimensions[systemMetricKey][disaggregationKey][dimensionKey].enabled =
       dimensionData.enabled;
+    this.dimensions[systemMetricKey][disaggregationKey][
+      dimensionKey
+    ].sub_dimensions = dimensionData.sub_dimensions;
     if (disaggregationKey === RACE_ETHNICITY_DISAGGREGATION_KEY) {
       this.dimensions[systemMetricKey][disaggregationKey][dimensionKey].race =
         dimensionData.race as Races;

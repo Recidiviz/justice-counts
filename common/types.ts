@@ -266,12 +266,17 @@ export type MetricDimensionContext = {
   label?: string;
 };
 
+export type SubDimensions = {
+  [key: string]: boolean | null;
+};
+
 export interface MetricDisaggregationDimensions {
   key: string;
   label: string;
   value: string | number | boolean | null | undefined;
   reporting_note: string;
   contexts?: MetricDimensionContext[];
+  sub_dimensions?: SubDimensions;
   enabled?: boolean;
   includes_excludes?: MetricIncludesExcludes[];
   display_name?: string;

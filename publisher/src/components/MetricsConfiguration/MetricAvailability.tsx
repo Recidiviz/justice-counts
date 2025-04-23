@@ -35,6 +35,7 @@ import {
   SupervisionSubsystems,
   SupervisionSystem,
 } from "@justice-counts/common/types";
+import { startCase } from "lodash";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -765,9 +766,9 @@ function MetricAvailability({
                       >
                         <CheckboxOptions
                           options={[
-                            ...Object.values(currentDimensions).map(
+                            ...Object.values(currentDimensions).flatMap(
                               (dimension) => {
-                                return {
+                                const baseOption = {
                                   key: dimension.key as string,
                                   label: dimension.label as string,
                                   checked: Boolean(dimension.enabled),
@@ -790,6 +791,24 @@ function MetricAvailability({
                                     }
                                   },
                                 };
+
+                                if (
+                                  dimension.key === otherDimensionKey &&
+                                  dimension.sub_dimensions
+                                ) {
+                                  const subDimensionOptions = Object.entries(
+                                    dimension.sub_dimensions
+                                  ).map(([subDimension, value]) => ({
+                                    key: `${dimension.key}_${subDimension}`,
+                                    label: `${dimension.label} - ${startCase(subDimension.toLocaleLowerCase())}`,
+                                    checked: Boolean(value),
+                                    indent: 32,
+                                  }));
+
+                                  return [baseOption, ...subDimensionOptions];
+                                }
+
+                                return [baseOption];
                               }
                             ),
                             {
