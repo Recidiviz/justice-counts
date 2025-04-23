@@ -33,6 +33,7 @@ import {
   MetricDisaggregations,
 } from "@justice-counts/common/types";
 import { replaceSymbolsWithDash } from "@justice-counts/common/utils";
+import { startCase } from "lodash";
 import { observer } from "mobx-react-lite";
 import React, { Fragment, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -51,6 +52,7 @@ import {
   DisaggregationInputWrapper,
   DisaggregationsDropdownContainer,
   DisaggregationsTabbedBarContainer,
+  DisaggregationSubinputWrapper,
   DisaggregationTooltipLink,
   EthnicityHeader,
 } from ".";
@@ -185,17 +187,27 @@ export const TabbedDisaggregations: React.FC<{
     return null;
   };
 
+  const [hideCustomOtherConfig, setHideCustomOtherConfig] = useState(false);
+
   const renderDimension = ({
     dimension,
   }: {
     dimension: MetricDisaggregationDimensions;
   }) => {
+    const subDimensions = {
+      test1: null,
+      test2: null,
+    };
+    const hasSubinputs =
+      dimension.key.includes("Other") && Boolean(subDimensions);
+
     return (
       <DisaggregationInputWrapper
         key={dimension.key}
         onChange={() =>
           updateDisaggregationHasInput(activeDisaggregationObj.key)
         }
+        hasSubinputs={hasSubinputs && !hideCustomOtherConfig}
       >
         <DisaggregationDimensionTextInput
           reportID={reportID}
@@ -211,7 +223,44 @@ export const TabbedDisaggregations: React.FC<{
             disabled || !activeDisaggregationObj.enabled || !dimension.enabled
           }
           clearFieldDescription={() => updateFieldDescription(undefined)}
+          isLabelClickable={hasSubinputs}
+          clickableLabelSymbol={
+            hasSubinputs && !hideCustomOtherConfig ? "-" : "+"
+          }
+          onLabelClick={() =>
+            hasSubinputs && setHideCustomOtherConfig(!hideCustomOtherConfig)
+          }
         />
+        {hasSubinputs && !hideCustomOtherConfig && (
+          <DisaggregationSubinputWrapper>
+            {Object.entries(subDimensions).map(([subDimension, value]) => {
+              return (
+                <DisaggregationDimensionTextInput
+                  reportID={reportID}
+                  key={dimension.key + dimension.reporting_note + subDimension}
+                  metric={metric}
+                  dimension={dimension}
+                  customLabel={`${dimension.key} - ${startCase(subDimension.toLocaleLowerCase())}`}
+                  disaggregation={activeDisaggregationObj}
+                  updateFieldDescription={() =>
+                    updateFieldDescription(
+                      dimension.label,
+                      dimension.reporting_note
+                    )
+                  }
+                  disabled={
+                    disabled ||
+                    !activeDisaggregationObj.enabled ||
+                    !dimension.enabled
+                  }
+                  clearFieldDescription={() =>
+                    updateFieldDescription(undefined)
+                  }
+                />
+              );
+            })}
+          </DisaggregationSubinputWrapper>
+        )}
       </DisaggregationInputWrapper>
     );
   };

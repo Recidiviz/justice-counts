@@ -265,8 +265,10 @@ export const DisaggregationDimensions = styled.div`
   justify-content: space-between;
 `;
 
-export const DisaggregationInputWrapper = styled.div`
-  width: 49%;
+export const DisaggregationInputWrapper = styled.div<{
+  hasSubinputs?: boolean;
+}>`
+  width: ${({ hasSubinputs }) => (hasSubinputs ? 100 : 49)}%;
   padding-bottom: 24px;
 
   label {
@@ -278,6 +280,7 @@ export const DisaggregationInputWrapper = styled.div`
   }
 
   input {
+    width: 100%;
     height: 36px;
   }
 
@@ -287,6 +290,21 @@ export const DisaggregationInputWrapper = styled.div`
     label {
       width: 100%;
     }
+  }
+`;
+
+export const DisaggregationSubinputWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px 0px 16px 16px;
+  margin-left: 16px;
+  border-left: 1px solid ${palette.solid.lightgrey3};
+  border-bottom: 1px solid ${palette.solid.lightgrey3};
+  border-bottom-left-radius: 8px;
+
+  & input {
+    width: 100%;
   }
 `;
 

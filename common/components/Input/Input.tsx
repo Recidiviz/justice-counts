@@ -43,6 +43,8 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   fullWidth?: boolean;
   agencySettingsConfigs?: boolean;
   settingsCustomMargin?: boolean;
+  isLabelClickable?: boolean;
+  onLabelClick?: () => void;
 }
 
 export function Input({
@@ -203,6 +205,8 @@ export function NewInput({
   settingsCustomMargin,
   notReported,
   notReportedIconTooltip,
+  isLabelClickable,
+  onLabelClick,
   ...props
 }: InputProps) {
   const [showNotReportedTooltip, setShowNotReportedTooltip] =
@@ -223,7 +227,12 @@ export function NewInput({
       onFocus={clearTooltip}
     >
       {!hideLabel && (
-        <Styled.NewInputLabel htmlFor={`input-${name}`} error={Boolean(error)}>
+        <Styled.NewInputLabel
+          htmlFor={`input-${name}`}
+          error={Boolean(error)}
+          isLabelClickable={isLabelClickable}
+          onClick={onLabelClick}
+        >
           {label}
         </Styled.NewInputLabel>
       )}
