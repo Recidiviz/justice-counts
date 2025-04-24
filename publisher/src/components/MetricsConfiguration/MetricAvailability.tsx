@@ -796,14 +796,15 @@ function MetricAvailability({
                                   dimension.key === otherDimensionKey &&
                                   dimension.sub_dimensions
                                 ) {
-                                  const subDimensionOptions = Object.entries(
-                                    dimension.sub_dimensions
-                                  ).map(([subDimension, value]) => ({
-                                    key: `${dimension.key}_${subDimension}`,
-                                    label: `${dimension.label} - ${startCase(subDimension.toLocaleLowerCase())}`,
-                                    checked: Boolean(value),
-                                    indent: 32,
-                                  }));
+                                  const subDimensionOptions =
+                                    dimension.sub_dimensions.map(
+                                      (subDimension) => ({
+                                        key: `${dimension.key}_${subDimension.name}`,
+                                        label: `${dimension.label} - ${startCase(subDimension.name.toLocaleLowerCase())}`,
+                                        checked: Boolean(subDimension.enabled),
+                                        indent: 32,
+                                      })
+                                    );
 
                                   return [baseOption, ...subDimensionOptions];
                                 }

@@ -106,7 +106,7 @@ class MetricConfigStore {
           key?: string;
           race?: Races;
           ethnicity?: Ethnicities;
-          sub_dimensions?: SubDimensions;
+          sub_dimensions?: SubDimensions[];
           contexts?: MetricDimensionContext[];
           is_dimension_includes_excludes_configured?: ConfigurationStatus | null;
         };

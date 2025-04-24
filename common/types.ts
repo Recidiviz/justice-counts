@@ -267,7 +267,10 @@ export type MetricDimensionContext = {
 };
 
 export type SubDimensions = {
-  [key: string]: boolean | null;
+  name: string;
+  display_name?: string;
+  enabled: boolean | null;
+  value: string | null;
 };
 
 export interface MetricDisaggregationDimensions {
@@ -276,7 +279,7 @@ export interface MetricDisaggregationDimensions {
   value: string | number | boolean | null | undefined;
   reporting_note: string;
   contexts?: MetricDimensionContext[];
-  sub_dimensions?: SubDimensions;
+  sub_dimensions?: SubDimensions[];
   enabled?: boolean;
   includes_excludes?: MetricIncludesExcludes[];
   display_name?: string;

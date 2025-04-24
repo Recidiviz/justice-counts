@@ -86,7 +86,7 @@ export type Dimensions = {
     label?: string;
     description?: string;
     contexts?: MetricDimensionContext[];
-    sub_dimensions?: SubDimensions;
+    sub_dimensions?: SubDimensions[];
     key?: string;
     race?: Races;
     ethnicity?: Ethnicities;

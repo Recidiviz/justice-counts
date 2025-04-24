@@ -194,12 +194,8 @@ export const TabbedDisaggregations: React.FC<{
   }: {
     dimension: MetricDisaggregationDimensions;
   }) => {
-    const subDimensions = {
-      test1: null,
-      test2: null,
-    };
     const hasSubinputs =
-      dimension.key.includes("Other") && Boolean(subDimensions);
+      dimension.key.includes("Other") && Boolean(dimension.sub_dimensions);
 
     return (
       <DisaggregationInputWrapper
@@ -233,14 +229,20 @@ export const TabbedDisaggregations: React.FC<{
         />
         {hasSubinputs && !hideCustomOtherConfig && (
           <DisaggregationSubinputWrapper>
-            {Object.entries(subDimensions).map(([subDimension, value]) => {
+            {dimension.sub_dimensions?.map((subDimension) => {
+              if (!subDimension.display_name) return null;
+
               return (
                 <DisaggregationDimensionTextInput
                   reportID={reportID}
-                  key={dimension.key + dimension.reporting_note + subDimension}
+                  key={
+                    dimension.key +
+                    dimension.reporting_note +
+                    subDimension.display_name
+                  }
                   metric={metric}
                   dimension={dimension}
-                  customLabel={`${dimension.key} - ${startCase(subDimension.toLocaleLowerCase())}`}
+                  customLabel={`${dimension.key} - ${startCase(subDimension.display_name.toLocaleLowerCase())}`}
                   disaggregation={activeDisaggregationObj}
                   updateFieldDescription={() =>
                     updateFieldDescription(
