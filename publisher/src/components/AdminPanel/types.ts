@@ -139,10 +139,39 @@ export type ReportingAgencyMetadata = {
   reporting_agency_options: ReportingAgencyOption[];
 };
 
+type OtherSubDimension = {
+  dimension_key: string;
+  other_options: string[];
+  dimension_name?: string;
+};
+
+type Disaggregation = {
+  dimension_id: string;
+  disaggregation_display_name: string;
+  other_sub_dimensions: OtherSubDimension[];
+};
+
+export type MetricSetting = {
+  metric_key: string;
+  metric_display_name: string;
+  disaggregations: Disaggregation[];
+};
+
+export type BreakdownSettings = {
+  system: string;
+  metric_settings: MetricSetting[];
+};
+
+export type BreakdownSettingsUpdates = {
+  metric_key: string;
+  breakdowns: { dimension_id: string; sub_dimensions: OtherSubDimension[] }[];
+};
+
 export const AgencyProvisioningSettings = {
   AGENCY_INFORMATION: "Agency Information",
   TEAM_MEMBERS_ROLES: "Team Members & Roles",
   METRICS_REPORTING_AGENCY: "Metrics Reporting Agency",
+  BREAKDOWN_SETTINGS: "Breakdown Settings",
 } as const;
 
 export type AgencyProvisioningSetting =

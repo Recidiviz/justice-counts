@@ -19,4 +19,5 @@ export * from "./useBarChart";
 export * from "./useIsFooterVisible";
 export * from "./useLineChart";
 export * from "./useLineChartLegend";
+export * from "./useScrollShadows";
 export * from "./useWindowWidth";

@@ -329,6 +329,7 @@ export const AgencyProvisioningOverview = observer(() => {
                   adminPanelStore.fetchAgencyTeam(String(agency.id));
                   // Fetch the metrics reporting agency metadata
                   adminPanelStore.fetchReportingAgency(String(agency.id));
+                  adminPanelStore.fetchBreakdownSettings(String(agency.id));
                   editAgency(agency.id);
                 }}
               >
