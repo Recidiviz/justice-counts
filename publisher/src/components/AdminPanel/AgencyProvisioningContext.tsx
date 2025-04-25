@@ -39,6 +39,8 @@ interface AgencyProvisioningContextProps
   selectedAgency?: AgencyWithTeamByID;
   showSelectionBox?: SelectionInputBoxType;
   setShowSelectionBox: SetState<SelectionInputBoxType | undefined>;
+  breakdownSettingsInputMap: Record<string, string[]>;
+  setBreakdownSettingsInputMap: SetState<Record<string, string[]>>;
 }
 
 const AgencyProvisioningContext = createContext<
@@ -57,13 +59,22 @@ export const AgencyProvisioningProvider: React.FC<ProviderProps> = ({
   const { adminPanelStore } = useStore();
   const { agenciesByID, agencyProvisioningUpdates } = adminPanelStore;
 
-  /** Selected agency to edit */
+  /** Misc */
   const selectedAgency = selectedAgencyID
     ? agenciesByID[selectedAgencyID][0]
     : undefined;
 
   const [showSelectionBox, setShowSelectionBox] =
     useState<SelectionInputBoxType>();
+
+  const miscProvider = useMemo(
+    () => ({
+      selectedAgency,
+      showSelectionBox,
+      setShowSelectionBox,
+    }),
+    [selectedAgency, showSelectionBox]
+  );
 
   /** General Agency Information */
   const [selectedSystems, setSelectedSystems] = useState<Set<AgencySystem>>(
@@ -82,6 +93,22 @@ export const AgencyProvisioningProvider: React.FC<ProviderProps> = ({
   );
   const [URLValidationError, setURLValidationError] = useState<string>();
 
+  const generalInfoProvider = useMemo(
+    () => ({
+      selectedSystems,
+      nameValue,
+      descriptionValue,
+      URLValue,
+      URLValidationError,
+      setSelectedSystems,
+      setNameValue,
+      setDescriptionValue,
+      setURLValue,
+      setURLValidationError,
+    }),
+    [selectedSystems, nameValue, descriptionValue, URLValue, URLValidationError]
+  );
+
   /** Superagency/Child Agency */
   const [isChildAgencySelected, setIsChildAgencySelected] = useState<boolean>(
     Boolean(agencyProvisioningUpdates.super_agency_id) || false
@@ -92,6 +119,16 @@ export const AgencyProvisioningProvider: React.FC<ProviderProps> = ({
     agencyProvisioningUpdates.child_agency_ids
       ? new Set(agencyProvisioningUpdates.child_agency_ids)
       : new Set()
+  );
+
+  const superagencyChildAgencyProvider = useMemo(
+    () => ({
+      isChildAgencySelected,
+      selectedChildAgencyIDs,
+      setIsChildAgencySelected,
+      setSelectedChildAgencyIDs,
+    }),
+    [isChildAgencySelected, selectedChildAgencyIDs]
   );
 
   /** Copy Superagency Metric Settings */
@@ -109,6 +146,22 @@ export const AgencyProvisioningProvider: React.FC<ProviderProps> = ({
     new Set()
   );
 
+  const copyMetricSettingProvider = useMemo(
+    () => ({
+      isCopySuperagencyMetricSettingsSelected,
+      selectedChildAgencyIDsToCopy,
+      selectedMetricsKeys,
+      setIsCopySuperagencyMetricSettingsSelected,
+      setSelectedChildAgencyIDsToCopy,
+      setSelectedMetricsKeys,
+    }),
+    [
+      isCopySuperagencyMetricSettingsSelected,
+      selectedChildAgencyIDsToCopy,
+      selectedMetricsKeys,
+    ]
+  );
+
   /** Team Members */
   const [addOrDeleteUserAction, setAddOrDeleteUserAction] =
     useState<InteractiveSearchListAction>();
@@ -121,57 +174,55 @@ export const AgencyProvisioningProvider: React.FC<ProviderProps> = ({
     UserRoleUpdates | Record<number, never>
   >({});
 
-  const providerValue = useMemo(
+  const teamMembersProvider = useMemo(
     () => ({
-      selectedAgency,
-      showSelectionBox,
-      selectedSystems,
-      nameValue,
-      descriptionValue,
-      URLValue,
-      URLValidationError,
-      isChildAgencySelected,
-      selectedChildAgencyIDs,
-      isCopySuperagencyMetricSettingsSelected,
-      selectedChildAgencyIDsToCopy,
-      selectedMetricsKeys,
       addOrDeleteUserAction,
       selectedTeamMembersToAdd,
       selectedTeamMembersToDelete,
       teamMemberRoleUpdates,
-      setShowSelectionBox,
-      setSelectedSystems,
-      setNameValue,
-      setDescriptionValue,
-      setURLValue,
-      setURLValidationError,
-      setIsChildAgencySelected,
-      setSelectedChildAgencyIDs,
-      setIsCopySuperagencyMetricSettingsSelected,
-      setSelectedChildAgencyIDsToCopy,
-      setSelectedMetricsKeys,
       setAddOrDeleteUserAction,
       setSelectedTeamMembersToAdd,
       setSelectedTeamMembersToDelete,
       setTeamMemberRoleUpdates,
     }),
     [
-      selectedAgency,
-      showSelectionBox,
-      selectedSystems,
-      nameValue,
-      descriptionValue,
-      URLValue,
-      URLValidationError,
-      isChildAgencySelected,
-      selectedChildAgencyIDs,
-      isCopySuperagencyMetricSettingsSelected,
-      selectedChildAgencyIDsToCopy,
-      selectedMetricsKeys,
       addOrDeleteUserAction,
       selectedTeamMembersToAdd,
       selectedTeamMembersToDelete,
       teamMemberRoleUpdates,
+    ]
+  );
+
+  /** Breakdown Settings */
+  const [breakdownSettingsInputMap, setBreakdownSettingsInputMap] = useState<
+    Record<string, string[]>
+  >({});
+
+  const breakdownSettingsProvider = useMemo(
+    () => ({
+      breakdownSettingsInputMap,
+      setBreakdownSettingsInputMap,
+    }),
+    [breakdownSettingsInputMap]
+  );
+
+  /** Combined provider value */
+  const providerValue = useMemo(
+    () => ({
+      ...generalInfoProvider,
+      ...superagencyChildAgencyProvider,
+      ...copyMetricSettingProvider,
+      ...teamMembersProvider,
+      ...breakdownSettingsProvider,
+      ...miscProvider,
+    }),
+    [
+      generalInfoProvider,
+      superagencyChildAgencyProvider,
+      copyMetricSettingProvider,
+      teamMembersProvider,
+      breakdownSettingsProvider,
+      miscProvider,
     ]
   );
 

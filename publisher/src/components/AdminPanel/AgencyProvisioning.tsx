@@ -34,6 +34,7 @@ import { ButtonWithMiniLoaderContainer, MiniLoaderWrapper } from "../Reports";
 import {
   AgencyProvisioningSetting,
   AgencyProvisioningSettings,
+  Environment,
   ProvisioningProps,
   SaveConfirmation,
   SaveConfirmationType,
@@ -687,9 +688,11 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
 
                 {/* Breakdown Settings */}
                 {currentSettingType ===
-                  AgencyProvisioningSettings.BREAKDOWN_SETTINGS && (
-                  <BreakdownSettings selectedIDToEdit={selectedIDToEdit} />
-                )}
+                  AgencyProvisioningSettings.BREAKDOWN_SETTINGS &&
+                  (api.environment === Environment.STAGING ||
+                    api.environment === Environment.LOCAL) && (
+                    <BreakdownSettings selectedIDToEdit={selectedIDToEdit} />
+                  )}
               </Styled.Form>
             </Styled.ScrollableContainer>
 

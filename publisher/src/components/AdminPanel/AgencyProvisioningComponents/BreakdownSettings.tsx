@@ -24,6 +24,7 @@ import React, { useEffect, useState } from "react";
 
 import { useStore } from "../../../stores";
 import * as Styled from "../AdminPanel.styles";
+import { useAgencyProvisioning } from "../AgencyProvisioningContext";
 
 type BreakdownSettingsProps = {
   selectedIDToEdit?: string | number;
@@ -34,16 +35,22 @@ export const BreakdownSettings: React.FC<BreakdownSettingsProps> = observer(
     const { adminPanelStore } = useStore();
 
     const { agencyBreakdownSettings } = adminPanelStore;
+    const { breakdownSettingsInputMap, setBreakdownSettingsInputMap } =
+      useAgencyProvisioning();
 
     const systems = agencyBreakdownSettings.map((setting) => setting.system);
-
     const [activeTab, setActiveTab] = useState(systems[0]);
-    const [inputMap, setInputMap] = useState<Record<string, string[]>>({});
 
     useEffect(() => {
+      if (
+        !agencyBreakdownSettings ||
+        Object.keys(breakdownSettingsInputMap).length > 0
+      )
+        return;
+
       const initialInputMap: Record<string, string[]> = {};
 
-      agencyBreakdownSettings?.forEach((breakdown) => {
+      agencyBreakdownSettings.forEach((breakdown) => {
         breakdown.metric_settings.forEach((setting) =>
           setting.disaggregations.forEach((disaggregation) =>
             disaggregation.other_sub_dimensions.forEach((dimension) => {
@@ -54,23 +61,24 @@ export const BreakdownSettings: React.FC<BreakdownSettingsProps> = observer(
         );
       });
 
-      setInputMap(initialInputMap);
-    }, [agencyBreakdownSettings]);
+      setBreakdownSettingsInputMap(initialInputMap);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [agencyBreakdownSettings, breakdownSettingsInputMap]);
 
     useEffect(() => {
       adminPanelStore.updateBreakdownSettings(
         agencyBreakdownSettings,
-        inputMap
+        breakdownSettingsInputMap
       );
       // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [agencyBreakdownSettings, inputMap]);
+    }, [agencyBreakdownSettings, breakdownSettingsInputMap]);
 
     const handleInputsMapChange = (
       mapKey: string,
       index: number,
       value: string
     ) => {
-      setInputMap((prev) => {
+      setBreakdownSettingsInputMap((prev) => {
         const updated = [...(prev[mapKey] || [])];
         updated[index] = value;
         return { ...prev, [mapKey]: updated };
@@ -78,14 +86,14 @@ export const BreakdownSettings: React.FC<BreakdownSettingsProps> = observer(
     };
 
     const handleAddInput = (mapKey: string) => {
-      setInputMap((prev) => ({
+      setBreakdownSettingsInputMap((prev) => ({
         ...prev,
         [mapKey]: [...(prev[mapKey] || []), ""],
       }));
     };
 
     const handleRemoveInput = (mapKey: string, index: number) => {
-      setInputMap((prev) => {
+      setBreakdownSettingsInputMap((prev) => {
         const updated = [...(prev[mapKey] || [])];
         updated.splice(index, 1);
         return { ...prev, [mapKey]: updated };
@@ -120,7 +128,7 @@ export const BreakdownSettings: React.FC<BreakdownSettingsProps> = observer(
           setting.disaggregations.map((disaggregation) =>
             disaggregation.other_sub_dimensions.map((dimension) => {
               const mapKey = `${setting.metric_key}_${dimension.dimension_name}`;
-              const currentInputs = inputMap[mapKey] || [];
+              const currentInputs = breakdownSettingsInputMap[mapKey] || [];
 
               return (
                 <Styled.Metric key={mapKey}>

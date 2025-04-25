@@ -36,7 +36,7 @@ export function TabbedBar({ options, size, scrollable }: TabbedBarProps) {
 
   return (
     <Styled.Wrapper>
-      {!!scrollable && <Styled.LeftGradient isShowing={showLeftShadow} />}
+      {scrollable && <Styled.LeftGradient isShowing={showLeftShadow} />}
       <Styled.TabsContainer ref={scrollContainerRef} scrollable={scrollable}>
         {options.map(
           ({ key, label, onClick, selected, enabled, indicator, hide }) =>
@@ -53,7 +53,7 @@ export function TabbedBar({ options, size, scrollable }: TabbedBarProps) {
             ) : null
         )}
       </Styled.TabsContainer>
-      {!!scrollable && <Styled.RightGradient isShowing={showRightShadow} />}
+      {scrollable && <Styled.RightGradient isShowing={showRightShadow} />}
     </Styled.Wrapper>
   );
 }
