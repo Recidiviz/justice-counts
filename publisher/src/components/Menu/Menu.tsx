@@ -44,8 +44,9 @@ const Menu: React.FC = () => {
   const currentAgency = userStore.getAgency(agencyId);
   const hasDashboardEnabled = currentAgency?.is_dashboard_enabled;
   const agencyName = currentAgency?.name;
-  const agencyDisplayName =
-    userStore.dropdownAgenciesById[agencyId].dropdown_name;
+  const agencyDisplayName = currentAgency
+    ? userStore.dropdownAgenciesById[agencyId].dropdown_name
+    : "Select Agency";
 
   const handleCloseMobileMenu = () => {
     if (windowWidth < MIN_TABLET_WIDTH && isMobileMenuOpen) {
