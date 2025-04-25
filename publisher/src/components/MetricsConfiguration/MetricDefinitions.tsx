@@ -224,7 +224,12 @@ function MetricDefinitions() {
             )
               return null;
 
-            if (!dimensionDefinitionSettings[activeSystemMetricKey])
+            if (
+              !dimensionDefinitionSettings[activeSystemMetricKey] ||
+              !dimensionDefinitionSettings[activeSystemMetricKey][
+                disaggregationKey
+              ]
+            )
               return null;
 
             return (
