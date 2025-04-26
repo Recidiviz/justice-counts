@@ -32,6 +32,7 @@ export type CheckboxOption = {
   checked: boolean;
   disabled?: boolean;
   icon?: string | React.ReactNode;
+  indent?: number;
   otherDescription?: OtherDescriptionParams;
   onChangeOverride?: () => void;
 };
@@ -62,11 +63,12 @@ export const CheckboxOptions: React.FC<CheckboxOptionsProps> = ({
           checked,
           disabled,
           icon,
+          indent,
           otherDescription,
           onChangeOverride,
         }) => (
           <React.Fragment key={key}>
-            <Styled.CheckboxOptionsWrapper>
+            <Styled.CheckboxOptionsWrapper indent={indent}>
               <Styled.Checkbox
                 id={key}
                 type={multiselect ? "checkbox" : "radio"}
