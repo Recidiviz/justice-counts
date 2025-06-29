@@ -84,6 +84,9 @@ interface DisaggregationDimensionTextInputProps extends MetricTextInputProps {
   dimension: MetricDisaggregationDimensions;
   disabled?: boolean;
   customLabel?: string;
+  isLabelClickable?: boolean;
+  clickableLabelSymbol?: string;
+  onLabelClick?: () => void;
 }
 
 export const DisaggregationDimensionTextInput = observer(
@@ -96,6 +99,10 @@ export const DisaggregationDimensionTextInput = observer(
     clearFieldDescription,
     disabled,
     customLabel,
+    isLabelClickable,
+    clickableLabelSymbol,
+    onLabelClick,
+    ...props
   }: DisaggregationDimensionTextInputProps) => {
     const navigate = useNavigate();
     const { agencyId } = useParams() as { agencyId: string };
@@ -118,7 +125,12 @@ export const DisaggregationDimensionTextInput = observer(
     return (
       <NewInput
         key={dimension.key}
-        label={customLabel || dimension.label}
+        label={
+          customLabel ||
+          `${dimension.label} ${isLabelClickable ? clickableLabelSymbol : ""}`
+        }
+        isLabelClickable={isLabelClickable}
+        onLabelClick={onLabelClick}
         error={
           disaggregations?.[reportID]?.[metric.key]?.[disaggregation.key]?.[
             dimension.key
@@ -155,6 +167,7 @@ export const DisaggregationDimensionTextInput = observer(
           tooltipLink: () => navigate(`/agency/${agencyId}/metric-config`),
         }}
         settingsCustomMargin
+        {...props}
       />
     );
   }
