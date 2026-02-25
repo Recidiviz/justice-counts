@@ -35,6 +35,7 @@ import {
   SupervisionSubsystems,
   SupervisionSystem,
 } from "@justice-counts/common/types";
+import { startCase } from "lodash";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -765,9 +766,9 @@ function MetricAvailability({
                       >
                         <CheckboxOptions
                           options={[
-                            ...Object.values(currentDimensions).map(
+                            ...Object.values(currentDimensions).flatMap(
                               (dimension) => {
-                                return {
+                                const baseOption = {
                                   key: dimension.key as string,
                                   label: dimension.label as string,
                                   checked: Boolean(dimension.enabled),
@@ -790,6 +791,25 @@ function MetricAvailability({
                                     }
                                   },
                                 };
+
+                                if (
+                                  dimension.key === otherDimensionKey &&
+                                  dimension.sub_dimensions
+                                ) {
+                                  const subDimensionOptions =
+                                    dimension.sub_dimensions.map(
+                                      (subDimension) => ({
+                                        key: `${dimension.key}_${subDimension.name}`,
+                                        label: `${dimension.label} - ${startCase(subDimension.name.toLocaleLowerCase())}`,
+                                        checked: Boolean(subDimension.enabled),
+                                        indent: 32,
+                                      })
+                                    );
+
+                                  return [baseOption, ...subDimensionOptions];
+                                }
+
+                                return [baseOption];
                               }
                             ),
                             {

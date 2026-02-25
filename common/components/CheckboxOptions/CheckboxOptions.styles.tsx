@@ -22,11 +22,12 @@ import { NewInput } from "../Input";
 
 export const CheckboxContainer = styled.div``;
 
-export const CheckboxOptionsWrapper = styled.div`
+export const CheckboxOptionsWrapper = styled.div<{ indent?: number }>`
   display: flex;
   align-items: center;
   gap: 8px;
   margin-bottom: 16px;
+  ${({ indent }) => indent && `margin-left: ${indent}px;`}
 `;
 
 export const CheckboxLabel = styled.div`

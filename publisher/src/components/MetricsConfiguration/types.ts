@@ -24,6 +24,7 @@ import {
   MetricDimensionContext,
   MetricDisaggregationContext,
   ReportFrequency,
+  SubDimensions,
 } from "@justice-counts/common/types";
 
 import { Ethnicity, Race } from "./RaceEthnicitiesGridStates";
@@ -85,6 +86,7 @@ export type Dimensions = {
     label?: string;
     description?: string;
     contexts?: MetricDimensionContext[];
+    sub_dimensions?: SubDimensions[];
     key?: string;
     race?: Races;
     ethnicity?: Ethnicities;
