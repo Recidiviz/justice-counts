@@ -51,6 +51,6 @@
     "jest": "^29.7.0",
     "prop-types": "^15.8.1",
     "react-test-renderer": "^18.3.1",
-    "storybook": "^8.6.11"
+    "storybook": "^8.6.17"
   }
 }
