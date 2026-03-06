@@ -246,7 +246,10 @@ export const NewInput = styled.input<{
   }
 `;
 
-export const NewInputLabel = styled.label<{ error: boolean }>`
+export const NewInputLabel = styled.label<{
+  error: boolean;
+  isLabelClickable?: boolean;
+}>`
   ${typography.body}
   ${({ error }) =>
     error &&
@@ -256,6 +259,11 @@ export const NewInputLabel = styled.label<{ error: boolean }>`
       display: inline;
       color: ${palette.solid.red};
     }
+  `};
+  ${({ isLabelClickable }) =>
+    isLabelClickable &&
+    `
+    cursor: pointer;
   `};
 `;
 
